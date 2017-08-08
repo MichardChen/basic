@@ -1,0 +1,194 @@
+.dbtn{
+	width: 66px;
+	height:66px;
+	margin-top: 15px;
+	background: url(../../image/ico1.png) no-repeat 0px 0px;
+}
+
+.dbtn2{
+	width: 66px;
+	height:66px;
+	margin-top: 15px;
+	background: url(../../image/ico1.png) no-repeat 0px -67px;
+}
+.dbtn3{
+	width: 66px;
+	height:66px;
+	margin-top: 15px;
+	background: url(../../image/ico1.png) no-repeat 0px -132px;
+}
+
+.dbtn4{
+	width: 66px;
+	height:66px;
+	margin-top: 15px;
+	background: url(../../image/ico1.png) no-repeat 0px -198px;
+}
+.dbtn5{
+	width: 66px;
+	height:66px;
+	margin-top: 15px;
+	background: url(../../image/ico1.png) no-repeat 0px -462px;
+}
+.bground span{
+	margin-bottom:5px;
+	margin-left:5px;
+	font-size:13px;
+}
+.table-hover>tbody>tr:hover {
+	background-color: #e4f6f6;
+	
+}
+.bor{
+	border: 1px solid #48a4ad;
+	width:98%;
+	margin-top:10px;
+	margin-bottom: 30px;
+	color: white;
+	font-size: 20px;
+	vertical-align: center;
+}
+.bor2{
+	border: 1px solid #dadada;
+	width:98%;
+	margin-left:10px;
+	color: black;
+	font-size: 20px;
+	vertical-align: center;
+	height:300px;
+}
+.bor2:hover{
+	border: 1px solid #00a4a3;
+}
+.bor:hover{
+	border:1px solid #00a4a3;
+}
+.bor1:hover{
+	border:1px solid #00a4a3;
+}
+tbody{
+	font-size:15px;
+}
+tbody tr td{
+	vertical-align: middle!important;
+}
+.bor1{
+	border: 1px solid #dadada;
+	color: black;
+	font-size: 20px;
+	vertical-align: center;
+}
+.oval{
+	background-color:#299ba3;
+	width:150px;
+	height:35px;
+	border-radius:25px;
+}
+
+.bground{
+	background-color: rgba(255,255,255,.1);
+	margin-top:5px;
+	margin-bottom: 10px;
+	margin-right:10px;
+	color: white;
+}
+.bground1{
+	background-color:#f3f3f3;
+	margin-top:5px;
+	margin-bottom: 10px;
+	color: black;
+	font-size:15px;
+	
+}
+.bground:hover{
+	background-color:#08686e;
+}
+.bground:hover .dbtn{
+	width: 66px;
+	height:66px;
+	margin-top: 15px;
+	background: url(../../image/ico1-1.png) no-repeat 0px 0px;
+}
+.bground:hover .dbtn2{
+	width: 66px;
+	height:66px;
+	margin-top: 15px;
+	background: url(../../image/ico1-1.png) no-repeat 0px -67px;
+}
+.bground:hover .dbtn3{
+	width: 66px;
+	height:66px;
+	margin-top: 15px;
+	background: url(../../image/ico1-1.png) no-repeat 0px -132px;
+}
+.bground:hover .dbtn4{
+	width: 66px;
+	height:66px;
+	margin-top: 15px;
+	background: url(../../image/ico1-1.png) no-repeat 0px -198px;
+}
+.bground1:hover{
+	background-color:#e5f6f6;
+}
+.xbtn{
+	width: 48px;
+	height:48px;
+	margin:10px auto;
+}
+.row1 p{
+	text-align: center;
+	
+}
+.xbtn1{
+	background: url(../../image/ico3.png) no-repeat 0px 0px;
+}	
+.xbtn2{
+	background: url(../../image/ico3.png) no-repeat 0px -49px;
+}		
+.xbtn3{
+	background: url(../../image/ico3.png) no-repeat 0px -97px;
+}
+.xbtn4{
+	background: url(../../image/ico3.png) no-repeat 0px -145px;
+}
+.xbtn5{
+	background: url(../../image/ico3.png) no-repeat 0px -193px;
+}
+.xbtn6{
+	background: url(../../image/ico3.png) no-repeat 0px -240px;
+}
+.row1{
+	margin-left:1px;
+	margin-right:1px;
+}
+#wea1{
+	
+	marign-top:50px;
+}
+
+#wea3{
+	width:60px;
+	height:20px;
+	float:left;
+	border-radius:10px;
+	background-color:white;
+	margin-top:14px;
+	margin-left:5px;
+	margin-right:20px;
+	color:#23636c;
+	font-size:14px;
+}
+#wea4{
+	float:left;
+	margin-top:12px;
+}
+.tf_tb div{
+	width:100%;
+    word-break:keep-all;/* 不换行 */
+    white-space:nowrap;/* 不换行 */
+    overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
+    text-overflow:ellipsis;
+}
+.tf_tb a{
+	color:white;
+}
