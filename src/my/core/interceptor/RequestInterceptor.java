@@ -1,12 +1,8 @@
 package my.core.interceptor;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Timestamp;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
@@ -25,16 +21,9 @@ public class RequestInterceptor implements Interceptor{
 	public void intercept(Invocation invocation){
 		ReturnData data = vertifyToken(invocation);
 		if(StringUtil.equals(data.getCode(),Constants.STATUS_CODE.FAIL)){
-			HttpServletResponse response = invocation.getController().getResponse();
-			try {
-				PrintWriter pw = response.getWriter();
-				pw.println(data);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			invocation.getController().renderJson(data);
 			return;
 		}
-		System.out.println("invocation");
 		invocation.invoke();
 	}
 	
@@ -44,7 +33,6 @@ public class RequestInterceptor implements Interceptor{
 		HttpServletRequest request = invocation.getController().getRequest();
 		
 		String tokens = request.getParameter("accessToken"); 
-		//"对不起，您还没有登录");
 		AcceessToken token = tokenDao.queryToken(StringUtil.toInteger(request.getParameter("userId"))
 											    ,request.getParameter("userTypeCd"));
 		if(token == null){
