@@ -8,5 +8,4 @@ import com.jfinal.plugin.activerecord.Model;
 public class MemberStore extends Model<MemberStore> {
 	
 	public static final MemberStore dao = new MemberStore();
-
 }
