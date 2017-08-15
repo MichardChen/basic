@@ -8,7 +8,7 @@ import com.jfinal.plugin.activerecord.Model;
 import my.pvcloud.util.DateUtil;
 
 
-@TableBind(table = "mk_accesstoken", pk = "id")
+@TableBind(table = "t_accesstoken", pk = "id")
 public class AcceessToken extends Model<AcceessToken> {
 
 	public static final AcceessToken dao = new AcceessToken();
@@ -18,14 +18,14 @@ public class AcceessToken extends Model<AcceessToken> {
 	}
 	
 	public void updateToken(int userId,String token){
-		 Db.update("update mk_accesstoken set token='"+token+"',expire_time='"+DateUtil.getAccessTokenExpireTime()+"',update_time='"+DateUtil.getNowTimestamp()+"' where user_id="+userId);
+		 Db.update("update t_accesstoken set token='"+token+"',expire_time='"+DateUtil.getAccessTokenExpireTime()+"',update_time='"+DateUtil.getNowTimestamp()+"' where user_id="+userId);
 	}
 	
 	public AcceessToken queryById(int userId){
-		return AcceessToken.dao.findFirst("select * from mk_accesstoken where user_Id=? order by update_time desc limit 1",userId);
+		return AcceessToken.dao.findFirst("select * from t_accesstoken where user_Id=? order by update_time desc limit 1",userId);
 	}
 	
 	public AcceessToken queryToken(int userId,String userTypeCd){
-		return AcceessToken.dao.findFirst("select * from mk_accesstoken where user_Id=? and user_type_cd=? order by update_time desc limit 1",userId,userTypeCd);
+		return AcceessToken.dao.findFirst("select * from t_accesstoken where user_Id=? and user_type_cd=? order by update_time desc limit 1",userId,userTypeCd);
 	}
 }
