@@ -18,7 +18,6 @@ import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.MD5Util;
 import my.pvcloud.util.SMSUtil;
 import my.pvcloud.util.StringUtil;
-import my.pvcloud.util.TextUtil;
 import my.pvcloud.util.VertifyUtil;
 
 public class LoginService {
@@ -77,7 +76,6 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		String mobile = dto.getMobile();
 		String userPwd = dto.getUserPwd();
-		String userTypeCd = dto.getUserTypeCd();
 		String code = dto.getCode();
 		int sex = dto.getSex();
 		//获取验证码有效时间
@@ -116,7 +114,7 @@ public class LoginService {
 		}
 		
 		//保存用户
-		int id = Member.dao.saveMember(mobile, MD5Util.string2MD5(userPwd),sex);
+		int id = Member.dao.saveMember(mobile, MD5Util.string2MD5(userPwd),sex,dto.getUserTypeCd());
 		if(id != 0){
 			VertifyCode.dao.updateVertifyCodeExpire(mobile, now);
 			//String token = TextUtil.generateUUID();
@@ -136,7 +134,48 @@ public class LoginService {
 	}
 	
 	//登录
-	public ReturnData login(LoginDTO dto) throws Exception{
+	public ReturnData login(String mobile
+						   ,String userPwd
+						   ,String userType
+						   ,String platForm
+						   ,String deviceToken) throws Exception{
+		ReturnData data = new ReturnData();
+		Member member = Member.dao.queryMember(mobile);
+		if(member == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，您的账号尚未注册");
+			return data;
+		}
+		if(!StringUtil.equals(MD5Util.string2MD5(userPwd), member.getStr("userpwd"))){
+			data.setMessage("对不起吗，密码错误");
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			return data;
+		}
+		
+		//保存token
+		int userId = member.getInt("id");
+		AcceessToken at = AcceessToken.dao.queryToken(userId, userType);
+		boolean tokensave = false;
+		if(at == null){
+			tokensave = AcceessToken.dao.saveToken(userId, userType, deviceToken);
+			if(tokensave){
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("登录成功");
+			}else{
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("登录失败");
+			}
+		}else{
+			at.updateToken(userId,deviceToken);
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("登录成功");
+		}
+		data.setData(member);
+		return data;
+	}
+	
+	//退出
+	public ReturnData logout(LoginDTO dto) throws Exception{
 		ReturnData data = new ReturnData();
 		Member member = Member.dao.queryMember(dto.getMobile());
 		if(member == null){
@@ -144,25 +183,7 @@ public class LoginService {
 			data.setMessage("对不起，用户不存在");
 			return data;
 		}
-		if(!StringUtil.equals(MD5Util.string2MD5(dto.getUserPwd()), member.getStr("userPwd"))){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("对不起，密码错误");
-			return data;
-		}
-		String token = TextUtil.generateUUID();
-		AcceessToken.dao.updateToken(member.getInt("id"), token);
-		data.setCode(Constants.STATUS_CODE.SUCCESS);
-		data.setMessage("登录成功");
-		JSONObject json = new JSONObject();
-		json.put("token", token);
-		data.setData(json.toString());
-		return data;
-	}
-	
-	//退出
-	public ReturnData logout(LoginDTO dto) throws Exception{
-		ReturnData data = new ReturnData();
-		AcceessToken token = AcceessToken.dao.queryById(dto.getUserId());
+		AcceessToken token = AcceessToken.dao.queryById(member.getInt("id"));
 		if(token == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，您还没有登录");
@@ -175,7 +196,7 @@ public class LoginService {
 			return data;
 		}
 		
-		AcceessToken.dao.updateToken(dto.getUserId(), "");
+		AcceessToken.dao.updateToken(member.getInt("id"), "");
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("退出成功");
 		return data;

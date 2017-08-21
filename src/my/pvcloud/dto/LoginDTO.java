@@ -15,6 +15,7 @@ public class LoginDTO extends BaseDTO{
 		dto.setUserPwd(request.getParameter("userPwd"));
 		dto.setUserId(StringUtil.toInteger(request.getParameter("userId")));
 		dto.setToken(request.getParameter("token"));
+		dto.setAccessToken(request.getParameter("accessToken"));
 		dto.setCode(request.getParameter("code"));
 		dto.setOldPwd(request.getParameter("oldPwd"));
 		dto.setNewPwd(request.getParameter("newPwd"));

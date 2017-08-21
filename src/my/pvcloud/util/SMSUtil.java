@@ -23,7 +23,7 @@ public class SMSUtil {
 	 * @throws IOException
 	 */
 	public static String sendMessage(String content,String mobile) throws IOException {
-		
+		/*
 		//发送内容
 		String sign="【妙客良品】";
 		
@@ -69,7 +69,7 @@ public class SMSUtil {
 		
 		// 返回结果为‘0，20140009090990,1，提交成功’ 发送成功   具体见说明文档
 		//System.out.println(returnStr);
-		// 返回发送结果
+		// 返回发送结果*/
 		return "0";
 	}
 	

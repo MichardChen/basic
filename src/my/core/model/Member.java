@@ -25,8 +25,8 @@ public class Member extends Model<Member> {
 		return Member.dao.findFirst("select * from t_member where id=?",id);
 	}
 	
-	public int saveMember(String mobile,String userPwd,int sex){
-		Member member = new Member().set("mobile", mobile).set("userPwd", userPwd).set("member_grade_cd", Constants.USER_GRADE_CD.GENERNAL_USER).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex);
+	public int saveMember(String mobile,String userPwd,int sex,String userTypeCd){
+		Member member = new Member().set("mobile", mobile).set("userPwd", userPwd).set("member_grade_cd", userTypeCd).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex);
 		boolean isSave = member.save();
 		return member.getInt("id");
 	}

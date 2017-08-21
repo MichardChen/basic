@@ -64,12 +64,6 @@ public class RestfulController extends Controller{
 	public void register() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		ReturnData rt = service.register(dto);
-		if(StringUtil.equals(rt.getCode(), Constants.STATUS_CODE.SUCCESS)){
-			JSONObject data=(JSONObject)rt.getData();
-			setSessionAttr("userId", data.get("userId"));
-			setSessionAttr("userTypeCd", Constants.USER_TYPE_CD.CLIENT);
-			setSessionAttr("userName", dto.getMobile());
-		}
 		renderJson(rt);
 	}
 	
@@ -78,60 +72,11 @@ public class RestfulController extends Controller{
 		
 		ReturnData data = new ReturnData();
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
-		//removeSessionAttr("store");
-		//登陆验证
-		CaptchaUsernamePasswordToken token = new CaptchaUsernamePasswordToken(dto.getUserName(),MD5Util.string2MD5(dto.getUserPwd()),dto.getUserTypeCd());
-		Subject subject = SecurityUtils.getSubject();
-		String code = "5600";
-		String msg = null;
-		try {
-			if (!subject.isAuthenticated()){
-				subject.login(token);
-			}
-			setSessionAttr("userName", dto.getUserName());
-			msg = "登录成功";
-			data.setMessage("登录成功");
-			data.setCode(Constants.STATUS_CODE.SUCCESS);
-			IndexDTO indexDTO = IndexDTO.getInstance(getRequest());
-			if(StringUtil.equals(dto.getUserTypeCd(), Constants.USER_TYPE_CD.CLIENT)){
-				Member member=service.queryMember(dto.getUserName(), MD5Util.string2MD5(dto.getUserPwd()));
-				setSessionAttr("userId", member.getInt("id"));
-				indexDTO.setUserId(member.getInt("id"));
-				setSessionAttr("mobile",member.getStr("mobile"));
-				//保存账号密码
-				setCookie("clientName", dto.getUserName(), 1000*60*60*24*90);
-				setCookie("clientPwd", dto.getUserPwd(), 1000*60*60*24*90);
-			}else{
-				User admin = User.dao.queryByUserName(dto.getUserName(), MD5Util.string2MD5(dto.getUserPwd()));
-				setSessionAttr("userId", admin.getInt("user_id"));
-				setSessionAttr("mobile", admin.getStr("mobile"));
-			}
-			
-			setSessionAttr("userName", dto.getUserName());
-			setSessionAttr("userTypeCd", dto.getUserTypeCd());
-			setSessionAttr("store", dto.getStore());
-		} catch (UnknownAccountException e) {
-			msg = "账号不存在";
-			data.setCode(Constants.STATUS_CODE.FAIL);
-		} catch (IncorrectCredentialsException e) {
-			msg = "用户名密码错误";
-			data.setCode(Constants.STATUS_CODE.FAIL);
-		} catch (LockedAccountException e) {
-			msg = "账号被锁定";
-			data.setCode(Constants.STATUS_CODE.FAIL);
-		} catch (ExcessiveAttemptsException e) {
-			msg = "尝试次数过多 请明天再试";
-			data.setCode(Constants.STATUS_CODE.FAIL);
-		} catch (AuthenticationException e) {
-			msg = "对不起 没有权限访问";
-			data.setCode(Constants.STATUS_CODE.FAIL);
-		} catch (Exception e) {
-			e.printStackTrace();
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			msg = "请重新登录";
-		}
-		data.setMessage(msg);
-		renderJson(data);
+		renderJson(service.login(dto.getMobile()
+								,dto.getUserPwd()
+								,dto.getUserTypeCd()
+								,dto.getPlatForm()
+								,dto.getAccessToken()));
 	}
 	
 	//获取忘记密码验证码
