@@ -209,7 +209,7 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		if(member == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("对不起，您的手机号码还未分配");
+			data.setMessage("对不起，您的手机号码还未注册");
 			return data;
 		}else{
 			//获取VertifyCode

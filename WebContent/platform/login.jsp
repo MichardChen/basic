@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>南靖工作平台- 登录</title>
+<title>同记后台管理系统- 登录</title>
 <%@include file="../common/header.jsp"%>
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
 <style type="text/css">
@@ -83,8 +83,6 @@
 				</div>
 				<button type="submit" id="login_button"
 					class="btn btn-primary block full-width m-b">登 录</button>
-				
-
 			</form>
 			</div>
 		</div>
@@ -176,9 +174,7 @@
 				});
 
 			});
-
 		})(jQuery);
 	</script>
 </body>
-
 </html>

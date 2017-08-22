@@ -24,7 +24,7 @@ function loadProject(data){
 		$(".modal-title").html("修改");
 	}
 	$.ajax({
-		url : "${CONTEXT_PATH}/custInfo/alter",
+		url : "${CONTEXT_PATH}/newsInfo/alter",
 		data : {'custId':data},
 		dataType : "html",
 		success : function(result){
@@ -104,7 +104,7 @@ td{
 		<div class="wrapper wrapper-content animated fadeInRightBig">
     	<div class="" style="width:100%;color=black;font-size:15px;height:50px;line-height:50px;margin-bottom:20px;">
 	    	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div>
-	   		<div class="fl">用户信息</div>
+	   		<div class="fl">资讯信息</div>
 	   </div>
 	  
     	<hr/>			
@@ -143,33 +143,33 @@ td{
     		<table class="table table-responsive" id="myTb" >
     		<thead>
     			<tr>
-    				<th>手机号码</th>
-    				<th>归属地</th>
-    				<th>积分</th>
-    				<th>注册时间</th>
-    				<th>修改时间</th>
+    				<th>资讯标题</th>
+    				<th>资讯类型</th>
+    				<th>创建者</th>
+    				<th>创建时间</th>
+    				<th>状态</th>
     				<th>操作</th>
     			</tr>
     		</thead>
     		
     		<tbody>
-    				<c:if test="${custInfoList.totalRow==0 }">
+    				<c:if test="${newsList.totalRow==0 }">
 			    		<tr>
 			    			<td colspan="7" style="font-size:30px;padding-top:18%;padding-left:45%;">没有找到相关数据</td>
 			    		</tr>
 		    		</c:if>
-		    		<c:if test="${custInfoList.totalRow>0 }">
-		    			<c:forEach var="custInfoList" items="${custInfoList.list}">	
+		    		<c:if test="${newsList.totalRow>0 }">
+		    			<c:forEach var="newsList" items="${newsList.list}">	
 		    				<tr class="bOrder">
-		    					<td style="display:none;">${custInfoList.cust_id }</td>
-		    					<td>${custInfoList.phonenum }</td>
-		    					<td>${custInfoList.addrname }</td>
-		    					<td>${custInfoList.integral }</td>
-		    					<td><fmt:formatDate value="${custInfoList.register_date }" pattern="yyyy-MM-dd hh:mm:ss"/></td>
-		    					<td><fmt:formatDate value="${custInfoList.update_date }" pattern="yyyy-MM-dd hh:mm:ss"/></td>
+		    					<td style="display:none;">${newsList.news_title }</td>
+		    					<td>${newsList.hot_flg }</td>
+		    					<td>${newsList.news_title }</td>
+		    					<td>${newsList.create_user }</td>
+		    					<td><fmt:formatDate value="${newsList.create_time }" pattern="yyyy-MM-dd hh:mm:ss"/></td>
+		    					<td><fmt:formatDate value="${newsList.update_time }" pattern="yyyy-MM-dd hh:mm:ss"/></td>
 		    					<td>
-		    						<input type="button" value="修改" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${custInfoList.cust_id})"/>
-		    						<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/custInfo/del?custId=${custInfoList.cust_id}';}"/>
+		    						<input type="button" value="修改" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${newsList.id})"/>
+		    						<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/newsInfo/del?newsId=${newsList.id}';}"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -179,10 +179,10 @@ td{
     		  
     		</div>
     		<div id="botton" style="position:absolute;bottom:5px;right:5%;color:black;margin:0 auto;font-size:12px;">
-			    	<c:set var="pageNumber" scope="request" value="${custInfoList.pageNumber}" />
-		            <c:set var="pageSize" scope="request" value="${custInfoList.pageSize}" />
-		            <c:set var="totalPage" scope="request" value="${custInfoList.totalPage}" />
-		            <c:set var="totalRow" scope="request" value="${custInfoList.totalRow}" />
+			    	<c:set var="pageNumber" scope="request" value="${newsList.pageNumber}" />
+		            <c:set var="pageSize" scope="request" value="${newsList.pageSize}" />
+		            <c:set var="totalPage" scope="request" value="${newsList.totalPage}" />
+		            <c:set var="totalRow" scope="request" value="${newsList.totalRow}" />
 					<c:set var="pageUrl" scope="request" value="${CONTEXT_PATH}/custInfo/queryByConditionByPage/-" />    	
 			    	<%@include file="../common/page.jsp"%>
 				</div>

@@ -92,13 +92,14 @@ public class RestfulController extends Controller{
 	}
 	
 	//客户修改密码
+	@Before(RequestInterceptor.class)
 	public void modifyPwd() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
-		dto.setMobile((String)getSessionAttr("mobile"));
 		renderJson(service.modifyUserPwd(dto));
 	}
 	
 	//退出
+	@Before(RequestInterceptor.class)
 	public void logout() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.logout(dto));

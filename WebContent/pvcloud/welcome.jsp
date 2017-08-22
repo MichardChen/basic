@@ -23,7 +23,7 @@
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
 		<div class="wrapper wrapper-content animated fadeInRightBig">
     	<div class="" style="width:100%;color=black;font-size:15px;height:50px;line-height:50px;margin-bottom:20px;">
-	    	<div class="fl">欢迎光临南靖工作平台</div>
+	    	<div class="fl">欢迎同记工作平台</div>
 	   </div>
 	  
 	   </div>
