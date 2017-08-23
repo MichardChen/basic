@@ -70,7 +70,6 @@ public class RestfulController extends Controller{
 	//登录
 	public void loginWeb() throws Exception{
 		
-		ReturnData data = new ReturnData();
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.login(dto.getMobile()
 								,dto.getUserPwd()
@@ -103,5 +102,24 @@ public class RestfulController extends Controller{
 	public void logout() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.logout(dto));
+	}
+	
+	//首页接口
+	public void index() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		//获取轮播图
+		renderJson(service.index(dto));
+	}
+	
+	//资讯列表
+	public void queryNewsList() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryNewsList(dto));
+	}
+	
+	//资讯详情
+	public void queryNewsContent() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryNewsDetail(dto));
 	}
 }

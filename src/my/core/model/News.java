@@ -26,6 +26,16 @@ public class News extends Model<News> {
 		return News.dao.paginate(page, size, select, sql,param.toArray());
 	}
 	
+	public Page<News> queryNews(int page,int size){
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer strBuf=new StringBuffer();
+		strBuf.append(" and flg=?");
+		param.add("1");
+		String sql=" from t_news where 1=1"+strBuf+" order by create_time desc,hot_flg desc";
+		String select="select * ";
+		return News.dao.paginate(page, size, select, sql,param.toArray());
+	}
+	
 	public News queryById(int id){
 		return News.dao.findFirst("select * from t_news where id = ?",id);
 	}

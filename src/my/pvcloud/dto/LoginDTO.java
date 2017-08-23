@@ -25,6 +25,9 @@ public class LoginDTO extends BaseDTO{
 		dto.setNickName(request.getParameter("nickName"));
 		dto.setSex(StringUtil.toInteger(request.getParameter("sex")));
 		dto.setStore(StringUtil.toInteger(request.getParameter("store")));
+		dto.setPageNum(StringUtil.toInteger(request.getParameter("pageNum")));
+		dto.setPageSize(StringUtil.toInteger(request.getParameter("pageSize")));
+		dto.setNewsId(StringUtil.toInteger(request.getParameter("newsId")));
 		return dto;
 	}
 	
@@ -38,7 +41,16 @@ public class LoginDTO extends BaseDTO{
 	private String nickName;
 	private int adminId;
 	private int store;
+	private int newsId;
 	
+	public int getNewsId() {
+		return newsId;
+	}
+
+	public void setNewsId(int newsId) {
+		this.newsId = newsId;
+	}
+
 	public int getStore() {
 		return store;
 	}

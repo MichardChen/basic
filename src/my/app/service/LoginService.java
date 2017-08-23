@@ -2,17 +2,28 @@ package my.app.service;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.jfinal.plugin.activerecord.Page;
+
 import my.core.constants.Constants;
 import my.core.model.AcceessToken;
 import my.core.model.Admin;
+import my.core.model.Carousel;
+import my.core.model.CodeMst;
 import my.core.model.Member;
+import my.core.model.News;
 import my.core.model.ReturnData;
 import my.core.model.VertifyCode;
 import my.core.tx.TxProxy;
+import my.core.vo.CarouselVO;
+import my.core.vo.NewsVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.MD5Util;
@@ -116,21 +127,37 @@ public class LoginService {
 		//保存用户
 		int id = Member.dao.saveMember(mobile, MD5Util.string2MD5(userPwd),sex,dto.getUserTypeCd());
 		if(id != 0){
+			Member m = Member.dao.queryMemberById(id);
+			Map<String, Object> map = new HashMap<>();
+			map.put("member", m);
 			VertifyCode.dao.updateVertifyCodeExpire(mobile, now);
-			//String token = TextUtil.generateUUID();
-			//AcceessToken.dao.saveToken(id, userTypeCd, token);
-			data.setCode(Constants.STATUS_CODE.SUCCESS);
-			JSONObject rt = new JSONObject();
-			//rt.put("token", token);
-			rt.put("userId", id);
-			data.setMessage("注册成功");
-			data.setData(rt);
+			//保存token
+			AcceessToken at = AcceessToken.dao.queryToken(id, Constants.USER_TYPE.USER_TYPE_CLIENT);
+			boolean tokensave = false;
+			if(at == null){
+				tokensave = AcceessToken.dao.saveToken(id, Constants.USER_TYPE.USER_TYPE_CLIENT, dto.getAccessToken());
+				if(tokensave){
+					data.setCode(Constants.STATUS_CODE.SUCCESS);
+					data.setMessage("注册成功");
+					data.setData(map);
+					return data;
+				}else{
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("注册失败");
+					return data;
+				}
+			}else{
+				AcceessToken.dao.updateToken(id, dto.getAccessToken());
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("注册成功");
+				data.setData(map);
+				return data;
+			}
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("注册失败");
 			return data;
 		}
-		
-		data.setCode(Constants.STATUS_CODE.FAIL);
-		data.setMessage("注册失败");
-		return data;
 	}
 	
 	//登录
@@ -170,7 +197,9 @@ public class LoginService {
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
 			data.setMessage("登录成功");
 		}
-		data.setData(member);
+		Map<String, Object> map = new HashMap<>();
+		map.put("member", member);
+		data.setData(map);
 		return data;
 	}
 	
@@ -207,6 +236,16 @@ public class LoginService {
 		Member member = Member.dao.queryMember(dto.getMobile());
 		String code = VertifyUtil.getVertifyCode();
 		ReturnData data = new ReturnData();
+		VertifyCode vc = VertifyCode.dao.queryVertifyCode(dto.getMobile());
+		if(vc != null){
+			Timestamp expireTime = vc.getTimestamp("expire_time");
+			Timestamp nowTime = DateUtil.getNowTimestamp();
+			if(expireTime.after(nowTime)){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("验证码已发送，10分钟内有效，请稍等接收");
+				return data;
+			}
+		}
 		if(member == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，您的手机号码还未注册");
@@ -344,4 +383,91 @@ public class LoginService {
 	public Member queryMember(String mobile,String userPwd){
 		return Member.dao.queryMember(mobile,userPwd);
 	}
+	
+	public ReturnData index(LoginDTO dto) throws Exception{
+		ReturnData data = new ReturnData();
+		List<Carousel> carousels = Carousel.dao.queryCarouselList(4, 1);
+		List<CarouselVO> vos = new ArrayList<CarouselVO>();
+		CarouselVO vo = null;
+		//查询轮播图
+		for(Carousel carousel : carousels){
+			 vo = new CarouselVO();
+			 vo.setImgUrl(carousel.getStr("img_url"));
+			 vo.setRealUrl(carousel.getStr("real_url"));
+			 vos.add(vo);
+		}
+		
+		//获取前四条资讯
+		Page<News> news = News.dao.queryByPage(1, 4);
+		List<NewsVO> newsVOs = new ArrayList<NewsVO>();
+		NewsVO nv = null;
+		for(News n : news.getList()){
+			nv = new NewsVO();
+			nv.setTitle(n.getStr("news_title"));
+			nv.setDate(DateUtil.format(n.getTimestamp("create_time"), "yyyy-MM-dd"));
+			nv.setHotFlg(n.getInt("hot_flg"));
+			nv.setImg(n.getStr("news_logo"));
+			CodeMst type = CodeMst.dao.queryCodestByCode(n.getStr("news_type_cd"));
+			if(type != null){
+				nv.setType(type.getStr("name"));
+			}
+			nv.setNewsId(n.getInt("id"));
+			newsVOs.add(nv);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("carousel", vos);
+		map.put("news", newsVOs);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");;
+		data.setData(map);
+		return data;
+	}
+	
+	//资讯列表
+	public ReturnData queryNewsList(LoginDTO dto) throws Exception{
+		
+		ReturnData data = new ReturnData();
+		//获取前四条资讯
+		Page<News> news = News.dao.queryByPage(dto.getPageNum(), dto.getPageSize());
+		List<NewsVO> newsVOs = new ArrayList<NewsVO>();
+		NewsVO nv = null;
+		for(News n : news.getList()){
+			nv = new NewsVO();
+			nv.setTitle(n.getStr("news_title"));
+			nv.setDate(DateUtil.format(n.getTimestamp("create_time"), "yyyy-MM-dd"));
+			nv.setHotFlg(n.getInt("hot_flg"));
+			nv.setImg(n.getStr("news_logo"));
+			CodeMst type = CodeMst.dao.queryCodestByCode(n.getStr("news_type_cd"));
+			if(type != null){
+				nv.setType(type.getStr("name"));
+			}
+			nv.setContent(n.getStr("content"));
+			nv.setNewsId(n.getInt("id"));
+			newsVOs.add(nv);
+		}
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		Map<String, Object> map = new HashMap<>();
+		map.put("news", newsVOs);
+		data.setData(map);
+		return data;
+	}
+	
+	//资讯详情
+	public ReturnData queryNewsDetail(LoginDTO dto) throws Exception{
+		ReturnData data = new ReturnData();
+		News news = News.dao.queryById(dto.getNewsId());
+		if(news == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，资讯不存在");
+		}else{
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("查询成功");
+			Map<String, Object> map = new HashMap<>();
+			map.put("content", news.getStr("content"));
+			data.setData(map);
+		}
+		return data;
+	}
+	
 }
