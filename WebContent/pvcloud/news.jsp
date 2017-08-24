@@ -24,8 +24,8 @@ function loadProject(data){
 		$(".modal-title").html("修改");
 	}
 	$.ajax({
-		url : "${CONTEXT_PATH}/newsInfo/alter",
-		data : {'custId':data},
+		url : "${CONTEXT_PATH}/newsInfo/addNews",
+		data : {},
 		dataType : "html",
 		success : function(result){
 			$('.modal-body').html(result);
@@ -199,7 +199,7 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">修改</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/custInfo/update" method="post">
+			<form action="${CONTEXT_PATH}/newsInfo/saveNews" method="post" enctype="multipart/form-data">
 				<div class="modal-body">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">

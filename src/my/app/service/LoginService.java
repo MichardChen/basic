@@ -269,12 +269,12 @@ public class LoginService {
 						data.setCode(Constants.STATUS_CODE.FAIL);
 						data.setMessage("验证码发送失败，请重新获取");
 					}else{
-						data.setCode(Constants.STATUS_CODE.FAIL);
+						data.setCode(Constants.STATUS_CODE.SUCCESS);
 						data.setMessage("获取验证码成功，十分钟内有效");
 					}
 					return data;
 				}else{
-					data.setCode(Constants.STATUS_CODE.SUCCESS);
+					data.setCode(Constants.STATUS_CODE.FAIL);
 					data.setMessage("获取验证码失败");
 					return data;
 				}
@@ -295,7 +295,7 @@ public class LoginService {
 					data.setCode(Constants.STATUS_CODE.FAIL);
 					data.setMessage("验证码发送失败，请重新获取");
 				}else{
-					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setCode(Constants.STATUS_CODE.SUCCESS);
 					data.setMessage("获取验证码成功，十分钟内有效");
 				}
 				return data;
@@ -417,6 +417,8 @@ public class LoginService {
 		Map<String, Object> map = new HashMap<>();
 		map.put("carousel", vos);
 		map.put("news", newsVOs);
+		Member member = Member.dao.queryMember(dto.getMobile());
+		map.put("member", member);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");;
 		data.setData(map);

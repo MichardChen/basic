@@ -440,4 +440,14 @@ public interface Constants {
 		public static final String SUPPLIER = "670002";
 		public static final String CART = "670003";
 	}
+	
+	public static interface HOST{
+		public static final String LOCALHOST = "http://192.168.1.131:88/icon/";
+		public static final String PRODUCT = "http://119.23.75.45:88/icon/";
+	}
+	
+	public static interface FILE_HOST{
+		public static final String LOCALHOST = "F:\\upload\\newsimages\\";
+		public static final String PRODUCT = "E:\\upload\\icon\\";
+	}
 }

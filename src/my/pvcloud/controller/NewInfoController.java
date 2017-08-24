@@ -1,15 +1,26 @@
 package my.pvcloud.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import org.huadalink.route.ControllerBind;
 
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.upload.UploadFile;
 
+import my.app.service.FileService;
+import my.core.constants.Constants;
 import my.core.model.News;
+import my.core.model.ReturnData;
 import my.pvcloud.service.NewsInfoService;
+import my.pvcloud.util.ImageTools;
+import my.pvcloud.util.ImageZipUtil;
 
 @ControllerBind(key = "/newsInfo", path = "/pvcloud")
 public class NewInfoController extends Controller {
@@ -122,6 +133,70 @@ public class NewInfoController extends Controller {
 		News custInfo = service.queryById(custId);
 		setAttr("custInfo", custInfo);
 		render("custInfoAlter.jsp");
+	}
+	
+	//增加资讯初始化
+	public void addNews(){
+		render("addNews.jsp");
+	}
+	
+	//保存资讯
+	public void saveNews(){
+		String newsTitle = getPara("newsTitle");
+		String newsTypeCd = getPara("newsTypeCd");
+		UploadFile uploadFile = getFile("file");
+		String content = getPara("content");
+		FileService fs=new FileService();
+		
+		//上传文件
+		if(uploadFile != null){
+			String fileName = uploadFile.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile.getFile();
+		    String uuid = UUID.randomUUID().toString();
+		    File t=new File(Constants.FILE_HOST.LOCALHOST+uuid+"."+names[1]);
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file)/2, ImageTools.getImgHeight(file)/2, 0.5f);
+		    file.delete();
+		}
+	}
+	
+	//上传文件
+	public void uploadFile(){
+		
+		UploadFile uploadFile = getFile("file");
+		FileService fs=new FileService();
+		
+		//上传文件
+		if(uploadFile != null){
+			String fileName = uploadFile.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile.getFile();
+		    String uuid = UUID.randomUUID().toString();
+		    File t=new File(Constants.FILE_HOST.LOCALHOST+uuid+"."+names[1]);
+		    String url = Constants.HOST.LOCALHOST+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file)/2, ImageTools.getImgHeight(file)/2, 0.5f);
+		    file.delete();
+		    ReturnData data = new ReturnData();
+		    Map<String, Object> map = new HashMap<>();
+		    map.put("imgUrl", url);
+		    map.put("imgName", uuid+"."+names[1]);
+		    data.setData(map);
+		    renderJson(data);
+		}
 	}
 	
 	/**
