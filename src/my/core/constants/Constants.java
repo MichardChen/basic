@@ -442,8 +442,8 @@ public interface Constants {
 	}
 	
 	public static interface HOST{
-		public static final String LOCALHOST = "http://192.168.1.131:88/icon/";
-		public static final String PRODUCT = "http://119.23.75.45:88/icon/";
+		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
+		public static final String PRODUCT = "http://119.23.75.45:82/newsimages/";
 	}
 	
 	public static interface FILE_HOST{

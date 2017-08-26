@@ -21,60 +21,32 @@ if(str!=''){
   alert(str);
 }
 $('#content').summernote({
-    height: 100, 
-    toolbar: [  
-              ['style', ['style']],
-              ['style', ['bold', 'italic', 'underline', 'clear']],  
-              ['fontsize', ['fontsize']],  
-              ['fontname',['fontname']],
-              ['color', ['color']],  
-              ['para', ['ul', 'ol', 'paragraph']],  
-              ['height', ['height']],  
-              ['table',['table']],
-              ['insert', ['picture','link']] ,
-              ['help',['help']]
-            ], 
-    onImageUpload: function(files, editor, $editable) {
-         sendFile(files,editor,$editable);
-        },
-    onblur: function(e) {
-        //$('.summernote').html("");
-        //$('#content').html($(this).code());
-        validateContent();
-    },
-    onfocus:function(e){
-        validateContent();
-    },
-    onChange: function(contents, $editable) {
-        validateContent();
-    },
-    bFullscreen:false,
-
-});
-function sendFile(file, editor, $editable) {
-    for(var i = 0;i < file.length;i++){
-        data = new FormData();
-        data.append("file", file[i]);
-        url = "newsInfo/uploadFile";
-        $.ajax({
-            data: data,
-            type: "POST",
-            url: url,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (msg) {
-                if(1 == msg.code){
-                    editor.insertImage($editable, msg.data.imgUrl);
-                }
-                else{
-                    bootbox.alert(msg.message);
-                }
-            }
-        });
-    }
-
-            };
+	 /* callbacks: { */
+        onImageUpload: function(files) {
+               // img = sendFile(files[0]);  
+            	//上传图片到服务器，使用了formData对象，至于兼容性...据说对低版本IE不太友好
+                var formData = new FormData();
+                formData.append('file',files[0]);
+                var url = "";
+                $.ajax({
+                  url : 'newsInfo/uploadFile', //后台文件上传接口
+                  type : 'POST',
+                  data : formData,
+                  processData : false,
+                  contentType : false,
+                  success : function(data) {
+                	  var temp = eval(data);
+                	   //editor.insertImage($editable, temp.data.imgUrl,"img");
+                	 //alert(temp.data.imgUrl);
+                	 $('#content').summernote('insertImage',temp.data.imgUrl,'lindkdk');
+                  },  
+                  error:function(){  
+                      alert("上传失败");  
+                  }  
+                });
+        }
+/* 	 } */
+	});
 </script>
 <div class="control-group">
 	<table class="table table-responsive">
