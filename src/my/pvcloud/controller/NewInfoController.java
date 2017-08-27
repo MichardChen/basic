@@ -1,7 +1,11 @@
 package my.pvcloud.controller;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,11 +20,16 @@ import com.jfinal.upload.UploadFile;
 
 import my.app.service.FileService;
 import my.core.constants.Constants;
+import my.core.model.Admin;
+import my.core.model.CodeMst;
 import my.core.model.News;
 import my.core.model.ReturnData;
+import my.core.model.User;
+import my.pvcloud.model.NewsModel;
 import my.pvcloud.service.NewsInfoService;
 import my.pvcloud.util.ImageTools;
 import my.pvcloud.util.ImageZipUtil;
+import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/newsInfo", path = "/pvcloud")
 public class NewInfoController extends Controller {
@@ -37,7 +46,39 @@ public class NewInfoController extends Controller {
 		removeSessionAttr("custInfo");
 		removeSessionAttr("custValue");
 		Page<News> newsList = service.queryByPage(page, size);
+		ArrayList<NewsModel> models = new ArrayList<>();
+		NewsModel model = null;
+		for(News news : newsList.getList()){
+			model = new NewsModel();
+			model.setId(news.getInt("id"));
+			model.setTitle(news.getStr("news_title"));
+			CodeMst type = CodeMst.dao.queryCodestByCode(news.getStr("news_type_cd"));
+			if(type != null){
+				model.setType(type.getStr("name"));
+			}else{
+				model.setType("");
+			}
+			
+			Integer status = (Integer)news.getInt("flg");
+			if(status == 1){
+				model.setStatus("正常");
+			}else{
+				model.setStatus("删除");
+			}
+			
+			model.setCreateTime(StringUtil.toString(news.getTimestamp("create_time")));
+			User user = User.dao.queryById(news.getInt("create_user"));
+			if(user != null){
+				model.setCreateUser(user.getStr("username"));
+			}else{
+				model.setCreateUser("");
+			}
+			model.setUrl(news.getStr("content_url"));
+			models.add(model);
+		}
+		
 		setAttr("newsList", newsList);
+		setAttr("sList", models);
 		render("news.jsp");
 	}
 	
@@ -100,7 +141,7 @@ public class NewInfoController extends Controller {
 			this.setSessionAttr("custValue", custValue);
 			
 			Integer page = getParaToInt(1);
-	        if (page==null || page==0) {
+	        if (page==null || page==0){
 	            page = 1;
 	        }
 			if(custInfo!=null){
@@ -142,19 +183,23 @@ public class NewInfoController extends Controller {
 	
 	//保存资讯
 	public void saveNews(){
+		//表单中有提交图片，要先获取图片
+		UploadFile uploadFile = getFile("newImg");
+		int hot = StringUtil.toInteger(getPara("hot"));
 		String newsTitle = getPara("newsTitle");
 		String newsTypeCd = getPara("newsTypeCd");
-		UploadFile uploadFile = getFile("file");
 		String content = getPara("content");
 		FileService fs=new FileService();
 		
+		String logo = "";
 		//上传文件
+		String uuid = UUID.randomUUID().toString();
 		if(uploadFile != null){
 			String fileName = uploadFile.getOriginalFileName();
 			String[] names = fileName.split("\\.");
 		    File file=uploadFile.getFile();
-		    String uuid = UUID.randomUUID().toString();
 		    File t=new File(Constants.FILE_HOST.LOCALHOST+uuid+"."+names[1]);
+		    logo = Constants.HOST.LOCALHOST+uuid+"."+names[1];
 		    try{
 		        t.createNewFile();
 		    }catch(IOException e){
@@ -162,9 +207,35 @@ public class NewInfoController extends Controller {
 		    }
 		    
 		    fs.fileChannelCopy(file, t);
-		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file)/2, ImageTools.getImgHeight(file)/2, 0.5f);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		}
+		//生成html文件
+		try {
+			StringBuilder sb = new StringBuilder();
+			FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.FILE+uuid+".html");
+			PrintStream printStream = new PrintStream(fos);
+			sb.append(content);
+			printStream.print(sb);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+        String contentUrl = Constants.HOST.FILE+uuid+".html";
+		//保存资讯
+		int ret = News.dao.saveNews(logo
+								   ,newsTitle
+								   ,newsTypeCd
+								   ,hot
+								   ,(Integer)getSessionAttr("agentId")
+								   ,0
+								   ,content
+								   ,contentUrl);
+		if(ret != 0){
+			setAttr("message","新增成功");
+		}else{
+			setAttr("message","新增失败");
+		}
+		index();
 	}
 	
 	//上传文件
@@ -188,7 +259,7 @@ public class NewInfoController extends Controller {
 		    }
 		    
 		    fs.fileChannelCopy(file, t);
-		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file)/2, ImageTools.getImgHeight(file)/2, 0.5f);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		    ReturnData data = new ReturnData();
 		    Map<String, Object> map = new HashMap<>();
@@ -253,4 +324,19 @@ public class NewInfoController extends Controller {
 		index();
 	}
 
+	//推送
+	public void push(){
+		try{
+			int newsId = getParaToInt("newsId");
+			int ret = service.updateFlg(newsId, 1);
+			if(ret==0){
+				setAttr("message", "发布成功");
+			}else{
+				setAttr("message", "发布失败");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		index();
+	}
 }

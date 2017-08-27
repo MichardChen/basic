@@ -9,6 +9,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.pvcloud.model.Member;
 import my.pvcloud.util.DateUtil;
 
 @TableBind(table = "t_news", pk = "id")
@@ -17,13 +18,9 @@ public class News extends Model<News> {
 	public static final News dao = new News();
 
 	public Page<News> queryByPage(int page,int size){
-		List<Object> param=new ArrayList<Object>();
-		StringBuffer strBuf=new StringBuffer();
-		strBuf.append(" and flg=?");
-		param.add("1");
-		String sql=" from t_news where 1=1"+strBuf+" order by create_time desc";
+		String sql=" from t_news order by create_time desc";
 		String select="select * ";
-		return News.dao.paginate(page, size, select, sql,param.toArray());
+		return News.dao.paginate(page, size, select, sql);
 	}
 	
 	public Page<News> queryNews(int page,int size){
@@ -60,5 +57,11 @@ public class News extends Model<News> {
 		}else{
 			return 0;
 		}
+	}
+	
+	public int saveNews(String newsLogo,String newsTitle,String newsTypeCd,int hotFlg,int createUser,int flg,String content,String url){
+		News news = new News().set("news_logo", newsLogo).set("news_title", newsTitle).set("content_url", url).set("news_type_cd", newsTypeCd).set("hot_flg",hotFlg).set("create_user",createUser).set("flg",flg).set("content",content).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp());
+		boolean isSave = news.save();
+		return news.getInt("id");
 	}
 }

@@ -6,49 +6,75 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<meta charset="utf-8">
 <title>添加资讯</title>
-<!-- 富文本编辑器 -->
-<link href="<%=request.getContextPath()%>/assets/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="<%=request.getContextPath()%>/assets/summernote/summernote/summernote.css" type="text/css" rel="stylesheet" />
-<link href="<%=request.getContextPath()%>/assets/summernote/font-awesome/css/font-awesome.min.css" type="text/css" rel="stylesheet" />
-<script src="<%=request.getContextPath()%>/assets/summernote/jquery-2.1.1.min.js"></script>
-<script src="<%=request.getContextPath()%>/assets/js/bootstrap.min.js"></script> 
-<script src="<%=request.getContextPath()%>/assets/summernote/summernote/summernote.min.js"></script>
-<script src="<%=request.getContextPath()%>/assets/summernote/summernote-zh-CN.js"></script>
-<script type="text/javascript">
-var str='${message}';
-if(str!=''){
-  alert(str);
-}
-$('#content').summernote({
-	 /* callbacks: { */
-        onImageUpload: function(files) {
-               // img = sendFile(files[0]);  
-            	//上传图片到服务器，使用了formData对象，至于兼容性...据说对低版本IE不太友好
-                var formData = new FormData();
-                formData.append('file',files[0]);
-                var url = "";
-                $.ajax({
-                  url : 'newsInfo/uploadFile', //后台文件上传接口
-                  type : 'POST',
-                  data : formData,
-                  processData : false,
-                  contentType : false,
-                  success : function(data) {
-                	  var temp = eval(data);
-                	   //editor.insertImage($editable, temp.data.imgUrl,"img");
-                	 //alert(temp.data.imgUrl);
-                	 $('#content').summernote('insertImage',temp.data.imgUrl,'lindkdk');
-                  },  
-                  error:function(){  
-                      alert("上传失败");  
-                  }  
-                });
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/summernote/css/bootstrap.css">
+<link href="<%=request.getContextPath()%>/summernote/dist/summernote.css" rel="stylesheet"/>
+<script src="<%=request.getContextPath()%>/summernote/js/jquery.min.js"></script>
+<script src="<%=request.getContextPath()%>/summernote/js/bootstrap.min.js"></script>
+<script src="<%=request.getContextPath()%>/summernote/dist/summernote.js"></script>
+<script src="<%=request.getContextPath()%>/summernote/dist/lang/summernote-zh-CN.js"></script>    <!-- 中文-->
+<style>
+        .m {
+            width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
-/* 	 } */
-	});
-</script>
-<div class="control-group">
+</style>
+<script>
+    var str='${message}';
+    if(str!=''){
+      alert(str);
+    }
+    $(function () {
+            $('.summernote').summernote({
+                height: 200,
+                tabsize: 2,
+                lang: 'zh-CN',
+                codemirror: {
+                    theme: 'monokai'
+                },
+                focus: true,
+                callbacks: {
+                    onImageUpload: function (files, editor, $editable) {
+                        sendFile(files);
+                    }
+                }
+            });
+        });
+        // 选择图片时把图片上传到服务器再读取服务器指定的存储位置显示在富文本区域内
+        function sendFile(files, editor, $editable) {
+            var $files = $(files);
+            $files.each(function () {
+                var file = this;
+                // FormData，新的form表单封装，具体可百度，但其实用法很简单，如下
+                var data = new FormData();
+                // 将文件加入到file中，后端可获得到参数名为“file”
+                data.append("file", file);
+                // ajax上传
+                $.ajax({
+                    async: false, // 设置同步
+                    data: data,
+                    type: "POST",
+                    url: "newsInfo/uploadFile",//图片上传的url（指定action），返回的是图片上传后的路径，http格式
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+
+                    // 成功时调用方法，后端返回json数据
+                    success: function (data) {
+                    	var temp = eval(data);
+                          $('.summernote').summernote('insertImage',temp.data.imgUrl);
+                    },
+                    // ajax请求失败时处理
+                    error: function () {
+                        alert("上传失败");
+                    }
+                });
+            });
+        }
+    </script>
+<div class="m">
 	<table class="table table-responsive">
 		<tr>
 			<td>资讯标题</td>
@@ -57,7 +83,7 @@ $('#content').summernote({
 		<tr>
 			<td>资讯类型</td>
 			<td>
-						<select style="height:30px;width:120px;" name="newsTypeCd">
+						<select style="height:30px;width:120px;" name="newsTypeCd" id="newsTypeCd">
 							<option value="030001">平台通知</option>
 							<option value="030002">茶品资讯</option>
 							<option value="030003">活动专题</option>
@@ -66,21 +92,28 @@ $('#content').summernote({
 						</select>
 		</tr>
 		<tr>
+			<td>是否热门</td>
+			<td>
+						<select style="height:30px;width:120px;" name="hot" id="hot">
+							<option value="1">是</option>
+							<option value="0">否</option>
+						</select>
+		</tr>
+		<tr>
 			<td>资讯封面图片</td>
 			<td>
-					<input type="file" name="img"/>
+					<input type="file" name="newImg"/>
 			</td>
 		</tr>
 		<tr>
 					<td>资讯内容</td>
 					<td>
-							<textarea id="content" name="content">
-							</textarea>
 					</td>
 		</tr>
 	</table>
+    <div>
+    		<textarea id="content" name="content" class="summernote">
+			</textarea>
+    </div>
 </div>
-						
-					
-				
-			
+

@@ -54,7 +54,7 @@ public class LoginController extends Controller {
 			code = "200";
 			msg = "登录成功";
 			User user=service.queryByUserName(userName, password);
-			setSessionAttr("agentId", user.get("agent_id"));
+			setSessionAttr("agentId", user.get("user_id"));
 		} catch (IncorrectCaptchaException e) {
 			msg = "验证码错误!";
 		} catch (UnknownAccountException e) {

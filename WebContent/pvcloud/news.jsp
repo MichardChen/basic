@@ -146,12 +146,11 @@ td{
     				<th>资讯标题</th>
     				<th>资讯类型</th>
     				<th>创建者</th>
-    				<th>创建时间</th>
     				<th>状态</th>
+    				<th>创建时间</th>
     				<th>操作</th>
     			</tr>
     		</thead>
-    		
     		<tbody>
     				<c:if test="${newsList.totalRow==0 }">
 			    		<tr>
@@ -159,17 +158,17 @@ td{
 			    		</tr>
 		    		</c:if>
 		    		<c:if test="${newsList.totalRow>0 }">
-		    			<c:forEach var="newsList" items="${newsList.list}">	
+		    			<c:forEach var="s" items="${sList}">	
 		    				<tr class="bOrder">
-		    					<td style="display:none;">${newsList.news_title }</td>
-		    					<td>${newsList.hot_flg }</td>
-		    					<td>${newsList.news_title }</td>
-		    					<td>${newsList.create_user }</td>
-		    					<td><fmt:formatDate value="${newsList.create_time }" pattern="yyyy-MM-dd hh:mm:ss"/></td>
-		    					<td><fmt:formatDate value="${newsList.update_time }" pattern="yyyy-MM-dd hh:mm:ss"/></td>
+		    					<td>${s.title }</td>
+		    					<td>${s.type }</td>
+		    					<td>${s.createUser }</td>
+		    					<td>${s.status }</td>
+		    					<td>${s.createTime}</td>
 		    					<td>
-		    						<input type="button" value="修改" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${newsList.id})"/>
-		    						<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/newsInfo/del?newsId=${newsList.id}';}"/>
+		    						<input type="button" value="推送" class="ys3" data-toggle="modal" data-target="#myModal" onclick="if(confirm('确认要发布这条资讯?')){window.location='${CONTEXT_PATH}/newsInfo/push?newsId=${s.id}';}"/>
+		    						<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/newsInfo/del?newsId=${s.id}';}"/>
+		    						<a href="${s.url}" target="_blank"><input type="button" value="查看" class="ys3"/></a>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
