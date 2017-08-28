@@ -3,6 +3,7 @@ package my.core.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.shiro.ldap.UnsupportedAuthenticationMechanismException;
 import org.huadalink.plugin.tablebind.TableBind;
 
 import com.jfinal.plugin.activerecord.Db;
@@ -25,8 +26,8 @@ public class Member extends Model<Member> {
 		return Member.dao.findFirst("select * from t_member where id=?",id);
 	}
 	
-	public int saveMember(String mobile,String userPwd,int sex,String userTypeCd){
-		Member member = new Member().set("mobile", mobile).set("userPwd", userPwd).set("member_grade_cd", userTypeCd).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex);
+	public int saveMember(String mobile,String userPwd,int sex,String userTypeCd,String status){
+		Member member = new Member().set("mobile", mobile).set("userPwd", userPwd).set("member_grade_cd", userTypeCd).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex).set("status", status);
 		boolean isSave = member.save();
 		return member.getInt("id");
 	}
@@ -85,5 +86,25 @@ public class Member extends Model<Member> {
 			return Db.update("update t_member set name='"+userName+"',sex="+sex+" where id="+userId);
 		}
 	}
+	
+	public int updateIcon(int userId,String icon){
+		return Db.update("update t_member set icon='"+icon+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
+	}
+	
+	public int updateNickName(int userId,String nickName){
+		return Db.update("update t_member set nick_name='"+nickName+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
+	}
+	
+	public int updateCertification(int userId,String name,String cardNo,String status){
+		return Db.update("update t_member set name='"+name+"',card_no='"+cardNo+"',status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
+	}
+	
+	public int updateQQ(int userId,String qq){
+		return Db.update("update t_member set qq='"+qq+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
+	} 
+	
+	public int updateWX(int userId,String wx){
+		return Db.update("update t_member set wx='"+wx+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
+	} 
 }
 

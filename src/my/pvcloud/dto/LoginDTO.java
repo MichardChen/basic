@@ -28,6 +28,18 @@ public class LoginDTO extends BaseDTO{
 		dto.setPageNum(StringUtil.toInteger(request.getParameter("pageNum")));
 		dto.setPageSize(StringUtil.toInteger(request.getParameter("pageSize")));
 		dto.setNewsId(StringUtil.toInteger(request.getParameter("newsId")));
+		dto.setDeviceToken(request.getParameter("deviceToken"));
+		dto.setQq(request.getParameter("qq"));
+		dto.setWx(request.getParameter("wx"));
+		dto.setCardNo(request.getParameter("cardNo"));
+		dto.setProvinceId(StringUtil.toInteger(request.getParameter("provinceId")));
+		dto.setCityId(StringUtil.toInteger(request.getParameter("cityId")));
+		dto.setDistrictId(StringUtil.toInteger(request.getParameter("districtId")));
+		dto.setReceiveMan(request.getParameter("receiveMan"));
+		dto.setLinkMan(request.getParameter("linkMan"));
+		dto.setAddress(request.getParameter("address"));
+		dto.setId(StringUtil.toInteger(request.getParameter("id")));
+		dto.setFlg(StringUtil.toInteger(request.getParameter("flg")));
 		return dto;
 	}
 	
@@ -42,7 +54,115 @@ public class LoginDTO extends BaseDTO{
 	private int adminId;
 	private int store;
 	private int newsId;
+	private String deviceToken;
+	private String icon;
+	private String qq;
+	private String wx;
+	private String cardNo;
+	private int provinceId;
+	private int cityId;
+	private int districtId;
+	private String receiveMan;
+	private String linkMan;
+	private String address;
+	private int id;
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getLinkMan() {
+		return linkMan;
+	}
+
+	public void setLinkMan(String linkMan) {
+		this.linkMan = linkMan;
+	}
+
+	public String getReceiveMan() {
+		return receiveMan;
+	}
+
+	public void setReceiveMan(String receiveMan) {
+		this.receiveMan = receiveMan;
+	}
+
+	public int getProvinceId() {
+		return provinceId;
+	}
+
+	public int getCityId() {
+		return cityId;
+	}
+
+	public int getDistrictId() {
+		return districtId;
+	}
+
+	public void setProvinceId(int provinceId) {
+		this.provinceId = provinceId;
+	}
+
+	public void setCityId(int cityId) {
+		this.cityId = cityId;
+	}
+
+	public void setDistrictId(int districtId) {
+		this.districtId = districtId;
+	}
+
+	public String getQq() {
+		return qq;
+	}
+
+	public String getWx() {
+		return wx;
+	}
+
+	public String getCardNo() {
+		return cardNo;
+	}
+
+	public void setQq(String qq) {
+		this.qq = qq;
+	}
+
+	public void setWx(String wx) {
+		this.wx = wx;
+	}
+
+	public void setCardNo(String cardNo) {
+		this.cardNo = cardNo;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public String getDeviceToken() {
+		return deviceToken;
+	}
+
+	public void setDeviceToken(String deviceToken) {
+		this.deviceToken = deviceToken;
+	}
+
 	public int getNewsId() {
 		return newsId;
 	}

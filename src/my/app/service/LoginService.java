@@ -7,10 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.catalina.util.DateTool;
+import org.apache.commons.lang.Validate;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jfinal.plugin.activerecord.Page;
+import com.sun.crypto.provider.RSACipher;
 
 import my.core.constants.Constants;
 import my.core.model.AcceessToken;
@@ -19,9 +22,11 @@ import my.core.model.Carousel;
 import my.core.model.CodeMst;
 import my.core.model.Member;
 import my.core.model.News;
+import my.core.model.ReceiveAddress;
 import my.core.model.ReturnData;
 import my.core.model.VertifyCode;
 import my.core.tx.TxProxy;
+import my.core.vo.AddressVO;
 import my.core.vo.CarouselVO;
 import my.core.vo.NewsVO;
 import my.pvcloud.dto.LoginDTO;
@@ -29,6 +34,7 @@ import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.MD5Util;
 import my.pvcloud.util.SMSUtil;
 import my.pvcloud.util.StringUtil;
+import my.pvcloud.util.TextUtil;
 import my.pvcloud.util.VertifyUtil;
 
 public class LoginService {
@@ -89,6 +95,7 @@ public class LoginService {
 		String userPwd = dto.getUserPwd();
 		String code = dto.getCode();
 		int sex = dto.getSex();
+		String token = TextUtil.generateUUID();
 		//获取验证码有效时间
 		VertifyCode vCode = VertifyCode.dao.queryVertifyCode(mobile);
 		Timestamp expireTime = vCode == null ? null : (Timestamp)vCode.get("expire_time");
@@ -125,17 +132,18 @@ public class LoginService {
 		}
 		
 		//保存用户
-		int id = Member.dao.saveMember(mobile, MD5Util.string2MD5(userPwd),sex,dto.getUserTypeCd());
+		int id = Member.dao.saveMember(mobile, MD5Util.string2MD5(userPwd),sex,dto.getUserTypeCd(),Constants.MEMBER_STATUS.NOT_CERTIFICATED);
 		if(id != 0){
 			Member m = Member.dao.queryMemberById(id);
 			Map<String, Object> map = new HashMap<>();
 			map.put("member", m);
+			map.put("accessToken", token);
 			VertifyCode.dao.updateVertifyCodeExpire(mobile, now);
 			//保存token
 			AcceessToken at = AcceessToken.dao.queryToken(id, Constants.USER_TYPE.USER_TYPE_CLIENT);
 			boolean tokensave = false;
 			if(at == null){
-				tokensave = AcceessToken.dao.saveToken(id, Constants.USER_TYPE.USER_TYPE_CLIENT, dto.getAccessToken());
+				tokensave = AcceessToken.dao.saveToken(id, Constants.USER_TYPE.USER_TYPE_CLIENT, token);
 				if(tokensave){
 					data.setCode(Constants.STATUS_CODE.SUCCESS);
 					data.setMessage("注册成功");
@@ -147,7 +155,7 @@ public class LoginService {
 					return data;
 				}
 			}else{
-				AcceessToken.dao.updateToken(id, dto.getAccessToken());
+				AcceessToken.dao.updateToken(id, token);
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("注册成功");
 				data.setData(map);
@@ -183,8 +191,9 @@ public class LoginService {
 		int userId = member.getInt("id");
 		AcceessToken at = AcceessToken.dao.queryToken(userId, userType);
 		boolean tokensave = false;
+		String token = TextUtil.generateUUID();
 		if(at == null){
-			tokensave = AcceessToken.dao.saveToken(userId, userType, deviceToken);
+			tokensave = AcceessToken.dao.saveToken(userId, userType, token);
 			if(tokensave){
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("登录成功");
@@ -193,12 +202,13 @@ public class LoginService {
 				data.setMessage("登录失败");
 			}
 		}else{
-			at.updateToken(userId,deviceToken);
+			at.updateToken(userId,token);
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
 			data.setMessage("登录成功");
 		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("member", member);
+		map.put("accessToken", token);
 		data.setData(map);
 		return data;
 	}
@@ -443,8 +453,9 @@ public class LoginService {
 			if(type != null){
 				nv.setType(type.getStr("name"));
 			}
-			nv.setContent(n.getStr("content"));
+			//nv.setContent(n.getStr("content"));
 			nv.setNewsId(n.getInt("id"));
+			nv.setShareUrl(n.getStr("content_url"));
 			newsVOs.add(nv);
 		}
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
@@ -472,4 +483,196 @@ public class LoginService {
 		return data;
 	}
 	
+	//上传头像
+	public ReturnData updateIcon(int userId,String icon){
+		
+		ReturnData data = new ReturnData();
+		int ret = Member.dao.updateIcon(userId, icon);
+		if(ret == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("保存失败");
+		}else{
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("保存成功");
+		}
+		return data;
+	}
+	
+	//修改qq
+	public ReturnData updateQQ(int userId,String qq){
+		
+		ReturnData data = new ReturnData();
+		int ret = Member.dao.updateQQ(userId, qq);
+		if(ret == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("保存失败");
+		}else{
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("保存成功");
+		}
+		return data;
+	}
+		
+	//修改微信
+	public ReturnData updateWX(int userId,String wx){
+		
+		ReturnData data = new ReturnData();
+		int ret = Member.dao.updateWX(userId, wx);
+		if(ret == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("保存失败");
+		}else{
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("保存成功");
+		}
+		return data;
+	}
+	
+	//修改昵称
+	public ReturnData updateNickName(int userId,String nickName){
+
+		ReturnData data = new ReturnData();
+		int ret = Member.dao.updateNickName(userId, nickName);
+		if(ret == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("保存失败");
+		}else{
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("保存成功");
+		}
+			return data;
+	}
+
+	//认证
+	public ReturnData updateCertificate(LoginDTO dto){
+			
+		ReturnData data = new ReturnData();
+		int ret = Member.dao.updateCertification(dto.getUserId()
+												    ,dto.getUserName()
+												    ,dto.getCardNo()
+												    ,Constants.MEMBER_STATUS.CERTIFICATED);
+		if(ret == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("保存失败");
+		}else{
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("保存成功");
+		}
+		return data;
+	}
+	
+	//查询邮寄地址
+	public ReturnData queryMemberAddressList(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		Page<ReceiveAddress> pages = ReceiveAddress.dao.queryByPage(dto.getPageSize()
+																   ,dto.getPageNum()
+																   ,dto.getUserId()
+																   ,Constants.COMMON_STATUS.NORMAL);
+		List<AddressVO> vos = new ArrayList<>();
+		List<ReceiveAddress> list = pages.getList();
+		AddressVO vs = null;
+		for(ReceiveAddress ra : list){
+			vs = new AddressVO();
+			vs.setAddress(ra.getStr("address"));
+			vs.setAddressId(ra.getInt("id"));
+			vs.setDefaultFlg(ra.getInt("default_flg"));
+			vs.setLinkTel(ra.getStr("mobile"));
+			vs.setLinkMan(ra.getStr("receiveman_name"));
+			vos.add(vs);
+		}
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		Map<String, Object> map = new HashMap<>();
+		map.put("address", vos);
+		data.setData(map);
+		return data;
+	}
+	
+	//保存收货地址
+	public ReturnData saveAddress(LoginDTO dto){
+		
+		ReturnData data = new ReturnData();
+		ReceiveAddress ra = new ReceiveAddress();
+		ra.set("receiveman_name", dto.getLinkMan());
+		ra.set("mobile", dto.getMobile());
+		ra.set("province_id", dto.getProvinceId());
+		ra.set("city_id", dto.getCityId());
+		ra.set("district_id", dto.getDistrictId());
+		ra.set("address", dto.getAddress());
+		ra.set("status", Constants.COMMON_STATUS.NORMAL);
+		ra.set("default_flg", dto.getFlg());
+		ra.set("member_id", dto.getUserId());
+		ra.set("create_time", DateUtil.getNowTimestamp());
+		ra.set("update_time", DateUtil.getNowTimestamp());
+		boolean save = ReceiveAddress.dao.saveInfo(ra);
+		if(save){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("保存成功");
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("保存失败");
+		}
+		return data;
+	}
+	
+	//修改收货地址
+	public ReturnData updateAddress(LoginDTO dto){
+
+		ReturnData data = new ReturnData();
+		ReceiveAddress ra = new ReceiveAddress();
+		ra.set("receiveman_name", dto.getLinkMan());
+		ra.set("mobile", dto.getMobile());
+		ra.set("province_id", dto.getProvinceId());
+		ra.set("city_id", dto.getCityId());
+		ra.set("district_id", dto.getDistrictId());
+		ra.set("address", dto.getAddress());
+		ra.set("status", Constants.COMMON_STATUS.NORMAL);
+		ra.set("default_flg", dto.getFlg());
+		ra.set("member_id", dto.getUserId());
+		ra.set("update_time", DateUtil.getNowTimestamp());
+		ra.set("id", dto.getId());
+		boolean save = ReceiveAddress.dao.updateInfo(ra);
+		if(save){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("修改成功");
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("修改失败");
+		}
+		return data;
+	}
+	
+	//查询收货地址
+	public ReturnData queryAddressById(LoginDTO dto){
+
+		ReturnData data = new ReturnData();
+		ReceiveAddress ra = ReceiveAddress.dao.queryById(dto.getId());
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		Map<String, Object> map = new HashMap<>();
+		map.put("address", ra);
+		data.setData(map);
+		return data;
+	}
+	
+	//删除收货地址
+	public ReturnData deleteAddressById(LoginDTO dto){
+		
+		ReturnData data = new ReturnData();
+		
+		ReceiveAddress ra = new ReceiveAddress();
+		ra.set("update_time", DateUtil.getNowTimestamp());
+		ra.set("id", dto.getId());
+		ra.set("status", Constants.COMMON_STATUS.DELETE);
+		
+		boolean deleteFlg = ReceiveAddress.dao.updateInfo(ra);
+		if(deleteFlg){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("删除成功");
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("删除失败");
+		}
+		return data;
+	}
 }

@@ -1,5 +1,9 @@
 package my.core.constants;
 
+import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
+
+import sun.net.www.content.text.plain;
+
 /**
  * 系统常量
  * @author Chen Dang
@@ -444,12 +448,22 @@ public interface Constants {
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
 		public static final String FILE = "http://192.168.1.131:82/file/";
-		public static final String PRODUCT = "http://119.23.75.45:82/newsimages/";
+		public static final String ICON = "http://119.23.75.45:82/icon/";
 	}
 	
 	public static interface FILE_HOST{
 		public static final String LOCALHOST = "F:\\upload\\newsimages\\";
 		public static final String FILE = "F:\\upload\\file\\";
-		public static final String PRODUCT = "E:\\upload\\icon\\";
+		public static final String ICON = "E:\\upload\\icon\\";
+	}
+	
+	public static interface MEMBER_STATUS{
+		public static final String CERTIFICATED = "040001";
+		public static final String NOT_CERTIFICATED = "040002";
+	}
+	
+	public static interface COMMON_STATUS{
+		public static final String DELETE = "050001";
+		public static final String NORMAL = "050002";
 	}
 }

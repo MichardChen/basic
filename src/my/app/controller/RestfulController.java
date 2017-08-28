@@ -1,7 +1,10 @@
 package my.app.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.el.ArrayELResolver;
 
@@ -19,7 +22,9 @@ import org.json.JSONObject;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
+import com.jfinal.upload.UploadFile;
 
+import my.app.service.FileService;
 import my.app.service.LoginService;
 import my.app.service.RestService;
 import my.core.constants.Constants;
@@ -29,6 +34,8 @@ import my.core.model.ReturnData;
 import my.core.model.User;
 import my.pvcloud.dto.IndexDTO;
 import my.pvcloud.dto.LoginDTO;
+import my.pvcloud.util.ImageTools;
+import my.pvcloud.util.ImageZipUtil;
 import my.pvcloud.util.MD5Util;
 import my.pvcloud.util.StringUtil;
 import my.pvcloud.util.VertifyUtil;
@@ -121,5 +128,89 @@ public class RestfulController extends Controller{
 	public void queryNewsContent() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryNewsDetail(dto));
+	}
+	
+	//上传头像
+	public void uploadIcon() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		//表单中有提交图片，要先获取图片
+		UploadFile uploadFile = getFile("icon");
+		FileService fs=new FileService();
+		
+		String logo = "";
+		//上传文件
+		String uuid = UUID.randomUUID().toString();
+		if(uploadFile != null){
+			String fileName = uploadFile.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile.getFile();
+		    File t=new File(Constants.FILE_HOST.ICON+uuid+"."+names[1]);
+		    logo = Constants.HOST.ICON+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		}
+			
+		renderJson(service.updateIcon(dto.getUserId(), logo));
+	}
+	
+	//修改qq
+	public void updateQQ() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.updateQQ(dto.getUserId(), dto.getQq()));
+	}
+	
+	//修改微信
+	public void updateWX() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.updateWX(dto.getUserId(), dto.getWx()));
+	}
+	
+	//修改昵称
+	public void updateNickName() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.updateNickName(dto.getUserId(), dto.getNickName()));
+	}
+	
+	//认证
+	public void updateCertificated() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.updateCertificate(dto));
+	}
+	
+	//收货地址列表
+	public void queryMemberAddressList(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryMemberAddressList(dto));
+	}
+	
+	//添加收货地址
+	public void saveAddress(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.saveAddress(dto));
+	}
+	
+	//修改收货地址
+	public void updateAddress(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.updateAddress(dto));
+	}
+	
+	//查找收货地址
+	public void queryAddressById(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryAddressById(dto));
+	}
+	
+	//删除收货地址
+	public void queryAddress(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryAddressById(dto));
 	}
 }
