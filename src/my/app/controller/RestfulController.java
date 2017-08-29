@@ -209,8 +209,8 @@ public class RestfulController extends Controller{
 	}
 	
 	//删除收货地址
-	public void queryAddress(){
+	public void deleteAddress(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
-		renderJson(service.queryAddressById(dto));
+		renderJson(service.deleteAddressById(dto));
 	}
 }

@@ -447,12 +447,14 @@ public interface Constants {
 	
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
+		public static final String TEA = "http://192.168.1.131:82/tea/";
 		public static final String FILE = "http://192.168.1.131:82/file/";
 		public static final String ICON = "http://119.23.75.45:82/icon/";
 	}
 	
 	public static interface FILE_HOST{
 		public static final String LOCALHOST = "F:\\upload\\newsimages\\";
+		public static final String TEA = "F:\\upload\\tea\\";
 		public static final String FILE = "F:\\upload\\file\\";
 		public static final String ICON = "E:\\upload\\icon\\";
 	}

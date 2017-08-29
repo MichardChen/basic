@@ -5,8 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -20,74 +20,63 @@ import com.jfinal.upload.UploadFile;
 
 import my.app.service.FileService;
 import my.core.constants.Constants;
-import my.core.model.Admin;
 import my.core.model.CodeMst;
-import my.core.model.News;
 import my.core.model.ReturnData;
-import my.core.model.User;
-import my.pvcloud.model.NewsModel;
-import my.pvcloud.service.NewsInfoService;
+import my.core.model.Tea;
+import my.pvcloud.model.TeaModel;
+import my.pvcloud.service.TeaService;
+import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.ImageTools;
 import my.pvcloud.util.ImageZipUtil;
 import my.pvcloud.util.StringUtil;
 
-@ControllerBind(key = "/newsInfo", path = "/pvcloud")
-public class NewInfoController extends Controller {
+@ControllerBind(key = "/teaInfo", path = "/pvcloud")
+public class TeaInfoController extends Controller {
 
-	NewsInfoService service = Enhancer.enhance(NewsInfoService.class);
+	TeaService service = Enhancer.enhance(TeaService.class);
 	
 	int page=1;
 	int size=10;
 	
 	/**
-	 * 用户建档
+	 * 茶列表
 	 */
 	public void index(){
+		
 		removeSessionAttr("custInfo");
 		removeSessionAttr("custValue");
-		Page<News> newsList = service.queryByPage(page, size);
-		ArrayList<NewsModel> models = new ArrayList<>();
-		NewsModel model = null;
-		for(News news : newsList.getList()){
-			model = new NewsModel();
-			model.setId(news.getInt("id"));
-			model.setTitle(news.getStr("news_title"));
-			CodeMst type = CodeMst.dao.queryCodestByCode(news.getStr("news_type_cd"));
+		Page<Tea> list = service.queryByPage(page, size);
+		ArrayList<TeaModel> models = new ArrayList<>();
+		TeaModel model = null;
+		for(Tea tea : list.getList()){
+			model = new TeaModel();
+			model.setId(tea.getInt("id"));
+			model.setName(tea.getStr("tea_title"));
+			model.setPrice(tea.getBigDecimal("tea_price"));
+			model.setUrl(tea.getStr("desc_url"));
+			model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
+			CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
 			if(type != null){
 				model.setType(type.getStr("name"));
-			}else{
-				model.setType("");
 			}
-			
-			Integer status = (Integer)news.getInt("flg");
-			model.setFlg(status);
-			if(status == 1){
+			model.setFlg(tea.getInt("flg"));
+			if(tea.getInt("flg")==1){
 				model.setStatus("正常");
 			}else{
-				model.setStatus("删除");
+				model.setStatus("已删除");
 			}
-			
-			model.setCreateTime(StringUtil.toString(news.getTimestamp("create_time")));
-			User user = User.dao.queryById(news.getInt("create_user"));
-			if(user != null){
-				model.setCreateUser(user.getStr("username"));
-			}else{
-				model.setCreateUser("");
-			}
-			model.setUrl(news.getStr("content_url"));
 			models.add(model);
 		}
-		
-		setAttr("newsList", newsList);
+		setAttr("teaList", list);
 		setAttr("sList", models);
-		render("news.jsp");
+		render("teas.jsp");
 	}
 	
 	/**
 	 * 模糊查询(文本框)
 	 */
 	public void queryByCondition(){
-		try {
+		/*try {
 			String ccustInfo = getSessionAttr("custInfo");
 			String ccustValue = getSessionAttr("custValue");
 			
@@ -124,14 +113,14 @@ public class NewInfoController extends Controller {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		render("custInfo.jsp");
+		render("custInfo.jsp");*/
 	}
 	
 	/**
 	 * 模糊查询分页
 	 */
 	public void queryByConditionByPage(){
-		try {
+		/*try {
 			
 			String custInfo=getSessionAttr("custInfo");
 			String custValue=getSessionAttr("custValue");
@@ -160,35 +149,35 @@ public class NewInfoController extends Controller {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		render("custInfo.jsp");
+		render("custInfo.jsp");*/
 	}
 	
 	/**
 	 *新增/修改弹窗
 	 */
 	public void alter(){
-		String id = getPara("custId");
-		int custId = 0;
+		String id = getPara("teaId");
+		int teaId = 0;
 		if(!("").equals(id) && id!=null){
-			custId = getParaToInt("custId");
+			teaId = getParaToInt("teaId");
 		}
-		News custInfo = service.queryById(custId);
-		setAttr("custInfo", custInfo);
+		Tea teaInfo = service.queryById(teaId);
+		setAttr("teaInfo", teaInfo);
 		render("custInfoAlter.jsp");
 	}
 	
 	//增加资讯初始化
-	public void addNews(){
-		render("addNews.jsp");
+	public void addTea(){
+		render("addTea.jsp");
 	}
 	
-	//保存资讯
-	public void saveNews(){
+	//保存茶叶
+	public void saveTea(){
 		//表单中有提交图片，要先获取图片
-		UploadFile uploadFile = getFile("newImg");
-		int hot = StringUtil.toInteger(getPara("hot"));
-		String newsTitle = getPara("newsTitle");
-		String newsTypeCd = getPara("newsTypeCd");
+		UploadFile uploadFile = getFile("coverImg");
+		String title = getPara("title");
+		BigDecimal price = StringUtil.toBigDecimal(getPara("price"));
+		String typeCd = getPara("typeCd");
 		String content = getPara("content");
 		FileService fs=new FileService();
 		
@@ -199,8 +188,8 @@ public class NewInfoController extends Controller {
 			String fileName = uploadFile.getOriginalFileName();
 			String[] names = fileName.split("\\.");
 		    File file=uploadFile.getFile();
-		    File t=new File(Constants.FILE_HOST.LOCALHOST+uuid+"."+names[1]);
-		    logo = Constants.HOST.LOCALHOST+uuid+"."+names[1];
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    logo = Constants.HOST.TEA+uuid+"."+names[1];
 		    try{
 		        t.createNewFile();
 		    }catch(IOException e){
@@ -223,15 +212,17 @@ public class NewInfoController extends Controller {
 		}
         String contentUrl = Constants.HOST.FILE+uuid+".html";
 		//保存资讯
-		int ret = News.dao.saveNews(logo
-								   ,newsTitle
-								   ,newsTypeCd
-								   ,hot
-								   ,(Integer)getSessionAttr("agentId")
-								   ,0
-								   ,content
-								   ,contentUrl);
-		if(ret != 0){
+        Tea tea = new Tea();
+        tea.set("tea_title",title);
+        tea.set("tea_price",price);
+        tea.set("type_cd",typeCd);
+        tea.set("create_time", DateUtil.getNowTimestamp());
+        tea.set("update_time", DateUtil.getNowTimestamp());
+        tea.set("tea_desc", content);
+        tea.set("desc_url", contentUrl);
+        tea.set("flg", 1);
+		boolean ret = Tea.dao.saveInfo(tea);
+		if(ret){
 			setAttr("message","新增成功");
 		}else{
 			setAttr("message","新增失败");
@@ -251,8 +242,8 @@ public class NewInfoController extends Controller {
 			String[] names = fileName.split("\\.");
 		    File file=uploadFile.getFile();
 		    String uuid = UUID.randomUUID().toString();
-		    File t=new File(Constants.FILE_HOST.LOCALHOST+uuid+"."+names[1]);
-		    String url = Constants.HOST.LOCALHOST+uuid+"."+names[1];
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    String url = Constants.HOST.TEA+uuid+"."+names[1];
 		    try{
 		        t.createNewFile();
 		    }catch(IOException e){
@@ -275,7 +266,7 @@ public class NewInfoController extends Controller {
 	 * 修改（保存）
 	 */
 	public void update(){
-		String id = getPara("custId");
+		/*String id = getPara("custId");
 		int integral = getParaToInt("integral");
 		String phoneNum = getPara("phoneNum");
 		String addrname = getPara("addrname");
@@ -302,7 +293,7 @@ public class NewInfoController extends Controller {
 			}else{
 				setAttr("message", "修改失败");
 			}
-		}
+		}*/
 		
 		index();
 	}
@@ -312,8 +303,8 @@ public class NewInfoController extends Controller {
 	 */
 	public void del(){
 		try{
-			int newsId = getParaToInt("newsId");
-			int ret = service.updateFlg(newsId, 0);
+			int teaId = getParaToInt("id");
+			int ret = service.updateFlg(teaId, 0);
 			if(ret==0){
 				setAttr("message", "删除成功");
 			}else{
@@ -327,7 +318,7 @@ public class NewInfoController extends Controller {
 
 	//推送
 	public void push(){
-		try{
+		/*try{
 			int newsId = getParaToInt("newsId");
 			int ret = service.updateFlg(newsId, 1);
 			if(ret==0){
@@ -337,7 +328,13 @@ public class NewInfoController extends Controller {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-		}
+		}*/
 		index();
+	}
+	
+	public void editTea(){
+		Tea teaInfo = service.queryById(StringUtil.toInteger(getPara("id")));
+		setAttr("teaInfo", teaInfo);
+		render("editTea.jsp");
 	}
 }

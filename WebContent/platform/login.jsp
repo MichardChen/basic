@@ -69,11 +69,11 @@
 				action="${CONTEXT_PATH}/login/checkin" onsubmit="return false;">
 				<div class="form-group">
 					<input type="text" name="userName" class="form-control"
-						placeholder="用户名" required>
+						placeholder="用户名" value="admin" required>
 				</div>
 				<div class="form-group">
 					<input type="password" name="password" class="form-control"
-						placeholder="密码" required>
+						placeholder="密码" value="123456" required>
 				</div>
 				<div class="form-group">
 					<input type="text" name="captcha" maxlength="4"

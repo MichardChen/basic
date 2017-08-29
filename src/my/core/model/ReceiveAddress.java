@@ -26,8 +26,8 @@ public class ReceiveAddress extends Model<ReceiveAddress> {
 		return ReceiveAddress.dao.paginate(page, size, select, sql,param.toArray());
 	}
 	
-	public ReceiveAddress queryById(int id){
-		return ReceiveAddress.dao.findFirst("select * from t_receive_address where id = ?",id);
+	public ReceiveAddress queryById(int id,String status){
+		return ReceiveAddress.dao.findFirst("select * from t_receive_address where id = ? and status='"+status+"'",id);
 	}
 	
 	public boolean updateInfo(ReceiveAddress address){

@@ -26,6 +26,7 @@ import my.core.model.ReceiveAddress;
 import my.core.model.ReturnData;
 import my.core.model.VertifyCode;
 import my.core.tx.TxProxy;
+import my.core.vo.AddressDetailVO;
 import my.core.vo.AddressVO;
 import my.core.vo.CarouselVO;
 import my.core.vo.NewsVO;
@@ -642,16 +643,33 @@ public class LoginService {
 		return data;
 	}
 	
-	//查询收货地址
+	//查询收货地址详情
 	public ReturnData queryAddressById(LoginDTO dto){
 
 		ReturnData data = new ReturnData();
-		ReceiveAddress ra = ReceiveAddress.dao.queryById(dto.getId());
-		data.setCode(Constants.STATUS_CODE.SUCCESS);
-		data.setMessage("查询成功");
-		Map<String, Object> map = new HashMap<>();
-		map.put("address", ra);
-		data.setData(map);
+		ReceiveAddress ra = ReceiveAddress.dao.queryById(dto.getId(),Constants.COMMON_STATUS.NORMAL);
+		AddressDetailVO vo = new AddressDetailVO();
+		if(ra != null){
+			vo.setId(ra.getInt("id"));
+			vo.setAddress(ra.getStr("address"));
+			vo.setCityId(ra.getInt("city_id"));
+			vo.setProvinceId(ra.getInt("province_id"));
+			vo.setDistrictId(ra.getInt("district_id"));
+			vo.setDefaultFlg(ra.getInt("default_flg"));
+			vo.setReceiverMan(ra.getStr("receiveman_name"));
+			vo.setMobile(ra.getStr("mobile"));
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("查询成功");
+			Map<String, Object> map = new HashMap<>();
+			map.put("address", vo);
+			data.setData(map);
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，地址不存在");
+			Map<String, Object> map = new HashMap<>();
+			map.put("address", ra);
+			data.setData(map);
+		}
 		return data;
 	}
 	
