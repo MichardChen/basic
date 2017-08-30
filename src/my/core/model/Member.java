@@ -19,7 +19,7 @@ public class Member extends Model<Member> {
 	public static final Member dao = new Member();
 	
 	public Member queryMember(String mobile){
-		return Member.dao.findFirst("select * from t_member where mobile=? and status=1",mobile);
+		return Member.dao.findFirst("select * from t_member where mobile=?",mobile);
 	}
 	
 	public Member queryMemberById(int id){
@@ -54,7 +54,7 @@ public class Member extends Model<Member> {
 	}
 	
 	public Member queryMemberByMobile(String mobile){
-		return Member.dao.findFirst("select * from t_member where mobile='"+mobile+"' and status=1");
+		return Member.dao.findFirst("select * from t_member where mobile='"+mobile+"'");
 	}
 	
 	public int updateMember(int userId
@@ -68,7 +68,7 @@ public class Member extends Model<Member> {
 	}
 	
 	public Member queryMember(String name,String pwd){
-		return Member.dao.findFirst("select * from t_member where mobile='"+name+"' and userpwd='"+pwd+"' and status=1");
+		return Member.dao.findFirst("select * from t_member where mobile='"+name+"' and userpwd='"+pwd+"'");
 	}
 	
 	public int updatePoints(int userId,int points){

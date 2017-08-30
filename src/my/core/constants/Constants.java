@@ -1,5 +1,7 @@
 package my.core.constants;
 
+import org.eclipse.jdt.internal.compiler.classfmt.FieldInfoWithAnnotation;
+
 import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
 
 import sun.net.www.content.text.plain;
@@ -448,6 +450,7 @@ public interface Constants {
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
 		public static final String TEA = "http://192.168.1.131:82/tea/";
+		public static final String DOCUMENT = "http://192.168.1.131:82/document/";
 		public static final String FILE = "http://192.168.1.131:82/file/";
 		public static final String ICON = "http://119.23.75.45:82/icon/";
 	}
@@ -455,6 +458,7 @@ public interface Constants {
 	public static interface FILE_HOST{
 		public static final String LOCALHOST = "F:\\upload\\newsimages\\";
 		public static final String TEA = "F:\\upload\\tea\\";
+		public static final String DOCUMENT = "F:\\upload\\document\\";
 		public static final String FILE = "F:\\upload\\file\\";
 		public static final String ICON = "E:\\upload\\icon\\";
 	}
@@ -467,5 +471,11 @@ public interface Constants {
 	public static interface COMMON_STATUS{
 		public static final String DELETE = "050001";
 		public static final String NORMAL = "050002";
+	}
+	
+	public static interface DOCUMENT_TYPE{
+		public static final String SALE_COMMENT = "060001";
+		public static final String USE_HELP = "060002";
+		public static final String CONTRACT_COMMENT = "060003";
 	}
 }

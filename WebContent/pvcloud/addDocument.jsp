@@ -7,7 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <meta charset="utf-8">
-<title>编辑茶叶</title>
+<title>添加文档</title>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/summernote/css/bootstrap.css">
 <link href="<%=request.getContextPath()%>/summernote/dist/summernote.css" rel="stylesheet"/>
 <script src="<%=request.getContextPath()%>/summernote/js/jquery.min.js"></script>
@@ -76,45 +76,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
-			<td>茶叶标题</td>
-			<td><input type="text" name="title" maxlength="30" placeholder="标题最长30个字" style="width: 300px;" value="${teaInfo.tea_title}"/></td>
+			<td>文档标题</td>
+			<td><input type="text" name="title" maxlength="30" placeholder="标题最长30个字" style="width: 300px;"/></td>
 		</tr>
 		<tr>
-			<td>茶叶类型</td>
+			<td>文档类型</td>
 			<td>
-							<c:if test="${teaInfo.type_cd='050001' }">
-								<select style="height:30px;width:120px;" name="typeCd" id="typeCd">
-									<option value="050001" selected="selected">普洱</option>
-									<option value="050002">铁观音</option>
-								</select>
-							</c:if>
-							<c:if test="${teaInfo.type_cd='050002' }">
-								<select style="height:30px;width:120px;" name="typeCd" id="typeCd">
-									<option value="050001">普洱</option>
-									<option value="050002" selected="selected">铁观音</option>
-								</select>
-							</c:if>
+						<select style="height:30px;width:120px;" name="typeCd" id="typeCd">
+							<option value="060001">发售说明</option>
+							<option value="060002">使用帮助</option>
+							<option value="060003">协议合同</option>
+						</select>
 		</tr>
 		<tr>
-			<td>价格</td>
-			<td>
-						<input type="number" name="price" maxlength="30" placeholder="请输入价格" style="width: 300px;" value="${teaInfo.tea_price}"/>
-		</tr>
-		<tr>
-			<td>茶叶封面图片</td>
-			<td>
-					<input type="file" name="coverImg" src=""/>
-			</td>
-		</tr>
-		<tr>
-					<td>茶叶详情</td>
+					<td>文档详情</td>
 					<td>
 					</td>
 		</tr>
 	</table>
     <div>
     		<textarea id="content" name="content" class="summernote">
-    		${teaInfo.tea_desc}
 			</textarea>
     </div>
 </div>
