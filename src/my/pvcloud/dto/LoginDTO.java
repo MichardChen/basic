@@ -40,9 +40,18 @@ public class LoginDTO extends BaseDTO{
 		dto.setAddress(request.getParameter("address"));
 		dto.setId(StringUtil.toInteger(request.getParameter("id")));
 		dto.setFlg(StringUtil.toInteger(request.getParameter("flg")));
+		dto.setFeedBack(request.getParameter("feedBack"));
+		dto.setVersion(request.getParameter("version"));
+		dto.setPlatForm(request.getParameter("platForm"));
+		dto.setVersionTypeCd(request.getParameter("versionTypeCd"));
+		dto.setType(request.getParameter("typeCd"));
 		return dto;
 	}
 	
+	private String type;
+	private String versionTypeCd;
+	private String version;
+	private String feedBack;
 	private int sex;
 	private String userName;
 	private String userPwd;
@@ -67,6 +76,39 @@ public class LoginDTO extends BaseDTO{
 	private String address;
 	private int id;
 	
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getVersionTypeCd() {
+		return versionTypeCd;
+	}
+
+	public void setVersionTypeCd(String versionTypeCd) {
+		this.versionTypeCd = versionTypeCd;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getFeedBack() {
+		return feedBack;
+	}
+
+	public void setFeedBack(String feedBack) {
+		this.feedBack = feedBack;
+	}
+
 	public int getId() {
 		return id;
 	}

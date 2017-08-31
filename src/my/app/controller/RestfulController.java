@@ -132,11 +132,10 @@ public class RestfulController extends Controller{
 	
 	//上传头像
 	public void uploadIcon() throws Exception{
+		UploadFile uploadFile = getFile("icon");
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		//表单中有提交图片，要先获取图片
-		UploadFile uploadFile = getFile("icon");
 		FileService fs=new FileService();
-		
 		String logo = "";
 		//上传文件
 		String uuid = UUID.randomUUID().toString();
@@ -156,7 +155,6 @@ public class RestfulController extends Controller{
 		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		}
-			
 		renderJson(service.updateIcon(dto.getUserId(), logo));
 	}
 	
@@ -212,5 +210,23 @@ public class RestfulController extends Controller{
 	public void deleteAddress(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.deleteAddressById(dto));
+	}
+	
+	//提交反馈
+	public void saveFeedBack(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.saveFeedback(dto));
+	}
+	
+	//检查版本更新
+	public void queryAppVersion(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryVersion(dto));
+	}
+	
+	//查询消息列表
+	public void queryMessageList(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryMessageList(dto));
 	}
 }

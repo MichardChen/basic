@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.catalina.util.DateTool;
 import org.apache.commons.lang.Validate;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,16 +18,23 @@ import my.core.constants.Constants;
 import my.core.model.AcceessToken;
 import my.core.model.Admin;
 import my.core.model.Carousel;
+import my.core.model.City;
 import my.core.model.CodeMst;
+import my.core.model.District;
+import my.core.model.FeedBack;
 import my.core.model.Member;
+import my.core.model.Message;
 import my.core.model.News;
+import my.core.model.Province;
 import my.core.model.ReceiveAddress;
 import my.core.model.ReturnData;
+import my.core.model.SystemVersionControl;
 import my.core.model.VertifyCode;
 import my.core.tx.TxProxy;
 import my.core.vo.AddressDetailVO;
 import my.core.vo.AddressVO;
 import my.core.vo.CarouselVO;
+import my.core.vo.MessageListVO;
 import my.core.vo.NewsVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
@@ -565,8 +571,8 @@ public class LoginService {
 	//查询邮寄地址
 	public ReturnData queryMemberAddressList(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		Page<ReceiveAddress> pages = ReceiveAddress.dao.queryByPage(dto.getPageSize()
-																   ,dto.getPageNum()
+		Page<ReceiveAddress> pages = ReceiveAddress.dao.queryByPage(dto.getPageNum()
+																   ,dto.getPageSize()
 																   ,dto.getUserId()
 																   ,Constants.COMMON_STATUS.NORMAL);
 		List<AddressVO> vos = new ArrayList<>();
@@ -574,7 +580,20 @@ public class LoginService {
 		AddressVO vs = null;
 		for(ReceiveAddress ra : list){
 			vs = new AddressVO();
-			vs.setAddress(ra.getStr("address"));
+			String address = "";
+			Province province = Province.dao.queryProvince(ra.getInt("province_id"));
+			City city = City.dao.queryCity(ra.getInt("city_id"));
+			District district = District.dao.queryDistrict(ra.getInt("district_id"));
+			if(province!=null){
+				address = address + province.getStr("name") + "省";
+			}
+			if(city != null){
+				address = address + city.getStr("name") + "市";
+			}
+			if(district != null){
+				address = address + district.getStr("name") + "区";
+			}
+			vs.setAddress(address+ra.getStr("address"));
 			vs.setAddressId(ra.getInt("id"));
 			vs.setDefaultFlg(ra.getInt("default_flg"));
 			vs.setLinkTel(ra.getStr("mobile"));
@@ -691,6 +710,99 @@ public class LoginService {
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("删除失败");
 		}
+		return data;
+	}
+	
+	//提交意见反馈
+	public ReturnData saveFeedback(LoginDTO dto){
+				
+		ReturnData data = new ReturnData();
+		int ret = Member.dao.updateCertification(dto.getUserId()
+												    ,dto.getUserName()
+												    ,dto.getCardNo()
+												    ,Constants.MEMBER_STATUS.CERTIFICATED);
+		if(ret == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("保存失败");
+		}else{
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("保存成功");
+		}
+		return data;
+	}
+	
+
+	//查询版本
+	public ReturnData queryVersion(LoginDTO dto){
+			
+		ReturnData data = new ReturnData();
+		String vtc = dto.getVersionTypeCd();
+		Map<String, Object> map = new HashMap<>();
+		SystemVersionControl svc = SystemVersionControl.dao.querySystemVersionControl(vtc);
+		if(svc == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("数据出错");
+			return data;
+		}
+		String dbVersion = svc.getStr("version");
+		if(StringUtil.equals(vtc, Constants.VERSION_TYPE.ANDROID)){
+			Integer version = StringUtil.toInteger(dto.getVersion());
+			Integer newVersion = StringUtil.toInteger(dbVersion);
+			if(newVersion > version){
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("发现新版本："+svc.getStr("mark"));
+				map.put("url", svc.getStr("data1"));
+			}else{
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("当前版本已是最新版本");
+				map.put("url", null);
+			}
+		}
+		if(StringUtil.equals(vtc, Constants.VERSION_TYPE.IOS)){
+			String version = dto.getVersion();
+			if(!StringUtil.equals(dbVersion,version)){
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("发现新版本："+svc.getStr("mark"));
+				map.put("url", svc.getStr("data2"));
+			}else{
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("当前版本已是最新版本");
+				map.put("url", null);
+			}
+		}
+		data.setData(map);
+		return data;
+	}
+	
+	//查询消息列表
+	public ReturnData queryMessageList(LoginDTO dto){
+			
+		ReturnData data = new ReturnData();
+		int userId = dto.getUserId();
+		String typeCd = dto.getType();
+		List<Message> messages = Message.dao.queryMessages(userId, typeCd);
+		List<MessageListVO> vos = new ArrayList<>();
+		MessageListVO vo = null;
+		for(Message message : messages){
+			vo = new MessageListVO();
+			vo.setId(message.getInt("id"));
+			vo.setTitle(message.getStr("title"));
+			vo.setTypeCd(message.getStr("message_type_cd"));
+			vo.setDate(DateUtil.formatTimestampForDate(message.getTimestamp("create_time")));
+			CodeMst type = CodeMst.dao.queryCodestByCode(vo.getTypeCd());
+			if(type != null){
+				vo.setType(type.getStr("name"));
+			}else{
+				vo.setType("");
+			}
+			vo.setParams(message.getStr("params"));
+			vos.add(vo);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("messages", vos);
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
 		return data;
 	}
 }

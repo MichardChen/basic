@@ -51,49 +51,6 @@ public interface Constants {
 		public static final String VERTIFY_CODE_MSG = "尊敬的用户，您的验证码是：0914，10分钟内有效。";
 	}
 	
-	/** 数据字段*/
-	public static interface REQUEST_DTO_MODEL{
-		public static final String USER_ID= "userId";
-		public static final String USER_TYPE_CD = "userTypeCd";
-		public static final String ACCESS_TOKEN = "accessToken";
-		public static final String PLATFORM = "platForm";
-		public static final String MOBILE = "mobile";
-		public static final String PAGESIZE = "pageSize";
-		public static final String PAGENUM = "pageNum";
-		public static final String STATUS = "status";
-		public static final String TIME_TYPE = "timeType";
-		public static final String DEPARTURE = "departure";
-		public static final String DESTINATION = "destination";
-		public static final String DEPARTURE_DETAIL = "departureDetail";
-		public static final String DESTINATION_DETAIL = "destinationDetail";
-		public static final String GOODSNAME = "goodsName";
-		public static final String WEIGHT = "weight";
-		public static final String VOLUME = "volume";
-		public static final String CART_TYPE = "cartType";
-		public static final String CART_LENGTH ="cartLength";
-		public static final String COMMENT = "comment";
-		public static final String ORDER_ID = "orderId";
-		public static final String FROM_PROVINCE_ID = "fromProvinceId";
-		public static final String FROM_CITY_ID = "fromCityId";
-		public static final String FROM_DISTRICT_ID = "fromDistrictId";
-		public static final String FROM_ADDRESS = "fromAddress";
-		public static final String TO_PROVINCE_ID = "toProvinceId";
-		public static final String TO_CITY_ID = "toCityId";
-		public static final String TO_DISTRICT_ID = "toDistrictId";
-		public static final String TO_ADDRESS = "toAddress";
-		public static final String GOODS_UNIT = "unit";
-		public static final String DISTANCE = "distance";
-		public static final String GOODS_NUM = "goodsNum";
-		public static final String ORDER_NO = "orderNo";
-		public static final String REASON = "reason";
-		public static final String REASON_MARK = "reasonMark";
-		public static final String EXPECT_PRICE = "expectPrice";
-		public static final String LINE_ID = "lineId";
-		public static final String FEEDBACK = "feedBack";
-		public static final String VERSION = "version";
-		public static final String MESSAGE_TYPE = "messageType";
-	}
-	
 	/**状态码*/
 	public static interface STATUS_CODE{
 		public static final String LOGIN_SUCCESS = "5606";
@@ -109,108 +66,12 @@ public interface Constants {
 		public static final String IMAGE_UPLOAD_FAIL = "5611";
 	}
 	
-	/**客户状态*/
-	public static interface CLIENT_STATUS_CODE{
-		public static final String NOT_REVIEWED = "070001";
-		public static final String REVIEWING = "070002";
-		public static final String REVIEWED = "070003";
-		public static final String NOT_PASS = "070004";
-	}
 	
-	/**供应商状态*/
-	public static interface SUPPLIERS_STATUS_CODE{
-		public static final String NOT_REVIEWED = "230001";
-		public static final String REVIEWING = "230002";
-		public static final String REVIEWED = "230003";
-		public static final String NOT_PASS = "230004";
-	}
-	
-	/**车辆状态*/
-	public static interface CART_STATUS_CODE{
-		public static final String NOT_REVIEWED = "410001";
-		public static final String REVIEWING = "410002";
-		public static final String REVIEWED = "410003";
-		public static final String NOT_PASS = "410004";
-	}
-	
-	/**订单查询时间类型*/
-	public static interface ORDER_QUERY_TIMETYPE{
-		public static final String TIME_TYPE_DAY = "420001";
-		public static final String TIME_TYPE_WEEK = "420002";
-		public static final String TIME_TYPE_ALL = "420003";
-	}
-	
-	/**订单完成情况*/
-	public static interface ORDER_ACCOMPLISH_TYPE{
-		public static final String ACCOMPLISHED = "430001";
-		public static final String NOT_ACCOMPLISHED = "430002";
-	}
-	
-	/**客户订单状态*/
-	public static interface CLIENT_ORDER_STATUS{
-		public static final String QUERY_PRICE = "160101";
-		public static final String REPLYED = "160201";
-		public static final String CANCLE = "160205";
-		public static final String GENERATE_ORDER = "160301";
-		public static final String DISTRIBUTE_CART = "160401";
-		public static final String OUT_STOREHOUSE = "160501";
-		public static final String LOAD = "160601";
-		public static final String CHECK_ORDER = "160701";
-		public static final String ACCOMPLISH = "160801";
-	}
-	
-	/**供应商订单状态*/
-	public static interface SUPPLY_ORDER_STATUS{
-		public static final String NEW_ORDER = "170201";
-		public static final String OUT_CART = "170301";
-		public static final String OUT_STOREHOUSE = "170401";
-		public static final String LOADED = "170501";
-		public static final String UPLOAD_CHEKC_ORDER = "170601";
-		public static final String ACCOMPLISH = "170701";
-		public static final String CANCLE = "170205";
-		public static final String INVALID = "170101";
-	}
-	
-	public static interface ORDER_STATUS{
-		public static final String NEW_ORDER = "150101";
-		public static final String REPLY_PRICE = "150201";
-		public static final String CANCLE = "150205";
-		public static final String GENERATE_ORDER = "150301";
-		public static final String OUT_CART = "150401";
-		public static final String OUT_STOREHOUSE = "150501";
-		public static final String LOAD = "150601";
-		public static final String CHECK_ORDER = "150701";
-		public static final String ACCOMPLISH = "150801";
-	}
 	
 	/**日期格式*/
 	public static interface DATE_FORMAT{
 		public static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd HH:mm";
 		public static final String DATE_FORMATE_YYYYMMDD = "yyyy-MM-dd";
-	}
-	
-	/**图片上传*/
-	public static interface UPLOAD_IMAGE_URL{
-		public static final String CLIENT_AUTH_UPLOAD_IMG = "CLIENT_AUTH_UPLOAD_IMG";
-		public static final String CLIENT_AUTH_UPLOAD_URL = "CLIENT_AUTH_UPLOAD_URL";
-		public static final String SUPPPLIER_AUTH_UPLOAD_URL = "SUPPLIER_AUTH_UPLOAD_URL";
-		public static final String SUPPLIER_AUTH_UPLOAD_IMG = "SUPPLIER_AUTH_UPLOAD_IMG";
-		public static final String CHECK_ORDER_URL = "CHECK_ORDER_URL";
-		public static final String CHECK_ORDER_IMG = "CHECK_ORDER_IMG";
-		public static final String CART_AUTH_UPLOAD_URL = "CART_AUTH_UPLOAD_URL";
-		public static final String CART_AUTH_UPLOAD_IMG = "CART_AUTH_UPLOAD_IMG";
-		//
-		public static final String SAVE_PRODUCT_URL = "SAVE_PRODUCT_URL";
-		public static final String SAVE_PRODUCT_IMG = "SAVE_PRODUCT_IMG";
-		
-		public static final String SAVE_MESSAGE_URL = "SAVE_MESSAGE_URL";
-		public static final String SAVE_MESSAGE_IMG = "SAVE_MESSAGE_IMG";
-		
-	}
-	
-	public static interface ORDER_READ{
-		public static final String NOT_READED = "未读";
-		public static final String READED = "已读";
 	}
 	
 	public static interface CHARACTER{
@@ -227,47 +88,12 @@ public interface Constants {
 		public static final int ZERO = 0;
 	}
 	
-	public static interface ORDER_ACCOMPLISH_STATUS{
-		public static final String STAY_ACCOMPLISH = "430001";
-		public static final String ACCOMPLISH = "430002";
-	}
 	
-	public static interface MESSAGE_TYPE{
-		public static final String ORDER_MESSAGE = "450001";
-		public static final String SYSTEM_MESSAGE = "450002";
-		public static final String ACTIVITY_MESSAGE = "450003";
-		public static final String PLATFORM_MESSAGE = "450004";
-		public static final String WL_MESSAGE = "450005";
-		public static final String TRADE_MESSAGE = "450006";
-	}
-	
-	public static interface SYSTEM_VERSION_CONTROL{
-		public static final String LOCATION_DATA_VERSION = "460001";
-		public static final String CLIENT_APP_VERSION_ANDROID = "460002";
-		public static final String SUPPLY_APP_VERSION_ANDROID = "460003";
-		public static final String CLIENT_APP_VERSION_IOS = "460004";
-		public static final String SUPPLY_APP_VERSION_IOS = "460005";
-	}
 	
 	public static interface LOCATION_TYPE{
 		public static final String PROVINCE = "province";
 		public static final String CITY = "city";
 		public static final String DISTRICT = "district";
-	}
-	
-	public static interface DEPARMENT_TYPE{
-		public static final String COMPANY = "040001";
-		public static final String BUSINESS = "040002";
-		public static final String CLIENT = "040003";
-		public static final String SUPPLIER = "040004";
-		public static final String ONLINE_BUSINESS = "040005";
-	}
-	
-	public static interface DISTANCE_TYPE{
-		public static final String LESS_THREEHUNDRED = "470001";
-		public static final String THREE_SEVEN_HUNDRED = "470002";
-		public static final String SEVEN_TWELVE_HUNDRED = "470003";
-		public static final String MORE_TWELVEHUNDRED = "470004";
 	}
 	
 	public static interface MANAGER_TYPE{
@@ -325,18 +151,6 @@ public interface Constants {
 		public static final String SUPPLIER_APP_SHARE = "550002";
 		public static final String CLIENT_ORDER_SHARE = "550003";
 		public static final String SUPPLIER_ORDER_SHARE = "550004";
-	}
-	
-	public static interface PUSH_TYPE_DETAIL{
-		
-		public static final String ANDROID_CLIENT_PUSH_APPKEY = "ANDROID_CLIENT_PUSH_APPKEY";
-		public static final String ANDROID_CLIENT_MASTER_SECRET = "ANDROID_CLIENT_MASTER_SECRET";
-		public static final String ANDROID_SUPPLIER_PUSH_APPKEY = "ANDROID_SUPPLIER_PUSH_APPKEY";
-		public static final String ANDROID_SUPPLIER_MASTER_SECRET = "ANDROID_SUPPLIER_MASTER_SECRET";
-		public static final String IOS_CLIENT_PUSH_APPKEY = "IOS_CLIENT_PUSH_APPKEY";
-		public static final String IOS_CLIENT_MASTER_SECRET = "IOS_CLIENT_MASTER_SECRET";
-		public static final String IOS_SUPPLIER_PUSH_APPKEY = "IOS_SUPPLIER_PUSH_APPKEY";
-		public static final String IOS_SUPPLIER_MASTER_SECRET = "IOS_SUPPLIER_MASTER_SECRET";
 	}
 	
 	public static interface PUSH_TYPE_CD{
@@ -447,12 +261,16 @@ public interface Constants {
 		public static final String CART = "670003";
 	}
 	
+	
+	/**
+	 * 本地
+	 */
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
 		public static final String TEA = "http://192.168.1.131:82/tea/";
 		public static final String DOCUMENT = "http://192.168.1.131:82/document/";
 		public static final String FILE = "http://192.168.1.131:82/file/";
-		public static final String ICON = "http://119.23.75.45:82/icon/";
+		public static final String ICON = "http://192.168.1.131:82/icon/";
 	}
 	
 	public static interface FILE_HOST{
@@ -460,8 +278,26 @@ public interface Constants {
 		public static final String TEA = "F:\\upload\\tea\\";
 		public static final String DOCUMENT = "F:\\upload\\document\\";
 		public static final String FILE = "F:\\upload\\file\\";
-		public static final String ICON = "E:\\upload\\icon\\";
+		public static final String ICON = "F:\\upload\\icon\\";
 	}
+
+	
+	/**服务器
+	public static interface HOST{
+		public static final String LOCALHOST = "http://139.196.171.205:88/newsimages/";
+		public static final String TEA = "http://139.196.171.205:88/tea/";
+		public static final String DOCUMENT = "http://139.196.171.205:88/document/";
+		public static final String FILE = "http://139.196.171.205:88/file/";
+		public static final String ICON = "http://139.196.171.205:88/icon/";
+	}
+	
+	public static interface FILE_HOST{
+		public static final String LOCALHOST = "D:\\upload\\newsimages\\";
+		public static final String TEA = "D:\\upload\\tea\\";
+		public static final String DOCUMENT = "D:\\upload\\document\\";
+		public static final String FILE = "D:\\upload\\file\\";
+		public static final String ICON = "D:\\upload\\icon\\";
+	}*/
 	
 	public static interface MEMBER_STATUS{
 		public static final String CERTIFICATED = "040001";
@@ -477,5 +313,14 @@ public interface Constants {
 		public static final String SALE_COMMENT = "060001";
 		public static final String USE_HELP = "060002";
 		public static final String CONTRACT_COMMENT = "060003";
+	}
+	
+	public static interface VERSION_TYPE{
+		public static final String ANDROID = "070001";
+		public static final String IOS = "070002";
+	}
+	
+	public static interface MESSAGE_TYPE{
+		public static final String BUY_TEA = "080001";
 	}
 }
