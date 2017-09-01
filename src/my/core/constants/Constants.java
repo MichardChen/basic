@@ -271,6 +271,7 @@ public interface Constants {
 		public static final String DOCUMENT = "http://192.168.1.131:82/document/";
 		public static final String FILE = "http://192.168.1.131:82/file/";
 		public static final String ICON = "http://192.168.1.131:82/icon/";
+		public static final String IMG = "http://192.168.1.131:82/img/";
 	}
 	
 	public static interface FILE_HOST{
@@ -279,6 +280,7 @@ public interface Constants {
 		public static final String DOCUMENT = "F:\\upload\\document\\";
 		public static final String FILE = "F:\\upload\\file\\";
 		public static final String ICON = "F:\\upload\\icon\\";
+		public static final String IMG = "F:\\upload\\img\\";
 	}
 
 	

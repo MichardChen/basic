@@ -8,6 +8,7 @@ import org.huadalink.plugin.tablebind.TableBind;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Page;
 
 import my.core.constants.Constants;
 import my.pvcloud.util.DateUtil;
@@ -106,5 +107,38 @@ public class Member extends Model<Member> {
 	public int updateWX(int userId,String wx){
 		return Db.update("update t_member set wx='"+wx+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
 	} 
+	
+	////////////
+	public Page<Member> queryByPage(int page,int size){
+		
+		String sql=" from t_member where 1=1 order by create_time desc";
+		String select="select * ";
+		return Member.dao.paginate(page, size, select, sql);
+	}
+	
+	public List<Member> queryMemberList(int pageSize,int pageNum){
+		int fromRow = pageSize*(pageNum-1);
+		return Member.dao.find("select * from t_member order by update_time desc limit "+fromRow+","+pageSize);
+	}
+	
+	public Member queryById(int id){
+		return Member.dao.findFirst("select * from t_member where id = ?",id);
+	}
+	
+	public boolean updateInfo(Member data){
+		return new Member().setAttrs(data).update();
+	}
+	
+	public boolean saveInfo(Member data){
+		return new Member().setAttrs(data).save();
+	}
+	
+	public boolean del(int id){
+		return Member.dao.deleteById(id);
+	}
+	
+	public int updateMemberStatus(int id,String status){
+		return Db.update("update t_member set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	}
 }
 
