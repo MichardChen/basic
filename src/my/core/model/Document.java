@@ -31,6 +31,10 @@ public class Document extends Model<Document> {
 		return Document.dao.findFirst("select * from t_document where id = ?",id);
 	}
 	
+	public Document queryByTypeCd(String typeCd){
+		return Document.dao.findFirst("select * from t_document where type_cd = ?",typeCd);
+	}
+	
 	public boolean updateInfo(Document tea){
 		return new Document().setAttrs(tea).update();
 	}

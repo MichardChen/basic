@@ -174,7 +174,10 @@ public class TeaInfoController extends Controller {
 	//保存茶叶
 	public void saveTea(){
 		//表单中有提交图片，要先获取图片
-		UploadFile uploadFile = getFile("coverImg");
+		UploadFile uploadFile1 = getFile("coverImg1");
+		UploadFile uploadFile2 = getFile("coverImg2");
+		UploadFile uploadFile3 = getFile("coverImg3");
+		UploadFile uploadFile4 = getFile("coverImg4");
 		String title = getPara("title");
 		BigDecimal price = StringUtil.toBigDecimal(getPara("price"));
 		String typeCd = getPara("typeCd");
@@ -184,12 +187,60 @@ public class TeaInfoController extends Controller {
 		String logo = "";
 		//上传文件
 		String uuid = UUID.randomUUID().toString();
-		if(uploadFile != null){
-			String fileName = uploadFile.getOriginalFileName();
+		if(uploadFile1 != null){
+			String fileName = uploadFile1.getOriginalFileName();
 			String[] names = fileName.split("\\.");
-		    File file=uploadFile.getFile();
+		    File file=uploadFile1.getFile();
 		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
 		    logo = Constants.HOST.TEA+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		}
+		if(uploadFile2 != null){
+			String fileName = uploadFile2.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile2.getFile();
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    logo = logo + "," + Constants.HOST.TEA+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		}
+		if(uploadFile3 != null){
+			String fileName = uploadFile3.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile3.getFile();
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    logo = logo + "," + Constants.HOST.TEA+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		}
+		if(uploadFile4 != null){
+			String fileName = uploadFile4.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile4.getFile();
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    logo = logo + "," + Constants.HOST.TEA+uuid+"."+names[1];
 		    try{
 		        t.createNewFile();
 		    }catch(IOException e){
@@ -214,18 +265,159 @@ public class TeaInfoController extends Controller {
 		//保存资讯
         Tea tea = new Tea();
         tea.set("tea_title",title);
+        tea.set("brand", getPara("brand"));
+        tea.set("product_place", getPara("place"));
+        tea.set("product_date", DateUtil.stringToDate(getPara("birthday")));
+        tea.set("sale_from_date", DateUtil.stringToDate(getPara("fromtime")));
+        tea.set("sale_to_date", DateUtil.stringToDate(getPara("totime")));
+        tea.set("size1", StringUtil.toInteger(getPara("size1")));
+        tea.set("size2",  StringUtil.toInteger(getPara("size2")));
+        tea.set("total_output", StringUtil.toInteger(getPara("amount")));
+        tea.set("stock", StringUtil.toInteger(getPara("warehouse")));
         tea.set("tea_price",price);
+        tea.set("sale_count",0);
+        tea.set("certificate_flg", StringUtil.toInteger(getPara("certificate")));
         tea.set("type_cd",typeCd);
         tea.set("create_time", DateUtil.getNowTimestamp());
         tea.set("update_time", DateUtil.getNowTimestamp());
         tea.set("tea_desc", content);
         tea.set("desc_url", contentUrl);
+        tea.set("cover_img", logo);
         tea.set("flg", 1);
 		boolean ret = Tea.dao.saveInfo(tea);
 		if(ret){
 			setAttr("message","新增成功");
 		}else{
 			setAttr("message","新增失败");
+		}
+		index();
+	}
+	
+	public void updateTea(){
+		//表单中有提交图片，要先获取图片
+		UploadFile uploadFile1 = getFile("coverImg1");
+		UploadFile uploadFile2 = getFile("coverImg2");
+		UploadFile uploadFile3 = getFile("coverImg3");
+		UploadFile uploadFile4 = getFile("coverImg4");
+		String title = getPara("title");
+		BigDecimal price = StringUtil.toBigDecimal(getPara("price"));
+		String typeCd = getPara("typeCd");
+		String content = getPara("content");
+		FileService fs=new FileService();
+		
+		String logo = "";
+		//上传文件
+		String uuid = UUID.randomUUID().toString();
+		int reset = StringUtil.toInteger(getPara("reset"));
+		if(reset == 1){
+			
+			if(uploadFile1 != null){
+				String fileName = uploadFile1.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile1.getFile();
+			    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+			    logo = Constants.HOST.TEA+uuid+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			}
+			if(uploadFile2 != null){
+				String fileName = uploadFile2.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile2.getFile();
+			    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+			    logo = logo + "," + Constants.HOST.TEA+uuid+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			}
+			if(uploadFile3 != null){
+				String fileName = uploadFile3.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile3.getFile();
+			    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+			    logo = logo + "," + Constants.HOST.TEA+uuid+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			}
+			if(uploadFile4 != null){
+				String fileName = uploadFile4.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile4.getFile();
+			    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+			    logo = logo + "," + Constants.HOST.TEA+uuid+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			}
+			//生成html文件
+			try {
+				StringBuilder sb = new StringBuilder();
+				FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.FILE+uuid+".html");
+				PrintStream printStream = new PrintStream(fos);
+				sb.append(content);
+				printStream.print(sb);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+        String contentUrl = Constants.HOST.FILE+uuid+".html";
+		//保存资讯
+        Tea tea = new Tea();
+        tea.set("id", StringUtil.toInteger(getPara("id")));
+        tea.set("tea_title",title);
+        tea.set("brand", getPara("brand"));
+        tea.set("product_place", getPara("place"));
+        tea.set("product_date", DateUtil.stringToDate(getPara("birthday")));
+        tea.set("sale_from_date", DateUtil.stringToDate(getPara("fromtime")));
+        tea.set("sale_to_date", DateUtil.stringToDate(getPara("totime")));
+        tea.set("size1", StringUtil.toInteger(getPara("size1")));
+        tea.set("size2",  StringUtil.toInteger(getPara("size2")));
+        tea.set("total_output", StringUtil.toInteger(getPara("amount")));
+        tea.set("stock", StringUtil.toInteger(getPara("warehouse")));
+        tea.set("tea_price",price);
+        tea.set("sale_count",0);
+        tea.set("certificate_flg", StringUtil.toInteger(getPara("certificate")));
+        tea.set("type_cd",typeCd);
+        tea.set("create_time", DateUtil.getNowTimestamp());
+        tea.set("update_time", DateUtil.getNowTimestamp());
+        tea.set("tea_desc", content);
+        tea.set("desc_url", contentUrl);
+        if(reset == 1){
+        	tea.set("cover_img", logo);
+        }
+        
+        tea.set("flg", 1);
+		boolean ret = Tea.dao.updateInfo(tea);
+		if(ret){
+			setAttr("message","修改成功");
+		}else{
+			setAttr("message","修改失败");
 		}
 		index();
 	}

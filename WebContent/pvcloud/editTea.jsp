@@ -7,13 +7,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <meta charset="utf-8">
-<title>编辑茶叶</title>
+<title>添加茶叶</title>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/summernote/css/bootstrap.css">
 <link href="<%=request.getContextPath()%>/summernote/dist/summernote.css" rel="stylesheet"/>
 <script src="<%=request.getContextPath()%>/summernote/js/jquery.min.js"></script>
 <script src="<%=request.getContextPath()%>/summernote/js/bootstrap.min.js"></script>
 <script src="<%=request.getContextPath()%>/summernote/dist/summernote.js"></script>
 <script src="<%=request.getContextPath()%>/summernote/dist/lang/summernote-zh-CN.js"></script>    <!-- 中文-->
+<script type="text/javascript" src="<%=request.getContextPath()%>/assets/js/My97DatePicker/WdatePicker.js"></script>
 <style>
         .m {
             width: 800px;
@@ -63,7 +64,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     // 成功时调用方法，后端返回json数据
                     success: function (data) {
                     	var temp = eval(data);
-                          $('.summernote').summernote('insertImage',temp.data.imgUrl);
+                        $('.summernote').summernote('insertImage',temp.data.imgUrl);
                     },
                     // ajax请求失败时处理
                     error: function () {
@@ -76,34 +77,95 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
-			<td>茶叶标题</td>
-			<td><input type="text" name="title" maxlength="30" placeholder="标题最长30个字" style="width: 300px;" value="${teaInfo.tea_title}"/></td>
+			<td>茶叶名称</td>
+			<td><input type="text" name="title" maxlength="30" value="${teaInfo.tea_title}" style="width: 300px;"/></td>
+		</tr>
+		<tr>
+			<td>茶叶品牌</td>
+			<td><input type="text" name="brand" maxlength="30" value="${teaInfo.brand}" style="width: 300px;"/></td>
+		</tr>
+		<tr>
+			<td>茶叶产地</td>
+			<td><input type="text" name="place" value="${teaInfo.product_place}" maxlength="30" style="width: 300px;"/></td>
+		</tr>
+		<tr>
+			<td>生产日期</td>
+			<td><input type="text" name="birthday" value="${teaInfo.product_date}" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/></td>
+		</tr>
+		<tr>
+			<td>规格</td>
+			<td><input type="number" name="size1" maxlength="30" style="width: 50px;" value="${teaInfo.size1}"/>&nbsp;(克/片)&nbsp;&nbsp;
+			<input type="number" name="size2" maxlength="30" style="width: 50px;" value="${teaInfo.size2}"/>&nbsp;(片/件)</td>
+		</tr>
+		<tr>
+			<td>出厂总量</td>
+			<td><input type="number" name="amount" maxlength="30" style="width: 50px;" value="${teaInfo.total_output}"/>&nbsp;(饼)</td>
 		</tr>
 		<tr>
 			<td>茶叶类型</td>
 			<td>
-							<c:if test="${teaInfo.type_cd='050001' }">
-								<select style="height:30px;width:120px;" name="typeCd" id="typeCd">
-									<option value="050001" selected="selected">普洱</option>
-									<option value="050002">铁观音</option>
-								</select>
-							</c:if>
-							<c:if test="${teaInfo.type_cd='050002' }">
-								<select style="height:30px;width:120px;" name="typeCd" id="typeCd">
-									<option value="050001">普洱</option>
-									<option value="050002" selected="selected">铁观音</option>
-								</select>
-							</c:if>
+						<select style="height:30px;width:120px;" name="typeCd" id="typeCd">
+							<option value="050001" <c:if test="${teaInfo.type_cd=='050001'}">selected="selected"</c:if>>普洱</option>
+							<option value="050002" <c:if test="${teaInfo.type_cd=='050002'}">selected="selected"</c:if>>铁观音</option>
+						</select>
+			</td>
 		</tr>
 		<tr>
-			<td>价格</td>
+			<td>官方茶叶正品保障</td>
 			<td>
-						<input type="number" name="price" maxlength="30" placeholder="请输入价格" style="width: 300px;" value="${teaInfo.tea_price}"/>
+						<select style="height:30px;width:120px;" name="certificate" id="certificate">
+							<option value="1" <c:if test="${teaInfo.certificate_flg==1}">selected="selected"</c:if>>是</option>
+							<option value="0" <c:if test="${teaInfo.certificate_flg==0}">selected="selected"</c:if>>否</option>
+						</select>
+			</td>
 		</tr>
 		<tr>
-			<td>茶叶封面图片</td>
+			<td>发售单价</td>
 			<td>
-					<input type="file" name="coverImg" src=""/>
+				<input type="number" name="price" maxlength="30" style="width: 50px;" value="${teaInfo.tea_price}"/>&nbsp;(件)
+			</td>
+		</tr>
+		<tr>
+			<td>发售时间</td>
+			<td>
+				<input type="text" value="${teaInfo.sale_from_date}" name="fromtime" maxlength="30" style="width: 120px;" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>&nbsp;-&nbsp;<input type="text" value="${teaInfo.sale_to_date}" name="totime" maxlength="30" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 120px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td>库存</td>
+			<td><input type="number" name="warehouse" maxlength="30" style="width: 50px;" value="${teaInfo.stock}"/></td>
+		</tr>
+		<tr>
+			<td style="color: red;font-weight: bold;">是否更新图片</td>
+			<td>
+						<select style="height:30px;width:120px;" name="reset">
+							<option value="0">否</option>
+							<option value="1">是</option>
+						</select>
+			</td>
+		</tr>
+		<tr>
+			<td>茶叶图片1</td>
+			<td>
+					<input type="file" name="coverImg1"/>
+			</td>
+		</tr>
+		<tr>
+			<td>茶叶图片2</td>
+			<td>
+					<input type="file" name="coverImg2"/>
+			</td>
+		</tr>
+		<tr>
+			<td>茶叶图片3</td>
+			<td>
+					<input type="file" name="coverImg3"/>
+			</td>
+		</tr>
+		<tr>
+			<td>茶叶图片4</td>
+			<td>
+					<input type="file" name="coverImg4"/>
 			</td>
 		</tr>
 		<tr>
@@ -112,9 +174,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</td>
 		</tr>
 	</table>
+	<input type="hidden" name="id" value="${teaInfo.id}"/>
     <div>
     		<textarea id="content" name="content" class="summernote">
-    		${teaInfo.tea_desc}
+    			${teaInfo.tea_desc}
 			</textarea>
     </div>
 </div>

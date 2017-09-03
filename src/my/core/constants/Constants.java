@@ -264,7 +264,7 @@ public interface Constants {
 	
 	/**
 	 * 本地
-	 */
+	 
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
 		public static final String TEA = "http://192.168.1.131:82/tea/";
@@ -281,16 +281,17 @@ public interface Constants {
 		public static final String FILE = "F:\\upload\\file\\";
 		public static final String ICON = "F:\\upload\\icon\\";
 		public static final String IMG = "F:\\upload\\img\\";
-	}
+	}*/
 
 	
-	/**服务器
+	/**服务器*/
 	public static interface HOST{
 		public static final String LOCALHOST = "http://139.196.171.205:88/newsimages/";
 		public static final String TEA = "http://139.196.171.205:88/tea/";
 		public static final String DOCUMENT = "http://139.196.171.205:88/document/";
 		public static final String FILE = "http://139.196.171.205:88/file/";
 		public static final String ICON = "http://139.196.171.205:88/icon/";
+		public static final String IMG = "http://139.196.171.205:88/img/";
 	}
 	
 	public static interface FILE_HOST{
@@ -299,7 +300,8 @@ public interface Constants {
 		public static final String DOCUMENT = "D:\\upload\\document\\";
 		public static final String FILE = "D:\\upload\\file\\";
 		public static final String ICON = "D:\\upload\\icon\\";
-	}*/
+		public static final String IMG = "D:\\upload\\img\\";
+	}
 	
 	public static interface MEMBER_STATUS{
 		public static final String CERTIFICATED = "040001";
@@ -315,6 +317,8 @@ public interface Constants {
 		public static final String SALE_COMMENT = "060001";
 		public static final String USE_HELP = "060002";
 		public static final String CONTRACT_COMMENT = "060003";
+		public static final String NEW_TEA_SALE_MARK = "060004";
+		public static final String CERTIFICATE_TIP = "060005";
 	}
 	
 	public static interface VERSION_TYPE{
@@ -325,4 +329,15 @@ public interface Constants {
 	public static interface MESSAGE_TYPE{
 		public static final String BUY_TEA = "080001";
 	}
+	
+	public static interface NEWTEA_STATUS{
+		public static final String STAY_SALE = "090001";
+		public static final String ON_SALE = "090002";
+		public static final String END = "090003";
+	}
+	
+	public static interface PHONE{
+		public static final String CUSTOM = "100001";
+	}
+	
 }

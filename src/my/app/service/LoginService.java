@@ -21,6 +21,7 @@ import my.core.model.Carousel;
 import my.core.model.City;
 import my.core.model.CodeMst;
 import my.core.model.District;
+import my.core.model.Document;
 import my.core.model.FeedBack;
 import my.core.model.Member;
 import my.core.model.Message;
@@ -29,13 +30,16 @@ import my.core.model.Province;
 import my.core.model.ReceiveAddress;
 import my.core.model.ReturnData;
 import my.core.model.SystemVersionControl;
+import my.core.model.Tea;
 import my.core.model.VertifyCode;
 import my.core.tx.TxProxy;
 import my.core.vo.AddressDetailVO;
 import my.core.vo.AddressVO;
 import my.core.vo.CarouselVO;
 import my.core.vo.MessageListVO;
+import my.core.vo.NewTeaSaleListModel;
 import my.core.vo.NewsVO;
+import my.core.vo.TeaDetailModelVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.MD5Util;
@@ -800,6 +804,102 @@ public class LoginService {
 		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("messages", vos);
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		return data;
+	}
+	
+	//查询新茶发售列表
+	public ReturnData queryNewTeaSaleList(LoginDTO dto){
+				
+		ReturnData data = new ReturnData();
+		List<Tea> list = Tea.dao.queryNewTeaSale(dto.getPageSize(), dto.getPageNum());
+		List<NewTeaSaleListModel> models = new ArrayList<>();
+		NewTeaSaleListModel model = null;
+		for(Tea tea : list){
+			model = new NewTeaSaleListModel();
+			model.setTeaId(tea.getInt("id"));
+			model.setStock(tea.getInt("stock"));
+			String coverImg = tea.getStr("cover_img");
+			String[] imgs = coverImg.split(",");
+			model.setImg(imgs[0]);
+			model.setName(tea.getStr("tea_title"));
+			model.setStatus(tea.getStr("status"));
+			CodeMst statusCodeMst = CodeMst.dao.queryCodestByCode(tea.getStr("status"));
+			if(statusCodeMst != null){
+				model.setStatusName(statusCodeMst.getStr("name"));
+			}
+			models.add(model);
+		}
+		Map<String, Object> map = new HashMap<>();
+		//新茶发售备注
+		Document newTeaSaleMark = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.NEW_TEA_SALE_MARK);
+		if(newTeaSaleMark != null){
+			map.put("newTeaSaleMark", newTeaSaleMark.getStr("content"));
+		}
+		//发售说明
+		Document saleComment = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.SALE_COMMENT);
+		if(saleComment != null){
+			map.put("saleCommentUrl", saleComment.getStr("desc_url"));
+		}
+		map.put("models", models);
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		return data;
+	}
+	
+
+	//查询新茶发售列表
+	public ReturnData queryNewTeaById(LoginDTO dto){
+				
+		ReturnData data = new ReturnData();
+		Tea tea = Tea.dao.queryById(dto.getId());
+		if(tea == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("查询失败，茶叶数据不存在");
+			return data;
+		}
+		
+		TeaDetailModelVO vo = new TeaDetailModelVO();
+		String coverImgs = tea.getStr("cover_img");
+		if(StringUtil.isNoneBlank(coverImgs)){
+			String[] imgs = coverImgs.split(",");
+			List<String> cList = new ArrayList<>();
+			for(String str : imgs){
+				cList.add(str);
+			}
+			vo.setImg(cList);
+		}
+		vo.setId(tea.getInt("id"));
+		vo.setName(tea.getStr("tea_title"));
+		vo.setAmount(StringUtil.toString(tea.getInt("total_output")));
+		vo.setBirthday(DateUtil.format(tea.getDate("product_date")));
+		vo.setBrand(tea.getStr("brand"));
+		vo.setCertificateFlg(tea.getInt("certificate_flg"));
+		Document mst = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.CERTIFICATE_TIP);
+		if(mst != null){
+			vo.setComment(mst.getStr("content"));
+		}
+		CodeMst phoneCodeMst = CodeMst.dao.queryCodestByCode(Constants.PHONE.CUSTOM);
+		if(phoneCodeMst != null){
+			vo.setCustomPhone(phoneCodeMst.getStr("data2"));
+		}
+		vo.setDescUrl(tea.getStr("desc_url"));
+		vo.setPrice(StringUtil.toString(tea.getBigDecimal("tea_price")));
+		vo.setProductPlace(tea.getStr("product_place"));
+		vo.setSaleTime(tea.getDate("sale_from_date")+"至"+tea.getDate("sale_to_date"));
+		vo.setSize(tea.getInt("size1")+"克/片、"+tea.getInt("size2")+"片/件");
+		vo.setSize2(tea.getInt("size2")+"片/件");
+		vo.setStock(StringUtil.toString(tea.getInt("stock")));
+		CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+		if(type != null){
+			vo.setType(type.getStr("name"));
+		}
+		vo.setStatus(tea.getStr("status"));
+		Map<String, Object> map = new HashMap<>();
+		map.put("tea", vo);
 		data.setData(map);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");

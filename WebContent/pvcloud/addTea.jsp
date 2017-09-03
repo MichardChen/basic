@@ -14,6 +14,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="<%=request.getContextPath()%>/summernote/js/bootstrap.min.js"></script>
 <script src="<%=request.getContextPath()%>/summernote/dist/summernote.js"></script>
 <script src="<%=request.getContextPath()%>/summernote/dist/lang/summernote-zh-CN.js"></script>    <!-- 中文-->
+<script type="text/javascript" src="<%=request.getContextPath()%>/assets/js/My97DatePicker/WdatePicker.js"></script>
 <style>
         .m {
             width: 800px;
@@ -76,8 +77,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
-			<td>茶叶标题</td>
-			<td><input type="text" name="title" maxlength="30" placeholder="标题最长30个字" style="width: 300px;"/></td>
+			<td>茶叶名称</td>
+			<td><input type="text" name="title" maxlength="30" style="width: 300px;"/></td>
+		</tr>
+		<tr>
+			<td>茶叶品牌</td>
+			<td><input type="text" name="brand" maxlength="30" style="width: 300px;"/></td>
+		</tr>
+		<tr>
+			<td>茶叶产地</td>
+			<td><input type="text" name="place" maxlength="30" style="width: 300px;"/></td>
+		</tr>
+		<tr>
+			<td>生产日期</td>
+			<td><input type="text" name="birthday" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/></td>
+		</tr>
+		<tr>
+			<td>规格</td>
+			<td><input type="number" name="size1" maxlength="30" style="width: 50px;"/>&nbsp;(克/片)&nbsp;&nbsp;
+			<input type="number" name="size2" maxlength="30" style="width: 50px;"/>&nbsp;(片/件)</td>
+		</tr>
+		<tr>
+			<td>出厂总量</td>
+			<td><input type="number" name="amount" maxlength="30" style="width: 50px;"/>&nbsp;(饼)</td>
 		</tr>
 		<tr>
 			<td>茶叶类型</td>
@@ -86,16 +108,55 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="050001">普洱</option>
 							<option value="050002">铁观音</option>
 						</select>
+			</td>
 		</tr>
 		<tr>
-			<td>价格</td>
+			<td>官方茶叶正品保障</td>
 			<td>
-						<input type="number" name="price" maxlength="30" placeholder="请输入价格" style="width: 300px;"/>
+						<select style="height:30px;width:120px;" name="certificate" id="certificate">
+							<option value="1">是</option>
+							<option value="0">否</option>
+						</select>
+			</td>
 		</tr>
 		<tr>
-			<td>茶叶封面图片</td>
+			<td>发售单价</td>
 			<td>
-					<input type="file" name="coverImg"/>
+				<input type="number" name="price" maxlength="30" style="width: 50px;"/>&nbsp;(件)
+			</td>
+		</tr>
+		<tr>
+			<td>发售时间</td>
+			<td>
+				<input type="text" name="fromtime" maxlength="30" style="width: 120px;" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>&nbsp;-&nbsp;<input type="text" name="totime" maxlength="30" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 120px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td>库存</td>
+			<td><input type="number" name="warehouse" maxlength="30" style="width: 50px;"/></td>
+		</tr>
+		<tr>
+			<td>茶叶图片1</td>
+			<td>
+					<input type="file" name="coverImg1"/>
+			</td>
+		</tr>
+		<tr>
+			<td>茶叶图片2</td>
+			<td>
+					<input type="file" name="coverImg2"/>
+			</td>
+		</tr>
+		<tr>
+			<td>茶叶图片3</td>
+			<td>
+					<input type="file" name="coverImg3"/>
+			</td>
+		</tr>
+		<tr>
+			<td>茶叶图片4</td>
+			<td>
+					<input type="file" name="coverImg4"/>
 			</td>
 		</tr>
 		<tr>
