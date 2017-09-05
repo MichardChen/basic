@@ -32,8 +32,6 @@ public class SystemController extends Controller {
 	 */
 	public void index(){
 		
-		removeSessionAttr("custInfo");
-		removeSessionAttr("custValue");
 		Page<SystemVersionControl> list = service.queryByPage(page, size);
 		ArrayList<SystemModel> models = new ArrayList<>();
 		SystemModel model = null;
@@ -58,37 +56,31 @@ public class SystemController extends Controller {
 	/**
 	 * 模糊查询分页
 	 */
-	public void queryByConditionByPage(){
-		/*try {
-			
-			String custInfo=getSessionAttr("custInfo");
-			String custValue=getSessionAttr("custValue");
-				
-			Page<News> custInfoList = new Page<News>(null, 0, 0, 0, 0);	
-				
-			this.setSessionAttr("custInfo",custInfo);
-			this.setSessionAttr("custValue", custValue);
-			
-			Integer page = getParaToInt(1);
-	        if (page==null || page==0){
-	            page = 1;
-	        }
-			if(custInfo!=null){
-				if(("addrName").equals(custInfo)){
-					custInfoList = service.queryByPage(page, size);
-				}else if(("phoneNum").equals(custInfo)){
-					custInfoList = service.queryByPage(page, size);
-				}else{
-					custInfoList = service.queryByPage(page, size);
-				}
-			}else{
-				custInfoList = service.queryByPage(page, size);
+	public void queryByPage(){
+		
+		Integer page = getParaToInt(1);
+        if (page==null || page==0) {
+            page = 1;
+        }
+		Page<SystemVersionControl> list = service.queryByPage(page, size);
+		ArrayList<SystemModel> models = new ArrayList<>();
+		SystemModel model = null;
+		for(SystemVersionControl system : list.getList()){
+			model = new SystemModel();
+			model.setId(system.getInt("id"));
+			model.setData1(system.getStr("data1"));
+			model.setData2(system.getStr("data2"));
+			model.setCreateTime(StringUtil.toString(system.getTimestamp("create_time")));
+			model.setMark(system.getStr("mark"));
+			CodeMst type = CodeMst.dao.queryCodestByCode(system.getStr("version_type_cd"));
+			if(type != null){
+				model.setType(type.getStr("name"));
 			}
-			setAttr("custInfoList", custInfoList);
-		} catch (Exception e) {
-			e.printStackTrace();
+			models.add(model);
 		}
-		render("custInfo.jsp");*/
+		setAttr("list", list);
+		setAttr("sList", models);
+		render("system.jsp");
 	}
 	
 	/**

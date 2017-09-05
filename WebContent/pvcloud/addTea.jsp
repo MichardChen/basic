@@ -111,6 +111,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</td>
 		</tr>
 		<tr>
+			<td>仓库</td>
+			<td>
+						<select style="height:30px;width:120px;" name="houses" id="houses">
+						<c:forEach var="s" items="${houses}">
+							<option value="${s.id}">${s.warehouse_name}</option>
+						</c:forEach>
+						</select>
+			</td>
+		</tr>
+		<tr>
 			<td>官方茶叶正品保障</td>
 			<td>
 						<select style="height:30px;width:120px;" name="certificate" id="certificate">

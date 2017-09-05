@@ -43,8 +43,6 @@ public class CarouselController extends Controller {
 	 */
 	public void index(){
 		
-		removeSessionAttr("custInfo");
-		removeSessionAttr("custValue");
 		Page<Carousel> list = service.queryByPage(page, size);
 		ArrayList<CarouselVO> models = new ArrayList<>();
 		CarouselVO model = null;

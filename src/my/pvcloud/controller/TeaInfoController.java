@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,10 +22,14 @@ import com.jfinal.upload.UploadFile;
 import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.CodeMst;
+import my.core.model.Member;
 import my.core.model.ReturnData;
 import my.core.model.Tea;
+import my.core.model.WareHouse;
+import my.core.model.WarehouseTea;
 import my.pvcloud.model.TeaModel;
 import my.pvcloud.service.TeaService;
+import my.pvcloud.service.WareHouseService;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.ImageTools;
 import my.pvcloud.util.ImageZipUtil;
@@ -34,6 +39,7 @@ import my.pvcloud.util.StringUtil;
 public class TeaInfoController extends Controller {
 
 	TeaService service = Enhancer.enhance(TeaService.class);
+	WareHouseService houseService = Enhancer.enhance(WareHouseService.class);
 	
 	int page=1;
 	int size=10;
@@ -43,8 +49,7 @@ public class TeaInfoController extends Controller {
 	 */
 	public void index(){
 		
-		removeSessionAttr("custInfo");
-		removeSessionAttr("custValue");
+		removeSessionAttr("title");
 		Page<Tea> list = service.queryByPage(page, size);
 		ArrayList<TeaModel> models = new ArrayList<>();
 		TeaModel model = null;
@@ -73,83 +78,82 @@ public class TeaInfoController extends Controller {
 	}
 	
 	/**
-	 * 模糊查询(文本框)
+	 * 模糊查询底部分页
 	 */
-	public void queryByCondition(){
-		/*try {
-			String ccustInfo = getSessionAttr("custInfo");
-			String ccustValue = getSessionAttr("custValue");
-			
-			Page<News> custInfoList = new Page<News>(null, 0, 0, 0, 0);
-			
-			String custInfo = getPara("cInfo");
-			String custValue = getPara("cValue");
-			
-			if(("").equals(custInfo) || custInfo==null){
-				custInfo = ccustInfo;
+	public void queryByPage(){
+		String stitle=getSessionAttr("title");
+		this.setSessionAttr("title",stitle);
+		Integer page = getParaToInt(1);
+        if (page==null || page==0) {
+            page = 1;
+        }
+        Page<Tea> list = service.queryByPageParams(page, size,stitle);
+		ArrayList<TeaModel> models = new ArrayList<>();
+		TeaModel model = null;
+		for(Tea tea : list.getList()){
+			model = new TeaModel();
+			model.setId(tea.getInt("id"));
+			model.setName(tea.getStr("tea_title"));
+			model.setPrice(tea.getBigDecimal("tea_price"));
+			model.setUrl(tea.getStr("desc_url"));
+			model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
+			CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+			if(type != null){
+				model.setType(type.getStr("name"));
 			}
-			if(("").equals(custValue) || custValue==null){
-				custInfo = ccustValue;
-			}
-			
-			this.setSessionAttr("custInfo",custInfo);
-			this.setSessionAttr("custValue", custValue);
-			
-			Integer page = getParaToInt(1);
-	        if (page==null || page==0) {
-	            page = 1;
-	        }
-			//用户名称
-			if(("addrName").equals(custInfo)){
-				custInfoList = service.queryByPage(page, size);
-			//用户地址
-			}else if(("phoneNum").equals(custInfo)){
-				custInfoList = service.queryByPage(page, size);
+			model.setFlg(tea.getInt("flg"));
+			if(tea.getInt("flg")==1){
+				model.setStatus("正常");
 			}else{
-				custInfoList = service.queryByPage(page, size);
+				model.setStatus("已删除");
 			}
-			setAttr("custInfoList", custInfoList);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+			models.add(model);
 		}
-		render("custInfo.jsp");*/
+		setAttr("teaList", list);
+		setAttr("sList", models);
+		render("teas.jsp");
 	}
 	
 	/**
 	 * 模糊查询分页
 	 */
 	public void queryByConditionByPage(){
-		/*try {
-			
-			String custInfo=getSessionAttr("custInfo");
-			String custValue=getSessionAttr("custValue");
-				
-			Page<News> custInfoList = new Page<News>(null, 0, 0, 0, 0);	
-				
-			this.setSessionAttr("custInfo",custInfo);
-			this.setSessionAttr("custValue", custValue);
-			
+		String title = getSessionAttr("title");
+		
+		String stitle = getPara("title");
+		title = stitle;
+		
+		this.setSessionAttr("title",stitle);
+		
 			Integer page = getParaToInt(1);
-	        if (page==null || page==0){
+	        if (page==null || page==0) {
 	            page = 1;
 	        }
-			if(custInfo!=null){
-				if(("addrName").equals(custInfo)){
-					custInfoList = service.queryByPage(page, size);
-				}else if(("phoneNum").equals(custInfo)){
-					custInfoList = service.queryByPage(page, size);
-				}else{
-					custInfoList = service.queryByPage(page, size);
+	        Page<Tea> list = service.queryByPageParams(page, size,title);
+			ArrayList<TeaModel> models = new ArrayList<>();
+			TeaModel model = null;
+			for(Tea tea : list.getList()){
+				model = new TeaModel();
+				model.setId(tea.getInt("id"));
+				model.setName(tea.getStr("tea_title"));
+				model.setPrice(tea.getBigDecimal("tea_price"));
+				model.setUrl(tea.getStr("desc_url"));
+				model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
+				CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+				if(type != null){
+					model.setType(type.getStr("name"));
 				}
-			}else{
-				custInfoList = service.queryByPage(page, size);
+				model.setFlg(tea.getInt("flg"));
+				if(tea.getInt("flg")==1){
+					model.setStatus("正常");
+				}else{
+					model.setStatus("已删除");
+				}
+				models.add(model);
 			}
-			setAttr("custInfoList", custInfoList);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		render("custInfo.jsp");*/
+			setAttr("teaList", list);
+			setAttr("sList", models);
+			render("teas.jsp");
 	}
 	
 	/**
@@ -168,6 +172,9 @@ public class TeaInfoController extends Controller {
 	
 	//增加资讯初始化
 	public void addTea(){
+		//初始化所有仓库
+		List<WareHouse> houses = houseService.queryAllHouse();
+		setAttr("houses", houses);
 		render("addTea.jsp");
 	}
 	
@@ -266,6 +273,8 @@ public class TeaInfoController extends Controller {
         Tea tea = new Tea();
         tea.set("tea_title",title);
         tea.set("brand", getPara("brand"));
+        tea.set("owner_user_id", (Integer)getSessionAttr("agentId"));
+        tea.set("owner_user_type_cd", Constants.USER_TYPE.PLATFORM_USER);
         tea.set("product_place", getPara("place"));
         tea.set("product_date", DateUtil.stringToDate(getPara("birthday")));
         tea.set("sale_from_date", DateUtil.stringToDate(getPara("fromtime")));
@@ -284,8 +293,16 @@ public class TeaInfoController extends Controller {
         tea.set("desc_url", contentUrl);
         tea.set("cover_img", logo);
         tea.set("flg", 1);
+        int houseId = getParaToInt("houses");
+       
 		boolean ret = Tea.dao.saveInfo(tea);
 		if(ret){
+			WarehouseTea houseTea = new WarehouseTea();
+		    houseTea.set("warehouse_id", houseId);
+		    houseTea.set("tea_id", tea.getInt("id"));
+		    houseTea.set("create_time", DateUtil.getNowTimestamp());
+		    houseTea.set("update_time", DateUtil.getNowTimestamp());
+		    WarehouseTea.dao.saveInfo(houseTea);
 			setAttr("message","新增成功");
 		}else{
 			setAttr("message","新增失败");

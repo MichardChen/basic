@@ -1,6 +1,9 @@
 package my.pvcloud.service;
 
+import java.util.List;
+
 import com.jfinal.plugin.activerecord.Page;
+import com.sun.org.apache.regexp.internal.recompile;
 
 import my.core.model.WareHouse;
 
@@ -24,5 +27,9 @@ public class WareHouseService {
 	
 	public int updateFlg(int id,int flg){
 		return WareHouse.dao.updateWareHouseStatus(id, flg);
+	}
+	
+	public List<WareHouse> queryAllHouse(){
+		return WareHouse.dao.queryAllHouse();
 	}
 }

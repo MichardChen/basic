@@ -1,7 +1,9 @@
 package my.pvcloud.controller;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.huadalink.route.ControllerBind;
 
@@ -11,6 +13,7 @@ import com.jfinal.plugin.activerecord.Page;
 
 import my.core.model.Member;
 import my.core.vo.MemberVO;
+import my.pvcloud.model.CustInfo;
 import my.pvcloud.service.MemberService;
 import my.pvcloud.util.StringUtil;
 
@@ -27,8 +30,8 @@ public class MemberController extends Controller {
 	 */
 	public void index(){
 		
-		removeSessionAttr("custInfo");
-		removeSessionAttr("custValue");
+		//清除查询条件
+		removeSessionAttr("cmobile");
 		Page<Member> list = service.queryByPage(page, size);
 		ArrayList<MemberVO> models = new ArrayList<>();
 		MemberVO model = null;
@@ -48,15 +51,23 @@ public class MemberController extends Controller {
 	}
 	
 	/**
-	 * 模糊查询分页
+	 * 模糊查询条件分页
 	 */
 	public void queryByConditionByPage(){
 			
+		String cmobile = getSessionAttr("cmobile");
+		Page<Member> custInfoList = new Page<Member>(null, 0, 0, 0, 0);
+		
+		String mobile = getPara("mobile");
+		cmobile = mobile;
+		
+		this.setSessionAttr("cmobile",cmobile);
+		
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
-	        Page<Member> list = service.queryByPage(page, size);
+	        Page<Member> list = service.queryMemberListByPage(page, size,mobile);
 			ArrayList<MemberVO> models = new ArrayList<>();
 			MemberVO model = null;
 			for(Member member : list.getList()){
@@ -72,6 +83,40 @@ public class MemberController extends Controller {
 			setAttr("list", list);
 			setAttr("sList", models);
 			render("member.jsp");
+	}
+	
+	/**
+	 * 模糊查询底部页码分页
+	 */
+	public void queryByPage(){
+		try {
+			
+			String cmobile=getSessionAttr("cmobile");
+			this.setSessionAttr("cmobile",cmobile);
+			Integer page = getParaToInt(1);
+	        if (page==null || page==0) {
+	            page = 1;
+	        }
+	        
+	        Page<Member> list = service.queryMemberListByPage(page, size,cmobile);
+			ArrayList<MemberVO> models = new ArrayList<>();
+			MemberVO model = null;
+			for(Member member : list.getList()){
+				model = new MemberVO();
+				model.setId(member.getInt("id"));
+				model.setMobile(member.getStr("mobile"));
+				model.setName(member.getStr("name"));
+				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
+				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
+				model.setSex(member.getInt("sex")==1?"男":"女");
+				models.add(model);
+			}
+			setAttr("list", list);
+			setAttr("sList", models);
+			render("member.jsp");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -100,5 +145,28 @@ public class MemberController extends Controller {
 			e.printStackTrace();
 		}
 		index();
+	}
+	
+	/**
+	 * 更新用户
+	 */
+	public void updateMember(){
+		int id = getParaToInt("id");
+		String mobile = getPara("mobile");
+		String name = getPara("name");
+		BigDecimal moneys = StringUtil.toBigDecimal(getPara("moneys"));
+		String statusString = getPara("status");
+		Member member = new Member();
+		member.set("id", id);
+		member.set("mobile", mobile);
+		member.set("name", name);
+		member.set("moneys", moneys);
+		member.set("status", statusString);
+		boolean ret = Member.dao.updateInfo(member);
+		if(ret){
+			setAttr("message", "保存成功");
+		}else{
+			setAttr("message", "保存失败");
+		}
 	}
 }

@@ -106,19 +106,6 @@ td{
 	   		<div class="fl">轮播信息</div>
 	   </div>
     	<hr/>	
-    <div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
-   		<div class="" style="margin-top:15px;margin-bottom:15px;">
-    		<form method="post" action="${CONTEXT_PATH}/custInfo/queryByCondition">
-    		
-    			<div style="margin-left:10px;display: inline-block;">
-   					<input type="text" class="ys1" autocomplete="off" placeholder="" name="cValue" value="${custValue }"/>
-   				</div>
-    			<div style="display: inline-block;"><input type="submit" class="ys2" value=""/></div>
-    			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(0)"/></div>
-    		</form>
-    		
-   		</div>
-	</div>		
     <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:690px;position:relative;color:black;margin-left:0px;">
     	<div class="row">
     		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table-responsive" style="padding-left:0px;padding-right:0px;font-size:14px;height:705px;">

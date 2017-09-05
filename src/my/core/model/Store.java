@@ -10,6 +10,7 @@ import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
 import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.StringUtil;
 
 @TableBind(table = "t_store", pk = "id")
 public class Store extends Model<Store> {
@@ -27,8 +28,26 @@ public class Store extends Model<Store> {
 		return Store.dao.paginate(page, size, select, sql);
 	}
 	
+	public Page<Store> queryByPageParams(int page,int size,String title){
+		
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer strBuf=new StringBuffer();
+		if(StringUtil.isNoneBlank(title)){
+			strBuf.append(" and store_name=?");
+			param.add(title);
+		}
+			
+			String sql=" from t_store where 1=1 "+strBuf+" order by create_time desc";
+			String select="select * ";
+			return Store.dao.paginate(page, size, select, sql,param.toArray());
+		}
+	
 	public Store queryById(int id){
-		return Store.dao.findFirst("select * from t_store where id = ?",id);
+		return Store.dao.findFirst("select * from t_store where id = ? order by create_time desc",id);
+	}
+	
+	public Store queryMemberStore(int userId){
+		return Store.dao.findFirst("select * from t_store where member_id = ?",userId);
 	}
 	
 	public boolean updateInfo(Store tea){

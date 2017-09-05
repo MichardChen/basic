@@ -10,6 +10,10 @@ public class Service{
 		return Document.dao.queryByPage(page, size);
 	}
 	
+	public Page<Document> queryByPageParams(int page,int size,String title){
+		return Document.dao.queryByPageParams(page, size,title);
+	}
+	
 	public Document queryById(int teaId){
 		return Document.dao.queryById(teaId);
 	}

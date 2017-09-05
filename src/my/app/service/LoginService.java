@@ -721,11 +721,15 @@ public class LoginService {
 	public ReturnData saveFeedback(LoginDTO dto){
 				
 		ReturnData data = new ReturnData();
-		int ret = Member.dao.updateCertification(dto.getUserId()
-												    ,dto.getUserName()
-												    ,dto.getCardNo()
-												    ,Constants.MEMBER_STATUS.CERTIFICATED);
-		if(ret == 0){
+		FeedBack feedBack = new FeedBack();
+		feedBack.set("user_id", dto.getUserId());
+		feedBack.set("user_type_cd", dto.getUserTypeCd());
+		feedBack.set("feedback", dto.getFeedBack());
+		feedBack.set("create_time", DateUtil.getNowTimestamp());
+		feedBack.set("update_time", DateUtil.getNowTimestamp());
+		feedBack.set("readed", 1);
+		boolean ret = FeedBack.dao.saveInfo(feedBack);
+		if(!ret){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("保存失败");
 		}else{

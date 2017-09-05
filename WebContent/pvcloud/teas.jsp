@@ -119,33 +119,18 @@ td{
 	   </div>
 	  
     	<hr/>			
-    <div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
+	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
    		<div class="" style="margin-top:15px;margin-bottom:15px;">
-    		<form method="post" action="${CONTEXT_PATH}/custInfo/queryByCondition">
-    			<div style="margin-left:10px;display: inline-block;">
-    				<select style="height:30px;width:120px;" name="cInfo">
-    					<option></option>
-    					<c:if test="${empty custInfo }">
-	    					<option value="addrName">用户姓名</option>
-							<option value="phoneNum">手机</option>
-						</c:if>
-						<c:if test="${custInfo=='addrName' }">
-							<option value="addrName" selected="selected">用户姓名</option>
-							<option value="phoneNum">手机</option>
-						</c:if>
-						<c:if test="${custInfo=='phoneNum' }">
-							<option value="addrName">用户姓名</option>
-							<option value="phoneNum" selected="selected">手机</option>
-						</c:if>
-    				</select>
-    			</div>
-    			<div style="margin-left:10px;display: inline-block;">
-   					<input type="text" class="ys1" autocomplete="off" placeholder="" name="cValue" value="${custValue }"/>
-   				</div>
-    			<div style="display: inline-block;"><input type="submit" class="ys2" value=""/></div>
-    			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(0)"/></div>
+    		<form method="post" action="${CONTEXT_PATH}/teaInfo/queryByConditionByPage" class="form-horizontal">
+    			<div style="" class="form-group">
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">茶叶名称</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="title" value="${title}"/>
+    				</div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+       			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(0)"/></div>
+			   </div>
     		</form>
-    		
    		</div>
 	</div>
     <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:690px;position:relative;color:black;margin-left:0px;">
@@ -195,7 +180,7 @@ td{
 		            <c:set var="pageSize" scope="request" value="${teaList.pageSize}" />
 		            <c:set var="totalPage" scope="request" value="${teaList.totalPage}" />
 		            <c:set var="totalRow" scope="request" value="${teaList.totalRow}" />
-					<c:set var="pageUrl" scope="request" value="${CONTEXT_PATH}/custInfo/queryByConditionByPage/-" />    	
+					<c:set var="pageUrl" scope="request" value="${CONTEXT_PATH}/teaInfo/queryByPage/-" />    	
 			    	<%@include file="../common/page.jsp"%>
 				</div>
     	</div>

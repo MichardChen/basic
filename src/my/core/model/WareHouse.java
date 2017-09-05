@@ -23,6 +23,10 @@ public class WareHouse extends Model<WareHouse> {
 		return WareHouse.dao.paginate(page, size, select, sql);
 	}
 	
+	public List<WareHouse> queryAllHouse(){
+		return WareHouse.dao.find("select * from t_warehouse where flg=1 order by update_time desc");
+	}
+	
 	public List<WareHouse> queryWareHouseList(int pageSize,int pageNum){
 		int fromRow = pageSize*(pageNum-1);
 		return WareHouse.dao.find("select * from t_warehouse order by update_time desc limit "+fromRow+","+pageSize);

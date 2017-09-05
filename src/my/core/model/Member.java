@@ -1,6 +1,7 @@
 package my.core.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.ldap.UnsupportedAuthenticationMechanismException;
@@ -11,6 +12,7 @@ import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
 import my.core.constants.Constants;
+import my.pvcloud.model.CustInfo;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
 
@@ -18,6 +20,20 @@ import my.pvcloud.util.StringUtil;
 public class Member extends Model<Member> {
 	
 	public static final Member dao = new Member();
+	
+	public Page<Member> queryMemberListByPage(int page,int size,String mobile){
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer strBuf=new StringBuffer();
+		String sql="";
+		String select="select *";
+		if(StringUtil.isNoneBlank(mobile)){
+			strBuf.append("and mobile=?");
+			param.add(mobile);
+		}
+		
+		sql=" from t_member where 1=1 "+strBuf.toString()+" order by create_time desc";
+		return Member.dao.paginate(page, size, select, sql,param.toArray());
+	}
 	
 	public Member queryMember(String mobile){
 		return Member.dao.findFirst("select * from t_member where mobile=?",mobile);

@@ -8,8 +8,11 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.core.model.CodeMst;
+import my.core.model.Document;
 import my.core.model.FeedBack;
 import my.core.model.Member;
+import my.pvcloud.model.DocumentModel;
 import my.pvcloud.model.FeedBackModel;
 import my.pvcloud.service.FeedBackService;
 import my.pvcloud.util.StringUtil;
@@ -27,9 +30,41 @@ public class FeedBackController extends Controller {
 	 */
 	public void index(){
 		
-		removeSessionAttr("custInfo");
-		removeSessionAttr("custValue");
+		removeSessionAttr("title");
 		Page<FeedBack> list = service.queryByPage(page, size);
+		ArrayList<FeedBackModel> models = new ArrayList<>();
+		FeedBackModel model = null;
+		for(FeedBack feedBack : list.getList()){
+			model = new FeedBackModel();
+			model.setContent(feedBack.getStr("feedback"));
+			model.setId(feedBack.getInt("id"));
+			Integer userId = feedBack.getInt("user_id");
+			if(userId != null){
+				Member member = Member.dao.queryMemberById(userId);
+				if(member != null){
+					model.setMobile(member.getStr("mobile"));
+					model.setName(member.getStr("name"));
+				}
+			}
+			model.setFlg(feedBack.getInt("readed"));
+			models.add(model);
+		}
+		setAttr("list", list);
+		setAttr("sList", models);
+		render("feedback.jsp");
+	}
+	
+	/**
+	 * 模糊查询(文本框)
+	 */
+	public void queryByPage(){
+		String title=getSessionAttr("title");
+		this.setSessionAttr("title",title);
+		Integer page = getParaToInt(1);
+        if (page==null || page==0) {
+            page = 1;
+        }
+        Page<FeedBack> list = service.queryByPageParams(page, size,title);
 		ArrayList<FeedBackModel> models = new ArrayList<>();
 		FeedBackModel model = null;
 		for(FeedBack feedBack : list.getList()){
@@ -56,36 +91,38 @@ public class FeedBackController extends Controller {
 	 * 模糊查询分页
 	 */
 	public void queryByConditionByPage(){
-		/*try {
-			
-			String custInfo=getSessionAttr("custInfo");
-			String custValue=getSessionAttr("custValue");
-				
-			Page<News> custInfoList = new Page<News>(null, 0, 0, 0, 0);	
-				
-			this.setSessionAttr("custInfo",custInfo);
-			this.setSessionAttr("custValue", custValue);
-			
+		String title = getSessionAttr("title");
+		String ptitle = getPara("title");
+		title = ptitle;
+		
+		this.setSessionAttr("title",title);
+		
 			Integer page = getParaToInt(1);
-	        if (page==null || page==0){
+	        if (page==null || page==0) {
 	            page = 1;
 	        }
-			if(custInfo!=null){
-				if(("addrName").equals(custInfo)){
-					custInfoList = service.queryByPage(page, size);
-				}else if(("phoneNum").equals(custInfo)){
-					custInfoList = service.queryByPage(page, size);
-				}else{
-					custInfoList = service.queryByPage(page, size);
+	        
+	        Page<FeedBack> list = service.queryByPageParams(page, size,title);
+			ArrayList<FeedBackModel> models = new ArrayList<>();
+			FeedBackModel model = null;
+			for(FeedBack feedBack : list.getList()){
+				model = new FeedBackModel();
+				model.setContent(feedBack.getStr("feedback"));
+				model.setId(feedBack.getInt("id"));
+				Integer userId = feedBack.getInt("user_id");
+				if(userId != null){
+					Member member = Member.dao.queryMemberById(userId);
+					if(member != null){
+						model.setMobile(member.getStr("mobile"));
+						model.setName(member.getStr("name"));
+					}
 				}
-			}else{
-				custInfoList = service.queryByPage(page, size);
+				model.setFlg(feedBack.getInt("readed"));
+				models.add(model);
 			}
-			setAttr("custInfoList", custInfoList);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		render("custInfo.jsp");*/
+			setAttr("list", list);
+			setAttr("sList", models);
+			render("feedback.jsp");
 	}
 	
 	/**

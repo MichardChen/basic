@@ -11,6 +11,7 @@
 <link href="${CONTEXT_PATH}/assets/css/common.css" rel="stylesheet">
 <script src="${CONTEXT_PATH}/assets/lib/jquery-2.1.1.min.js"></script>
 <script src="${CONTEXT_PATH}/assets/js/common.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/assets/js/My97DatePicker/WdatePicker.js"></script>
 <script type="text/javascript">
 var str='${message}';
 if(str!=''){
@@ -101,7 +102,20 @@ td{
 	   		<div class="fl">反馈信息</div>
 	   </div>
 	  
-    	<hr/>			
+    	<hr/>	
+    	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
+   		<div class="" style="margin-top:15px;margin-bottom:15px;">
+    		<form method="post" action="${CONTEXT_PATH}/feedbackInfo/queryByConditionByPage" class="form-horizontal">
+    			<div style="" class="form-group">
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">反馈时间</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+    				</div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+			   </div>
+    		</form>
+   		</div>
+	</div>		
     <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:690px;position:relative;color:black;margin-left:0px;">
     	<div class="row">
     		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table-responsive" style="padding-left:0px;padding-right:0px;font-size:14px;height:705px;">
@@ -149,7 +163,7 @@ td{
 		            <c:set var="pageSize" scope="request" value="${list.pageSize}" />
 		            <c:set var="totalPage" scope="request" value="${list.totalPage}" />
 		            <c:set var="totalRow" scope="request" value="${list.totalRow}" />
-					<c:set var="pageUrl" scope="request" value="${CONTEXT_PATH}/custInfo/queryByConditionByPage/-" />    	
+					<c:set var="pageUrl" scope="request" value="${CONTEXT_PATH}/feedbackInfo/queryByPage/-" />    	
 			    	<%@include file="../common/page.jsp"%>
 				</div>
     	</div>

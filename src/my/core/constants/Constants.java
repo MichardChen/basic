@@ -44,6 +44,7 @@ public interface Constants {
 	/** 用户类型*/
 	public static interface USER_TYPE{
 		public static final String USER_TYPE_CLIENT = "010001";
+		public static final String PLATFORM_USER = "010002";
 	}
 	
 	/** 消息*/
@@ -272,6 +273,7 @@ public interface Constants {
 		public static final String FILE = "http://192.168.1.131:82/file/";
 		public static final String ICON = "http://192.168.1.131:82/icon/";
 		public static final String IMG = "http://192.168.1.131:82/img/";
+		public static final String STORE = "http://192.168.1.131:82/store/";
 	}
 	
 	public static interface FILE_HOST{
@@ -281,6 +283,7 @@ public interface Constants {
 		public static final String FILE = "F:\\upload\\file\\";
 		public static final String ICON = "F:\\upload\\icon\\";
 		public static final String IMG = "F:\\upload\\img\\";
+		public static final String STORE = "F:\\upload\\store\\";
 	}*/
 
 	
@@ -292,6 +295,7 @@ public interface Constants {
 		public static final String FILE = "http://139.196.171.205:88/file/";
 		public static final String ICON = "http://139.196.171.205:88/icon/";
 		public static final String IMG = "http://139.196.171.205:88/img/";
+		public static final String STORE = "http://139.196.171.205:88/store/";
 	}
 	
 	public static interface FILE_HOST{
@@ -301,6 +305,7 @@ public interface Constants {
 		public static final String FILE = "D:\\upload\\file\\";
 		public static final String ICON = "D:\\upload\\icon\\";
 		public static final String IMG = "D:\\upload\\img\\";
+		public static final String STORE = "D:\\upload\\store\\";
 	}
 	
 	public static interface MEMBER_STATUS{
@@ -340,4 +345,10 @@ public interface Constants {
 		public static final String CUSTOM = "100001";
 	}
 	
+	public static interface STORE_STATUS{
+		public static final String NOT_CERTIFICATE = "110001";
+		public static final String STAY_CERTIFICATE = "110002";
+		public static final String CERTIFICATE_SUCCESS = "110003";
+		public static final String CERTIFICATE_FAIL = "110004";
+	}
 }

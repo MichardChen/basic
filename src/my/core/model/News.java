@@ -11,12 +11,27 @@ import com.jfinal.plugin.activerecord.Page;
 
 import my.pvcloud.model.Member;
 import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.StringUtil;
 
 @TableBind(table = "t_news", pk = "id")
 public class News extends Model<News> {
 	
 	public static final News dao = new News();
 
+	public Page<News> queryNewsListByPage(int page,int size,String title){
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer strBuf=new StringBuffer();
+		String sql="";
+		String select="select *";
+		if(StringUtil.isNoneBlank(title)){
+			strBuf.append("and news_title=?");
+			param.add(title);
+		}
+		
+		sql=" from t_news where 1=1 "+strBuf.toString()+" order by create_time desc";
+		return News.dao.paginate(page, size, select, sql,param.toArray());
+	}
+	
 	public Page<News> queryByPage(int page,int size){
 		String sql=" from t_news order by create_time desc";
 		String select="select * ";

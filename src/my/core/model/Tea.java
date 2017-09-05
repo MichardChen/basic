@@ -10,6 +10,7 @@ import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
 import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.StringUtil;
 
 @TableBind(table = "t_tea", pk = "id")
 public class Tea extends Model<Tea> {
@@ -26,6 +27,21 @@ public class Tea extends Model<Tea> {
 		String select="select * ";
 		return Tea.dao.paginate(page, size, select, sql);
 	}
+	
+	public Page<Tea> queryByPage(int page,int size,String title){
+		
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer strBuf=new StringBuffer();
+		if(StringUtil.isNoneBlank(title)){
+			strBuf.append(" and tea_title=?");
+			param.add(title);
+		}
+			
+			
+			String sql=" from t_tea where 1=1"+strBuf+" order by create_time desc";
+			String select="select * ";
+			return Tea.dao.paginate(page, size, select, sql,param.toArray());
+		}
 	
 	public Tea queryById(int id){
 		return Tea.dao.findFirst("select * from t_tea where id = ?",id);

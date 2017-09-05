@@ -53,7 +53,7 @@
           	</div>
 				<div class="" style="display:inline-block;margin-left:20px;">
 				</div>
-				<div style="display:inline-block;color:white;font-size:20px;">南靖工作平台</div>
+				<div style="display:inline-block;color:white;font-size:20px;">同记工作平台</div>
 				<div class="btn-group" style="display:inline-block;margin-left:150px;font-size:15px;margin-top:-10px;">
 					<a data-toggle="dropdown" class="dropdown-toggle" id="dropdownMenu">
                		<span class="clear"> <span class="block m-t-xs"> <strong class="font-bold" style="color:white;">{{ d.username }}{{# if(d.realname==null){ }}{{# }else{ }}{{ d.realname }}{{# } }}</strong><b class="caret" style="border-top:4px dashed #fff;"></b></span>

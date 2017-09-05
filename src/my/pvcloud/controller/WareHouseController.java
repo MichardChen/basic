@@ -37,8 +37,6 @@ public class WareHouseController extends Controller {
 	 */
 	public void index(){
 		
-		removeSessionAttr("custInfo");
-		removeSessionAttr("custValue");
 		Page<WareHouse> list = service.queryByPage(page, size);
 		ArrayList<WareHouseVO> models = new ArrayList<>();
 		WareHouseVO model = null;

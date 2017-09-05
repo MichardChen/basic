@@ -22,6 +22,7 @@ import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.Document;
+import my.core.model.Member;
 import my.core.model.ReturnData;
 import my.core.model.Tea;
 import my.pvcloud.model.DocumentModel;
@@ -42,8 +43,7 @@ public class DodumentController extends Controller {
 	
 	public void index(){
 		
-		removeSessionAttr("custInfo");
-		removeSessionAttr("custValue");
+		removeSessionAttr("title");
 		String flg = getPara(0);
 		if(StringUtil.equals(flg,"1")){
 			//默认发售说明
@@ -79,81 +79,81 @@ public class DodumentController extends Controller {
 	/**
 	 * 模糊查询(文本框)
 	 */
-	public void queryByCondition(){
-		/*try {
-			String ccustInfo = getSessionAttr("custInfo");
-			String ccustValue = getSessionAttr("custValue");
-			
-			Page<News> custInfoList = new Page<News>(null, 0, 0, 0, 0);
-			
-			String custInfo = getPara("cInfo");
-			String custValue = getPara("cValue");
-			
-			if(("").equals(custInfo) || custInfo==null){
-				custInfo = ccustInfo;
+	public void queryByPage(){
+		String title=getSessionAttr("title");
+		this.setSessionAttr("title",title);
+		Integer page = getParaToInt(1);
+        if (page==null || page==0) {
+            page = 1;
+        }
+        Page<Document> list = service.queryByPageParams(page, size,title);
+		ArrayList<DocumentModel> models = new ArrayList<>();
+		DocumentModel model = null;
+		for(Document document : list.getList()){
+			model = new DocumentModel();
+			model.setId(document.getInt("id"));
+			model.setContent(document.getStr("content"));
+			model.setFlg(document.getInt("flg"));
+			model.setTitle(document.getStr("title"));
+			model.setUrl(document.getStr("desc_url"));
+			CodeMst type = CodeMst.dao.queryCodestByCode(document.getStr("type_cd"));
+			if(type != null){
+				model.setType(type.getStr("name"));
 			}
-			if(("").equals(custValue) || custValue==null){
-				custInfo = ccustValue;
-			}
-			
-			this.setSessionAttr("custInfo",custInfo);
-			this.setSessionAttr("custValue", custValue);
-			
-			Integer page = getParaToInt(1);
-	        if (page==null || page==0) {
-	            page = 1;
-	        }
-			//用户名称
-			if(("addrName").equals(custInfo)){
-				custInfoList = service.queryByPage(page, size);
-			//用户地址
-			}else if(("phoneNum").equals(custInfo)){
-				custInfoList = service.queryByPage(page, size);
+			model.setFlg(document.getInt("flg"));
+			if(document.getInt("flg")==1){
+				model.setStatus("通过");
 			}else{
-				custInfoList = service.queryByPage(page, size);
+				model.setStatus("未通过");
 			}
-			setAttr("custInfoList", custInfoList);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+			models.add(model);
 		}
-		render("custInfo.jsp");*/
+		setAttr("list", list);
+		setAttr("sList", models);
+		render("document.jsp"); 
 	}
 	
 	/**
 	 * 模糊查询分页
 	 */
 	public void queryByConditionByPage(){
-		/*try {
-			
-			String custInfo=getSessionAttr("custInfo");
-			String custValue=getSessionAttr("custValue");
-				
-			Page<News> custInfoList = new Page<News>(null, 0, 0, 0, 0);	
-				
-			this.setSessionAttr("custInfo",custInfo);
-			this.setSessionAttr("custValue", custValue);
-			
+		
+		String title = getSessionAttr("title");
+		String ptitle = getPara("title");
+		title = ptitle;
+		
+		this.setSessionAttr("title",title);
+		
 			Integer page = getParaToInt(1);
-	        if (page==null || page==0){
+	        if (page==null || page==0) {
 	            page = 1;
 	        }
-			if(custInfo!=null){
-				if(("addrName").equals(custInfo)){
-					custInfoList = service.queryByPage(page, size);
-				}else if(("phoneNum").equals(custInfo)){
-					custInfoList = service.queryByPage(page, size);
-				}else{
-					custInfoList = service.queryByPage(page, size);
+	        Page<Document> list = service.queryByPageParams(page, size,title);
+			ArrayList<DocumentModel> models = new ArrayList<>();
+			DocumentModel model = null;
+			for(Document document : list.getList()){
+				model = new DocumentModel();
+				model.setId(document.getInt("id"));
+				model.setContent(document.getStr("content"));
+				model.setFlg(document.getInt("flg"));
+				model.setTitle(document.getStr("title"));
+				model.setUrl(document.getStr("desc_url"));
+				CodeMst type = CodeMst.dao.queryCodestByCode(document.getStr("type_cd"));
+				if(type != null){
+					model.setType(type.getStr("name"));
 				}
-			}else{
-				custInfoList = service.queryByPage(page, size);
+				model.setFlg(document.getInt("flg"));
+				if(document.getInt("flg")==1){
+					model.setStatus("通过");
+				}else{
+					model.setStatus("未通过");
+				}
+				models.add(model);
 			}
-			setAttr("custInfoList", custInfoList);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		render("custInfo.jsp");*/
+			setAttr("list", list);
+			setAttr("sList", models);
+			render("document.jsp"); 
+	     
 	}
 	
 	/**

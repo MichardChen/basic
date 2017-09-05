@@ -11,6 +11,10 @@ public class FeedBackService {
 		return FeedBack.dao.queryByPage(page, size);
 	}
 	
+	public Page<FeedBack> queryByPageParams(int page,int size,String date){
+		return FeedBack.dao.queryFeedBackListByPage(page, size,date);
+	}
+	
 	public FeedBack queryById(int id){
 		return FeedBack.dao.queryById(id);
 	}

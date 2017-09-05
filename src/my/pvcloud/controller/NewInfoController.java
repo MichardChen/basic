@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,9 +23,11 @@ import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.Admin;
 import my.core.model.CodeMst;
+import my.core.model.Member;
 import my.core.model.News;
 import my.core.model.ReturnData;
 import my.core.model.User;
+import my.core.vo.MemberVO;
 import my.pvcloud.model.NewsModel;
 import my.pvcloud.service.NewsInfoService;
 import my.pvcloud.util.ImageTools;
@@ -43,8 +46,7 @@ public class NewInfoController extends Controller {
 	 * 用户建档
 	 */
 	public void index(){
-		removeSessionAttr("custInfo");
-		removeSessionAttr("custValue");
+		removeSessionAttr("title");
 		Page<News> newsList = service.queryByPage(page, size);
 		ArrayList<NewsModel> models = new ArrayList<>();
 		NewsModel model = null;
@@ -87,80 +89,99 @@ public class NewInfoController extends Controller {
 	 * 模糊查询(文本框)
 	 */
 	public void queryByCondition(){
-		try {
-			String ccustInfo = getSessionAttr("custInfo");
-			String ccustValue = getSessionAttr("custValue");
-			
-			Page<News> custInfoList = new Page<News>(null, 0, 0, 0, 0);
-			
-			String custInfo = getPara("cInfo");
-			String custValue = getPara("cValue");
-			
-			if(("").equals(custInfo) || custInfo==null){
-				custInfo = ccustInfo;
-			}
-			if(("").equals(custValue) || custValue==null){
-				custInfo = ccustValue;
-			}
-			
-			this.setSessionAttr("custInfo",custInfo);
-			this.setSessionAttr("custValue", custValue);
-			
+		String title = getSessionAttr("title");
+		String stitle = getPara("title");
+		title = stitle;
+		
+		this.setSessionAttr("title",title);
+		
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
-			//用户名称
-			if(("addrName").equals(custInfo)){
-				custInfoList = service.queryByPage(page, size);
-			//用户地址
-			}else if(("phoneNum").equals(custInfo)){
-				custInfoList = service.queryByPage(page, size);
-			}else{
-				custInfoList = service.queryByPage(page, size);
+	        ArrayList<NewsModel> models = new ArrayList<>();
+			NewsModel model = null;
+			Page<News> newsList = News.dao.queryNewsListByPage(page, size, stitle);
+			for(News news : newsList.getList()){
+				model = new NewsModel();
+				model.setId(news.getInt("id"));
+				model.setTitle(news.getStr("news_title"));
+				CodeMst type = CodeMst.dao.queryCodestByCode(news.getStr("news_type_cd"));
+				if(type != null){
+					model.setType(type.getStr("name"));
+				}else{
+					model.setType("");
+				}
+				
+				Integer status = (Integer)news.getInt("flg");
+				model.setFlg(status);
+				if(status == 1){
+					model.setStatus("正常");
+				}else{
+					model.setStatus("删除");
+				}
+				
+				model.setCreateTime(StringUtil.toString(news.getTimestamp("create_time")));
+				User user = User.dao.queryById(news.getInt("create_user"));
+				if(user != null){
+					model.setCreateUser(user.getStr("username"));
+				}else{
+					model.setCreateUser("");
+				}
+				model.setUrl(news.getStr("content_url"));
+				models.add(model);
 			}
-			setAttr("custInfoList", custInfoList);
 			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		render("custInfo.jsp");
+			setAttr("newsList", newsList);
+			setAttr("sList", models);
+			render("news.jsp");
 	}
 	
 	/**
 	 * 模糊查询分页
 	 */
-	public void queryByConditionByPage(){
-		try {
-			
-			String custInfo=getSessionAttr("custInfo");
-			String custValue=getSessionAttr("custValue");
-				
-			Page<News> custInfoList = new Page<News>(null, 0, 0, 0, 0);	
-				
-			this.setSessionAttr("custInfo",custInfo);
-			this.setSessionAttr("custValue", custValue);
-			
+	public void queryByPage(){
+			String title=getSessionAttr("title");
 			Integer page = getParaToInt(1);
-	        if (page==null || page==0){
+	        if (page==null || page==0) {
 	            page = 1;
 	        }
-			if(custInfo!=null){
-				if(("addrName").equals(custInfo)){
-					custInfoList = service.queryByPage(page, size);
-				}else if(("phoneNum").equals(custInfo)){
-					custInfoList = service.queryByPage(page, size);
+	        ArrayList<NewsModel> models = new ArrayList<>();
+			NewsModel model = null;
+			Page<News> newsList = News.dao.queryNewsListByPage(page, size, title);
+			for(News news : newsList.getList()){
+				model = new NewsModel();
+				model.setId(news.getInt("id"));
+				model.setTitle(news.getStr("news_title"));
+				CodeMst type = CodeMst.dao.queryCodestByCode(news.getStr("news_type_cd"));
+				if(type != null){
+					model.setType(type.getStr("name"));
 				}else{
-					custInfoList = service.queryByPage(page, size);
+					model.setType("");
 				}
-			}else{
-				custInfoList = service.queryByPage(page, size);
+				
+				Integer status = (Integer)news.getInt("flg");
+				model.setFlg(status);
+				if(status == 1){
+					model.setStatus("正常");
+				}else{
+					model.setStatus("删除");
+				}
+				
+				model.setCreateTime(StringUtil.toString(news.getTimestamp("create_time")));
+				User user = User.dao.queryById(news.getInt("create_user"));
+				if(user != null){
+					model.setCreateUser(user.getStr("username"));
+				}else{
+					model.setCreateUser("");
+				}
+				model.setUrl(news.getStr("content_url"));
+				models.add(model);
 			}
-			setAttr("custInfoList", custInfoList);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		render("custInfo.jsp");
+			
+			setAttr("newsList", newsList);
+			setAttr("sList", models);
+			render("news.jsp");
 	}
 	
 	/**
