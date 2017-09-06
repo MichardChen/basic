@@ -60,4 +60,14 @@ public class Order extends Model<Order> {
 	public boolean del(int id){
 		return Order.dao.deleteById(id);
 	}
+	
+	public List<Order> queryBuyNewTeaRecord(int pageSize,int pageNum,int userId){
+		int fromRow = (pageNum-1)*pageSize;
+		return Order.dao.find("select * from t_order where buy_user_id="+userId+" and sale_user_type='010002' order by update_time desc limit "+fromRow+","+pageSize);
+	}
+	
+	public List<Order> querySaleTeaRecord(int pageSize,int pageNum,int userId){
+		int fromRow = (pageNum-1)*pageSize;
+		return Order.dao.find("select * from t_order where sale_user_id="+userId+" and sale_user_type !='010002' order by update_time desc limit "+fromRow+","+pageSize);
+	}
 }

@@ -137,6 +137,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//上传头像
+	@Before(RequestInterceptor.class)
 	public void uploadIcon() throws Exception{
 		UploadFile uploadFile = getFile("icon");
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
@@ -165,72 +166,84 @@ public class RestfulController extends Controller{
 	}
 	
 	//修改qq
+	@Before(RequestInterceptor.class)
 	public void updateQQ() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.updateQQ(dto.getUserId(), dto.getQq()));
 	}
 	
 	//修改微信
+	@Before(RequestInterceptor.class)
 	public void updateWX() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.updateWX(dto.getUserId(), dto.getWx()));
 	}
 	
 	//修改昵称
+	@Before(RequestInterceptor.class)
 	public void updateNickName() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.updateNickName(dto.getUserId(), dto.getNickName()));
 	}
 	
 	//认证
+	@Before(RequestInterceptor.class)
 	public void updateCertificated() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.updateCertificate(dto));
 	}
 	
 	//收货地址列表
+	@Before(RequestInterceptor.class)
 	public void queryMemberAddressList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryMemberAddressList(dto));
 	}
 	
 	//添加收货地址
+	@Before(RequestInterceptor.class)
 	public void saveAddress(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.saveAddress(dto));
 	}
 	
 	//修改收货地址
+	@Before(RequestInterceptor.class)
 	public void updateAddress(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.updateAddress(dto));
 	}
 	
 	//查找收货地址
+	@Before(RequestInterceptor.class)
 	public void queryAddressById(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryAddressById(dto));
 	}
 	
 	//删除收货地址
+	@Before(RequestInterceptor.class)
 	public void deleteAddress(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.deleteAddressById(dto));
 	}
 	
 	//提交反馈
+	@Before(RequestInterceptor.class)
 	public void saveFeedBack(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.saveFeedback(dto));
 	}
 	
 	//检查版本更新
+	@Before(RequestInterceptor.class)
 	public void queryAppVersion(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryVersion(dto));
 	}
 	
 	//查询消息列表
+	@Before(RequestInterceptor.class)
 	public void queryMessageList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryMessageList(dto));
@@ -249,6 +262,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//绑定门店
+	@Before(RequestInterceptor.class)
 	public void bindStore(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		//上传头像
@@ -390,6 +404,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//查询绑定门店详情
+	@Before(RequestInterceptor.class)
 	public void queryStoreDetail(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		int memberId = dto.getUserId();
@@ -432,6 +447,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//更新绑定门店
+	@Before(RequestInterceptor.class)
 	public void updateBindStore(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		//上传头像
@@ -567,5 +583,52 @@ public class RestfulController extends Controller{
 			data.setMessage("提交失败");
 			renderJson(data);
 		}
+	}
+	
+	//账单
+	public void queryBuyNewTeaRecord(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		String queryType = dto.getType();
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.BUY_TEA)){
+			//买茶记录
+			renderJson(service.queryBuyNewTeaRecord(dto));
+			return;
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.SALE_TEA)){
+			//卖茶记录
+			renderJson(service.querySaleTeaRecord(dto));
+			return;
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.WAREHOUSE_FEE)){
+			//仓储费记录
+			renderJson(service.queryWareHouseRecords(dto));
+			return;
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.GET_TEA)){
+			//取茶记录
+			renderJson(service.queryGetTeaRecords(dto));
+			return;
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.RECHARGE)){
+			//充值记录
+			
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.WITHDRAW)){
+			//提现记录
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.REFUND)){
+			//退款记录
+		}
+		
+		ReturnData data = new ReturnData();
+		data.setCode(Constants.STATUS_CODE.FAIL);
+		data.setMessage("查询失败");
+		renderJson(data);
 	}
 }

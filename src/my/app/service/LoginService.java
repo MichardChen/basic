@@ -23,11 +23,14 @@ import my.core.model.CodeMst;
 import my.core.model.District;
 import my.core.model.Document;
 import my.core.model.FeedBack;
+import my.core.model.GetTeaRecord;
 import my.core.model.Member;
 import my.core.model.Message;
 import my.core.model.News;
+import my.core.model.Order;
 import my.core.model.Province;
 import my.core.model.ReceiveAddress;
+import my.core.model.RecordListModel;
 import my.core.model.ReturnData;
 import my.core.model.SystemVersionControl;
 import my.core.model.Tea;
@@ -907,6 +910,232 @@ public class LoginService {
 		data.setData(map);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
+		return data;
+	}
+	
+	//新茶购买记录
+	public ReturnData queryBuyNewTeaRecord(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		List<Order> list = Order.dao.queryBuyNewTeaRecord(dto.getPageSize()
+														 ,dto.getPageNum()
+														 ,dto.getUserId());
+		List<RecordListModel> models = new ArrayList<>();
+		RecordListModel model = null;
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		for(Order order : list){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setId(order.getInt("id"));
+			model.setDate(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
+			Tea tea = Tea.dao.queryById(order.getInt("tea_id"));
+			if(tea != null){
+				model.setContent(tea.getStr("tea_title")+"x"+order.getInt("quality")+"片");
+			}
+			model.setMoneys("-"+StringUtil.toString(order.getBigDecimal("pay_amount")));
+			models.add(model);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("logs", models);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		data.setData(map);
+		return data;
+	}
+	
+	//卖茶记录
+	public ReturnData querySaleTeaRecord(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		List<Order> list = Order.dao.querySaleTeaRecord(dto.getPageSize()
+														 ,dto.getPageNum()
+														 ,dto.getUserId());
+		List<RecordListModel> models = new ArrayList<>();
+		RecordListModel model = null;
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		for(Order order : list){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setId(order.getInt("id"));
+			model.setDate(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
+			Tea tea = Tea.dao.queryById(order.getInt("tea_id"));
+			if(tea != null){
+				model.setContent(tea.getStr("tea_title")+"x"+order.getInt("quality")+"片");
+			}
+			model.setMoneys("+"+StringUtil.toString(order.getBigDecimal("pay_amount")));
+			models.add(model);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("logs", models);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		data.setData(map);
+		return data;
+	}
+	
+	//取茶记录
+	public ReturnData queryGetTeaRecords(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		List<GetTeaRecord> list = GetTeaRecord.dao.queryRecords(dto.getPageSize()
+															   ,dto.getPageNum()
+															   ,dto.getUserId());
+		List<RecordListModel> models = new ArrayList<>();
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		RecordListModel model = null;
+		for(GetTeaRecord record : list){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
+			if(tea != null){
+				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+"片");
+			}
+			//model.setMoneys(StringUtil.toString(record.getBigDecimal("warehouse_fee")));
+			models.add(model);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("logs", models);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		data.setData(map);
+		return data;
+	}
+	
+	//仓储费记录
+	public ReturnData queryWareHouseRecords(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		List<GetTeaRecord> list = GetTeaRecord.dao.queryRecords(dto.getPageSize()
+															   ,dto.getPageNum()
+															   ,dto.getUserId());
+		List<RecordListModel> models = new ArrayList<>();
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		RecordListModel model = null;
+		for(GetTeaRecord record : list){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
+			if(tea != null){
+				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+"片");
+			}
+			model.setMoneys(StringUtil.toString(record.getBigDecimal("warehouse_fee")));
+			models.add(model);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("logs", models);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		data.setData(map);
+		return data;
+	}
+	
+	//充值记录
+	public ReturnData queryRechargeRecords(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		List<GetTeaRecord> list = GetTeaRecord.dao.queryRecords(dto.getPageSize()
+															   ,dto.getPageNum()
+															   ,dto.getUserId());
+		List<RecordListModel> models = new ArrayList<>();
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		RecordListModel model = null;
+		for(GetTeaRecord record : list){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
+			if(tea != null){
+				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+"片");
+			}
+			model.setMoneys(StringUtil.toString(record.getBigDecimal("warehouse_fee")));
+			models.add(model);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("logs", models);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		data.setData(map);
+		return data;
+	}
+	
+	//提现记录
+	public ReturnData queryWithDrawRecords(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		List<GetTeaRecord> list = GetTeaRecord.dao.queryRecords(dto.getPageSize()
+															   ,dto.getPageNum()
+															   ,dto.getUserId());
+		List<RecordListModel> models = new ArrayList<>();
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		RecordListModel model = null;
+		for(GetTeaRecord record : list){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
+			if(tea != null){
+				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+"片");
+			}
+			model.setMoneys(StringUtil.toString(record.getBigDecimal("warehouse_fee")));
+			models.add(model);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("logs", models);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		data.setData(map);
+		return data;
+	}
+	
+	//退款记录
+	public ReturnData queryRefundRecords(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		List<GetTeaRecord> list = GetTeaRecord.dao.queryRecords(dto.getPageSize()
+															   ,dto.getPageNum()
+															   ,dto.getUserId());
+		List<RecordListModel> models = new ArrayList<>();
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		RecordListModel model = null;
+		for(GetTeaRecord record : list){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
+			if(tea != null){
+				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+"片");
+			}
+			model.setMoneys(StringUtil.toString(record.getBigDecimal("warehouse_fee")));
+			models.add(model);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("logs", models);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		data.setData(map);
 		return data;
 	}
 }

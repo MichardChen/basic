@@ -351,4 +351,14 @@ public interface Constants {
 		public static final String CERTIFICATE_SUCCESS = "110003";
 		public static final String CERTIFICATE_FAIL = "110004";
 	}
+	
+	public static interface LOG_TYPE_CD{
+		public static final String BUY_TEA = "120001";
+		public static final String SALE_TEA = "120002";
+		public static final String WAREHOUSE_FEE = "120003";
+		public static final String GET_TEA = "120004";
+		public static final String RECHARGE = "120005";
+		public static final String WITHDRAW = "120006";
+		public static final String REFUND = "120007";
+	}
 }
