@@ -300,13 +300,19 @@ public class RestfulController extends Controller{
 		store.set("update_time", DateUtil.getNowTimestamp());
 		store.set("status", Constants.STORE_STATUS.STAY_CERTIFICATE);
 
-		boolean ret = Store.dao.saveInfo(store);
+		Store s = Store.dao.saveInfo(store);
+		boolean ret = false;
+		if(s == null || s.getInt("id") == 0){
+			ret = false;
+		}else{
+			ret = true;
+		}
 		boolean ret1 = true;
 		boolean ret2 = true;
 		boolean ret3 = true;
 		ReturnData data = new ReturnData();
 		if(ret){
-			int id = store.getInt("id");
+			int id = s.getInt("id");
 			//表单中有提交图片，要先获取图片
 			FileService fs=new FileService();
 			String logo1 = "";
@@ -586,7 +592,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//账单
-	public void queryBuyNewTeaRecord(){
+	public void queryRecord(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		String queryType = dto.getType();
 		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.BUY_TEA)){
@@ -615,15 +621,20 @@ public class RestfulController extends Controller{
 		
 		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.RECHARGE)){
 			//充值记录
-			
+			renderJson(service.queryRechargeRecords(dto));
+			return;
 		}
 		
 		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.WITHDRAW)){
 			//提现记录
+			renderJson(service.queryWithDrawRecords(dto));
+			return;
 		}
 		
 		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.REFUND)){
 			//退款记录
+			renderJson(service.queryRefundRecords(dto));
+			return;
 		}
 		
 		ReturnData data = new ReturnData();

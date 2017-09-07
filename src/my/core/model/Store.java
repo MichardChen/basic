@@ -54,8 +54,10 @@ public class Store extends Model<Store> {
 		return new Store().setAttrs(tea).update();
 	}
 	
-	public boolean saveInfo(Store tea){
-		return new Store().setAttrs(tea).save();
+	public Store saveInfo(Store tea){
+		Store store = new Store().setAttrs(tea);
+		store.save();
+		return store;
 	}
 	
 	public boolean del(int id){

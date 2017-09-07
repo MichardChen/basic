@@ -17,6 +17,7 @@ import com.sun.crypto.provider.RSACipher;
 import my.core.constants.Constants;
 import my.core.model.AcceessToken;
 import my.core.model.Admin;
+import my.core.model.BankCardRecord;
 import my.core.model.Carousel;
 import my.core.model.City;
 import my.core.model.CodeMst;
@@ -1046,9 +1047,10 @@ public class LoginService {
 	//充值记录
 	public ReturnData queryRechargeRecords(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		List<GetTeaRecord> list = GetTeaRecord.dao.queryRecords(dto.getPageSize()
-															   ,dto.getPageNum()
-															   ,dto.getUserId());
+		List<BankCardRecord> list = BankCardRecord.dao.queryRecords(dto.getPageSize()
+																   ,dto.getPageNum()
+																   ,dto.getUserId()
+																   ,Constants.BANK_MANU_TYPE_CD.RECHARGE);
 		List<RecordListModel> models = new ArrayList<>();
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
 		if(codeMst == null){
@@ -1056,15 +1058,12 @@ public class LoginService {
 		}
 		String type = codeMst.getStr("data2");
 		RecordListModel model = null;
-		for(GetTeaRecord record : list){
+		for(BankCardRecord record : list){
 			model = new RecordListModel();
 			model.setType(type);
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
-			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
-			if(tea != null){
-				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+"片");
-			}
-			model.setMoneys(StringUtil.toString(record.getBigDecimal("warehouse_fee")));
+			model.setMoneys("+"+StringUtil.toString(record.getBigDecimal("moneys")));
+			model.setContent("银行卡充值："+StringUtil.toString(record.getBigDecimal("moneys")));
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -1078,9 +1077,10 @@ public class LoginService {
 	//提现记录
 	public ReturnData queryWithDrawRecords(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		List<GetTeaRecord> list = GetTeaRecord.dao.queryRecords(dto.getPageSize()
-															   ,dto.getPageNum()
-															   ,dto.getUserId());
+		List<BankCardRecord> list = BankCardRecord.dao.queryRecords(dto.getPageSize()
+																   ,dto.getPageNum()
+																   ,dto.getUserId()
+																   ,Constants.BANK_MANU_TYPE_CD.WITHDRAW);
 		List<RecordListModel> models = new ArrayList<>();
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
 		if(codeMst == null){
@@ -1088,15 +1088,12 @@ public class LoginService {
 		}
 		String type = codeMst.getStr("data2");
 		RecordListModel model = null;
-		for(GetTeaRecord record : list){
+		for(BankCardRecord record : list){
 			model = new RecordListModel();
 			model.setType(type);
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
-			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
-			if(tea != null){
-				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+"片");
-			}
-			model.setMoneys(StringUtil.toString(record.getBigDecimal("warehouse_fee")));
+			model.setMoneys("+"+StringUtil.toString(record.getBigDecimal("moneys")));
+			model.setContent("账号提现："+StringUtil.toString(record.getBigDecimal("moneys")));
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -1110,9 +1107,10 @@ public class LoginService {
 	//退款记录
 	public ReturnData queryRefundRecords(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		List<GetTeaRecord> list = GetTeaRecord.dao.queryRecords(dto.getPageSize()
-															   ,dto.getPageNum()
-															   ,dto.getUserId());
+		List<BankCardRecord> list = BankCardRecord.dao.queryRecords(dto.getPageSize()
+																   ,dto.getPageNum()
+																   ,dto.getUserId()
+																   ,Constants.BANK_MANU_TYPE_CD.REFUND);
 		List<RecordListModel> models = new ArrayList<>();
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
 		if(codeMst == null){
@@ -1120,15 +1118,12 @@ public class LoginService {
 		}
 		String type = codeMst.getStr("data2");
 		RecordListModel model = null;
-		for(GetTeaRecord record : list){
+		for(BankCardRecord record : list){
 			model = new RecordListModel();
 			model.setType(type);
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
-			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
-			if(tea != null){
-				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+"片");
-			}
-			model.setMoneys(StringUtil.toString(record.getBigDecimal("warehouse_fee")));
+			model.setMoneys("+"+StringUtil.toString(record.getBigDecimal("moneys")));
+			model.setContent("账号退款："+StringUtil.toString(record.getBigDecimal("moneys")));
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();

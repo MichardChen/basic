@@ -97,175 +97,15 @@ public interface Constants {
 		public static final String DISTRICT = "district";
 	}
 	
-	public static interface MANAGER_TYPE{
-		public static final String LEADER = "030001";
-		public static final String MANAGER = "030002";
-		public static final String ENPLOYEE = "030003";
-	}
-	
 	public static interface PLATFORM{
 		public static final String ANDROID = "020002";
 		public static final String IOS = "020001";
 	}
 	
-	public static interface ADDRESS_TYPE{
-		public static final String FROM_ADDRESS = "480001";
-		public static final String TO_ADDRESS = "480002";
-	}
-	
-	public static interface SERVICE{
-		public static final String QQ = "490001";
-		public static final String TEL = "500001";
-	}
-
-	public static interface USER_STATUS{
-		public static final String NORMAL = "510001";
-		public static final String DELETE = "510002";
-	}
-	
-	public static interface SUPPLIER_ATTRIBUTE{
-		public static final String COMPANY = "220001";
-		public static final String CART_TEAM = "220002";
-		public static final String PERSONAL = "220003";
-	}
-	
-	public static interface MANAGE_LEVEL{
-		public static final String LEADER = "030001";
-		public static final String MANAGER = "030002";
-		public static final String STAFF = "030003";
-	}
-	
-	public static interface IMAGE_TYPE{
-		public static final String DEFAULT_USER_ICON = "520001";
-	}
-	
-	public static interface GROSS_MARGIN_RATE{
-		public static final String NORMAL_RATE = "530001";
-	}
-	
-	public static interface SPEED_TYPE{
-		public static final String CART_NOMAL_SPEED = "540001";
-	}
-	
-	public static interface SHARE_TYPE{
-		public static final String CLIENT_APP_SHARE = "550001";
-		public static final String SUPPLIER_APP_SHARE = "550002";
-		public static final String CLIENT_ORDER_SHARE = "550003";
-		public static final String SUPPLIER_ORDER_SHARE = "550004";
-	}
-	
-	public static interface PUSH_TYPE_CD{
-		public static final String ORDER_MESSAGE = "560001";
-		public static final String AUTH_MESSAGE = "560002";
-		public static final String APP_UPDATE_MESSAGE = "560003";
-		public static final String NOTIFICATION_MESSAGE = "560004";
-		public static final String AUTH_NOT_PASS = "560005";
-	}
-	
-	public static interface PUSH_MESSAGE_CODE{
-		
-		public static final String REPLY_ORDER_NOTIFICATION = "570001";
-		public static final String ADD_ORDER_NOTIFICATION = "570002";
-		public static final String DISTRICT_CART_NOTIFICATION = "570003";
-		public static final String OUT_HOUSE_NOTIFICATION = "570004";
-		public static final String LOAD_GOODS_NOTIFICATION = "570005";
-		public static final String CHECK_NOTIFICATION = "570006";
-		
-		public static final String AUTO_DISTRICT_ORDER = "570007";
-		public static final String MANAUL_DISTRICT_ORDER = "570008";
-		public static final String UPLOAD_CHECK_ORDER = "570009";
-		public static final String ORDER_COMPLETE = "570010";
-		
-		public static final String OUT_CART_NOTIFICATION = "570011";
-		public static final String DRIVER_UPLOAD_CHECK_ORDER = "570012";
-		
-		public static final String CLIENT_CERTIFICATION_NOT_PASS = "570013";
-		public static final String SUPPLIER_CERTIFICATION_NOT_PASS = "570014";
-		public static final String CART_CERTIFICATION_NOT_PASS = "570015";
-	}
-	
-	public static interface APP_UPDATE_URL_TYPE{
-		
-		public static final String CLIENT_ANDROID_URL = "580001";
-		public static final String CLIENT_IOS_URL = "580002";
-		public static final String SUPPLIER_ANDROID_URL = "580003";
-		public static final String SUPPLIER_IOS_URL = "580004";
-	}
-	
-	public static interface IOS_VERSIONUPDATE_HIDDEN_TYPE{
-		
-		public static final String IOS_CHECK_VERSION_HIDDEN = "590001";
-	}
-	
-	public static interface CODEMST{
-		public static final String UNIT = "300000";
-		public static final String CART_LENGTH = "280000";
-		public static final String CART_TYPE = "400000";
-	}
-	
-	public static interface RANKING{
-		public static final String CLIENT_RANK = "630001";
-		public static final String SUPPLIER_RANK = "630002";
-		public static final String CART_RANK = "630003";
-	}
-	
-	public static interface CLIENT_POINTS_TYPE{
-		public static final String REGISTER = "600001";
-		public static final String PASS_CERTIFICATION = "600002";
-		public static final String SIGN = "600003";
-		public static final String QUERY_ORDER = "600004";
-		public static final String CONFIRM_ORDER = "600005";
-		public static final String ACCOMPLISH_ORDER = "600006";
-		public static final String SHARE_ORDER = "600007";
-		public static final String SHARE_APP = "600008";
-		public static final String EXCHANGE_POINTS = "600009";
-		
-	}
-	
-	public static interface SUPPLIER_POINTS_TYPE{
-		public static final String REGISTER = "610001";
-		public static final String PASS_CERTIFICATION = "610002";
-		public static final String SIGN = "610003";
-		public static final String GET_ORDER = "610004";
-		public static final String ADD_LINE = "610005";
-		public static final String ACCOMPLISH_ORDER = "610006";
-		public static final String SHARE_ORDER = "610007";
-		public static final String SHARE_APP = "610008";
-		public static final String ADD_CART_DRIVER = "610009";
-		public static final String EXCHANGE_POINTS = "610010";
-	}
-	
-	public static interface CART_POINTS_TYPE{
-		public static final String SIGN = "620001";
-		public static final String ACCOMPLISH_ORDER = "620002";
-		public static final String SHARE_ORDER = "620003";
-		public static final String SHARE_APP = "620004";
-		public static final String EXCHANGE_POINTS = "620005";
-	}
-	
-	public static interface MALLPRODUCT_STATUS{
-		public static final String HANDLING = "660001";
-		public static final String SENDING = "660002";
-		public static final String SUCCESS = "660003";
-		public static final String FAIL = "660004";
-		public static final String STAY_HANDLE = "660005";
-	}
-	
-	public static interface MALLPRODUCT_TYPE{
-		public static final String VIRTUAL = "640001";
-		public static final String PHYSICAL = "640002";
-	}
-	
-	public static interface ADVERTISEMENT{
-		public static final String CLIENT = "670001";
-		public static final String SUPPLIER = "670002";
-		public static final String CART = "670003";
-	}
-	
 	
 	/**
 	 * 本地
-	 
+	 */
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
 		public static final String TEA = "http://192.168.1.131:82/tea/";
@@ -284,10 +124,10 @@ public interface Constants {
 		public static final String ICON = "F:\\upload\\icon\\";
 		public static final String IMG = "F:\\upload\\img\\";
 		public static final String STORE = "F:\\upload\\store\\";
-	}*/
+	}
 
 	
-	/**服务器*/
+	/**服务器
 	public static interface HOST{
 		public static final String LOCALHOST = "http://139.196.171.205:88/newsimages/";
 		public static final String TEA = "http://139.196.171.205:88/tea/";
@@ -306,7 +146,7 @@ public interface Constants {
 		public static final String ICON = "D:\\upload\\icon\\";
 		public static final String IMG = "D:\\upload\\img\\";
 		public static final String STORE = "D:\\upload\\store\\";
-	}
+	}*/
 	
 	public static interface MEMBER_STATUS{
 		public static final String CERTIFICATED = "040001";
@@ -360,5 +200,18 @@ public interface Constants {
 		public static final String RECHARGE = "120005";
 		public static final String WITHDRAW = "120006";
 		public static final String REFUND = "120007";
+	}
+	
+	public static interface BANK_MANU_TYPE_CD{
+		public static final String RECHARGE = "130001";
+		public static final String WITHDRAW = "130002";
+		public static final String REFUND = "130003";
+	}
+	
+	public static interface ORDER_STATUS{
+		public static final String INVALID = "140001";
+		public static final String SHOPPING_CART = "140002";
+		public static final String PAY_SUCCESS = "140003";
+		public static final String PAY_FAIL = "140004";
 	}
 }
