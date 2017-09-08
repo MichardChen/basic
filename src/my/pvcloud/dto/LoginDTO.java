@@ -45,9 +45,13 @@ public class LoginDTO extends BaseDTO{
 		dto.setPlatForm(request.getParameter("platForm"));
 		dto.setVersionTypeCd(request.getParameter("versionTypeCd"));
 		dto.setType(request.getParameter("typeCd"));
+		dto.setQuality(StringUtil.toInteger(request.getParameter("quality")));
+		dto.setTeaId(StringUtil.toInteger(request.getParameter("teaId")));
+		dto.setCartId(StringUtil.toInteger(request.getParameter("cartId")));
 		return dto;
 	}
 	
+	private int cartId;
 	private String type;
 	private String versionTypeCd;
 	private String version;
@@ -75,8 +79,35 @@ public class LoginDTO extends BaseDTO{
 	private String linkMan;
 	private String address;
 	private int id;
+	private int quality;
+	private int teaId;
 	
 	
+	
+	public int getCartId() {
+		return cartId;
+	}
+
+	public void setCartId(int cartId) {
+		this.cartId = cartId;
+	}
+
+	public int getQuality() {
+		return quality;
+	}
+
+	public int getTeaId() {
+		return teaId;
+	}
+
+	public void setQuality(int quality) {
+		this.quality = quality;
+	}
+
+	public void setTeaId(int teaId) {
+		this.teaId = teaId;
+	}
+
 	public String getType() {
 		return type;
 	}

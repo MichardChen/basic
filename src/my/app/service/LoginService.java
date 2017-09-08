@@ -18,6 +18,7 @@ import my.core.constants.Constants;
 import my.core.model.AcceessToken;
 import my.core.model.Admin;
 import my.core.model.BankCardRecord;
+import my.core.model.BuyCart;
 import my.core.model.Carousel;
 import my.core.model.City;
 import my.core.model.CodeMst;
@@ -36,6 +37,7 @@ import my.core.model.ReturnData;
 import my.core.model.SystemVersionControl;
 import my.core.model.Tea;
 import my.core.model.VertifyCode;
+import my.core.model.WarehouseTeaMember;
 import my.core.tx.TxProxy;
 import my.core.vo.AddressDetailVO;
 import my.core.vo.AddressVO;
@@ -828,7 +830,11 @@ public class LoginService {
 		for(Tea tea : list){
 			model = new NewTeaSaleListModel();
 			model.setTeaId(tea.getInt("id"));
-			model.setStock(tea.getInt("stock"));
+			
+			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
+			if(wtm != null){
+				model.setStock(wtm.getInt("stock"));
+			}
 			String coverImg = tea.getStr("cover_img");
 			String[] imgs = coverImg.split(",");
 			model.setImg(imgs[0]);
@@ -895,12 +901,16 @@ public class LoginService {
 			vo.setCustomPhone(phoneCodeMst.getStr("data2"));
 		}
 		vo.setDescUrl(tea.getStr("desc_url"));
-		vo.setPrice(StringUtil.toString(tea.getBigDecimal("tea_price")));
+		
+		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
+		if(wtm != null){
+			vo.setPrice(StringUtil.toString(wtm.getBigDecimal("price")));
+			vo.setStock(StringUtil.toString(wtm.getInt("stock")));
+		}
 		vo.setProductPlace(tea.getStr("product_place"));
 		vo.setSaleTime(tea.getDate("sale_from_date")+"至"+tea.getDate("sale_to_date"));
 		vo.setSize(tea.getInt("size1")+"克/片、"+tea.getInt("size2")+"片/件");
 		vo.setSize2(tea.getInt("size2")+"片/件");
-		vo.setStock(StringUtil.toString(tea.getInt("stock")));
 		CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
 		if(type != null){
 			vo.setType(type.getStr("name"));
@@ -1132,5 +1142,57 @@ public class LoginService {
 		data.setMessage("查询成功");
 		data.setData(map);
 		return data;
+	}
+	
+	//添加购物车
+	public ReturnData addBuyCart(LoginDTO dto){
+		
+		ReturnData data = new ReturnData();
+		BuyCart cart = new BuyCart();
+		cart.set("tea_id", dto.getTeaId());
+		cart.set("quality", dto.getQuality());
+		cart.set("status", Constants.ORDER_STATUS.SHOPPING_CART);
+		cart.set("create_time", DateUtil.getNowTimestamp());
+		cart.set("update_time", DateUtil.getNowTimestamp());
+		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(dto.getTeaId());
+		if(wtm == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("数据不存在");
+			return data;
+		}
+		int memberId = wtm.getInt("member_id");
+		String memberUserCd = wtm.getStr("member_type_cd");
+		cart.set("member_id", dto.getUserId());
+		cart.set("sale_id", memberId);
+		cart.set("sale_user_type", memberUserCd);
+		boolean save = BuyCart.dao.saveInfo(cart);
+		if(save){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("添加成功");
+			return data;
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("添加失败");
+			return data;
+		}
+	}
+	
+	//删除购物车
+	public ReturnData deleteBuyCart(LoginDTO dto){
+			
+		ReturnData data = new ReturnData();
+		BuyCart cart = new BuyCart();
+		cart.set("id",dto.getCartId());
+		cart.set("status", Constants.ORDER_STATUS.DELETE);
+		boolean save = BuyCart.dao.updateInfo(cart);
+		if(save){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("删除成功");
+			return data;
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("删除失败");
+			return data;
+		}
 	}
 }

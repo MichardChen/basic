@@ -213,5 +213,6 @@ public interface Constants {
 		public static final String SHOPPING_CART = "140002";
 		public static final String PAY_SUCCESS = "140003";
 		public static final String PAY_FAIL = "140004";
+		public static final String DELETE = "140005";
 	}
 }

@@ -26,7 +26,7 @@ import my.core.model.Member;
 import my.core.model.ReturnData;
 import my.core.model.Tea;
 import my.core.model.WareHouse;
-import my.core.model.WarehouseTea;
+import my.core.model.WarehouseTeaMember;
 import my.pvcloud.model.TeaModel;
 import my.pvcloud.service.TeaService;
 import my.pvcloud.service.WareHouseService;
@@ -56,8 +56,11 @@ public class TeaInfoController extends Controller {
 		for(Tea tea : list.getList()){
 			model = new TeaModel();
 			model.setId(tea.getInt("id"));
+			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 			model.setName(tea.getStr("tea_title"));
-			model.setPrice(tea.getBigDecimal("tea_price"));
+			if(wtm != null){
+				model.setPrice(wtm.getBigDecimal("price"));
+			}
 			model.setUrl(tea.getStr("desc_url"));
 			model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
 			CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
@@ -94,7 +97,10 @@ public class TeaInfoController extends Controller {
 			model = new TeaModel();
 			model.setId(tea.getInt("id"));
 			model.setName(tea.getStr("tea_title"));
-			model.setPrice(tea.getBigDecimal("tea_price"));
+			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
+			if(wtm != null){
+				model.setPrice(wtm.getBigDecimal("price"));
+			}
 			model.setUrl(tea.getStr("desc_url"));
 			model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
 			CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
@@ -136,7 +142,10 @@ public class TeaInfoController extends Controller {
 				model = new TeaModel();
 				model.setId(tea.getInt("id"));
 				model.setName(tea.getStr("tea_title"));
-				model.setPrice(tea.getBigDecimal("tea_price"));
+				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
+				if(wtm != null){
+					model.setPrice(wtm.getBigDecimal("price"));
+				}
 				model.setUrl(tea.getStr("desc_url"));
 				model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
 				CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
@@ -273,8 +282,8 @@ public class TeaInfoController extends Controller {
         Tea tea = new Tea();
         tea.set("tea_title",title);
         tea.set("brand", getPara("brand"));
-        tea.set("owner_user_id", (Integer)getSessionAttr("agentId"));
-        tea.set("owner_user_type_cd", Constants.USER_TYPE.PLATFORM_USER);
+       // tea.set("owner_user_id", (Integer)getSessionAttr("agentId"));
+       // tea.set("owner_user_type_cd", Constants.USER_TYPE.PLATFORM_USER);
         tea.set("product_place", getPara("place"));
         tea.set("product_date", DateUtil.stringToDate(getPara("birthday")));
         tea.set("sale_from_date", DateUtil.stringToDate(getPara("fromtime")));
@@ -282,8 +291,8 @@ public class TeaInfoController extends Controller {
         tea.set("size1", StringUtil.toInteger(getPara("size1")));
         tea.set("size2",  StringUtil.toInteger(getPara("size2")));
         tea.set("total_output", StringUtil.toInteger(getPara("amount")));
-        tea.set("stock", StringUtil.toInteger(getPara("warehouse")));
-        tea.set("tea_price",price);
+      //  tea.set("stock", StringUtil.toInteger(getPara("warehouse")));
+     //   tea.set("tea_price",price);
         tea.set("sale_count",0);
         tea.set("certificate_flg", StringUtil.toInteger(getPara("certificate")));
         tea.set("type_cd",typeCd);
@@ -297,12 +306,17 @@ public class TeaInfoController extends Controller {
        
 		boolean ret = Tea.dao.saveInfo(tea);
 		if(ret){
-			WarehouseTea houseTea = new WarehouseTea();
+			//增加仓库-茶叶-用户
+			WarehouseTeaMember houseTea = new WarehouseTeaMember();
 		    houseTea.set("warehouse_id", houseId);
 		    houseTea.set("tea_id", tea.getInt("id"));
+		    houseTea.set("price", price);
+		    houseTea.set("stock", StringUtil.toInteger(getPara("warehouse")));
+		    houseTea.set("member_id", (Integer)getSessionAttr("agentId"));
+		    houseTea.set("member_type_cd", Constants.USER_TYPE.PLATFORM_USER);
 		    houseTea.set("create_time", DateUtil.getNowTimestamp());
 		    houseTea.set("update_time", DateUtil.getNowTimestamp());
-		    WarehouseTea.dao.saveInfo(houseTea);
+		    WarehouseTeaMember.dao.saveInfo(houseTea);
 			setAttr("message","新增成功");
 		}else{
 			setAttr("message","新增失败");
@@ -416,8 +430,8 @@ public class TeaInfoController extends Controller {
         tea.set("size1", StringUtil.toInteger(getPara("size1")));
         tea.set("size2",  StringUtil.toInteger(getPara("size2")));
         tea.set("total_output", StringUtil.toInteger(getPara("amount")));
-        tea.set("stock", StringUtil.toInteger(getPara("warehouse")));
-        tea.set("tea_price",price);
+       // tea.set("stock", StringUtil.toInteger(getPara("warehouse")));
+       // tea.set("tea_price",price);
         tea.set("sale_count",0);
         tea.set("certificate_flg", StringUtil.toInteger(getPara("certificate")));
         tea.set("type_cd",typeCd);
@@ -425,6 +439,19 @@ public class TeaInfoController extends Controller {
         tea.set("update_time", DateUtil.getNowTimestamp());
         tea.set("tea_desc", content);
         tea.set("desc_url", contentUrl);
+        
+/*        WarehouseTeaMember houseTea = new WarehouseTeaMember();
+	    houseTea.set("warehouse_id", houseId);
+	    houseTea.set("tea_id", tea.getInt("id"));
+	    houseTea.set("price", price);
+	    houseTea.set("stock", StringUtil.toInteger(getPara("warehouse")));
+	    houseTea.set("member_id", (Integer)getSessionAttr("agentId"));
+	    houseTea.set("member_type_cd", Constants.USER_TYPE.PLATFORM_USER);
+	    houseTea.set("create_time", DateUtil.getNowTimestamp());
+	    houseTea.set("update_time", DateUtil.getNowTimestamp());
+	    WarehouseTeaMember.dao.saveInfo(houseTea);
+	    */
+	    
         if(reset == 1){
         	tea.set("cover_img", logo);
         }

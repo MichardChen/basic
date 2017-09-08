@@ -642,4 +642,16 @@ public class RestfulController extends Controller{
 		data.setMessage("查询失败");
 		renderJson(data);
 	}
+	
+	//添加到购物车
+	public void addBuyCart(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.addBuyCart(dto));
+	}
+	
+	//删除购物车
+	public void deleteBuyCart(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.deleteBuyCart(dto));
+	}
 }

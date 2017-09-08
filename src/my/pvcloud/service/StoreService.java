@@ -22,7 +22,7 @@ public class StoreService {
 		return Store.dao.updateInfo(tea);
 	}
 	
-	public boolean saveInfo(Store tea){
+	public Store saveInfo(Store tea){
 		return Store.dao.saveInfo(tea);
 	}
 	
