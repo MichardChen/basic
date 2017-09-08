@@ -654,4 +654,10 @@ public class RestfulController extends Controller{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.deleteBuyCart(dto));
 	}
+	
+	//购物车列表
+	public void queryBuyCartList(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryBuyCartLists(dto));
+	}
 }

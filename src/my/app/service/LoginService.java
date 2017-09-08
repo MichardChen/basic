@@ -1,6 +1,7 @@
 package my.app.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,10 +38,12 @@ import my.core.model.ReturnData;
 import my.core.model.SystemVersionControl;
 import my.core.model.Tea;
 import my.core.model.VertifyCode;
+import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
 import my.core.tx.TxProxy;
 import my.core.vo.AddressDetailVO;
 import my.core.vo.AddressVO;
+import my.core.vo.BuyCartListVO;
 import my.core.vo.CarouselVO;
 import my.core.vo.MessageListVO;
 import my.core.vo.NewTeaSaleListModel;
@@ -1149,7 +1152,7 @@ public class LoginService {
 		
 		ReturnData data = new ReturnData();
 		BuyCart cart = new BuyCart();
-		cart.set("tea_id", dto.getTeaId());
+		cart.set("warehouse_tea_member_id", dto.getTeaId());
 		cart.set("quality", dto.getQuality());
 		cart.set("status", Constants.ORDER_STATUS.SHOPPING_CART);
 		cart.set("create_time", DateUtil.getNowTimestamp());
@@ -1181,11 +1184,8 @@ public class LoginService {
 	public ReturnData deleteBuyCart(LoginDTO dto){
 			
 		ReturnData data = new ReturnData();
-		BuyCart cart = new BuyCart();
-		cart.set("id",dto.getCartId());
-		cart.set("status", Constants.ORDER_STATUS.DELETE);
-		boolean save = BuyCart.dao.updateInfo(cart);
-		if(save){
+		int ret = BuyCart.dao.updateStatus(dto.getBuyCartIds(), Constants.ORDER_STATUS.DELETE);
+		if(ret != 0){
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
 			data.setMessage("删除成功");
 			return data;
@@ -1195,4 +1195,60 @@ public class LoginService {
 			return data;
 		}
 	}
+	
+	//购物车列表
+	public ReturnData queryBuyCartLists(LoginDTO dto){
+		
+		ReturnData data = new ReturnData();
+		List<BuyCart> carts = BuyCart.dao.queryBuyCart(dto.getPageSize()
+													  ,dto.getPageNum()
+													  ,dto.getUserId());
+		List<BuyCartListVO> vos = new ArrayList<>();
+		BuyCartListVO vo = null;
+		for(BuyCart cart:carts){
+			vo = new BuyCartListVO();
+			vo.setCartId(cart.getInt("id"));
+			vo.setQuality(cart.getInt("quality"));
+			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(cart.getInt("warehouse_tea_member_id"));
+			if(wtm != null){
+				WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+				if(house != null){
+					vo.setWarehouse(house.getStr("warehouse_name"));
+				}else{
+					vo.setWarehouse(StringUtil.STRING_BLANK);
+				}
+				Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+				if(tea != null){
+					vo.setImg(tea.getStr("cover_img"));
+					vo.setName(tea.getStr("tea_title"));
+					CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+					if(type!=null){
+						vo.setType(type.getStr("name"));
+					}else{
+						vo.setType(StringUtil.STRING_BLANK);
+					}
+				}else{
+					vo.setImg(StringUtil.STRING_BLANK);
+					vo.setName(StringUtil.STRING_BLANK);
+					vo.setType(StringUtil.STRING_BLANK);
+				}
+				vo.setPrice(wtm.getBigDecimal("price"));
+				vo.setQuality(wtm.getInt("stock"));
+			}else{
+				vo.setWarehouse(StringUtil.STRING_BLANK);
+				vo.setImg(StringUtil.STRING_BLANK);
+				vo.setName(StringUtil.STRING_BLANK);
+				vo.setPrice(new BigDecimal("0"));
+				vo.setType(StringUtil.STRING_BLANK);
+				vo.setQuality(0);
+			}
+			vos.add(vo);
+		}
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		Map<String, Object> map = new HashMap<>();
+		map.put("data", vos);
+		data.setData(map);
+		return data;
+	} 
 }

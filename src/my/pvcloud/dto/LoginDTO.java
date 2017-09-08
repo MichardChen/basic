@@ -48,6 +48,7 @@ public class LoginDTO extends BaseDTO{
 		dto.setQuality(StringUtil.toInteger(request.getParameter("quality")));
 		dto.setTeaId(StringUtil.toInteger(request.getParameter("teaId")));
 		dto.setCartId(StringUtil.toInteger(request.getParameter("cartId")));
+		dto.setBuyCartIds(request.getParameter("buyCartIds"));
 		return dto;
 	}
 	
@@ -80,10 +81,17 @@ public class LoginDTO extends BaseDTO{
 	private String address;
 	private int id;
 	private int quality;
-	private int teaId;
+	private int teaId; 
+	private String buyCartIds;
 	
-	
-	
+	public String getBuyCartIds() {
+		return buyCartIds;
+	}
+
+	public void setBuyCartIds(String buyCartIds) {
+		this.buyCartIds = buyCartIds;
+	}
+
 	public int getCartId() {
 		return cartId;
 	}

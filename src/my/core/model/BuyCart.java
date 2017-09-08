@@ -2,8 +2,11 @@ package my.core.model;
 
 import java.util.List;
 
+import my.pvcloud.util.DateUtil;
+
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -27,9 +30,9 @@ public class BuyCart extends Model<BuyCart> {
 		return BuyCart.dao.findFirst("select * from t_buycart where id = ?",id);
 	}
 	
-	public List<BuyCart> queryBuyCart(int pageSize,int pageNum){
+	public List<BuyCart> queryBuyCart(int pageSize,int pageNum,int memberId){
 		int fromRow = pageSize*(pageNum-1);
-		return BuyCart.dao.find("select * from t_buycart order by create_time desc limit "+fromRow+","+pageSize);
+		return BuyCart.dao.find("select * from t_buycart where member_id="+memberId+" and status != '140005' order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
 	public boolean updateInfo(BuyCart data){
@@ -42,5 +45,9 @@ public class BuyCart extends Model<BuyCart> {
 	
 	public boolean del(int id){
 		return BuyCart.dao.deleteById(id);
+	}
+	
+	public int updateStatus(String ids,String status){
+		return Db.update("update t_buycart set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id in("+ids+")");
 	}
 }
