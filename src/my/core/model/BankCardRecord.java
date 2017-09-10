@@ -41,9 +41,9 @@ public class BankCardRecord extends Model<BankCardRecord> {
 		return BankCardRecord.dao.findFirst("select * from t_bankcard_record where id = ? order by create_time desc",id);
 	}
 	
-	public List<BankCardRecord> queryRecords(int pageSize,int pageNum,int memberId,String manuTypeCd){
+	public List<BankCardRecord> queryRecords(int pageSize,int pageNum,int memberId,String manuTypeCd,String date){
 		int fromRow = pageSize*(pageNum-1);
-		return BankCardRecord.dao.find("select * from t_bankcard_record where member_id ="+memberId+" and type_cd='"+manuTypeCd+"' order by create_time desc limit "+fromRow+","+pageSize);
+		return BankCardRecord.dao.find("select * from t_bankcard_record where member_id ="+memberId+" and type_cd='"+manuTypeCd+"' and create_time like '%"+date+"%' order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
 	public boolean updateInfo(BankCardRecord data){

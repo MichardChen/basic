@@ -11,6 +11,21 @@ public class BuyCartListVO implements Serializable{
 	private String name;
 	private BigDecimal price;
 	private int quality;
+	private int stock;
+	private String size;
+	
+	public String getSize() {
+		return size;
+	}
+	public void setSize(String size) {
+		this.size = size;
+	}
+	public int getStock() {
+		return stock;
+	}
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
 	public int getCartId() {
 		return cartId;
 	}

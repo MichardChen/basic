@@ -49,9 +49,12 @@ public class LoginDTO extends BaseDTO{
 		dto.setTeaId(StringUtil.toInteger(request.getParameter("teaId")));
 		dto.setCartId(StringUtil.toInteger(request.getParameter("cartId")));
 		dto.setBuyCartIds(request.getParameter("buyCartIds"));
+		dto.setDate(request.getParameter("date"));
+		dto.setSize(request.getParameter("size"));
 		return dto;
 	}
 	
+	private String size;
 	private int cartId;
 	private String type;
 	private String versionTypeCd;
@@ -83,7 +86,25 @@ public class LoginDTO extends BaseDTO{
 	private int quality;
 	private int teaId; 
 	private String buyCartIds;
+	private String date;
 	
+	
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
 	public String getBuyCartIds() {
 		return buyCartIds;
 	}

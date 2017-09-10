@@ -41,9 +41,9 @@ public class GetTeaRecord extends Model<GetTeaRecord> {
 		return GetTeaRecord.dao.findFirst("select * from t_gettea_record where id = ? order by create_time desc",id);
 	}
 	
-	public List<GetTeaRecord> queryRecords(int pageSize,int pageNum,int memberId){
+	public List<GetTeaRecord> queryRecords(int pageSize,int pageNum,int memberId,String date){
 		int fromRow = pageSize*(pageNum-1);
-		return GetTeaRecord.dao.find("select * from t_gettea_record where member_id ="+memberId+" order by create_time desc limit "+fromRow+","+pageSize);
+		return GetTeaRecord.dao.find("select * from t_gettea_record where member_id ="+memberId+" and create_time like '%"+date+"%' order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
 	public boolean updateInfo(GetTeaRecord tea){

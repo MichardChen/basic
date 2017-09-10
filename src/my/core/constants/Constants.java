@@ -63,6 +63,7 @@ public interface Constants {
 		public static final String LOGIN_EXPIRE = "560705";
 		public static final String SUCCESS = "5600";
 		public static final String FAIL = "5700";
+		public static final String LOGIN_ANOTHER_PLACE = "5701";
 		public static final String IMAGE_UPLOAD_SUCCESS = "5610";
 		public static final String IMAGE_UPLOAD_FAIL = "5611";
 	}
@@ -214,5 +215,10 @@ public interface Constants {
 		public static final String PAY_SUCCESS = "140003";
 		public static final String PAY_FAIL = "140004";
 		public static final String DELETE = "140005";
+	}
+	
+	public static interface TEA_UNIT{
+		public static final String PIECE = "150001";
+		public static final String ITEM = "150002";
 	}
 }

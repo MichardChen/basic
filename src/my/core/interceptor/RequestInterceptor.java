@@ -42,7 +42,7 @@ public class RequestInterceptor implements Interceptor{
 		}
 		
 		if(!StringUtil.equals(token.getStr("token"), tokens)){
-			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setCode(Constants.STATUS_CODE.LOGIN_ANOTHER_PLACE);
 			data.setMessage("对不起，您的账号在另一个地点登录，您被迫下线了，请重新登录");
 			return data;
 		}

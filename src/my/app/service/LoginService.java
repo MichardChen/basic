@@ -932,7 +932,8 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		List<Order> list = Order.dao.queryBuyNewTeaRecord(dto.getPageSize()
 														 ,dto.getPageNum()
-														 ,dto.getUserId());
+														 ,dto.getUserId()
+														 ,dto.getDate());
 		List<RecordListModel> models = new ArrayList<>();
 		RecordListModel model = null;
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
@@ -965,7 +966,8 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		List<Order> list = Order.dao.querySaleTeaRecord(dto.getPageSize()
 														 ,dto.getPageNum()
-														 ,dto.getUserId());
+														 ,dto.getUserId()
+														 ,dto.getDate());
 		List<RecordListModel> models = new ArrayList<>();
 		RecordListModel model = null;
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
@@ -998,7 +1000,8 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		List<GetTeaRecord> list = GetTeaRecord.dao.queryRecords(dto.getPageSize()
 															   ,dto.getPageNum()
-															   ,dto.getUserId());
+															   ,dto.getUserId()
+															   ,dto.getDate());
 		List<RecordListModel> models = new ArrayList<>();
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
 		if(codeMst == null){
@@ -1030,7 +1033,8 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		List<GetTeaRecord> list = GetTeaRecord.dao.queryRecords(dto.getPageSize()
 															   ,dto.getPageNum()
-															   ,dto.getUserId());
+															   ,dto.getUserId()
+															   ,dto.getDate());
 		List<RecordListModel> models = new ArrayList<>();
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
 		if(codeMst == null){
@@ -1063,7 +1067,8 @@ public class LoginService {
 		List<BankCardRecord> list = BankCardRecord.dao.queryRecords(dto.getPageSize()
 																   ,dto.getPageNum()
 																   ,dto.getUserId()
-																   ,Constants.BANK_MANU_TYPE_CD.RECHARGE);
+																   ,Constants.BANK_MANU_TYPE_CD.RECHARGE
+																   ,dto.getDate());
 		List<RecordListModel> models = new ArrayList<>();
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
 		if(codeMst == null){
@@ -1093,7 +1098,8 @@ public class LoginService {
 		List<BankCardRecord> list = BankCardRecord.dao.queryRecords(dto.getPageSize()
 																   ,dto.getPageNum()
 																   ,dto.getUserId()
-																   ,Constants.BANK_MANU_TYPE_CD.WITHDRAW);
+																   ,Constants.BANK_MANU_TYPE_CD.WITHDRAW
+																   ,dto.getDate());
 		List<RecordListModel> models = new ArrayList<>();
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
 		if(codeMst == null){
@@ -1123,7 +1129,8 @@ public class LoginService {
 		List<BankCardRecord> list = BankCardRecord.dao.queryRecords(dto.getPageSize()
 																   ,dto.getPageNum()
 																   ,dto.getUserId()
-																   ,Constants.BANK_MANU_TYPE_CD.REFUND);
+																   ,Constants.BANK_MANU_TYPE_CD.REFUND
+																   ,dto.getDate());
 		List<RecordListModel> models = new ArrayList<>();
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
 		if(codeMst == null){
@@ -1157,6 +1164,7 @@ public class LoginService {
 		cart.set("status", Constants.ORDER_STATUS.SHOPPING_CART);
 		cart.set("create_time", DateUtil.getNowTimestamp());
 		cart.set("update_time", DateUtil.getNowTimestamp());
+		cart.set("size", dto.getSize());
 		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(dto.getTeaId());
 		if(wtm == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -1203,12 +1211,21 @@ public class LoginService {
 		List<BuyCart> carts = BuyCart.dao.queryBuyCart(dto.getPageSize()
 													  ,dto.getPageNum()
 													  ,dto.getUserId());
+		
+		//查询购物车有多少个
+		Long count = BuyCart.dao.queryBuycartCount(dto.getUserId());
 		List<BuyCartListVO> vos = new ArrayList<>();
 		BuyCartListVO vo = null;
 		for(BuyCart cart:carts){
 			vo = new BuyCartListVO();
 			vo.setCartId(cart.getInt("id"));
 			vo.setQuality(cart.getInt("quality"));
+			CodeMst size = CodeMst.dao.queryCodestByCode(cart.getStr("size"));
+			if(size != null){
+				vo.setSize(size.getStr("name"));
+			}else{
+				vo.setSize(StringUtil.STRING_BLANK);
+			}
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(cart.getInt("warehouse_tea_member_id"));
 			if(wtm != null){
 				WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
@@ -1232,15 +1249,22 @@ public class LoginService {
 					vo.setName(StringUtil.STRING_BLANK);
 					vo.setType(StringUtil.STRING_BLANK);
 				}
-				vo.setPrice(wtm.getBigDecimal("price"));
-				vo.setQuality(wtm.getInt("stock"));
+				if(StringUtil.equals(cart.getStr("size"), Constants.TEA_UNIT.PIECE)){
+					vo.setPrice(wtm.getBigDecimal("piece_price"));
+				}else if(StringUtil.equals(cart.getStr("size"), Constants.TEA_UNIT.ITEM)){
+					vo.setPrice(wtm.getBigDecimal("item_price"));
+				}else{
+					vo.setPrice(new BigDecimal("0"));
+				}
+				
+				vo.setStock(wtm.getInt("stock"));
 			}else{
 				vo.setWarehouse(StringUtil.STRING_BLANK);
 				vo.setImg(StringUtil.STRING_BLANK);
 				vo.setName(StringUtil.STRING_BLANK);
 				vo.setPrice(new BigDecimal("0"));
 				vo.setType(StringUtil.STRING_BLANK);
-				vo.setQuality(0);
+				vo.setStock(0);
 			}
 			vos.add(vo);
 		}
@@ -1248,6 +1272,7 @@ public class LoginService {
 		data.setMessage("查询成功");
 		Map<String, Object> map = new HashMap<>();
 		map.put("data", vos);
+		map.put("buycartCount", count);
 		data.setData(map);
 		return data;
 	} 

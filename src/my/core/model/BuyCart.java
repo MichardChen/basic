@@ -2,6 +2,7 @@ package my.core.model;
 
 import java.util.List;
 
+import my.core.constants.Constants;
 import my.pvcloud.util.DateUtil;
 
 import org.huadalink.plugin.tablebind.TableBind;
@@ -33,6 +34,10 @@ public class BuyCart extends Model<BuyCart> {
 	public List<BuyCart> queryBuyCart(int pageSize,int pageNum,int memberId){
 		int fromRow = pageSize*(pageNum-1);
 		return BuyCart.dao.find("select * from t_buycart where member_id="+memberId+" and status != '140005' order by create_time desc limit "+fromRow+","+pageSize);
+	}
+	
+	public Long queryBuycartCount(int memberId){
+		return Db.queryLong("select count(*) from t_buycart where member_id="+memberId+" and status='140002'");
 	}
 	
 	public boolean updateInfo(BuyCart data){

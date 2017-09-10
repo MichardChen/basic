@@ -61,13 +61,13 @@ public class Order extends Model<Order> {
 		return Order.dao.deleteById(id);
 	}
 	
-	public List<Order> queryBuyNewTeaRecord(int pageSize,int pageNum,int userId){
+	public List<Order> queryBuyNewTeaRecord(int pageSize,int pageNum,int userId,String date){
 		int fromRow = (pageNum-1)*pageSize;
-		return Order.dao.find("select * from t_order where buy_user_id="+userId+" and sale_user_type='010002' order by update_time desc limit "+fromRow+","+pageSize);
+		return Order.dao.find("select * from t_order where member_id="+userId+" and create_time '%"+date+"%' order by update_time desc limit "+fromRow+","+pageSize);
 	}
 	
-	public List<Order> querySaleTeaRecord(int pageSize,int pageNum,int userId){
+	public List<Order> querySaleTeaRecord(int pageSize,int pageNum,int userId,String date){
 		int fromRow = (pageNum-1)*pageSize;
-		return Order.dao.find("select * from t_order where sale_user_id="+userId+" and sale_user_type !='010002' order by update_time desc limit "+fromRow+","+pageSize);
+		return Order.dao.find("select a.* from t_order a inner join t_order_item b on a.id=b.order_id where b.sale_user_id="+userId+" and b.sale_user_type !='010002' and a.create_time like '%"+date+"%' order by update_time desc limit "+fromRow+","+pageSize);
 	}
 }
