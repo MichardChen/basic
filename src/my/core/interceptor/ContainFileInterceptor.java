@@ -1,11 +1,9 @@
 package my.core.interceptor;
 
-import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 
 import my.core.constants.Constants;
@@ -14,25 +12,14 @@ import my.core.model.ReturnData;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
 
-public class RequestInterceptor implements Interceptor{
+public class ContainFileInterceptor {
 
 	private AcceessToken tokenDao = new AcceessToken();
 	
-	@Override
-	public void intercept(Invocation invocation){
-		ReturnData data = vertifyToken(invocation);
-		if(StringUtil.equals(data.getCode(),Constants.STATUS_CODE.FAIL)){
-			invocation.getController().renderJson(data);
-			return;
-		}
-		invocation.invoke();
-	}
-	
-	public ReturnData vertifyToken(Invocation invocation){
+	public ReturnData vertifyToken(HttpServletRequest request){
 		
 		ReturnData data = new ReturnData();
-		HttpServletRequest request = invocation.getController().getRequest();
-		
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		String tokens = request.getParameter("accessToken"); 
 		AcceessToken token = tokenDao.queryToken(StringUtil.toInteger( request.getParameter("userId"))
 											    ,request.getParameter("userTypeCd"));

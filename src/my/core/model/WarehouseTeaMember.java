@@ -37,6 +37,11 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 	public WarehouseTeaMember queryWarehouseTeaMember(int id,String memberTypeCd){
 		return WarehouseTeaMember.dao.findFirst("select * from t_warehouse_tea_member where tea_id = ? and member_type_cd=?",id,memberTypeCd);
 	}
+	
+	public WarehouseTeaMember queryTeaOnPlatform(String memberTypeCd,int teaId){
+		return WarehouseTeaMember.dao.findFirst("select * from t_warehouse_tea_member where tea_id = ? and member_type_cd=?",teaId,memberTypeCd);
+	}
+	
 	public boolean updateInfo(WarehouseTeaMember data){
 		return new WarehouseTeaMember().setAttrs(data).update();
 	}

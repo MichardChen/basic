@@ -44,6 +44,7 @@ import my.core.tx.TxProxy;
 import my.core.vo.AddressDetailVO;
 import my.core.vo.AddressVO;
 import my.core.vo.BuyCartListVO;
+import my.core.vo.BuyTeaListVO;
 import my.core.vo.CarouselVO;
 import my.core.vo.MessageListVO;
 import my.core.vo.NewTeaSaleListModel;
@@ -1276,4 +1277,34 @@ public class LoginService {
 		data.setData(map);
 		return data;
 	} 
+	
+	public ReturnData queryTeaLists(LoginDTO dto){
+			
+		ReturnData data = new ReturnData();
+		List<Tea> teas = Tea.dao.queryBuyTeaList(dto.getPageSize(), dto.getPageNum());
+		List<BuyTeaListVO> vos = new ArrayList<>();
+		BuyTeaListVO vo = null;
+		for(Tea tea : teas){
+			vo = new BuyTeaListVO();
+			vo.setId(tea.getInt("id"));
+			vo.setImg(tea.getStr("cover_img"));
+			vo.setName(tea.getStr("tea_title"));
+			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryTeaOnPlatform(Constants.USER_TYPE.PLATFORM_USER, tea.getInt("id"));
+			if(wtm != null){
+				vo.setPrice(wtm.getBigDecimal("piece_price"));
+			}
+			vo.setSize("片");
+			CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+			if(type != null){
+				vo.setType(type.getStr("name"));
+			}
+			vos.add(vo);
+		}
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		Map<String, Object> map = new HashMap<>();
+		map.put("data", vos);
+		data.setData(map);
+		return data;
+	}
 }

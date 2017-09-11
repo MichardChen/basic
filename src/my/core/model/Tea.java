@@ -52,6 +52,11 @@ public class Tea extends Model<Tea> {
 		return Tea.dao.find("select * from t_tea order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
+	public List<Tea> queryBuyTeaList(int pageSize,int pageNum){
+		int fromRow = pageSize*(pageNum-1);
+		return Tea.dao.find("select * from t_tea order by create_time desc,status asc limit "+fromRow+","+pageSize);
+	}
+	
 	public boolean updateInfo(Tea tea){
 		return new Tea().setAttrs(tea).update();
 	}

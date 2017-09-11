@@ -2,6 +2,7 @@ package my.app.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.el.ArrayELResolver;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -30,6 +32,7 @@ import my.app.service.FileService;
 import my.app.service.LoginService;
 import my.app.service.RestService;
 import my.core.constants.Constants;
+import my.core.interceptor.ContainFileInterceptor;
 import my.core.interceptor.RequestInterceptor;
 import my.core.model.Member;
 import my.core.model.ReturnData;
@@ -137,9 +140,16 @@ public class RestfulController extends Controller{
 	}
 	
 	//上传头像
-	@Before(RequestInterceptor.class)
 	public void uploadIcon() throws Exception{
 		UploadFile uploadFile = getFile("icon");
+		
+		ContainFileInterceptor interceptor = new ContainFileInterceptor();
+		ReturnData data1 = interceptor.vertifyToken(getRequest());
+		if(!StringUtil.equals(data1.getCode(), Constants.STATUS_CODE.SUCCESS)){
+			renderJson(data1);
+			return;
+		}
+		
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		//表单中有提交图片，要先获取图片
 		FileService fs=new FileService();
@@ -262,13 +272,20 @@ public class RestfulController extends Controller{
 	}
 	
 	//绑定门店
-	@Before(RequestInterceptor.class)
 	public void bindStore(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		//上传头像
 		UploadFile uploadFile = getFile("img1");
 		UploadFile uploadFile1 = getFile("img2");
 		UploadFile uploadFile2 = getFile("img3");
+		
+		ContainFileInterceptor interceptor = new ContainFileInterceptor();
+		ReturnData data1 = interceptor.vertifyToken(getRequest());
+		if(!StringUtil.equals(data1.getCode(), Constants.STATUS_CODE.SUCCESS)){
+			renderJson(data1);
+			return;
+		}
+		
 		Integer provinceId = getParaToInt("provinceId");
 		Integer cityId = getParaToInt("cityId");
 		Integer districtId = getParaToInt("districtId");
@@ -404,7 +421,7 @@ public class RestfulController extends Controller{
 			}
 		}else{
 			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("提交失败");
+			data.setMessage("提交失败，请重新提交");
 			renderJson(data);
 		}
 	}
@@ -453,13 +470,20 @@ public class RestfulController extends Controller{
 	}
 	
 	//更新绑定门店
-	@Before(RequestInterceptor.class)
 	public void updateBindStore(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		//上传头像
 		UploadFile uploadFile = getFile("img1");
 		UploadFile uploadFile1 = getFile("img2");
 		UploadFile uploadFile2 = getFile("img3");
+		
+		ContainFileInterceptor interceptor = new ContainFileInterceptor();
+		ReturnData data1 = interceptor.vertifyToken(getRequest());
+		if(!StringUtil.equals(data1.getCode(), Constants.STATUS_CODE.SUCCESS)){
+			renderJson(data1);
+			return;
+		}
+		
 		Integer provinceId = getParaToInt("provinceId");
 		Integer cityId = getParaToInt("cityId");
 		Integer districtId = getParaToInt("districtId");
@@ -586,12 +610,13 @@ public class RestfulController extends Controller{
 			}
 		}else{
 			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("提交失败");
+			data.setMessage("提交失败，请重新提交");
 			renderJson(data);
 		}
 	}
 	
 	//账单
+	@Before(RequestInterceptor.class)
 	public void queryRecord(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		String queryType = dto.getType();
@@ -644,20 +669,29 @@ public class RestfulController extends Controller{
 	}
 	
 	//添加到购物车
+	@Before(RequestInterceptor.class)
 	public void addBuyCart(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.addBuyCart(dto));
 	}
 	
 	//删除购物车
+	@Before(RequestInterceptor.class)
 	public void deleteBuyCart(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.deleteBuyCart(dto));
 	}
 	
 	//购物车列表
+	@Before(RequestInterceptor.class)
 	public void queryBuyCartList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryBuyCartLists(dto));
+	}
+	
+	//我要买茶列表
+	public void queryTeaList(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryTeaLists(dto));
 	}
 }
