@@ -52,9 +52,13 @@ public class Tea extends Model<Tea> {
 		return Tea.dao.find("select * from t_tea order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
-	public List<Tea> queryBuyTeaList(int pageSize,int pageNum){
+	public List<Tea> queryBuyTeaList(int pageSize,int pageNum,String name){
 		int fromRow = pageSize*(pageNum-1);
-		return Tea.dao.find("select * from t_tea order by create_time desc,status asc limit "+fromRow+","+pageSize);
+		if(StringUtil.isNoneBlank(name)){
+			return Tea.dao.find("select * from t_tea where tea_title like '%"+name+"%' order by create_time desc,status asc limit "+fromRow+","+pageSize);
+		}else{
+			return Tea.dao.find("select * from t_tea order by create_time desc,status asc limit "+fromRow+","+pageSize);
+		}
 	}
 	
 	public boolean updateInfo(Tea tea){

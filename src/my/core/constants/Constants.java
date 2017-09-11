@@ -221,4 +221,9 @@ public interface Constants {
 		public static final String PIECE = "150001";
 		public static final String ITEM = "150002";
 	}
+	
+	public static interface TEA_STATUS{
+		public static final String ON_SALE = "160001";
+		public static final String STOP_SALE = "160002";
+	}
 }

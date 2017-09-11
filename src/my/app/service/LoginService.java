@@ -1278,10 +1278,11 @@ public class LoginService {
 		return data;
 	} 
 	
+	//我要买茶
 	public ReturnData queryTeaLists(LoginDTO dto){
 			
 		ReturnData data = new ReturnData();
-		List<Tea> teas = Tea.dao.queryBuyTeaList(dto.getPageSize(), dto.getPageNum());
+		List<Tea> teas = Tea.dao.queryBuyTeaList(dto.getPageSize(), dto.getPageNum(),dto.getName());
 		List<BuyTeaListVO> vos = new ArrayList<>();
 		BuyTeaListVO vo = null;
 		for(Tea tea : teas){
@@ -1305,6 +1306,25 @@ public class LoginService {
 		Map<String, Object> map = new HashMap<>();
 		map.put("data", vos);
 		data.setData(map);
+		return data;
+	}
+	
+	public ReturnData queryTeaByIdList(LoginDTO dto){
+		
+		ReturnData data = new ReturnData();
+		
+		String priceFlg = dto.getPriceType();
+		int wareHouseId = dto.getWareHouseId();
+		int quality = dto.getQuality();
+		
+		String size = dto.getSize();
+		List<WarehouseTeaMember> list = WarehouseTeaMember.dao.queryTeaByIdList(size
+																			   ,priceFlg
+																			   ,wareHouseId
+																			   ,quality
+																			   ,dto.getPageSize()
+																			   ,dto.getPageNum());
+		 
 		return data;
 	}
 }

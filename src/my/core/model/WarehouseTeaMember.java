@@ -2,6 +2,9 @@ package my.core.model;
 
 import java.util.List;
 
+import my.core.constants.Constants;
+import my.pvcloud.util.StringUtil;
+
 import org.huadalink.plugin.tablebind.TableBind;
 
 import com.jfinal.plugin.activerecord.Model;
@@ -54,4 +57,39 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		return WarehouseTeaMember.dao.deleteById(id);
 	}
 
+	public List<WarehouseTeaMember> queryTeaByIdList(String size,String priceFlg,int wareHouseId,int quality,int pageSize,int pageNum){
+		int fromRow = pageSize*(pageNum-1);
+		String orderby = "order by create_time desc";
+		if(StringUtil.equals(priceFlg, "0")){
+			//从低到高
+			if(StringUtil.equals(size, Constants.TEA_UNIT.PIECE)){
+				orderby = orderby +",piece_price asc";
+			}else{
+				orderby = orderby +",item_price asc";
+			}
+		}else{
+			//从高到低
+			if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
+				orderby = orderby +",item_price desc";
+			}else{
+				orderby = orderby +",piece_price desc";
+			}
+			
+		}
+		
+		if(quality == 0){
+			//从低到高
+			orderby = orderby +",stock asc";
+		}else{
+			//从高到低
+			orderby = orderby +",stock desc";
+		}
+		
+		String sql = "";
+		if(wareHouseId != 0){
+			sql = " and warehouse_id="+wareHouseId;
+		}
+		
+		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where 1=1 "+sql+orderby+" limit "+fromRow+","+pageSize);
+	}
 }
