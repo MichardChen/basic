@@ -38,7 +38,7 @@ public class OrderItem extends Model<OrderItem> {
 		return sum;
 	}
 	
-	public List<OrderItem> queryPriceAnalysis(int teaId,String time1,String time2){
-		return OrderItem.dao.find("SELECT AVG(item_amount) as amount,DATE_FORMAT(create_time,'%Y-%m-%d') as date from  t_order_item  GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d') where create_time>='"+time1+"' and create_time<='"+time2+"' and tea_id="+teaId+" order by create_time desc");
+	public List<OrderItemModel> queryPriceAnalysis(int teaId,String time1,String time2){
+		return Db.query("SELECT AVG(item_amount) as amount,DATE_FORMAT(create_time,'%Y-%m-%d') as date from  t_order_item  where create_time>='"+time1+"' and create_time<='"+time2+"' and tea_id="+teaId+" GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d') order by create_time desc");
 	}
 }

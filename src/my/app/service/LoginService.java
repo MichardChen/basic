@@ -38,6 +38,7 @@ import my.core.model.Message;
 import my.core.model.News;
 import my.core.model.Order;
 import my.core.model.OrderItem;
+import my.core.model.OrderItemModel;
 import my.core.model.Province;
 import my.core.model.ReceiveAddress;
 import my.core.model.RecordListModel;
@@ -63,7 +64,6 @@ import my.core.vo.TeaDetailModelVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.MD5Util;
-import my.pvcloud.util.MapUtil;
 import my.pvcloud.util.SMSUtil;
 import my.pvcloud.util.StringUtil;
 import my.pvcloud.util.TextUtil;
@@ -1461,13 +1461,43 @@ public class LoginService {
 		}
 		
 		//成交走势
-		
-		
-		
-		
-		
-		
-		
+		List<OrderItemModel> m2 = OrderItem.dao.queryPriceAnalysis(dto.getTeaId()
+																	  ,DateUtil.format(now.getTime())+" 00:00:00"
+																	  ,DateUtil.format(new Date())+" 23:59:59");
+		List<OrderItemModel> models = new ArrayList<>();
+		OrderItemModel mm = null;
+		for(Object m : m2){
+			mm = (OrderItemModel)m;
+			models.add(mm);
+		}
+		List<BigDecimal> list2 = new ArrayList<>();
+		Map<String, BigDecimal> bargainTrend = new HashMap<>();
+		int size2 = models.size();
+		if(size2 != 0){
+			OrderItemModel model = models.get(0);
+			BigDecimal price = model.getAmount();
+			Calendar today =Calendar.getInstance();  
+			today.setTime(new Date());  
+			
+			for(int j=1;j<=20;j++){
+				String todayStr = DateUtil.format(today.getTime());
+				bargainTrend.put(todayStr, price);
+				today.set(Calendar.DATE,today.get(Calendar.DATE)-1);
+			}
+			
+			for(OrderItemModel m : models){
+				String dt = DateUtil.format(m.getDate());
+				BigDecimal p = m.getAmount();
+				if(p != price){
+					for(String k:bargainTrend.keySet()){
+						 if(k.compareTo(dt) <= 0){
+							 //key小于当前时间，重置为当前值
+							 bargainTrend.put(k, p);
+						 }
+					}
+				}
+			}
+		}
 		
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
@@ -1476,6 +1506,7 @@ public class LoginService {
 		map.put("allQuality", allQuality);
 		map.put("allAmount", allAmount);
 		map.put("priceTrend", trends);
+		map.put("bargainTrend", bargainTrend);
 		data.setData(map);
 		return data;
 	}
