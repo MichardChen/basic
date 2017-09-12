@@ -12,6 +12,22 @@ public class AddressDetailVO implements Serializable{
 	private String receiverMan;
 	private int defaultFlg;
 	private String mobile;
+	private String city;
+	private String province;
+	
+	
+	public String getCity() {
+		return city;
+	}
+	public String getProvince() {
+		return province;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public void setProvince(String province) {
+		this.province = province;
+	}
 	public int getId() {
 		return id;
 	}

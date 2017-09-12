@@ -57,9 +57,10 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		return WarehouseTeaMember.dao.deleteById(id);
 	}
 
-	public List<WarehouseTeaMember> queryTeaByIdList(String size,String priceFlg,int wareHouseId,int quality,int pageSize,int pageNum){
+	public List<WarehouseTeaMember> queryTeaByIdList(int teaId,String size,String priceFlg,int wareHouseId,int quality,int pageSize,int pageNum){
 		int fromRow = pageSize*(pageNum-1);
-		String orderby = "order by create_time desc";
+		String orderby = " order by create_time desc";
+		String sql = "";
 		if(StringUtil.equals(priceFlg, "0")){
 			//从低到高
 			if(StringUtil.equals(size, Constants.TEA_UNIT.PIECE)){
@@ -67,6 +68,7 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 			}else{
 				orderby = orderby +",item_price asc";
 			}
+			sql = " and piece_status='"+Constants.TEA_STATUS.ON_SALE+"'";
 		}else{
 			//从高到低
 			if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
@@ -74,7 +76,7 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 			}else{
 				orderby = orderby +",piece_price desc";
 			}
-			
+			sql = " and item_status='"+Constants.TEA_STATUS.ON_SALE+"'";
 		}
 		
 		if(quality == 0){
@@ -85,10 +87,11 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 			orderby = orderby +",stock desc";
 		}
 		
-		String sql = "";
 		if(wareHouseId != 0){
-			sql = " and warehouse_id="+wareHouseId;
+			sql = sql + " and warehouse_id="+wareHouseId;
 		}
+		
+		sql = sql + " and tea_id="+teaId;
 		
 		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where 1=1 "+sql+orderby+" limit "+fromRow+","+pageSize);
 	}

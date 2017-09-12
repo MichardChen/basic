@@ -1,5 +1,6 @@
 package my.core.model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import my.pvcloud.util.StringUtil;
 
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -63,11 +65,15 @@ public class Order extends Model<Order> {
 	
 	public List<Order> queryBuyNewTeaRecord(int pageSize,int pageNum,int userId,String date){
 		int fromRow = (pageNum-1)*pageSize;
-		return Order.dao.find("select * from t_order where member_id="+userId+" and create_time '%"+date+"%' order by update_time desc limit "+fromRow+","+pageSize);
+		return Order.dao.find("select * from t_order where member_id="+userId+" and create_time like '%"+date+"%' order by update_time desc limit "+fromRow+","+pageSize);
 	}
 	
 	public List<Order> querySaleTeaRecord(int pageSize,int pageNum,int userId,String date){
 		int fromRow = (pageNum-1)*pageSize;
 		return Order.dao.find("select a.* from t_order a inner join t_order_item b on a.id=b.order_id where b.sale_user_id="+userId+" and b.sale_user_type !='010002' and a.create_time like '%"+date+"%' order by update_time desc limit "+fromRow+","+pageSize);
+	}
+	
+	public List<Order> queryOrderByTime(String date,String orderStatus){
+		return Order.dao.find("select * from t_order where create_time like '%"+date+"%' and order_status='"+orderStatus+"'");
 	}
 }

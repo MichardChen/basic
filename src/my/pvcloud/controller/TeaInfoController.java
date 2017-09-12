@@ -288,8 +288,8 @@ public class TeaInfoController extends Controller {
         tea.set("product_date", DateUtil.stringToDate(getPara("birthday")));
         tea.set("sale_from_date", DateUtil.stringToDate(getPara("fromtime")));
         tea.set("sale_to_date", DateUtil.stringToDate(getPara("totime")));
-        tea.set("size1", StringUtil.toInteger(getPara("size1")));
-        tea.set("size2",  StringUtil.toInteger(getPara("size2")));
+        tea.set("quality", StringUtil.toInteger(getPara("size1")));
+        tea.set("size",  StringUtil.toInteger(getPara("size2")));
         tea.set("total_output", StringUtil.toInteger(getPara("amount")));
       //  tea.set("stock", StringUtil.toInteger(getPara("warehouse")));
      //   tea.set("tea_price",price);
@@ -427,8 +427,8 @@ public class TeaInfoController extends Controller {
         tea.set("product_date", DateUtil.stringToDate(getPara("birthday")));
         tea.set("sale_from_date", DateUtil.stringToDate(getPara("fromtime")));
         tea.set("sale_to_date", DateUtil.stringToDate(getPara("totime")));
-        tea.set("size1", StringUtil.toInteger(getPara("size1")));
-        tea.set("size2",  StringUtil.toInteger(getPara("size2")));
+        tea.set("quality", StringUtil.toInteger(getPara("size1")));
+        tea.set("size",  StringUtil.toInteger(getPara("size2")));
         tea.set("total_output", StringUtil.toInteger(getPara("amount")));
        // tea.set("stock", StringUtil.toInteger(getPara("warehouse")));
        // tea.set("tea_price",price);

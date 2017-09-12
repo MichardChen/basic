@@ -417,7 +417,7 @@ public class RestfulController extends Controller{
 			if(ret1 && ret2 && ret3){
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("提交成功，请等待平台审核");
-				renderJson(data);
+				findStoreDetail(dto.getUserId());
 			}
 		}else{
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -431,6 +431,46 @@ public class RestfulController extends Controller{
 	public void queryStoreDetail(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		int memberId = dto.getUserId();
+		ReturnData data = new ReturnData();
+		if(memberId == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，用户数据出错");
+			renderJson(data);
+		}
+		Store store = Store.dao.queryById(memberId);
+		StoreDetailVO vo = new StoreDetailVO();
+		if(store != null){
+			vo.setStoreId(store.getInt("id"));
+			vo.setAddress(store.getStr("store_address"));
+			vo.setCityId(store.getInt("city_id"));
+			vo.setDistrictId(store.getInt("district_id"));
+			vo.setProvinceId(store.getInt("province_id"));
+			vo.setFromTime(store.getStr("business_fromtime"));
+			vo.setToTime(store.getStr("business_totime"));
+			vo.setLatitude(store.getFloat("latitude"));
+			vo.setLongitude(store.getFloat("longitude"));
+			vo.setMark(store.getStr("store_desc"));
+			vo.setMobile(store.getStr("link_phone"));
+			vo.setName(store.getStr("store_name"));
+			vo.setTea(store.getStr("business_tea"));
+			List<StoreImage> storeImage = StoreImage.dao.queryStoreImages(store.getInt("id"));
+			ArrayList<String> imgArrayList = new ArrayList<>();
+			for(StoreImage img : storeImage){
+				imgArrayList.add(img.getStr("img"));
+			}
+			vo.setImgs(imgArrayList);
+			vo.setStatus(store.getStr("status"));
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("查询成功");
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("data", vo);
+			data.setData(map);
+			renderJson(data);
+		}
+	}
+	
+	public void findStoreDetail(int memberId){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		ReturnData data = new ReturnData();
 		if(memberId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -690,8 +730,20 @@ public class RestfulController extends Controller{
 	}
 	
 	//我要买茶列表
-	public void queryTeaList(){
+	public void queryBuyTeaList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaLists(dto));
+	}
+	
+	//我要买茶按片按件列表
+	public void queryTeaList(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryTeaByIdList(dto));
+	}
+	
+	//茶叶分析
+	public void queryTeaAnalysis(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryTeaAnalysis(dto));
 	}
 }

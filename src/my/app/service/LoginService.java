@@ -4,9 +4,15 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.json.JSONException;
@@ -31,12 +37,14 @@ import my.core.model.Member;
 import my.core.model.Message;
 import my.core.model.News;
 import my.core.model.Order;
+import my.core.model.OrderItem;
 import my.core.model.Province;
 import my.core.model.ReceiveAddress;
 import my.core.model.RecordListModel;
 import my.core.model.ReturnData;
 import my.core.model.SystemVersionControl;
 import my.core.model.Tea;
+import my.core.model.TeapriceLog;
 import my.core.model.VertifyCode;
 import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
@@ -49,10 +57,13 @@ import my.core.vo.CarouselVO;
 import my.core.vo.MessageListVO;
 import my.core.vo.NewTeaSaleListModel;
 import my.core.vo.NewsVO;
+import my.core.vo.OrderAnalysisVO;
+import my.core.vo.SelectSizeTeaListVO;
 import my.core.vo.TeaDetailModelVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.MD5Util;
+import my.pvcloud.util.MapUtil;
 import my.pvcloud.util.SMSUtil;
 import my.pvcloud.util.StringUtil;
 import my.pvcloud.util.TextUtil;
@@ -691,6 +702,14 @@ public class LoginService {
 			vo.setDefaultFlg(ra.getInt("default_flg"));
 			vo.setReceiverMan(ra.getStr("receiveman_name"));
 			vo.setMobile(ra.getStr("mobile"));
+			Province province = Province.dao.queryProvince(ra.getInt("province_id"));
+			if(province != null){
+				vo.setProvince(province.getStr("name"));
+			}
+			City city = City.dao.queryCity(ra.getInt("city_id"));
+			if(city != null){
+				vo.setCity(city.getStr("name"));
+			}
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
 			data.setMessage("查询成功");
 			Map<String, Object> map = new HashMap<>();
@@ -913,8 +932,8 @@ public class LoginService {
 		}
 		vo.setProductPlace(tea.getStr("product_place"));
 		vo.setSaleTime(tea.getDate("sale_from_date")+"至"+tea.getDate("sale_to_date"));
-		vo.setSize(tea.getInt("size1")+"克/片、"+tea.getInt("size2")+"片/件");
-		vo.setSize2(tea.getInt("size2")+"片/件");
+		vo.setSize(tea.getInt("quality")+"克/片、"+tea.getInt("size")+"片/件");
+		vo.setSize2(tea.getInt("size")+"片/件");
 		CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
 		if(type != null){
 			vo.setType(type.getStr("name"));
@@ -1318,13 +1337,146 @@ public class LoginService {
 		int quality = dto.getQuality();
 		
 		String size = dto.getSize();
-		List<WarehouseTeaMember> list = WarehouseTeaMember.dao.queryTeaByIdList(size
+		Tea tea1 = Tea.dao.queryById(dto.getTeaId());
+		if(tea1 == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，此茶叶产品不存在");
+			return data;
+		}
+		
+		List<WarehouseTeaMember> list = WarehouseTeaMember.dao.queryTeaByIdList(dto.getTeaId()
+																			   ,size
 																			   ,priceFlg
 																			   ,wareHouseId
 																			   ,quality
 																			   ,dto.getPageSize()
 																			   ,dto.getPageNum());
 		 
+		List<SelectSizeTeaListVO> vos = new ArrayList<>();
+		SelectSizeTeaListVO vo = null;
+		for(WarehouseTeaMember wtm : list){
+			vo = new SelectSizeTeaListVO();
+			vo.setId(wtm.getInt("tea_id"));
+			Tea tea = Tea.dao.queryById(vo.getId());
+			if(tea != null){
+				vo.setName(tea.getStr("tea_title"));
+				if(StringUtil.equals(size, Constants.TEA_UNIT.PIECE)){
+					vo.setPrice(StringUtil.toString(wtm.getBigDecimal("piece_price")));
+					vo.setStock(StringUtil.toString(wtm.getInt("stock")));
+				}else{
+					vo.setPrice(StringUtil.toString(wtm.getBigDecimal("item_price")));
+					int psize = tea.getInt("size");
+					vo.setStock(StringUtil.toString(wtm.getInt("stock")/psize));
+				}
+				CodeMst t = CodeMst.dao.queryCodestByCode(size);
+				if(t != null){
+					vo.setSize(t.getStr("name"));
+				}
+				CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+				if(type != null){
+					vo.setType(type.getStr("name"));
+				}
+				WareHouse wareHouse = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+				if(wareHouse != null){
+					vo.setWareHouse(wareHouse.getStr("warehouse_name"));
+				}
+				vos.add(vo);
+			}
+		}
+		
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		Map<String, Object> map = new HashMap<>();
+		map.put("data", vos);
+		//查询详情
+		map.put("descUrl", tea1.getStr("desc_url"));
+		data.setData(map);
+		return data;
+	}
+	
+	//分析
+	public ReturnData queryTeaAnalysis(LoginDTO dto){
+		
+		ReturnData data = new ReturnData();
+		//成交总量、成交总额
+		String date = DateUtil.format(new Date(), "yyyy-MM");
+		List<Order> orders = Order.dao.queryOrderByTime(date, Constants.ORDER_STATUS.PAY_SUCCESS);
+		BigDecimal allAmount = new BigDecimal("0.00");
+		int allQuality = 0;
+		List<OrderAnalysisVO> vos = new ArrayList<>();
+		OrderAnalysisVO vo = null;
+		for(Order order : orders){
+			vo = new OrderAnalysisVO();
+			BigDecimal payAmount = order.getBigDecimal("pay_amount");
+			if(payAmount != null){
+				allAmount.add(payAmount);
+			}
+			Timestamp time = order.getTimestamp("create_time");
+			int month = time.getMonth()+1;
+			int day = time.getDate();
+			vo.setDate(month+"月"+day+"日");
+			vo.setAmount(payAmount);
+			int quality = OrderItem.dao.sumOrderQuality(order.getInt("id")).intValue();
+			allQuality = allQuality + quality;
+			vo.setQuality(quality);
+			vos.add(vo);
+		}
+		//价格走势
+		Calendar now =Calendar.getInstance();  
+		now.setTime(new Date());  
+		now.set(Calendar.DATE,now.get(Calendar.DATE)-20);
+		String n = DateUtil.format(now.getTime());
+		List<TeapriceLog> logs = TeapriceLog.dao.queryTeapriceLogs(dto.getTeaId()
+																  ,DateUtil.format(now.getTime())+" 00:00:00"
+																  ,DateUtil.format(new Date())+" 23:59:59");
+		List<BigDecimal> list = new ArrayList<>();
+		Map<String, BigDecimal> trends = new HashMap<>();
+		int size = logs.size();
+		if(size != 0){
+			TeapriceLog log = logs.get(0);
+			BigDecimal price = log.getBigDecimal("price");
+			Calendar today =Calendar.getInstance();  
+			today.setTime(new Date());  
+			
+			for(int j=1;j<=20;j++){
+				String todayStr = DateUtil.format(today.getTime());
+				trends.put(todayStr, price);
+				today.set(Calendar.DATE,today.get(Calendar.DATE)-1);
+			}
+			
+			for(TeapriceLog log2 : logs){
+				Timestamp timestamp = log2.getTimestamp("create_time");
+				String dt = DateUtil.formatTimestampForDate(timestamp);
+				BigDecimal p = log2.getBigDecimal("price");
+				
+				if(p != price){
+					for(String k:trends.keySet()){
+						 if(k.compareTo(dt) <= 0){
+							 //key小于当前时间，重置为当前值
+							 trends.put(k, p);
+						 }
+					}
+				}
+			}
+		}
+		
+		//成交走势
+		
+		
+		
+		
+		
+		
+		
+		
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		Map<String,Object> map = new HashMap<>();
+		map.put("data", vos);
+		map.put("allQuality", allQuality);
+		map.put("allAmount", allAmount);
+		map.put("priceTrend", trends);
+		data.setData(map);
 		return data;
 	}
 }
