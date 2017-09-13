@@ -1,5 +1,6 @@
 package my.core.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import my.core.constants.Constants;
@@ -7,6 +8,7 @@ import my.pvcloud.util.StringUtil;
 
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -94,5 +96,32 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		sql = sql + " and tea_id="+teaId;
 		
 		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where 1=1 "+sql+orderby+" limit "+fromRow+","+pageSize);
+	}
+
+	public List<WarehouseTeaMember> queryPersonProperty(int memberId,int pageSize,int pageNum){
+		int fromRow = pageSize*(pageNum-1);
+		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" and stock!=0 and stock is not null order by create_time desc limit "+fromRow+","+pageSize);
+	}
+	
+	public List<Integer> queryPersonTeaId(int memberId,int pageSize,int pageNum){
+		int fromRow = pageSize*(pageNum-1);
+		return Db.query("SELECT tea_id from t_warehouse_tea_member  where member_id="+memberId+" GROUP BY tea_id order by create_time desc limit "+fromRow+","+pageSize);
+	}
+	
+	public BigDecimal queryTeaStock(int memberId,int teaId){
+		BigDecimal sum = Db.queryBigDecimal("select SUM(stock) from t_warehouse_tea_member where member_id="+memberId+" and tea_id="+teaId);
+		if(sum == null){
+			return new BigDecimal("0");
+		}else{
+			return sum;
+		}
+	}
+	
+	public List<WarehouseTeaMember> queryPersonWarehouseTea(int memberId){
+		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" order by create_time desc");
+	}
+	
+	public List<WarehouseTeaMember> querysaleTeaWarehouseTea(int memberId,int teaId){
+		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" and tea_id="+teaId+" order by create_time desc");
 	}
 }

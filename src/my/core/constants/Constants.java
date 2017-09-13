@@ -1,5 +1,6 @@
 package my.core.constants;
 
+import org.apache.commons.io.monitor.FileAlterationListener;
 import org.eclipse.jdt.internal.compiler.classfmt.FieldInfoWithAnnotation;
 
 import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
@@ -165,6 +166,7 @@ public interface Constants {
 		public static final String CONTRACT_COMMENT = "060003";
 		public static final String NEW_TEA_SALE_MARK = "060004";
 		public static final String CERTIFICATE_TIP = "060005";
+		public static final String WAREHOUSE_INTRODUCE = "060006";
 	}
 	
 	public static interface VERSION_TYPE{
@@ -225,5 +227,9 @@ public interface Constants {
 	public static interface TEA_STATUS{
 		public static final String ON_SALE = "160001";
 		public static final String STOP_SALE = "160002";
+	}
+	
+	public static interface SYSTEM_CONSTANTS{
+		public static final String SALE_SERVICE_FEE = "170001";
 	}
 }

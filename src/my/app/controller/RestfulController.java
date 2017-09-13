@@ -23,6 +23,7 @@ import org.huadalink.plugin.shiro.CaptchaUsernamePasswordToken;
 import org.huadalink.route.ControllerBind;
 import org.json.JSONObject;
 
+import com.alibaba.druid.support.logging.Log;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
@@ -265,7 +266,7 @@ public class RestfulController extends Controller{
 		renderJson(service.queryNewTeaSaleList(dto));
 	}
 	
-	//查询新茶
+	//查询新茶发售详情
 	public void queryNewTeaById(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryNewTeaById(dto));
@@ -741,9 +742,33 @@ public class RestfulController extends Controller{
 		renderJson(service.queryTeaByIdList(dto));
 	}
 	
-	//茶叶分析
+	//我要买茶茶叶详情
 	public void queryTeaAnalysis(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaAnalysis(dto));
+	}
+	
+	//选择规格(具体茶叶的规格)
+	public void queryTeaSize(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryTeaSize(dto));
+	}
+	
+	//茶资产
+	public void queryTeaProperty(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryTeaProperty(dto));
+	}
+	
+	//仓储详情
+	public void queryWareHouseDetail(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryWareHouseDetail(dto));
+	}
+	
+	//我要卖茶
+	public void saleTea(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.saleTea(dto));
 	}
 }

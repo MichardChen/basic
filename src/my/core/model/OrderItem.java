@@ -38,7 +38,15 @@ public class OrderItem extends Model<OrderItem> {
 		return sum;
 	}
 	
+	public BigDecimal sumOrderAmount(int orderId){
+		BigDecimal sum = Db.queryBigDecimal("select sum(item_amount) from t_order_item where order_id="+orderId);
+		if(sum == null){
+			return new BigDecimal("0");
+		}
+		return sum;
+	}
+	
 	public List<OrderItemModel> queryPriceAnalysis(int teaId,String time1,String time2){
-		return Db.query("SELECT AVG(item_amount) as amount,DATE_FORMAT(create_time,'%Y-%m-%d') as date from  t_order_item  where create_time>='"+time1+"' and create_time<='"+time2+"' and tea_id="+teaId+" GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d') order by create_time desc");
+		return Db.query("SELECT AVG(item_amount) as amount,DATE_FORMAT(create_time,'%Y-%m-%d') as date from  t_order_item  where create_time>='"+time1+"' and create_time<='"+time2+"' and tea_id="+teaId+" GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d') order by create_time asc");
 	}
 }

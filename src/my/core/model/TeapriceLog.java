@@ -16,7 +16,7 @@ public class TeapriceLog extends Model<TeapriceLog> {
 	}
 	
 	public List<TeapriceLog> queryTeapriceLogs(int teaId,String time1,String time2){
-		return TeapriceLog.dao.find("select * from t_teaprice_log where create_time>='"+time1+"' and create_time<='"+time2+"' and tea_id="+teaId+" order by create_time desc");
+		return TeapriceLog.dao.find("select * from t_teaprice_log where create_time>='"+time1+"' and create_time<='"+time2+"' and tea_id="+teaId+" order by create_time asc");
 	}
 	
 	public boolean updateInfo(TeapriceLog TeapriceLog){

@@ -11,6 +11,21 @@ public class SelectSizeTeaListVO implements Serializable{
 	private String stock;
 	private String wareHouse;
 	private String type;
+	private String img;
+	private String wareHouseMarkUrl;
+	
+	public String getWareHouseMarkUrl() {
+		return wareHouseMarkUrl;
+	}
+	public void setWareHouseMarkUrl(String wareHouseMarkUrl) {
+		this.wareHouseMarkUrl = wareHouseMarkUrl;
+	}
+	public String getImg() {
+		return img;
+	}
+	public void setImg(String img) {
+		this.img = img;
+	}
 	public int getId() {
 		return id;
 	}
