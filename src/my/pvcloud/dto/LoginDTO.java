@@ -1,5 +1,7 @@
 package my.pvcloud.dto;
 
+import java.math.BigDecimal;
+
 import javax.servlet.http.HttpServletRequest;
 
 import my.pvcloud.util.StringUtil;
@@ -54,10 +56,12 @@ public class LoginDTO extends BaseDTO{
 		dto.setName(request.getParameter("name"));
 		dto.setWareHouseId(StringUtil.toInteger(request.getParameter("wareHouseId")));
 		dto.setPriceType(request.getParameter("priceFlg"));
+		dto.setPrice(StringUtil.toBigDecimal(request.getParameter("price")));
+		
 		return dto;
 	}
 	
-	
+	private BigDecimal price;
 	private int wareHouseId;
 	private String priceType;
 	private String name;
@@ -95,7 +99,14 @@ public class LoginDTO extends BaseDTO{
 	private String buyCartIds;
 	private String date;
 	
-	
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
 	public int getWareHouseId() {
 		return wareHouseId;
 	}

@@ -43,10 +43,6 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		return WarehouseTeaMember.dao.findFirst("select * from t_warehouse_tea_member where tea_id = ? and member_type_cd=?",id,memberTypeCd);
 	}
 	
-	public WarehouseTeaMember queryTeaOnPlatform(String memberTypeCd,int teaId){
-		return WarehouseTeaMember.dao.findFirst("select * from t_warehouse_tea_member where tea_id = ? and member_type_cd=?",teaId,memberTypeCd);
-	}
-	
 	public boolean updateInfo(WarehouseTeaMember data){
 		return new WarehouseTeaMember().setAttrs(data).update();
 	}
@@ -59,7 +55,7 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		return WarehouseTeaMember.dao.deleteById(id);
 	}
 
-	public List<WarehouseTeaMember> queryTeaByIdList(int teaId,String size,String priceFlg,int wareHouseId,int quality,int pageSize,int pageNum){
+	/*public List<WarehouseTeaMember> queryTeaByIdList(int teaId,String size,String priceFlg,int wareHouseId,int quality,int pageSize,int pageNum){
 		int fromRow = pageSize*(pageNum-1);
 		String orderby = " order by create_time desc";
 		String sql = "";
@@ -96,7 +92,7 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		sql = sql + " and tea_id="+teaId;
 		
 		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where 1=1 "+sql+orderby+" limit "+fromRow+","+pageSize);
-	}
+	}*/
 
 	public List<WarehouseTeaMember> queryPersonProperty(int memberId,int pageSize,int pageNum){
 		int fromRow = pageSize*(pageNum-1);

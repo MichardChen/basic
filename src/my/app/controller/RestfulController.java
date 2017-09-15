@@ -766,9 +766,15 @@ public class RestfulController extends Controller{
 		renderJson(service.queryWareHouseDetail(dto));
 	}
 	
-	//我要卖茶
+	//我要卖茶出售页面
 	public void saleTea(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.saleTea(dto));
+	}
+	
+	//确定卖茶
+	public void confirmSaleTea(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.confirmSaleTea(dto));
 	}
 }

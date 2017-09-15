@@ -1,29 +1,18 @@
 package my.app.service;
 
-import java.io.DataInput;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import javax.swing.text.TabableView;
-
-import org.apache.commons.lang.Validate;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.jfinal.plugin.activerecord.Page;
-import com.sun.crypto.provider.RSACipher;
-import com.sun.org.apache.bcel.internal.classfile.Code;
 
 import my.core.constants.Constants;
 import my.core.model.AcceessToken;
@@ -53,6 +42,7 @@ import my.core.model.TeapriceLog;
 import my.core.model.VertifyCode;
 import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
+import my.core.model.WarehouseTeaMemberItem;
 import my.core.tx.TxProxy;
 import my.core.vo.AddressDetailVO;
 import my.core.vo.AddressVO;
@@ -63,7 +53,6 @@ import my.core.vo.MessageListVO;
 import my.core.vo.NewTeaSaleListModel;
 import my.core.vo.NewsVO;
 import my.core.vo.OrderAnalysisVO;
-import my.core.vo.SaleTeaDetailVO;
 import my.core.vo.SelectSizeTeaListVO;
 import my.core.vo.TeaDetailModelVO;
 import my.core.vo.TeaPropertyListVO;
@@ -72,7 +61,6 @@ import my.core.vo.WarehouseStockVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.MD5Util;
-import my.pvcloud.util.ObjectUtil;
 import my.pvcloud.util.SMSUtil;
 import my.pvcloud.util.StringUtil;
 import my.pvcloud.util.TextUtil;
@@ -1278,14 +1266,13 @@ public class LoginService {
 					vo.setName(StringUtil.STRING_BLANK);
 					vo.setType(StringUtil.STRING_BLANK);
 				}
-				if(StringUtil.equals(cart.getStr("size"), Constants.TEA_UNIT.PIECE)){
-					vo.setPrice(wtm.getBigDecimal("piece_price"));
-				}else if(StringUtil.equals(cart.getStr("size"), Constants.TEA_UNIT.ITEM)){
-					vo.setPrice(wtm.getBigDecimal("item_price"));
+				
+				WarehouseTeaMemberItem item = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
+				if(item != null){
+					vo.setPrice(item.getBigDecimal("price"));
 				}else{
 					vo.setPrice(new BigDecimal("0"));
 				}
-				
 				vo.setStock(wtm.getInt("stock"));
 			}else{
 				vo.setWarehouse(StringUtil.STRING_BLANK);
@@ -1318,10 +1305,17 @@ public class LoginService {
 			vo.setId(tea.getInt("id"));
 			vo.setImg(tea.getStr("icon"));
 			vo.setName(tea.getStr("tea_title"));
-			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryTeaOnPlatform(Constants.USER_TYPE.PLATFORM_USER, tea.getInt("id"));
-			if(wtm != null){
-				vo.setPrice(wtm.getBigDecimal("piece_price"));
+			WarehouseTeaMemberItem item = WarehouseTeaMemberItem.dao.queryTeaOnPlatform(Constants.USER_TYPE.PLATFORM_USER
+																					   ,tea.getInt("id"));
+			if(item != null){
+				vo.setPrice(item.getBigDecimal("price"));
+			}else{
+				vo.setPrice(new BigDecimal("0"));
 			}
+			
+		/*	if(wtm != null){
+				vo.setPrice(wtm.getBigDecimal("piece_price"));
+			}*/
 			vo.setSize("片");
 			CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
 			if(type != null){
@@ -1353,30 +1347,29 @@ public class LoginService {
 			return data;
 		}
 		
-		List<WarehouseTeaMember> list = WarehouseTeaMember.dao.queryTeaByIdList(dto.getTeaId()
-																			   ,size
-																			   ,priceFlg
-																			   ,wareHouseId
-																			   ,quality
-																			   ,dto.getPageSize()
-																			   ,dto.getPageNum());
+		List<WarehouseTeaMemberItem> list = WarehouseTeaMemberItem.dao.queryTeaByIdList(dto.getTeaId()
+																					   ,size
+																					   ,priceFlg
+																					   ,wareHouseId
+																					   ,quality
+																					   ,dto.getPageSize()
+																					   ,dto.getPageNum());
 		 
 		List<SelectSizeTeaListVO> vos = new ArrayList<>();
 		SelectSizeTeaListVO vo = null;
-		for(WarehouseTeaMember wtm : list){
+		for(WarehouseTeaMemberItem item : list){
+			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(item.getInt("warehouse_tea_member_id"));
+			if(wtm == null){
+				continue;
+			}
 			vo = new SelectSizeTeaListVO();
-			vo.setId(wtm.getInt("tea_id"));
-			Tea tea = Tea.dao.queryById(vo.getId());
+			vo.setId(item.getInt("id"));
+			Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
 			if(tea != null){
 				vo.setName(tea.getStr("tea_title"));
-				if(StringUtil.equals(size, Constants.TEA_UNIT.PIECE)){
-					vo.setPrice(StringUtil.toString(wtm.getBigDecimal("piece_price")));
-					vo.setStock(StringUtil.toString(wtm.getInt("stock")));
-				}else{
-					vo.setPrice(StringUtil.toString(wtm.getBigDecimal("item_price")));
-					int psize = tea.getInt("size");
-					vo.setStock(StringUtil.toString(wtm.getInt("stock")/psize));
-				}
+				vo.setPrice(StringUtil.toString(item.getBigDecimal("price")));
+				vo.setStock(StringUtil.toString(item.getInt("quality")));
+				
 				CodeMst t = CodeMst.dao.queryCodestByCode(size);
 				if(t != null){
 					vo.setSize(t.getStr("name"));
@@ -1530,14 +1523,21 @@ public class LoginService {
 	//选择规格
 	public ReturnData queryTeaSize(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		int wtmId = dto.getTeaId();
+		int wtmItemId = dto.getTeaId();
 		String sizeTypeCd = dto.getSize();
-		if(wtmId == 0){
+		
+		if(wtmItemId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，茶叶不存在");
 			return data;
 		}
-		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmId);
+		WarehouseTeaMemberItem item = WarehouseTeaMemberItem.dao.queryById(wtmItemId);
+		if(item == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，茶叶不存在");
+			return data;
+		}
+		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(item.getInt("warehouse_tea_member_id"));
 		if(wtm == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，数据出错");
@@ -1549,22 +1549,18 @@ public class LoginService {
 		if(tea != null){
 			vo.setName(tea.getStr("tea_title"));
 			vo.setImg(tea.getStr("icon"));
-			if(StringUtil.equals(sizeTypeCd, Constants.TEA_UNIT.PIECE)){
-				vo.setStock(StringUtil.toString(wtm.getInt("stock")));
-			}else{
-				int size = tea.getInt("size");
-				vo.setStock(StringUtil.toString(wtm.getInt("stock")/size));
-			}
+			vo.setStock(StringUtil.toString(item.getInt("quality")));
+			
 			CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
 			if(type != null){
 				vo.setType(type.getStr("name"));
 			}
 		}
+		
+		vo.setPrice(StringUtil.toString(item.getBigDecimal("price")));
 		if(StringUtil.equals(sizeTypeCd, Constants.TEA_UNIT.PIECE)){
-			vo.setPrice(StringUtil.toString(wtm.getBigDecimal("piece_price")));
 			vo.setSize("片");
 		}else{
-			vo.setPrice(StringUtil.toString(wtm.getBigDecimal("item_price")));
 			vo.setSize("件");
 		}
 		WareHouse wareHouse = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
@@ -1648,15 +1644,28 @@ public class LoginService {
 		TeaWarehouseDetailVO detailVO = null;
 		List<WarehouseTeaMember> lists = WarehouseTeaMember.dao.queryPersonWarehouseTea(dto.getUserId());
 		for(WarehouseTeaMember wtm : lists){
+			
 			detailVO = new TeaWarehouseDetailVO();
 			detailVO.setWareHouseTeaId(wtm.getInt("id"));
-			int saleStock = wtm.getInt("sale_stock");
 			int stock = wtm.getInt("stock");
-			detailVO.setSaleQuality(saleStock);
-			detailVO.setCanGetQuality(stock-saleStock);
+			
+			detailVO.setCanGetQuality(stock);
+			
 			WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
 			if(house != null){
 				detailVO.setWareHouse(house.getStr("warehouse_name"));
+				BigDecimal pieceDecimal = WarehouseTeaMemberItem.dao.queryOnSaleTeaCount(dto.getUserId(), wtm.getInt("warehouse_id"), teaId, Constants.TEA_UNIT.PIECE);
+				int piece = 0;
+				int item = 0;
+				if(pieceDecimal != null){
+					piece = pieceDecimal.intValue();
+				}
+				BigDecimal itemDecimal = WarehouseTeaMemberItem.dao.queryOnSaleTeaCount(dto.getUserId(), wtm.getInt("warehouse_id"), teaId, Constants.TEA_UNIT.ITEM);
+				if(itemDecimal != null){
+					item = itemDecimal.intValue();
+				}
+				int size = tea.getInt("size");
+				detailVO.setSaleQuality(piece+item*size);
 			}
 			vos.add(detailVO);
 		}
@@ -1684,20 +1693,15 @@ public class LoginService {
 		for(WarehouseTeaMember wtm : lists){
 			vo = new WarehouseStockVO();
 			int stock = wtm.getInt("stock");
-			int saleStock = wtm.getInt("sale_stock");
-			int canSale = stock-saleStock;
-			if(canSale == 0){
-				continue;
-			}
-			vo.setStock(canSale);
+			vo.setStock(stock);
 			vo.setWarehouseTeaId(wtm.getInt("id"));
 			WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
 			if(house != null){
 				vo.setWareHouse(house.getStr("warehouse_name"));
 			}
 			if(size != 0){
-				int pieceCount = canSale;
-				int itemCount = canSale/size;
+				int pieceCount = stock;
+				int itemCount = stock/size;
 				vo.setMaxItem(itemCount);
 				vo.setMaxPiece(pieceCount);
 				vo.setPieceFlg(pieceCount == 0 ? 0 : 1);
@@ -1714,16 +1718,28 @@ public class LoginService {
 		Map<String, Object> map = new HashMap<>();
 		map.put("warehouseTeaStock", vos);
 		map.put("serviceFee", serviceFeeStr);
-		WarehouseTeaMember platTea = WarehouseTeaMember.dao.queryTeaOnPlatform(Constants.USER_TYPE.PLATFORM_USER, tea.getInt("id"));
+		WarehouseTeaMemberItem platTea = WarehouseTeaMemberItem.dao.queryTeaOnPlatform(Constants.USER_TYPE.PLATFORM_USER, tea.getInt("id"));
 		if(platTea == null){
 			map.put("price", 0);
 		}else{
-			map.put("price", platTea.getBigDecimal("piece_price"));
+			map.put("price", platTea.getBigDecimal("price"));
 		}
 		
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		data.setData(map);
+		return data;
+	}
+	
+	//提交卖茶明细
+	public ReturnData confirmSaleTea(LoginDTO dto){
+			
+		ReturnData data = new ReturnData();
+		int warehouseMemberTeaId = dto.getWareHouseId();
+		String saleType = dto.getType();
+		BigDecimal salePrice = dto.getPrice();
+		int saleNum = dto.getQuality();
+		
 		return data;
 	}
 }
