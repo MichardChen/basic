@@ -438,7 +438,7 @@ public class RestfulController extends Controller{
 			data.setMessage("对不起，用户数据出错");
 			renderJson(data);
 		}
-		Store store = Store.dao.queryById(memberId);
+		Store store = Store.dao.queryMemberStore(memberId);
 		StoreDetailVO vo = new StoreDetailVO();
 		if(store != null){
 			vo.setStoreId(store.getInt("id"));

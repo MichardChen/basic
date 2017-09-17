@@ -1,6 +1,7 @@
 package my.core.vo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class WarehouseStockVO implements Serializable{
 
@@ -11,6 +12,22 @@ public class WarehouseStockVO implements Serializable{
 	private int itemFlg;
 	private int maxPiece;
 	private int maxItem;
+	private String name;
+	private int size;
+	
+	
+	public int getSize() {
+		return size;
+	}
+	public void setSize(int size) {
+		this.size = size;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	public int getMaxPiece() {
 		return maxPiece;

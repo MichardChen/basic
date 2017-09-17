@@ -49,6 +49,7 @@ import my.core.vo.AddressVO;
 import my.core.vo.BuyCartListVO;
 import my.core.vo.BuyTeaListVO;
 import my.core.vo.CarouselVO;
+import my.core.vo.DataListVO;
 import my.core.vo.MessageListVO;
 import my.core.vo.NewTeaSaleListModel;
 import my.core.vo.NewsVO;
@@ -1514,8 +1515,25 @@ public class LoginService {
 		map.put("data", vos);
 		map.put("allQuality", allQuality);
 		map.put("allAmount", allAmount);
-		map.put("priceTrend", trends);
-		map.put("bargainTrend", bargainTrend);
+		List<DataListVO> list1 = new ArrayList<>();
+		DataListVO v = null;
+		for(String k:trends.keySet()){
+			v = new DataListVO();
+			v.setKey(k);
+			v.setValue(trends.get(k));
+			list1.add(v);
+		}
+		
+		List<DataListVO> list2 = new ArrayList<>();
+		DataListVO v2 = null;
+		for(String k:bargainTrend.keySet()){
+			v2 = new DataListVO();
+			v2.setKey(k);
+			v2.setValue(bargainTrend.get(k));
+			list2.add(v2);
+		}
+		map.put("priceTrend", list1);
+		map.put("bargainTrend", list2);
 		data.setData(map);
 		return data;
 	}
@@ -1683,15 +1701,16 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		List<WarehouseTeaMember> lists = WarehouseTeaMember.dao.querysaleTeaWarehouseTea(dto.getUserId(),dto.getTeaId());
 		List<WarehouseStockVO> vos = new ArrayList<>();
-		WarehouseStockVO vo = null;
+		WarehouseStockVO vo = new WarehouseStockVO();;
 		Tea tea = Tea.dao.queryById(dto.getTeaId());
 		int size = 0;
 		if(tea != null){
 			size = tea.getInt("size");
+			vo.setName(tea.getStr("tea_title"));
+			vo.setSize(size);
 		}
 		
 		for(WarehouseTeaMember wtm : lists){
-			vo = new WarehouseStockVO();
 			int stock = wtm.getInt("stock");
 			vo.setStock(stock);
 			vo.setWarehouseTeaId(wtm.getInt("id"));
