@@ -359,9 +359,10 @@ public class RestfulController extends Controller{
 				storeImage.set("store_id", id);
 				storeImage.set("img", logo1);
 				storeImage.set("flg", 1);
+				storeImage.set("seq", 1);
 				storeImage.set("create_time", DateUtil.getNowTimestamp());
 				storeImage.set("update_time", DateUtil.getNowTimestamp());
-				ret1 = storeImage.dao.saveInfo(storeImage);
+				ret1 = StoreImage.dao.saveInfo(storeImage);
 			}
 			//第二张图
 			String uuid2 = UUID.randomUUID().toString();
@@ -385,9 +386,10 @@ public class RestfulController extends Controller{
 				storeImage1.set("store_id", id);
 				storeImage1.set("img", logo2);
 				storeImage1.set("flg", 1);
+				storeImage1.set("seq", 2);
 				storeImage1.set("create_time", DateUtil.getNowTimestamp());
 				storeImage1.set("update_time", DateUtil.getNowTimestamp());
-				ret2 = storeImage1.dao.saveInfo(storeImage1);
+				ret2 = StoreImage.dao.saveInfo(storeImage1);
 			}
 			//第三张图
 			String uuid3 = UUID.randomUUID().toString();
@@ -411,9 +413,10 @@ public class RestfulController extends Controller{
 				storeImage2.set("store_id", id);
 				storeImage2.set("img", logo3);
 				storeImage2.set("flg", 1);
+				storeImage2.set("seq", 3);
 				storeImage2.set("create_time", DateUtil.getNowTimestamp());
 				storeImage2.set("update_time", DateUtil.getNowTimestamp());
-				ret3 = storeImage2.dao.saveInfo(storeImage2);
+				ret3 = StoreImage.dao.saveInfo(storeImage2);
 			}
 			if(ret1 && ret2 && ret3){
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
@@ -539,7 +542,8 @@ public class RestfulController extends Controller{
 		String mark = getPara("mark");
 		
 		Store store = new Store();
-		store.set("id", getParaToInt("storeId"));
+		int storeId = getParaToInt("storeId");
+		store.set("id", storeId);
 		store.set("province_id", provinceId);
 		store.set("city_id", cityId);
 		store.set("district_id", districtId);
@@ -592,7 +596,7 @@ public class RestfulController extends Controller{
 				storeImage.set("img", logo1);
 				storeImage.set("flg", 1);
 				storeImage.set("update_time", DateUtil.getNowTimestamp());
-				ret1 = storeImage.dao.updateInfo(storeImage);
+				ret1 = StoreImage.dao.updateInfo(logo1,storeId,1);
 			}
 			//第二张图
 			String uuid2 = UUID.randomUUID().toString();
@@ -617,7 +621,7 @@ public class RestfulController extends Controller{
 				storeImage1.set("img", logo2);
 				storeImage1.set("flg", 1);
 				storeImage1.set("update_time", DateUtil.getNowTimestamp());
-				ret2 = storeImage1.dao.updateInfo(storeImage1);
+				ret2 = StoreImage.dao.updateInfo(logo2,storeId,2);
 			}
 			//第三张图
 			String uuid3 = UUID.randomUUID().toString();
@@ -642,7 +646,7 @@ public class RestfulController extends Controller{
 				storeImage2.set("img", logo3);
 				storeImage2.set("flg", 1);
 				storeImage2.set("update_time", DateUtil.getNowTimestamp());
-				ret3 = storeImage2.dao.updateInfo(storeImage2);
+				ret3 = StoreImage.dao.updateInfo(logo3,storeId,3);
 			}
 			if(ret1 && ret2 && ret3){
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
@@ -776,5 +780,17 @@ public class RestfulController extends Controller{
 	public void confirmSaleTea(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.confirmSaleTea(dto));
+	}
+	
+	//取茶初始化
+	public void takeTeaInit(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.takeTeaInit(dto));
+	}
+	
+	//取茶
+	public void takeTea(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.takeTea(dto));
 	}
 }

@@ -52,12 +52,12 @@ public class Document extends Model<Document> {
 		return Document.dao.findFirst("select * from t_document where type_cd = ?",typeCd);
 	}
 	
-	public boolean updateInfo(Document tea){
-		return new Document().setAttrs(tea).update();
+	public boolean updateInfo(Document data){
+		return new Document().setAttrs(data).update();
 	}
 	
-	public boolean saveInfo(Document tea){
-		return new Document().setAttrs(tea).save();
+	public boolean saveInfo(Document data){
+		return new Document().setAttrs(data).save();
 	}
 	
 	public boolean del(int id){

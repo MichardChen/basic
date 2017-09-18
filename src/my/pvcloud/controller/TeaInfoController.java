@@ -440,18 +440,6 @@ public class TeaInfoController extends Controller {
         tea.set("tea_desc", content);
         tea.set("desc_url", contentUrl);
         
-/*        WarehouseTeaMember houseTea = new WarehouseTeaMember();
-	    houseTea.set("warehouse_id", houseId);
-	    houseTea.set("tea_id", tea.getInt("id"));
-	    houseTea.set("price", price);
-	    houseTea.set("stock", StringUtil.toInteger(getPara("warehouse")));
-	    houseTea.set("member_id", (Integer)getSessionAttr("agentId"));
-	    houseTea.set("member_type_cd", Constants.USER_TYPE.PLATFORM_USER);
-	    houseTea.set("create_time", DateUtil.getNowTimestamp());
-	    houseTea.set("update_time", DateUtil.getNowTimestamp());
-	    WarehouseTeaMember.dao.saveInfo(houseTea);
-	    */
-	    
         if(reset == 1){
         	tea.set("cover_img", logo);
         }
@@ -496,42 +484,6 @@ public class TeaInfoController extends Controller {
 		    data.setData(map);
 		    renderJson(data);
 		}
-	}
-	
-	/**
-	 * 修改（保存）
-	 */
-	public void update(){
-		/*String id = getPara("custId");
-		int integral = getParaToInt("integral");
-		String phoneNum = getPara("phoneNum");
-		String addrname = getPara("addrname");
-		News custInfo = new News();
-		int custId = 0;
-		if(!("").equals(id) && id!=null){
-			custId = getParaToInt("custId");
-			custInfo = service.queryById(custId);
-		}
-		custInfo.set("integral", integral);
-		custInfo.set("phonenum", phoneNum);
-		custInfo.set("addrname", addrname);
-		if(custId==0){
-			custInfo.set("register_date", new Date());
-			if(service.saveInfo(custInfo)){
-				setAttr("message","新增成功");
-			}else{
-				setAttr("message", "新增失败");
-			}
-		}else{
-			custInfo.set("update_date", new Date());
-			if(service.updateInfo(custInfo)){
-				setAttr("message","修改成功");
-			}else{
-				setAttr("message", "修改失败");
-			}
-		}*/
-		
-		index();
 	}
 	
 	/**

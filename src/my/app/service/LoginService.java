@@ -1,6 +1,8 @@
 package my.app.service;
 
+import java.beans.Transient;
 import java.io.IOException;
+import java.lang.invoke.VolatileCallSite;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.internal.compiler.lookup.InvocationSite.EmptyWithAstNode;
 import org.json.JSONException;
 
 import com.jfinal.plugin.activerecord.Page;
@@ -36,6 +39,7 @@ import my.core.model.Province;
 import my.core.model.ReceiveAddress;
 import my.core.model.RecordListModel;
 import my.core.model.ReturnData;
+import my.core.model.SaleOrder;
 import my.core.model.SystemVersionControl;
 import my.core.model.Tea;
 import my.core.model.TeapriceLog;
@@ -49,6 +53,7 @@ import my.core.vo.AddressVO;
 import my.core.vo.BuyCartListVO;
 import my.core.vo.BuyTeaListVO;
 import my.core.vo.CarouselVO;
+import my.core.vo.ChooseAddressVO;
 import my.core.vo.DataListVO;
 import my.core.vo.MessageListVO;
 import my.core.vo.NewTeaSaleListModel;
@@ -1375,6 +1380,7 @@ public class LoginService {
 				if(t != null){
 					vo.setSize(t.getStr("name"));
 				}
+				vo.setSizeNum(tea.getInt("size"));
 				CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
 				if(type != null){
 					vo.setType(type.getStr("name"));
@@ -1758,7 +1764,170 @@ public class LoginService {
 		String saleType = dto.getType();
 		BigDecimal salePrice = dto.getPrice();
 		int saleNum = dto.getQuality();
+		if(warehouseMemberTeaId == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，茶叶数据出错");
+			return data;
+		}
+		//判断库存够不够？
+		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(warehouseMemberTeaId);
+		if(wtm == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，此茶叶不存在");
+			return data;
+		}
+		//获取茶叶
+		Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+		if(tea == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，此茶叶不存在");
+			return data;
+		}
+		int size = tea.getInt("size");
+		int stock = wtm.getInt("stock");
+		if(StringUtil.equals(saleType, Constants.TEA_UNIT.PIECE)){
+			//按片
+			if (stock<saleNum) {
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("对不起，你销售片数大于库存数");
+				return data;
+			}
+		}
+		if(StringUtil.equals(saleType, Constants.TEA_UNIT.ITEM)){
+			//按件
+			int itemNum = stock/size;
+			if (itemNum<saleNum){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("对不起，你销售件数大于库存数");
+				return data;
+			}
+		}
 		
+		SaleOrder order = new SaleOrder();
+		order.set("warehouse_tea_member_id", warehouseMemberTeaId);
+		order.set("quality", saleNum);
+		order.set("price", salePrice);
+		order.set("size_type_cd", saleType);
+		order.set("create_time", DateUtil.getNowTimestamp());
+		order.set("update_time", DateUtil.getNowTimestamp());
+		boolean save = SaleOrder.dao.saveInfo(order);
+		if(save){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("卖茶成功");
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("卖茶失败");
+		}
+		return data;
+	}
+	
+	//取茶初始化
+	public ReturnData takeTeaInit(LoginDTO dto){
+			
+		ReturnData data = new ReturnData();
+		int warehouseMemberTeaId = dto.getTeaId();
+		//int quality = dto.getQuality();
+		if(warehouseMemberTeaId == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，茶叶数据出错");
+			return data;
+		}
+		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(warehouseMemberTeaId);
+		if(wtm == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，此茶叶不存在");
+			return data;
+		}
+		//获取茶叶
+		Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+		if(tea == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，此茶叶不存在");
+			return data;
+		}
+		int stock = wtm.getInt("stock");
+		Map<String, Object> map = new HashMap<>();
+		map.put("stock", stock);
+		//获取默认的地址
+		ReceiveAddress address = ReceiveAddress.dao.queryByFirstAddress(dto.getUserId(), Constants.COMMON_STATUS.NORMAL);
+		ChooseAddressVO vo = new ChooseAddressVO();
+		if(address != null){
+			vo.setAddress(address.getStr("address"));
+			vo.setAddressId(address.getInt("id"));
+			vo.setMobile(address.getStr("mobile"));
+			vo.setReceiverMan(address.getStr("receiveman_name"));
+		}
+		map.put("address", vo);
+		String url = "";
+		Document document = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.TEA_PACKAGE_FEE_STANDARD);
+		if(document != null){
+			url = document.getStr("desc_url");
+		}
+		map.put("descUrl", url);
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		return data;
+	}
+	
+	//取茶
+	@Transient
+	public ReturnData takeTea(LoginDTO dto){
+				
+		ReturnData data = new ReturnData();
+		int warehouseMemberTeaId = dto.getTeaId();
+		int quality = dto.getQuality();
+		if(warehouseMemberTeaId == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，茶叶数据出错");
+			return data;
+		}
+		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(warehouseMemberTeaId);
+		if(wtm == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，此茶叶不存在");
+			return data;
+		}
+		//获取茶叶
+		Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+		if(tea == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，此茶叶不存在");
+			return data;
+		}
+		int stock = wtm.getInt("stock");
+		if(quality>stock){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，库存不足"+quality+"片");
+			return data;
+		}
+		
+		GetTeaRecord record = new GetTeaRecord();
+		record.set("warehouse_id", wtm.getInt("warehouse_id"));
+		record.set("tea_id", wtm.getInt("tea_id"));
+		record.set("quality", quality);
+		record.set("member_id", wtm.getInt("member_id"));
+		record.set("warehouse_fee", new BigDecimal("0"));
+		record.set("create_time", DateUtil.getNowTimestamp());
+		record.set("update_time", DateUtil.getNowTimestamp());
+		boolean save = GetTeaRecord.dao.saveInfo(record);
+		if(save){
+			WarehouseTeaMember warehouseTeaMember = new WarehouseTeaMember();
+			warehouseTeaMember.set("id", warehouseMemberTeaId);
+			warehouseTeaMember.set("stock", stock-quality);
+			warehouseTeaMember.set("update_time", DateUtil.getNowTimestamp());
+			boolean update = WarehouseTeaMember.dao.updateInfo(warehouseTeaMember);
+			if(update){
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("取茶成功，等待平台邮寄");
+			}else{
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("取茶失败");
+			}
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("取茶失败");
+		}
 		return data;
 	}
 }

@@ -25,6 +25,7 @@ import my.core.model.Document;
 import my.core.model.Member;
 import my.core.model.ReturnData;
 import my.core.model.Tea;
+import my.core.vo.MemberVO;
 import my.pvcloud.model.DocumentModel;
 import my.pvcloud.model.TeaModel;
 import my.pvcloud.service.Service;
@@ -77,9 +78,10 @@ public class DodumentController extends Controller {
 	}
 	
 	/**
-	 * 模糊查询(文本框)
+	 * 底部查询
 	 */
 	public void queryByPage(){
+		
 		String title=getSessionAttr("title");
 		this.setSessionAttr("title",title);
 		Integer page = getParaToInt(1);
@@ -114,45 +116,10 @@ public class DodumentController extends Controller {
 	}
 	
 	/**
-	 * 模糊查询分页
+	 * 文本框
 	 */
 	public void queryByConditionByPage(){
 		
-		String title = getSessionAttr("title");
-		String ptitle = getPara("title");
-		title = ptitle;
-		
-		this.setSessionAttr("title",title);
-		
-			Integer page = getParaToInt(1);
-	        if (page==null || page==0) {
-	            page = 1;
-	        }
-	        Page<Document> list = service.queryByPageParams(page, size,title);
-			ArrayList<DocumentModel> models = new ArrayList<>();
-			DocumentModel model = null;
-			for(Document document : list.getList()){
-				model = new DocumentModel();
-				model.setId(document.getInt("id"));
-				model.setContent(document.getStr("content"));
-				model.setFlg(document.getInt("flg"));
-				model.setTitle(document.getStr("title"));
-				model.setUrl(document.getStr("desc_url"));
-				CodeMst type = CodeMst.dao.queryCodestByCode(document.getStr("type_cd"));
-				if(type != null){
-					model.setType(type.getStr("name"));
-				}
-				model.setFlg(document.getInt("flg"));
-				if(document.getInt("flg")==1){
-					model.setStatus("通过");
-				}else{
-					model.setStatus("未通过");
-				}
-				models.add(model);
-			}
-			setAttr("list", list);
-			setAttr("sList", models);
-			render("document.jsp"); 
 	     
 	}
 	
@@ -177,6 +144,8 @@ public class DodumentController extends Controller {
 	
 	//新增保存
 	public void saveDocument(){
+
+		//新增
 		//表单中有提交图片，要先获取图片
 		String title = getPara("title");
 		String typeCd = getPara("typeCd");
@@ -196,16 +165,16 @@ public class DodumentController extends Controller {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-        String contentUrl = Constants.HOST.DOCUMENT+uuid+".html";
+		    String contentUrl = Constants.HOST.DOCUMENT+uuid+".html";
 		//保存
-        Document document = new Document();
-        document.set("title",title);
-        document.set("type_cd",typeCd);
-        document.set("create_time", DateUtil.getNowTimestamp());
-        document.set("update_time", DateUtil.getNowTimestamp());
-        document.set("content", content);
-        document.set("desc_url", contentUrl);
-        document.set("flg", 1);
+		    Document document = new Document();
+		    document.set("title",title);
+		    document.set("type_cd",typeCd);
+		    document.set("create_time", DateUtil.getNowTimestamp());
+		    document.set("update_time", DateUtil.getNowTimestamp());
+		    document.set("content", content);
+		    document.set("desc_url", contentUrl);
+		    document.set("flg", 1);
 		boolean ret = Document.dao.saveInfo(document);
 		if(ret){
 			setAttr("message","新增成功");
@@ -250,36 +219,78 @@ public class DodumentController extends Controller {
 	/**
 	 * 修改（保存）
 	 */
-	public void update(){
-		/*String id = getPara("custId");
-		int integral = getParaToInt("integral");
-		String phoneNum = getPara("phoneNum");
-		String addrname = getPara("addrname");
-		News custInfo = new News();
-		int custId = 0;
-		if(!("").equals(id) && id!=null){
-			custId = getParaToInt("custId");
-			custInfo = service.queryById(custId);
-		}
-		custInfo.set("integral", integral);
-		custInfo.set("phonenum", phoneNum);
-		custInfo.set("addrname", addrname);
-		if(custId==0){
-			custInfo.set("register_date", new Date());
-			if(service.saveInfo(custInfo)){
-				setAttr("message","新增成功");
-			}else{
-				setAttr("message", "新增失败");
+	public void updateDocument(){
+		int id = StringUtil.toInteger(getPara("id"));
+		if(id!=0){
+			//表单中有提交图片，要先获取图片
+			String title = getPara("title");
+			String typeCd = getPara("typeCd");
+			String content = getPara("content");
+			FileService fs=new FileService();
+			
+			//上传文件
+			String uuid = UUID.randomUUID().toString();
+			//生成html文件
+			try {
+				StringBuilder sb = new StringBuilder();
+				FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.DOCUMENT+uuid+".html");
+				PrintStream printStream = new PrintStream(fos);
+				sb.append(content);
+				printStream.print(sb);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 			}
-		}else{
-			custInfo.set("update_date", new Date());
-			if(service.updateInfo(custInfo)){
+				String contentUrl = Constants.HOST.DOCUMENT+uuid+".html";
+			//保存
+			Document document = new Document();
+			document.set("id", StringUtil.toInteger(getPara("id")));
+			document.set("title",title);
+			document.set("type_cd",typeCd);
+			document.set("update_time", DateUtil.getNowTimestamp());
+			document.set("content", content);
+			document.set("desc_url", contentUrl);
+			document.set("flg", 1);
+			boolean ret = Document.dao.updateInfo(document);
+			if(ret){
 				setAttr("message","修改成功");
 			}else{
-				setAttr("message", "修改失败");
+				setAttr("message","修改失败");
 			}
-		}*/
-		
+		}else{
+			//表单中有提交图片，要先获取图片
+			String title = getPara("title");
+			String typeCd = getPara("typeCd");
+			String content = getPara("content");
+			FileService fs=new FileService();
+			
+			//上传文件
+			String uuid = UUID.randomUUID().toString();
+			//生成html文件
+			try {
+				StringBuilder sb = new StringBuilder();
+				FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.DOCUMENT+uuid+".html");
+				PrintStream printStream = new PrintStream(fos);
+				sb.append(content);
+				printStream.print(sb);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+				String contentUrl = Constants.HOST.DOCUMENT+uuid+".html";
+			//保存
+			Document document = new Document();
+			document.set("title",title);
+			document.set("type_cd",typeCd);
+			document.set("update_time", DateUtil.getNowTimestamp());
+			document.set("content", content);
+			document.set("desc_url", contentUrl);
+			document.set("flg", 1);
+			boolean ret = Document.dao.saveInfo(document);
+			if(ret){
+				setAttr("message","新增成功");
+			}else{
+				setAttr("message","新增失败");
+			}
+		}
 		index();
 	}
 	
@@ -300,26 +311,11 @@ public class DodumentController extends Controller {
 		}
 		index();
 	}
-
-	//推送
-	public void push(){
-		/*try{
-			int newsId = getParaToInt("newsId");
-			int ret = service.updateFlg(newsId, 1);
-			if(ret==0){
-				setAttr("message", "发布成功");
-			}else{
-				setAttr("message", "发布失败");
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}*/
-		index();
-	}
 	
-	public void editTea(){
-		Document teaInfo = service.queryById(StringUtil.toInteger(getPara("id")));
-		setAttr("teaInfo", teaInfo);
-		render("editTea.jsp");
+	//编辑文档
+	public void editDocument(){
+		Document document = service.queryById(getParaToInt("id"));
+		setAttr("document", document);
+		render("editDocument.jsp");
 	}
 }

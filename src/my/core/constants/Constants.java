@@ -107,7 +107,7 @@ public interface Constants {
 	
 	/**
 	 * 本地
-	 
+	 */
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
 		public static final String TEA = "http://192.168.1.131:82/tea/";
@@ -126,10 +126,10 @@ public interface Constants {
 		public static final String ICON = "F:\\upload\\icon\\";
 		public static final String IMG = "F:\\upload\\img\\";
 		public static final String STORE = "F:\\upload\\store\\";
-	}*/
+	}
 
 	
-	/**服务器*/
+	/**服务器
 	public static interface HOST{
 		public static final String LOCALHOST = "http://139.196.171.205:88/newsimages/";
 		public static final String TEA = "http://139.196.171.205:88/tea/";
@@ -148,7 +148,7 @@ public interface Constants {
 		public static final String ICON = "D:\\upload\\icon\\";
 		public static final String IMG = "D:\\upload\\img\\";
 		public static final String STORE = "D:\\upload\\store\\";
-	}
+	}*/
 	
 	public static interface MEMBER_STATUS{
 		public static final String CERTIFICATED = "040001";
@@ -161,12 +161,20 @@ public interface Constants {
 	}
 	
 	public static interface DOCUMENT_TYPE{
+		//发售说明
 		public static final String SALE_COMMENT = "060001";
+		//使用帮助
 		public static final String USE_HELP = "060002";
+		//协议合同
 		public static final String CONTRACT_COMMENT = "060003";
+		//新茶发售备注
 		public static final String NEW_TEA_SALE_MARK = "060004";
+		//认证提示
 		public static final String CERTIFICATE_TIP = "060005";
+		//存储规则和仓库介绍
 		public static final String WAREHOUSE_INTRODUCE = "060006";
+		//茶叶包装及收费标准
+		public static final String TEA_PACKAGE_FEE_STANDARD = "060007";
 	}
 	
 	public static interface VERSION_TYPE{

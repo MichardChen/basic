@@ -14,16 +14,16 @@ public class Service{
 		return Document.dao.queryByPageParams(page, size,title);
 	}
 	
-	public Document queryById(int teaId){
-		return Document.dao.queryById(teaId);
+	public Document queryById(int id){
+		return Document.dao.queryById(id);
 	}
 	
-	public boolean updateInfo(Document tea){
-		return Document.dao.updateInfo(tea);
+	public boolean updateInfo(Document data){
+		return Document.dao.updateInfo(data);
 	}
 	
-	public boolean saveInfo(Document tea){
-		return Document.dao.saveInfo(tea);
+	public boolean saveInfo(Document data){
+		return Document.dao.saveInfo(data);
 	}
 	
 	public int updateFlg(int id,int flg){

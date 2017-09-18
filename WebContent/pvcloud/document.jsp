@@ -193,7 +193,7 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">修改</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/documentInfo/saveDocument" method="post">
+			<form action="${CONTEXT_PATH}/documentInfo/updateDocument" method="post">
 				<div class="modal-body">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">

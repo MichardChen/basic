@@ -13,7 +13,14 @@ public class SelectSizeTeaListVO implements Serializable{
 	private String type;
 	private String img;
 	private String wareHouseMarkUrl;
+	private int sizeNum;
 	
+	public int getSizeNum() {
+		return sizeNum;
+	}
+	public void setSizeNum(int sizeNum) {
+		this.sizeNum = sizeNum;
+	}
 	public String getWareHouseMarkUrl() {
 		return wareHouseMarkUrl;
 	}
