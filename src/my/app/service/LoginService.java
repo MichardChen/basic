@@ -1820,6 +1820,7 @@ public class LoginService {
 		order.set("size_type_cd", saleType);
 		order.set("create_time", DateUtil.getNowTimestamp());
 		order.set("update_time", DateUtil.getNowTimestamp());
+		order.set("status", Constants.ORDER_STATUS.ON_SALE);
 		boolean save = SaleOrder.dao.saveInfo(order);
 		if(save){
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
@@ -1960,6 +1961,52 @@ public class LoginService {
 		data.setData(map);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
+		return data;
+	}
+	
+	//撤单
+	@Transient
+	public ReturnData resetOrder(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		String orderNo = dto.getOrderNo();
+		if(StringUtil.isBlank(orderNo)){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，订单不存在");
+			return data;
+		}
+		SaleOrder saleOrder = SaleOrder.dao.queryByOrderNo(orderNo);
+		if(saleOrder == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，订单不存在");
+			return data;
+		}
+		int orderId = saleOrder.getInt("id");
+		SaleOrder order = new SaleOrder();
+		order.set("id", orderId);
+		order.set("status", Constants.ORDER_STATUS.RESET_ORDER);
+		order.set("update_time", DateUtil.getNowTimestamp());
+		boolean update = SaleOrder.dao.updateInfo(order);
+		if(update){
+			//增加库存
+			int wtmId = saleOrder.getInt("warehouse_tea_member_id");
+			int stock = saleOrder.getInt("quality");
+			boolean ret = WarehouseTeaMember.dao.updateStock(wtmId, stock);
+			if(ret){
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("撤单成功");
+			}else{
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("撤单失败");
+			}
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("撤单失败");
+		}
+		return data;
+	}
+	
+	public ReturnData queryTeaStoreList(LoginDTO dto){
+		ReturnData data = new ReturnData();
 		return data;
 	}
 }

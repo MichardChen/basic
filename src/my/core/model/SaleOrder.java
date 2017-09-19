@@ -13,6 +13,10 @@ public class SaleOrder extends Model<SaleOrder> {
 		return SaleOrder.dao.findFirst("select * from t_sale_order where id = ?",id);
 	}
 	
+	public SaleOrder queryByOrderNo(String orderNo){
+		return SaleOrder.dao.findFirst("select * from t_sale_order where order_no = ?",orderNo);
+	}
+	
 	public boolean updateInfo(SaleOrder order){
 		return new SaleOrder().setAttrs(order).update();
 	}

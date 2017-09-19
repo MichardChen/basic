@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import my.core.constants.Constants;
+import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
 
 import org.huadalink.plugin.tablebind.TableBind;
@@ -119,5 +120,14 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 	
 	public List<WarehouseTeaMember> querysaleTeaWarehouseTea(int memberId,int teaId){
 		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" and tea_id="+teaId+" order by create_time desc");
+	}
+	
+	public boolean updateStock(int id,int stock){
+		int ret = Db.update("update t_warehouse_tea_member set stock=stock+"+stock+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+		if(ret != 0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

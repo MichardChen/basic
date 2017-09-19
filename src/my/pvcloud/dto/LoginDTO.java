@@ -58,9 +58,11 @@ public class LoginDTO extends BaseDTO{
 		dto.setPriceType(request.getParameter("priceFlg"));
 		dto.setPrice(StringUtil.toBigDecimal(request.getParameter("price")));
 		dto.setAddressId(StringUtil.toInteger(request.getParameter("addressId")));
+		dto.setOrderNo(request.getParameter("orderNo"));
 		return dto;
 	}
 	
+	private String orderNo;
 	private int addressId;
 	private BigDecimal price;
 	private int wareHouseId;
@@ -100,6 +102,14 @@ public class LoginDTO extends BaseDTO{
 	private String buyCartIds;
 	private String date;
 	
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
 	public int getAddressId() {
 		return addressId;
 	}

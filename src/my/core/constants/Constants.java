@@ -225,6 +225,8 @@ public interface Constants {
 		public static final String PAY_SUCCESS = "140003";
 		public static final String PAY_FAIL = "140004";
 		public static final String DELETE = "140005";
+		public static final String ON_SALE = "140006";
+		public static final String RESET_ORDER = "140007";
 	}
 	
 	public static interface TEA_UNIT{
