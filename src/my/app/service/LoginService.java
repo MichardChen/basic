@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.json.JSONException;
 
 import com.jfinal.plugin.activerecord.Page;
 
+import my.core.comparator.KeyValueComparator;
 import my.core.constants.Constants;
 import my.core.model.AcceessToken;
 import my.core.model.Admin;
@@ -55,6 +57,7 @@ import my.core.vo.BuyTeaListVO;
 import my.core.vo.CarouselVO;
 import my.core.vo.ChooseAddressVO;
 import my.core.vo.DataListVO;
+import my.core.vo.DocumentListVO;
 import my.core.vo.MessageListVO;
 import my.core.vo.NewTeaSaleListModel;
 import my.core.vo.NewsVO;
@@ -1538,6 +1541,13 @@ public class LoginService {
 			v2.setValue(bargainTrend.get(k));
 			list2.add(v2);
 		}
+		
+		KeyValueComparator mc = new KeyValueComparator() ; 
+		Collections.sort(list1, mc) ; 
+		
+		KeyValueComparator mc2 = new KeyValueComparator() ; 
+		Collections.sort(list2, mc2) ; 
+		
 		map.put("priceTrend", list1);
 		map.put("bargainTrend", list2);
 		data.setData(map);
@@ -1877,6 +1887,7 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		int warehouseMemberTeaId = dto.getTeaId();
 		int quality = dto.getQuality();
+		int addressId = dto.getAddressId();
 		if(warehouseMemberTeaId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，茶叶数据出错");
@@ -1910,6 +1921,7 @@ public class LoginService {
 		record.set("warehouse_fee", new BigDecimal("0"));
 		record.set("create_time", DateUtil.getNowTimestamp());
 		record.set("update_time", DateUtil.getNowTimestamp());
+		record.set("address_id", addressId);
 		boolean save = GetTeaRecord.dao.saveInfo(record);
 		if(save){
 			WarehouseTeaMember warehouseTeaMember = new WarehouseTeaMember();
@@ -1928,6 +1940,26 @@ public class LoginService {
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("取茶失败");
 		}
+		return data;
+	}
+	
+	//使用帮助、协议及合同
+	public ReturnData getDocumentList(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		List<Document> list = Document.dao.queryDocumentListByTypeCd(dto.getType());
+		List<DocumentListVO> documents = new ArrayList<>();
+		DocumentListVO vo = null;
+		for(Document document : list){
+			vo = new DocumentListVO();
+			vo.setTitle(document.getStr("title"));
+			vo.setDocumentUrl(document.getStr("desc_url"));
+			documents.add(vo);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("documents", documents);
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
 		return data;
 	}
 }

@@ -793,4 +793,10 @@ public class RestfulController extends Controller{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.takeTea(dto));
 	}
+	
+	//获取文档列表
+	public void getDocumentList(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.getDocumentList(dto));
+	}
 }
