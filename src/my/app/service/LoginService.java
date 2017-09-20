@@ -42,6 +42,8 @@ import my.core.model.ReceiveAddress;
 import my.core.model.RecordListModel;
 import my.core.model.ReturnData;
 import my.core.model.SaleOrder;
+import my.core.model.Store;
+import my.core.model.StoreImage;
 import my.core.model.SystemVersionControl;
 import my.core.model.Tea;
 import my.core.model.TeapriceLog;
@@ -63,8 +65,11 @@ import my.core.vo.NewTeaSaleListModel;
 import my.core.vo.NewsVO;
 import my.core.vo.OrderAnalysisVO;
 import my.core.vo.SelectSizeTeaListVO;
+import my.core.vo.StoreDetailListVO;
+import my.core.vo.StoreDetailVO;
 import my.core.vo.TeaDetailModelVO;
 import my.core.vo.TeaPropertyListVO;
+import my.core.vo.TeaStoreListVO;
 import my.core.vo.TeaWarehouseDetailVO;
 import my.core.vo.WarehouseStockVO;
 import my.pvcloud.dto.LoginDTO;
@@ -2007,6 +2012,64 @@ public class LoginService {
 	
 	public ReturnData queryTeaStoreList(LoginDTO dto){
 		ReturnData data = new ReturnData();
+		List<Store> stores = Store.dao.queryStoreList(dto.getPageSize()
+													 ,dto.getPageNum()
+													 ,Constants.STORE_STATUS.CERTIFICATE_SUCCESS);
+		List<TeaStoreListVO> list = new ArrayList<>();
+		TeaStoreListVO vo = null;
+		for(Store store : stores){
+			vo = new TeaStoreListVO();
+			vo.setStoreId(store.getInt("id"));
+			vo.setName(store.getStr("store_name"));
+			vo.setAddress(store.getStr("store_address"));
+			vo.setBusinessTea(store.getStr("business_tea"));
+			StoreImage storeImage = StoreImage.dao.queryStoreFirstImages(vo.getStoreId());
+			if(storeImage != null){
+				vo.setImg(storeImage.getStr("img"));
+			}
+			list.add(vo);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("storeList", list);
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		return data;
+	}
+	
+	public ReturnData queryTeaStoreDetail(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		Store store = Store.dao.queryById(dto.getId());
+		if(store == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("数据出错，门店不存在");
+			return data;
+		}
+		StoreDetailListVO vo = new StoreDetailListVO();
+		vo.setAddress(store.getStr("store_address"));
+		vo.setBusinessFromTime(store.getStr("business_fromtime"));
+		vo.setBusinessToTime(store.getStr("business_totime"));
+		vo.setLatitude(store.getFloat("latitude"));
+		vo.setLongitude(store.getFloat("longitude"));
+		vo.setMobile(store.getStr("link_phone"));
+		vo.setName(store.getStr("store_name"));
+		vo.setStoreDesc(store.getStr("store_desc"));
+		List<StoreImage> images = StoreImage.dao.queryStoreImages(store.getInt("id"));
+		for(int i=0;i<images.size();i++){
+			StoreImage image = images.get(i);
+			if(image.getInt("seq")==1){
+				vo.setImg1(image.getStr("img"));
+			}else if(image.getInt("seq")==2){
+				vo.setImg2(image.getStr("img"));
+			}else if(image.getInt("seq")==3){
+				vo.setImg3(image.getStr("img"));
+			}
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("store", vo);
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
 		return data;
 	}
 }
