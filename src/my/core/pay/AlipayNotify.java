@@ -6,7 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
-import config.AlipayConfig;
 import my.core.constants.Constants;
 
 /* *

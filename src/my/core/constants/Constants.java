@@ -248,5 +248,6 @@ public interface Constants {
 		public static final String ali_public_key = "";
 		public static final String input_charset = "";
 		public static final String partner = "";
+		public static final String log_path = "";
 	}
 }
