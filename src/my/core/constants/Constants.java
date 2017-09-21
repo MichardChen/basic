@@ -242,4 +242,11 @@ public interface Constants {
 	public static interface SYSTEM_CONSTANTS{
 		public static final String SALE_SERVICE_FEE = "170001";
 	}
+	
+	public static interface ALIPAY_CONFIG{
+		public static final String sign_type = "";
+		public static final String ali_public_key = "";
+		public static final String input_charset = "";
+		public static final String partner = "";
+	}
 }
