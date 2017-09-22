@@ -803,7 +803,7 @@ public class RestfulController extends Controller{
 	//撤单
 	public void resetOrder(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
-		renderJson(service.getDocumentList(dto));
+		renderJson(service.resetOrder(dto));
 	}
 	
 	//我要喝茶列表

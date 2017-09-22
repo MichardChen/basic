@@ -1826,6 +1826,7 @@ public class LoginService {
 		order.set("create_time", DateUtil.getNowTimestamp());
 		order.set("update_time", DateUtil.getNowTimestamp());
 		order.set("status", Constants.ORDER_STATUS.ON_SALE);
+		order.set("order_no", StringUtil.getOrderNo());
 		boolean save = SaleOrder.dao.saveInfo(order);
 		if(save){
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
