@@ -1,5 +1,7 @@
 package my.core.model;
 
+import java.util.List;
+
 import org.huadalink.plugin.tablebind.TableBind;
 
 import com.jfinal.plugin.activerecord.Model;
@@ -15,6 +17,11 @@ public class SaleOrder extends Model<SaleOrder> {
 	
 	public SaleOrder queryByOrderNo(String orderNo){
 		return SaleOrder.dao.findFirst("select * from t_sale_order where order_no = ?",orderNo);
+	}
+	
+	public List<SaleOrder> queryMemberOrders(int memberId,int pageSize,int pageNum){
+		int fromRow = (pageNum-1)*pageSize;
+		return SaleOrder.dao.find("select a.* from t_sale_order a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where b.member_id = ? order by a.create_time desc limit ?,?",memberId,fromRow,pageSize);
 	}
 	
 	public boolean updateInfo(SaleOrder order){

@@ -65,6 +65,7 @@ import my.core.vo.MessageListVO;
 import my.core.vo.NewTeaSaleListModel;
 import my.core.vo.NewsVO;
 import my.core.vo.OrderAnalysisVO;
+import my.core.vo.SaleOrderListVO;
 import my.core.vo.SelectSizeTeaListVO;
 import my.core.vo.StoreDetailListVO;
 import my.core.vo.StoreDetailVO;
@@ -2159,5 +2160,38 @@ public class LoginService {
 			data.setMessage("提现申请失败，余额不足");
 			return data;
 		}
+	}
+	
+	public ReturnData querySaleOrderList(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		List<SaleOrder> list = SaleOrder.dao.queryMemberOrders(dto.getUserId()
+															  ,dto.getPageSize()
+															  ,dto.getPageNum());
+		
+		List<SaleOrderListVO> vos = new ArrayList<>();
+		SaleOrderListVO vo = null;
+		for(SaleOrder order : list){
+			vo = new SaleOrderListVO();
+			vo.setOrderNo(order.getStr("order_no"));
+			vo.setAmount(order.getBigDecimal("price").multiply(new BigDecimal(order.getInt("quality"))));
+			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(order.getInt("warehouse_tea_member_id"));
+			if(wtm!=null){
+				int teaId = wtm.getInt("tea_id");
+				Tea tea = Tea.dao.queryById(teaId);
+				if(tea != null){
+					vo.setImg(tea.getStr("cover_img"));
+					vo.setName(tea.getStr("tea_title"));
+				}
+			}
+			vo.setPrice(order.getBigDecimal("price"));
+			vo.setQuality(order.getInt("quality"));
+			vos.add(vo);
+		}
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		Map<String, Object> map = new HashMap<>();
+		map.put("data", vos);
+		data.setData(map);
+		return data;
 	}
 }
