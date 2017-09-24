@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.httpclient.methods.multipart.FilePartSource;
+import org.apache.commons.httpclient.methods.multipart.PartSource;
+
 import my.core.constants.Constants;
 
 /* *
@@ -104,7 +107,7 @@ public class AlipayCore {
      * @return 文件摘要结果
      */
     public static String getAbstract(String strFilePath, String file_digest_type) throws IOException {
-       /* PartSource file = new FilePartSource(new File(strFilePath));
+        PartSource file = new FilePartSource(new File(strFilePath));
     	if(file_digest_type.equals("MD5")){
     		return DigestUtils.md5Hex(file.createInputStream());
     	}
@@ -113,7 +116,6 @@ public class AlipayCore {
     	}
     	else {
     		return "";
-    	}*/
-    	return "";
+    	}
     }
 }

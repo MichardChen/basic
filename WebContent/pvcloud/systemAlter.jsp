@@ -17,15 +17,15 @@ if(str!=''){
 	<table class="table table-responsive">
 		<tr>
 			<td>数据项1</td>
-			<td><input type="text" name="data1" value="${model.data1}"/></td>
+			<td><input type="text" name="data1" value="${model.data1}" style="width: 300px;"/></td>
 		</tr>
 		<tr>
 			<td>数据项2</td>
-			<td><input type="text" name="data2" value="${model.data2}" style="IME-MODE: disabled;"/></td>
+			<td><input type="text" name="data2" value="${model.data2}" style="width: 300px;"/></td>
 		</tr>
 		<tr>
 			<td>备注</td>
-			<td><input type="text" name="mark" value="${model.mark }" style="IME-MODE: disabled;"/></td>
+			<td><input type="text" name="mark" value="${model.mark }" style="width: 300px;"/></td>
 		</tr>
 		<input type="hidden" name="id" value="${model.id}"/>
 	</table>

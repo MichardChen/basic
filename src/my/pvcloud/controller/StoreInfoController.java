@@ -157,9 +157,9 @@ public class StoreInfoController extends Controller {
 			int flg = StringUtil.toInteger(getPara("flg"));
 			int ret = service.updateFlg(id, flg);
 			if(ret==0){
-				setAttr("message", "删除成功");
+				setAttr("message", "操作成功");
 			}else{
-				setAttr("message", "删除失败");
+				setAttr("message", "操作失败");
 			}
 		}catch(Exception e){
 			e.printStackTrace();

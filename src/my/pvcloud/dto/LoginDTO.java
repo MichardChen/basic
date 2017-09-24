@@ -59,9 +59,15 @@ public class LoginDTO extends BaseDTO{
 		dto.setPrice(StringUtil.toBigDecimal(request.getParameter("price")));
 		dto.setAddressId(StringUtil.toInteger(request.getParameter("addressId")));
 		dto.setOrderNo(request.getParameter("orderNo"));
+		dto.setCardTypeCd(request.getParameter("cardTypeCd"));
+		dto.setIdCardNo(request.getParameter("idCardNo"));
+		dto.setMoney(StringUtil.toBigDecimal(request.getParameter("money")));
 		return dto;
 	}
 	
+	private BigDecimal money;
+	private String idCardNo;
+	private String cardTypeCd;
 	private String orderNo;
 	private int addressId;
 	private BigDecimal price;
@@ -102,6 +108,30 @@ public class LoginDTO extends BaseDTO{
 	private String buyCartIds;
 	private String date;
 	
+	public BigDecimal getMoney() {
+		return money;
+	}
+
+	public void setMoney(BigDecimal money) {
+		this.money = money;
+	}
+
+	public String getIdCardNo() {
+		return idCardNo;
+	}
+
+	public void setIdCardNo(String idCardNo) {
+		this.idCardNo = idCardNo;
+	}
+
+	public String getCardTypeCd() {
+		return cardTypeCd;
+	}
+
+	public void setCardTypeCd(String cardTypeCd) {
+		this.cardTypeCd = cardTypeCd;
+	}
+
 	public String getOrderNo() {
 		return orderNo;
 	}

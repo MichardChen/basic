@@ -316,7 +316,7 @@ public class RestfulController extends Controller{
 		store.set("member_id", dto.getUserId());
 		store.set("create_time", DateUtil.getNowTimestamp());
 		store.set("update_time", DateUtil.getNowTimestamp());
-		store.set("status", Constants.STORE_STATUS.STAY_CERTIFICATE);
+		store.set("status", Constants.VERTIFY_STATUS.STAY_CERTIFICATE);
 
 		Store s = Store.dao.saveInfo(store);
 		boolean ret = false;
@@ -558,7 +558,7 @@ public class RestfulController extends Controller{
 		store.set("store_desc", mark);
 		store.set("member_id", dto.getUserId());
 		store.set("update_time", DateUtil.getNowTimestamp());
-		store.set("status", Constants.STORE_STATUS.STAY_CERTIFICATE);
+		store.set("status", Constants.VERTIFY_STATUS.STAY_CERTIFICATE);
 	
 		boolean ret = Store.dao.updateInfo(store);
 		boolean ret1 = true;
@@ -816,5 +816,17 @@ public class RestfulController extends Controller{
 	public void queryTeaStoreDetail(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaStoreDetail(dto));
+	}
+	
+	//绑定银行卡
+	public void bindBankCard(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.bingBankCard(dto));
+	}
+	
+	//申请提现
+	public void withDraw(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.withDraw(dto));
 	}
 }

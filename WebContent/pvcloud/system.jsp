@@ -113,8 +113,8 @@ td{
     		<thead>
     			<tr>
     				<th style="width: 10%;">名称</th>
-    				<th style="width: 20%;">数据项1</th>
-    				<th style="width: 20%;">数据项2</th>
+    				<th style="width: 10%;">数据项1</th>
+    				<th style="width: 10%;">数据项2</th>
     				<th style="width: 10%;">更新时间</th>
     				<th style="width: 10%;">操作</th>
     			</tr>
@@ -129,8 +129,8 @@ td{
 		    			<c:forEach var="s" items="${sList}">	
 		    				<tr class="bOrder">
 		    					<td>${s.type }</td>
-		    					<td style="overflow: hidden;">${s.data1}</td>
-		    					<td style="overflow: hidden;">${s.data2}</td>
+		    					<td style="WORD-WRAP: break-word;" width="100">${s.data1}</td>
+		    					<td style="WORD-WRAP: break-word;" width="100">${s.data2}</td>
 		    					<td>${s.createTime}</td>
 		    					<td>
 		    							<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>

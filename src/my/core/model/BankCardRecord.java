@@ -1,9 +1,14 @@
 package my.core.model;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.StringUtil;
 
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -23,19 +28,20 @@ public class BankCardRecord extends Model<BankCardRecord> {
 		return BankCardRecord.dao.paginate(page, size, select, sql);
 	}
 	
-/*	public Page<GetTeaRecord> queryByPageParams(int page,int size,String title){
+	public Page<BankCardRecord> queryByPageParams(int page,int size,String time){
 		
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
-		if(StringUtil.isNoneBlank(title)){
-			strBuf.append(" and store_name=?");
-			param.add(title);
+		if(StringUtil.isNoneBlank(time)){
+			strBuf.append(" and create_time >=? and create_time <=?");
+			param.add(DateUtil.formatStringForTimestamp(time+" 00:00:00"));
+			param.add(DateUtil.formatStringForTimestamp(time+" 23:59:59"));
 		}
 			
-			String sql=" from t_bankcard_record where 1=1 "+strBuf+" order by create_time desc";
-			String select="select * ";
-			return GetTeaRecord.dao.paginate(page, size, select, sql,param.toArray());
-		}*/
+		String sql=" from t_bankcard_record where 1=1 "+strBuf+" order by create_time desc";
+		String select="select * ";
+		return BankCardRecord.dao.paginate(page, size, select, sql,param.toArray());
+	}
 	
 	public BankCardRecord queryById(int id){
 		return BankCardRecord.dao.findFirst("select * from t_bankcard_record where id = ? order by create_time desc",id);
@@ -56,5 +62,9 @@ public class BankCardRecord extends Model<BankCardRecord> {
 	
 	public boolean del(int id){
 		return BankCardRecord.dao.deleteById(id);
+	}
+	
+	public int updateStoreStatus(int id,String status){
+		return Db.update("update t_bankcard_record set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 	}
 }

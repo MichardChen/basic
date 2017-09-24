@@ -107,7 +107,7 @@ public interface Constants {
 	
 	/**
 	 * 本地
-	
+	*/
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
 		public static final String TEA = "http://192.168.1.131:82/tea/";
@@ -126,10 +126,10 @@ public interface Constants {
 		public static final String ICON = "F:\\upload\\icon\\";
 		public static final String IMG = "F:\\upload\\img\\";
 		public static final String STORE = "F:\\upload\\store\\";
-	} */
+	} 
 
 	
-	/**服务器*/
+	/**服务器
 	public static interface HOST{
 		public static final String LOCALHOST = "http://139.196.171.205:88/newsimages/";
 		public static final String TEA = "http://139.196.171.205:88/tea/";
@@ -148,7 +148,7 @@ public interface Constants {
 		public static final String ICON = "D:\\upload\\icon\\";
 		public static final String IMG = "D:\\upload\\img\\";
 		public static final String STORE = "D:\\upload\\store\\";
-	}
+	}*/
 	
 	public static interface MEMBER_STATUS{
 		public static final String CERTIFICATED = "040001";
@@ -196,7 +196,7 @@ public interface Constants {
 		public static final String CUSTOM = "100001";
 	}
 	
-	public static interface STORE_STATUS{
+	public static interface VERTIFY_STATUS{
 		public static final String NOT_CERTIFICATE = "110001";
 		public static final String STAY_CERTIFICATE = "110002";
 		public static final String CERTIFICATE_SUCCESS = "110003";
@@ -249,5 +249,11 @@ public interface Constants {
 		public static final String input_charset = "";
 		public static final String partner = "";
 		public static final String log_path = "";
+	}
+	
+	public static interface WITHDRAW_STATUS{
+		public static final String APPLYING = "190001";
+		public static final String SUCCESS = "190002";
+		public static final String FAIL = "190003";
 	}
 }

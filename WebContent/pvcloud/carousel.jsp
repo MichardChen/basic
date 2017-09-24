@@ -32,6 +32,17 @@ function loadProject(data){
 		}
 	});
 }
+function edit(data){
+	$(".modal-title").html("修改跳转链接");
+	$.ajax({
+		url : "${CONTEXT_PATH}/carouselInfo/edit",
+		data : {id:data},
+		dataType : "html",
+		success : function(result){
+			$('.modal-body').html(result);
+		}
+	});
+}
 </script>
 <style>
 .ys1{
@@ -106,6 +117,8 @@ td{
 	   		<div class="fl">轮播信息</div>
 	   </div>
     	<hr/>	
+    	<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(0)"/></div>
+    </div>
     <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:690px;position:relative;color:black;margin-left:0px;">
     	<div class="row">
     		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table-responsive" style="padding-left:0px;padding-right:0px;font-size:14px;height:705px;">
@@ -142,6 +155,7 @@ td{
 		    					<td>
 		    							<c:if test="${s.flg==1}">
 		    									<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/carouselInfo/del?id=${s.id}';}"/>
+		    									<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="edit(${s.id})"/>
 		    							</c:if>
 		    					</td>
 		    				</tr>

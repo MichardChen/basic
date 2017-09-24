@@ -32,6 +32,17 @@ function loadProject(data){
 		}
 	});
 }
+function edit(data){
+	$(".modal-title").html("修改");
+	$.ajax({
+		url : "${CONTEXT_PATH}/warehouseInfo/edit",
+		data : {id:data},
+		dataType : "html",
+		success : function(result){
+			$('.modal-body').html(result);
+		}
+	});
+}
 </script>
 <style>
 .ys1{
@@ -144,6 +155,7 @@ td{
 		    					<td>
 		    							<c:if test="${s.flg==1}">
 		    									<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/warehouseInfo/del?id=${s.id}';}"/>
+		    									<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="edit(${s.id})"/>
 		    							</c:if>
 		    					</td>
 		    				</tr>

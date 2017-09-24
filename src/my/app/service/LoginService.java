@@ -32,6 +32,7 @@ import my.core.model.Document;
 import my.core.model.FeedBack;
 import my.core.model.GetTeaRecord;
 import my.core.model.Member;
+import my.core.model.MemberBankcard;
 import my.core.model.Message;
 import my.core.model.News;
 import my.core.model.Order;
@@ -592,7 +593,6 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		int ret = Member.dao.updateCertification(dto.getUserId()
 												    ,dto.getUserName()
-												    ,dto.getCardNo()
 												    ,Constants.MEMBER_STATUS.CERTIFICATED);
 		if(ret == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -2015,7 +2015,7 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		List<Store> stores = Store.dao.queryStoreList(dto.getPageSize()
 													 ,dto.getPageNum()
-													 ,Constants.STORE_STATUS.CERTIFICATE_SUCCESS);
+													 ,Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS);
 		List<TeaStoreListVO> list = new ArrayList<>();
 		TeaStoreListVO vo = null;
 		for(Store store : stores){
@@ -2072,5 +2072,92 @@ public class LoginService {
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		return data;
+	}
+	
+	//绑定银行卡
+	public ReturnData bingBankCard(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		MemberBankcard bankcard = new MemberBankcard();
+		bankcard.set("card_no", dto.getCardNo());
+		bankcard.set("bank_name_cd", dto.getCardTypeCd());
+		bankcard.set("owner_name", dto.getName());
+		bankcard.set("id_card_no", dto.getIdCardNo());
+		bankcard.set("stay_mobile", dto.getMobile());
+		bankcard.set("member_id", dto.getUserId());
+		bankcard.set("create_time", DateUtil.getNowTimestamp());
+		bankcard.set("update_time", DateUtil.getNowTimestamp());
+		boolean ret = MemberBankcard.dao.saveInfo(bankcard);
+		if(ret){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("绑定成功");
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败");
+		}
+		return data;
+	}
+	
+	//提现
+	@Transient
+	public ReturnData withDraw(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		int userId = dto.getUserId();
+		BigDecimal money = dto.getMoney();
+		Member member = Member.dao.queryById(userId);
+		//判断用户存在？
+		if(member == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("提现失败，用户不存在");
+			return data;
+		}
+		//查看绑定银行卡
+		MemberBankcard bankcard = MemberBankcard.dao.queryByMemberId(dto.getUserId());
+		if(bankcard == null || StringUtil.isBlank(bankcard.getStr("card_no"))){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，你还没有绑定银行卡");
+			return data;
+		}
+		BigDecimal moneys = member.getBigDecimal("moneys");
+		if(moneys == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，数据出错");
+			return data;
+		}
+		String cardNo = bankcard.getStr("card_no");
+		if(moneys.compareTo(money)>=0){
+			BankCardRecord record = new BankCardRecord();
+			record.set("member_id", dto.getUserId());
+			record.set("moneys", money);
+			record.set("type_cd", Constants.BANK_MANU_TYPE_CD.WITHDRAW);
+			record.set("card_no", cardNo);
+			record.set("status", Constants.WITHDRAW_STATUS.APPLYING);
+			record.set("create_time", DateUtil.getNowTimestamp());
+			record.set("update_time", DateUtil.getNowTimestamp());
+			
+			boolean ret = BankCardRecord.dao.saveInfo(record);
+			if(ret){
+				Member member2 = new Member();
+				member2.set("id", dto.getUserId());
+				member2.set("moneys", moneys.subtract(money));
+				boolean ret1 = Member.dao.updateInfo(member2);
+				if(ret1){
+					data.setCode(Constants.STATUS_CODE.SUCCESS);
+					data.setMessage("提现申请成功，请等待平台打款");
+					return data;
+				}else{
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("提现申请失败");
+					return data;
+				}
+			}else{
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("提现申请失败");
+				return data;
+			}
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("提现申请失败，余额不足");
+			return data;
+		}
 	}
 }

@@ -22,6 +22,7 @@ import my.core.constants.Constants;
 import my.core.model.Carousel;
 import my.core.model.News;
 import my.core.model.SystemVersionControl;
+import my.core.model.WareHouse;
 import my.core.vo.CarouselVO;
 import my.pvcloud.model.CustInfo;
 import my.pvcloud.service.CarouselService;
@@ -85,12 +86,9 @@ public class CarouselController extends Controller {
 	}
 	
 	/**
-	 *新增/修改弹窗
+	 *新增
 	 */
 	public void alter(){
-		String id = getPara("id");
-		Carousel model = service.queryById(StringUtil.toInteger(id));
-		setAttr("model", model);
 		render("addCarousel.jsp");
 	}
 	
@@ -100,45 +98,49 @@ public class CarouselController extends Controller {
 	public void saveCarousel(){
 		//表单中有提交图片，要先获取图片
 		UploadFile uploadFile = getFile("img");
-		String realUrl = getPara("realUrl");
-		String mark = getPara("mark");
-		FileService fs=new FileService();
-		
-		String logo = "";
-		//上传文件
-		String uuid = UUID.randomUUID().toString();
-		if(uploadFile != null){
-			String fileName = uploadFile.getOriginalFileName();
-			String[] names = fileName.split("\\.");
-		    File file=uploadFile.getFile();
-		    File t=new File(Constants.FILE_HOST.IMG+uuid+"."+names[1]);
-		    logo = Constants.HOST.IMG+uuid+"."+names[1];
-		    try{
-		        t.createNewFile();
-		    }catch(IOException e){
-		        e.printStackTrace();
-		    }
-		    
-		    fs.fileChannelCopy(file, t);
-		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
-		    file.delete();
-		}
-		
-		Carousel c = new Carousel();
-		c.set("mark", mark);
-		c.set("real_url", realUrl);
-		c.set("img_url", logo);
-		c.set("create_time", DateUtil.getNowTimestamp());
-		c.set("update_time", DateUtil.getNowTimestamp());
-		c.set("flg", 1);
-		//保存
-		boolean ret = Carousel.dao.saveInfo(c);
-		if(ret){
-			setAttr("message","新增成功");
+		if(StringUtil.isNoneBlank(getPara("id"))){
+			updateCarousel();
 		}else{
-			setAttr("message","新增失败");
+			String realUrl = getPara("realUrl");
+			String mark = getPara("mark");
+			FileService fs=new FileService();
+			
+			String logo = "";
+			//上传文件
+			String uuid = UUID.randomUUID().toString();
+			if(uploadFile != null){
+				String fileName = uploadFile.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile.getFile();
+			    File t=new File(Constants.FILE_HOST.IMG+uuid+"."+names[1]);
+			    logo = Constants.HOST.IMG+uuid+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			}
+			
+			Carousel c = new Carousel();
+			c.set("mark", mark);
+			c.set("real_url", realUrl);
+			c.set("img_url", logo);
+			c.set("create_time", DateUtil.getNowTimestamp());
+			c.set("update_time", DateUtil.getNowTimestamp());
+			c.set("flg", 1);
+			//保存
+			boolean ret = Carousel.dao.saveInfo(c);
+			if(ret){
+				setAttr("message","新增成功");
+			}else{
+				setAttr("message","新增失败");
+			}
+			index();
 		}
-		index();
 	}
 	
 	/**
@@ -155,6 +157,28 @@ public class CarouselController extends Controller {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+		}
+		index();
+	}
+	
+	public void edit(){
+		Carousel carousel = service.queryById(StringUtil.toInteger(getPara("id")));
+		setAttr("data", carousel);
+		render("editCarousel.jsp");
+	}
+	
+	public void updateCarousel(){
+		Carousel carousel = new Carousel();
+		carousel.set("mark", getPara("mark"));
+		carousel.set("real_url", getPara("realUrl"));
+		carousel.set("update_time", DateUtil.getNowTimestamp());
+		carousel.set("id", StringUtil.toInteger(getPara("id")));
+		//保存
+		boolean ret = Carousel.dao.updateInfo(carousel);
+		if(ret){
+			setAttr("message","修改成功");
+		}else{
+			setAttr("message","修改失败");
 		}
 		index();
 	}

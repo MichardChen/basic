@@ -16,6 +16,7 @@ import com.jfinal.upload.UploadFile;
 import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.Carousel;
+import my.core.model.Tea;
 import my.core.model.WareHouse;
 import my.core.vo.WareHouseVO;
 import my.pvcloud.service.WareHouseService;
@@ -94,18 +95,38 @@ public class WareHouseController extends Controller {
 	 * 新增
 	 */
 	public void saveWareHouse(){
+		if(StringUtil.isNotBlank(getPara("id"))){
+			updateWareHouse();
+		}else{
+			WareHouse house = new WareHouse();
+			house.set("mark", getPara("mark"));
+			house.set("warehouse_name", getPara("name"));
+			house.set("create_time", DateUtil.getNowTimestamp());
+			house.set("update_time", DateUtil.getNowTimestamp());
+			house.set("flg", 1);
+			//保存
+			boolean ret = WareHouse.dao.saveInfo(house);
+			if(ret){
+				setAttr("message","新增成功");
+			}else{
+				setAttr("message","新增失败");
+			}
+			index();
+		}
+	}
+	
+	public void updateWareHouse(){
 		WareHouse house = new WareHouse();
 		house.set("mark", getPara("mark"));
 		house.set("warehouse_name", getPara("name"));
-		house.set("create_time", DateUtil.getNowTimestamp());
 		house.set("update_time", DateUtil.getNowTimestamp());
-		house.set("flg", 1);
+		house.set("id", StringUtil.toInteger(getPara("id")));
 		//保存
-		boolean ret = WareHouse.dao.saveInfo(house);
+		boolean ret = WareHouse.dao.updateInfo(house);
 		if(ret){
-			setAttr("message","新增成功");
+			setAttr("message","修改成功");
 		}else{
-			setAttr("message","新增失败");
+			setAttr("message","修改失败");
 		}
 		index();
 	}
@@ -126,5 +147,11 @@ public class WareHouseController extends Controller {
 			e.printStackTrace();
 		}
 		index();
+	}
+	
+	public void edit(){
+		WareHouse house = service.queryById(StringUtil.toInteger(getPara("id")));
+		setAttr("data", house);
+		render("editHouse.jsp");
 	}
 }
