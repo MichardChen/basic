@@ -1,21 +1,19 @@
 package my.core.vo;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class StoreDetailListVO implements Serializable{
 
 	private String name;
 	private String address;
 	private String mobile;
-	private String img1;
-	private String img2;
-	private String img3;
 	private String businessFromTime;
 	private String businessToTime;
 	private String storeDesc;
 	private Float longitude;
 	private Float latitude;
-	
+	private List<String> imgs;
 	public String getName() {
 		return name;
 	}
@@ -24,15 +22,6 @@ public class StoreDetailListVO implements Serializable{
 	}
 	public String getMobile() {
 		return mobile;
-	}
-	public String getImg1() {
-		return img1;
-	}
-	public String getImg2() {
-		return img2;
-	}
-	public String getImg3() {
-		return img3;
 	}
 	public String getBusinessFromTime() {
 		return businessFromTime;
@@ -49,6 +38,9 @@ public class StoreDetailListVO implements Serializable{
 	public Float getLatitude() {
 		return latitude;
 	}
+	public List<String> getImgs() {
+		return imgs;
+	}
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -57,15 +49,6 @@ public class StoreDetailListVO implements Serializable{
 	}
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
-	}
-	public void setImg1(String img1) {
-		this.img1 = img1;
-	}
-	public void setImg2(String img2) {
-		this.img2 = img2;
-	}
-	public void setImg3(String img3) {
-		this.img3 = img3;
 	}
 	public void setBusinessFromTime(String businessFromTime) {
 		this.businessFromTime = businessFromTime;
@@ -81,5 +64,8 @@ public class StoreDetailListVO implements Serializable{
 	}
 	public void setLatitude(Float latitude) {
 		this.latitude = latitude;
+	}
+	public void setImgs(List<String> imgs) {
+		this.imgs = imgs;
 	}
 }

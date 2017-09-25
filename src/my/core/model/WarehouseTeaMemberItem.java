@@ -67,5 +67,9 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 	public WarehouseTeaMemberItem queryTeaOnPlatform(String memberTypeCd,int teaId){
 		return WarehouseTeaMemberItem.dao.findFirst("select b.* from t_warehouse_tea_member a inner join t_warehouse_tea_member_item b on a.id=b.warehouse_tea_member_id where a.tea_id = ? and a.member_type_cd=?",teaId,memberTypeCd);
 	}
-	
+
+	public List<WarehouseTeaMemberItem> queryWantSaleTeaList(String memberTypeCd,int userId,int pageSize,int pageNum){
+		int fromRow = (pageNum-1)*pageSize;
+		return WarehouseTeaMemberItem.dao.find("select b.* from t_warehouse_tea_member a inner join t_warehouse_tea_member_item b on a.id=b.warehouse_tea_member_id where a.member_id = ? and a.member_type_cd=? order by b.create_time desc limit ?,? ",userId,memberTypeCd,fromRow,pageSize);
+	}
 }

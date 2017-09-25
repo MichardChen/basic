@@ -19,9 +19,9 @@ public class SaleOrder extends Model<SaleOrder> {
 		return SaleOrder.dao.findFirst("select * from t_sale_order where order_no = ?",orderNo);
 	}
 	
-	public List<SaleOrder> queryMemberOrders(int memberId,int pageSize,int pageNum){
+	public List<SaleOrder> queryMemberOrders(int memberId,int pageSize,int pageNum,String status){
 		int fromRow = (pageNum-1)*pageSize;
-		return SaleOrder.dao.find("select a.* from t_sale_order a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where b.member_id = ? order by a.create_time desc limit ?,?",memberId,fromRow,pageSize);
+		return SaleOrder.dao.find("select a.* from t_sale_order a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where b.member_id = ? and a.status=? order by a.create_time desc limit ?,?",memberId,status,fromRow,pageSize);
 	}
 	
 	public boolean updateInfo(SaleOrder order){

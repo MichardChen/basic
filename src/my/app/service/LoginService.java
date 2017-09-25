@@ -17,6 +17,7 @@ import org.eclipse.jdt.internal.compiler.lookup.InvocationSite.EmptyWithAstNode;
 import org.json.JSONException;
 
 import com.jfinal.plugin.activerecord.Page;
+import com.sun.org.apache.bcel.internal.classfile.Code;
 
 import my.core.comparator.KeyValueComparator;
 import my.core.constants.Constants;
@@ -33,6 +34,7 @@ import my.core.model.FeedBack;
 import my.core.model.GetTeaRecord;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
+import my.core.model.MemberStore;
 import my.core.model.Message;
 import my.core.model.News;
 import my.core.model.Order;
@@ -73,6 +75,7 @@ import my.core.vo.TeaDetailModelVO;
 import my.core.vo.TeaPropertyListVO;
 import my.core.vo.TeaStoreListVO;
 import my.core.vo.TeaWarehouseDetailVO;
+import my.core.vo.WantSaleTeaListVO;
 import my.core.vo.WarehouseStockVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
@@ -274,8 +277,8 @@ public class LoginService {
 			return data;
 		}
 		
-		if(!StringUtil.equals(token.getStr("token"), dto.getToken())){
-			data.setCode(Constants.STATUS_CODE.FAIL);
+		if(!StringUtil.equals(token.getStr("token"), dto.getAccessToken())){
+			data.setCode("5701");
 			data.setMessage("对不起，您的账号在另一处登录");
 			return data;
 		}
@@ -444,12 +447,33 @@ public class LoginService {
 		List<Carousel> carousels = Carousel.dao.queryCarouselList(4, 1);
 		List<CarouselVO> vos = new ArrayList<CarouselVO>();
 		CarouselVO vo = null;
+		Map<String, Object> map = new HashMap<>();
 		//查询轮播图
 		for(Carousel carousel : carousels){
 			 vo = new CarouselVO();
 			 vo.setImgUrl(carousel.getStr("img_url"));
 			 vo.setRealUrl(carousel.getStr("real_url"));
 			 vos.add(vo);
+		}
+		
+		//判断是否绑定银行卡
+		MemberBankcard memberBankcard = MemberBankcard.dao.queryByMemberId(dto.getUserId());
+		if(memberBankcard != null){
+			//已绑定
+			map.put("bindCardFlg", 1);
+		}else{
+			//未绑定
+			map.put("bindCardFlg", 0);
+		}
+		
+		//判断是否绑定门店
+		Store store = Store.dao.queryMemberStore(dto.getUserId());
+		if(store != null){
+			//已绑定
+			map.put("bindStoreFlg", 1);
+		}else{
+			//未绑定
+			map.put("bindStoreFlg", 0);
 		}
 		
 		//获取前四条资讯
@@ -469,7 +493,6 @@ public class LoginService {
 			nv.setNewsId(n.getInt("id"));
 			newsVOs.add(nv);
 		}
-		Map<String, Object> map = new HashMap<>();
 		map.put("carousel", vos);
 		map.put("news", newsVOs);
 		Member member = Member.dao.queryMember(dto.getMobile());
@@ -2057,16 +2080,12 @@ public class LoginService {
 		vo.setName(store.getStr("store_name"));
 		vo.setStoreDesc(store.getStr("store_desc"));
 		List<StoreImage> images = StoreImage.dao.queryStoreImages(store.getInt("id"));
+		List<String> imgs = new ArrayList<>();
 		for(int i=0;i<images.size();i++){
 			StoreImage image = images.get(i);
-			if(image.getInt("seq")==1){
-				vo.setImg1(image.getStr("img"));
-			}else if(image.getInt("seq")==2){
-				vo.setImg2(image.getStr("img"));
-			}else if(image.getInt("seq")==3){
-				vo.setImg3(image.getStr("img"));
-			}
+			imgs.add(image.getStr("img"));
 		}
+		
 		Map<String, Object> map = new HashMap<>();
 		map.put("store", vo);
 		data.setData(map);
@@ -2162,11 +2181,13 @@ public class LoginService {
 		}
 	}
 	
+	//在售列表
 	public ReturnData querySaleOrderList(LoginDTO dto){
 		ReturnData data = new ReturnData();
 		List<SaleOrder> list = SaleOrder.dao.queryMemberOrders(dto.getUserId()
 															  ,dto.getPageSize()
-															  ,dto.getPageNum());
+															  ,dto.getPageNum()
+															  ,Constants.ORDER_STATUS.ON_SALE);
 		
 		List<SaleOrderListVO> vos = new ArrayList<>();
 		SaleOrderListVO vo = null;
@@ -2179,18 +2200,59 @@ public class LoginService {
 				int teaId = wtm.getInt("tea_id");
 				Tea tea = Tea.dao.queryById(teaId);
 				if(tea != null){
-					vo.setImg(tea.getStr("cover_img"));
+					vo.setImg(tea.getStr("icon"));
 					vo.setName(tea.getStr("tea_title"));
 				}
 			}
 			vo.setPrice(order.getBigDecimal("price"));
 			vo.setQuality(order.getInt("quality"));
+			vo.setSize("片");
 			vos.add(vo);
 		}
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		Map<String, Object> map = new HashMap<>();
 		map.put("data", vos);
+		data.setData(map);
+		return data;
+	}
+	
+	//我要卖茶列表
+	public ReturnData queryIWantSaleTeaList(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		List<WarehouseTeaMemberItem> list = WarehouseTeaMemberItem.dao.queryWantSaleTeaList(Constants.USER_TYPE.USER_TYPE_CLIENT
+																						   ,dto.getUserId()
+																						   ,dto.getPageSize()
+																						   ,dto.getPageNum());
+		List<WantSaleTeaListVO> vos = new ArrayList<>();
+		WantSaleTeaListVO vo = null;
+		for(WarehouseTeaMemberItem item : list){
+			vo = new WantSaleTeaListVO();
+			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(item.getInt("warehouse_tea_member_id"));
+			if(wtm == null){
+				continue;
+			}
+			vo.setTeaId(wtm.getInt("tea_id"));
+			Tea tea = Tea.dao.queryById(vo.getTeaId());
+			if(tea == null){
+				continue;
+			}
+			vo.setName(tea.getStr("tea_title"));
+			vo.setImg(tea.getStr("icon"));
+			vo.setQuality(item.getInt("quality"));
+			CodeMst size = CodeMst.dao.queryCodestByCode(item.getStr("size_type_cd"));
+			if(size != null){
+				vo.setSize(size.getStr("name"));
+			}else{
+				vo.setSize("");
+			}
+			vos.add(vo);
+		}
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("list",vos);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
 		data.setData(map);
 		return data;
 	}

@@ -95,9 +95,9 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where 1=1 "+sql+orderby+" limit "+fromRow+","+pageSize);
 	}*/
 
-	public List<WarehouseTeaMember> queryPersonProperty(int memberId,int pageSize,int pageNum){
+	public List<WarehouseTeaMember> queryPersonProperty(int memberId,int pageSize,int pageNum,String userTypeCd){
 		int fromRow = pageSize*(pageNum-1);
-		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" and stock!=0 and stock is not null order by create_time desc limit "+fromRow+","+pageSize);
+		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" and member_type_cd='"+userTypeCd+"' and stock!=0 and stock is not null order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
 	public List<Integer> queryPersonTeaId(int memberId,int pageSize,int pageNum){

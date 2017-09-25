@@ -121,10 +121,10 @@ public class RestfulController extends Controller{
 		renderJson(service.logout(dto));
 	}
 	
-	//首页接口
+	//首页接口，获取初始化数据
 	public void index() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
-		//获取轮播图
+		//获取初始化数据
 		renderJson(service.index(dto));
 	}
 	
@@ -279,6 +279,9 @@ public class RestfulController extends Controller{
 		UploadFile uploadFile = getFile("img1");
 		UploadFile uploadFile1 = getFile("img2");
 		UploadFile uploadFile2 = getFile("img3");
+		UploadFile uploadFile3 = getFile("img4");
+		UploadFile uploadFile4 = getFile("img5");
+		UploadFile uploadFile5 = getFile("img6");
 		
 		ContainFileInterceptor interceptor = new ContainFileInterceptor();
 		ReturnData data1 = interceptor.vertifyToken(getRequest());
@@ -328,6 +331,9 @@ public class RestfulController extends Controller{
 		boolean ret1 = true;
 		boolean ret2 = true;
 		boolean ret3 = true;
+		boolean ret4 = true;
+		boolean ret5 = true;
+		boolean ret6 = true;
 		ReturnData data = new ReturnData();
 		if(ret){
 			int id = s.getInt("id");
@@ -336,6 +342,9 @@ public class RestfulController extends Controller{
 			String logo1 = "";
 			String logo2 = "";
 			String logo3 = "";
+			String logo4 = "";
+			String logo5 = "";
+			String logo6 = "";
 			//上传文件
 			//第一张图
 			String uuid1 = UUID.randomUUID().toString();
@@ -418,7 +427,88 @@ public class RestfulController extends Controller{
 				storeImage2.set("update_time", DateUtil.getNowTimestamp());
 				ret3 = StoreImage.dao.saveInfo(storeImage2);
 			}
-			if(ret1 && ret2 && ret3){
+			//第四张图
+			String uuid4 = UUID.randomUUID().toString();
+			if(uploadFile3 != null){
+				String fileName = uploadFile3.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile3.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid4+"."+names[1]);
+			    logo4 = Constants.HOST.STORE+uuid4+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage2 = new StoreImage();
+				storeImage2.set("store_id", id);
+				storeImage2.set("img", logo4);
+				storeImage2.set("flg", 1);
+				storeImage2.set("seq", 4);
+				storeImage2.set("create_time", DateUtil.getNowTimestamp());
+				storeImage2.set("update_time", DateUtil.getNowTimestamp());
+				ret4 = StoreImage.dao.saveInfo(storeImage2);
+			}
+			//第五张图
+			String uuid5 = UUID.randomUUID().toString();
+			if(uploadFile4 != null){
+				String fileName = uploadFile4.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile4.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid5+"."+names[1]);
+			    logo5 = Constants.HOST.STORE+uuid5+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage2 = new StoreImage();
+				storeImage2.set("store_id", id);
+				storeImage2.set("img", logo5);
+				storeImage2.set("flg", 1);
+				storeImage2.set("seq", 5);
+				storeImage2.set("create_time", DateUtil.getNowTimestamp());
+				storeImage2.set("update_time", DateUtil.getNowTimestamp());
+				ret5 = StoreImage.dao.saveInfo(storeImage2);
+			}
+			//第六张图
+			String uuid6 = UUID.randomUUID().toString();
+			if(uploadFile5 != null){
+				String fileName = uploadFile5.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile5.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid6+"."+names[1]);
+			    logo6 = Constants.HOST.STORE+uuid6+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage2 = new StoreImage();
+				storeImage2.set("store_id", id);
+				storeImage2.set("img", logo6);
+				storeImage2.set("flg", 1);
+				storeImage2.set("seq", 6);
+				storeImage2.set("create_time", DateUtil.getNowTimestamp());
+				storeImage2.set("update_time", DateUtil.getNowTimestamp());
+				ret6 = StoreImage.dao.saveInfo(storeImage2);
+			}
+			if(ret1 && ret2 && ret3 && ret4 && ret5 && ret6){
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("提交成功，请等待平台审核");
 				findStoreDetail(dto.getUserId());
@@ -431,7 +521,6 @@ public class RestfulController extends Controller{
 	}
 	
 	//查询绑定门店详情
-	@Before(RequestInterceptor.class)
 	public void queryStoreDetail(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		int memberId = dto.getUserId();
@@ -469,6 +558,10 @@ public class RestfulController extends Controller{
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("data", vo);
 			data.setData(map);
+			renderJson(data);
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，你还没有绑定门店");
 			renderJson(data);
 		}
 	}
@@ -520,6 +613,9 @@ public class RestfulController extends Controller{
 		UploadFile uploadFile = getFile("img1");
 		UploadFile uploadFile1 = getFile("img2");
 		UploadFile uploadFile2 = getFile("img3");
+		UploadFile uploadFile3 = getFile("img4");
+		UploadFile uploadFile4 = getFile("img5");
+		UploadFile uploadFile5 = getFile("img6");
 		
 		ContainFileInterceptor interceptor = new ContainFileInterceptor();
 		ReturnData data1 = interceptor.vertifyToken(getRequest());
@@ -564,6 +660,9 @@ public class RestfulController extends Controller{
 		boolean ret1 = true;
 		boolean ret2 = true;
 		boolean ret3 = true;
+		boolean ret4 = true;
+		boolean ret5 = true;
+		boolean ret6 = true;
 		ReturnData data = new ReturnData();
 		if(ret){
 			int id = getParaToInt("storeId");
@@ -572,6 +671,9 @@ public class RestfulController extends Controller{
 			String logo1 = "";
 			String logo2 = "";
 			String logo3 = "";
+			String logo4 = "";
+			String logo5 = "";
+			String logo6 = "";
 			//上传文件
 			//第一张图
 			String uuid1 = UUID.randomUUID().toString();
@@ -648,7 +750,89 @@ public class RestfulController extends Controller{
 				storeImage2.set("update_time", DateUtil.getNowTimestamp());
 				ret3 = StoreImage.dao.updateInfo(logo3,storeId,3);
 			}
-			if(ret1 && ret2 && ret3){
+			//第四张图
+			String uuid4 = UUID.randomUUID().toString();
+			if(uploadFile3 != null){
+				String fileName = uploadFile3.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile3.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid4+"."+names[1]);
+			    logo4 = Constants.HOST.STORE+uuid4+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage2 = new StoreImage();
+				storeImage2.set("store_id", id);
+				storeImage2.set("img", logo4);
+				storeImage2.set("flg", 1);
+				storeImage2.set("seq", 4);
+				storeImage2.set("create_time", DateUtil.getNowTimestamp());
+				storeImage2.set("update_time", DateUtil.getNowTimestamp());
+				ret4 = StoreImage.dao.saveInfo(storeImage2);
+			}
+			//第五张图
+			String uuid5 = UUID.randomUUID().toString();
+			if(uploadFile4 != null){
+				String fileName = uploadFile4.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile4.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid5+"."+names[1]);
+			    logo5 = Constants.HOST.STORE+uuid5+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage2 = new StoreImage();
+				storeImage2.set("store_id", id);
+				storeImage2.set("img", logo5);
+				storeImage2.set("flg", 1);
+				storeImage2.set("seq", 5);
+				storeImage2.set("create_time", DateUtil.getNowTimestamp());
+				storeImage2.set("update_time", DateUtil.getNowTimestamp());
+				ret5 = StoreImage.dao.saveInfo(storeImage2);
+			}
+			//第六张图
+			String uuid6 = UUID.randomUUID().toString();
+			if(uploadFile5 != null){
+				String fileName = uploadFile5.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile5.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid6+"."+names[1]);
+			    logo6 = Constants.HOST.STORE+uuid6+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage2 = new StoreImage();
+				storeImage2.set("store_id", id);
+				storeImage2.set("img", logo6);
+				storeImage2.set("flg", 1);
+				storeImage2.set("seq", 6);
+				storeImage2.set("create_time", DateUtil.getNowTimestamp());
+				storeImage2.set("update_time", DateUtil.getNowTimestamp());
+				ret6 = StoreImage.dao.saveInfo(storeImage2);
+			}
+			
+			if(ret1 && ret2 && ret3 && ret4 && ret5 && ret6){
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("提交成功，请等待平台审核");
 				renderJson(data);
@@ -834,5 +1018,11 @@ public class RestfulController extends Controller{
 	public void querySaleOrderList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.querySaleOrderList(dto));
+	}
+	
+	//我要卖茶列表
+	public void queryIWantSaleTeaList(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryIWantSaleTeaList(dto));
 	}
 }
