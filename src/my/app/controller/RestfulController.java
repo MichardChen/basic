@@ -1070,4 +1070,6 @@ public class RestfulController extends Controller{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.modifyUserPayPwd(dto));
 	}
+	
+	
 }

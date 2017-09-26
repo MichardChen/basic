@@ -31,6 +31,7 @@ import my.pvcloud.service.TeaService;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.ImageTools;
 import my.pvcloud.util.ImageZipUtil;
+import my.pvcloud.util.QRCodeUtil;
 import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/storeInfo", path = "/pvcloud")
@@ -165,5 +166,10 @@ public class StoreInfoController extends Controller {
 			e.printStackTrace();
 		}
 		index();
+	}
+	
+	//生成二维码
+	public void generateQRCode(){
+		QRCodeUtil.QRCodeCreate("http://blog.csdn.net/u014266877", "D://qrcode.jpg", 15, "D://icon.png");
 	}
 }
