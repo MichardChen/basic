@@ -2106,6 +2106,7 @@ public class LoginService {
 		bankcard.set("member_id", dto.getUserId());
 		bankcard.set("create_time", DateUtil.getNowTimestamp());
 		bankcard.set("update_time", DateUtil.getNowTimestamp());
+		bankcard.set("card_img", dto.getIcon());
 		boolean ret = MemberBankcard.dao.saveInfo(bankcard);
 		if(ret){
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
@@ -2255,5 +2256,55 @@ public class LoginService {
 		data.setMessage("查询成功");
 		data.setData(map);
 		return data;
+	}
+	
+	//客户保存支付密码
+	public ReturnData saveUserPayPwd(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		Member member = Member.dao.queryMember(dto.getMobile());
+		if(member == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，用户不存在");
+			return data;
+		}
+		
+		//保存密码
+		int ret = Member.dao.updatePay(dto.getMobile(), MD5Util.string2MD5(dto.getPayPwd()));
+		if(ret != 0){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("保存成功");
+			return data;
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("保存失败");
+			return data;
+		}
+	}
+		
+	//客户修改支付密码
+	public ReturnData modifyUserPayPwd(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		Member member = Member.dao.queryMember(dto.getMobile());
+		if(member == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，用户不存在");
+			return data;
+		}
+		if(!StringUtil.equals(member.getStr("paypwd"), MD5Util.string2MD5(dto.getOldPwd()))){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，旧支付密码错误");
+			return data;
+		}
+		//保存密码
+		int ret = Member.dao.updatePay(dto.getMobile(), MD5Util.string2MD5(dto.getPayPwd()));
+		if(ret != 0){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("修改成功");
+			return data;
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("修改失败");
+			return data;
+		}
 	}
 }

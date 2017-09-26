@@ -44,13 +44,13 @@ public class Member extends Model<Member> {
 	}
 	
 	public int saveMember(String mobile,String userPwd,int sex,String userTypeCd,String status){
-		Member member = new Member().set("mobile", mobile).set("userPwd", userPwd).set("member_grade_cd", userTypeCd).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex).set("status", status);
+		Member member = new Member().set("mobile", mobile).set("userpwd", userPwd).set("member_grade_cd", userTypeCd).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex).set("status", status);
 		boolean isSave = member.save();
 		return member.getInt("id");
 	}
 	
 	public void updatePwd(String mobile,String userPwd){
-		Db.update("update t_member set userPwd='"+userPwd+"',update_time='"+DateUtil.getNowTimestamp()+"' where mobile="+mobile);
+		Db.update("update t_member set userpwd='"+userPwd+"',update_time='"+DateUtil.getNowTimestamp()+"' where mobile="+mobile);
 	}
 	
 	public Long queryMemberListCount(String memberName){
@@ -155,6 +155,10 @@ public class Member extends Model<Member> {
 	
 	public int updateMemberStatus(int id,String status){
 		return Db.update("update t_member set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	}
+	
+	public int updatePay(String mobile,String userPwd){
+		return Db.update("update t_member set paypwd='"+userPwd+"',update_time='"+DateUtil.getNowTimestamp()+"' where mobile="+mobile);
 	}
 }
 

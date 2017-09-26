@@ -1004,7 +1004,40 @@ public class RestfulController extends Controller{
 	
 	//绑定银行卡
 	public void bindBankCard(){
+		
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		
+		UploadFile uploadFile = getFile("cardImg");
+		
+		ContainFileInterceptor interceptor = new ContainFileInterceptor();
+		ReturnData data1 = interceptor.vertifyToken(getRequest());
+		if(!StringUtil.equals(data1.getCode(), Constants.STATUS_CODE.SUCCESS)){
+			renderJson(data1);
+			return;
+		}
+		
+		FileService fs=new FileService();
+		String logo1 = "";
+		//上传文件
+		//第一张图
+		String uuid1 = UUID.randomUUID().toString();
+		if(uploadFile != null){
+			String fileName = uploadFile.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile.getFile();
+		    File t=new File(Constants.FILE_HOST.IMG+uuid1+"."+names[1]);
+		    logo1 = Constants.HOST.IMG+uuid1+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		    dto.setIcon(logo1);
+		}
 		renderJson(service.bingBankCard(dto));
 	}
 	
@@ -1024,5 +1057,17 @@ public class RestfulController extends Controller{
 	public void queryIWantSaleTeaList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryIWantSaleTeaList(dto));
+	}
+	
+	//客户保存支付密码
+	public void savePayPwd() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.saveUserPayPwd(dto));
+	}
+	
+	//客户修改支付密码
+	public void modifyPayPwd() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.modifyUserPayPwd(dto));
 	}
 }

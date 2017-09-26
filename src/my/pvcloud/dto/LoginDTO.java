@@ -62,9 +62,11 @@ public class LoginDTO extends BaseDTO{
 		dto.setCardTypeCd(request.getParameter("cardTypeCd"));
 		dto.setIdCardNo(request.getParameter("idCardNo"));
 		dto.setMoney(StringUtil.toBigDecimal(request.getParameter("money")));
+		dto.setPayPwd(request.getParameter("payPwd"));
 		return dto;
 	}
 	
+	private String payPwd;
 	private BigDecimal money;
 	private String idCardNo;
 	private String cardTypeCd;
@@ -108,6 +110,14 @@ public class LoginDTO extends BaseDTO{
 	private String buyCartIds;
 	private String date;
 	
+	public String getPayPwd() {
+		return payPwd;
+	}
+
+	public void setPayPwd(String payPwd) {
+		this.payPwd = payPwd;
+	}
+
 	public BigDecimal getMoney() {
 		return money;
 	}
