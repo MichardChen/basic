@@ -1071,5 +1071,21 @@ public class RestfulController extends Controller{
 		renderJson(service.modifyUserPayPwd(dto));
 	}
 	
+	//扫码绑定会员
+	public void bindMember() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.bindMember(dto));
+	}
 	
+	//获取账号余额
+	public void queryMemberMoney() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryMemberMoney(dto));
+	}
+	
+	//提现初始化页面
+	public void withDrawInit() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.withDrawInit(dto));
+	}
 }

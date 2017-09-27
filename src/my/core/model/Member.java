@@ -44,7 +44,7 @@ public class Member extends Model<Member> {
 	}
 	
 	public int saveMember(String mobile,String userPwd,int sex,String userTypeCd,String status){
-		Member member = new Member().set("mobile", mobile).set("userpwd", userPwd).set("member_grade_cd", userTypeCd).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex).set("status", status);
+		Member member = new Member().set("mobile", mobile).set("userpwd", userPwd).set("member_grade_cd", userTypeCd).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex).set("status", status).set("id_code", StringUtil.getIdCode());
 		boolean isSave = member.save();
 		return member.getInt("id");
 	}
@@ -159,6 +159,10 @@ public class Member extends Model<Member> {
 	
 	public int updatePay(String mobile,String userPwd){
 		return Db.update("update t_member set paypwd='"+userPwd+"',update_time='"+DateUtil.getNowTimestamp()+"' where mobile="+mobile);
+	}
+	
+	public int bindStore(int userId,int storeId){
+		return Db.update("update t_member set store_id="+storeId+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
 	}
 }
 

@@ -77,6 +77,7 @@ import my.core.vo.TeaStoreListVO;
 import my.core.vo.TeaWarehouseDetailVO;
 import my.core.vo.WantSaleTeaListVO;
 import my.core.vo.WarehouseStockVO;
+import my.core.vo.WithDrawInitVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.MD5Util;
@@ -496,6 +497,11 @@ public class LoginService {
 		map.put("carousel", vos);
 		map.put("news", newsVOs);
 		Member member = Member.dao.queryMember(dto.getMobile());
+		if(StringUtil.isBlank(member.getStr("paypwd"))){
+			map.put("setPaypwdFlg", 0);
+		}else{
+			map.put("setPaypwdFlg", 1);
+		}
 		map.put("member", member);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");;
@@ -2269,7 +2275,7 @@ public class LoginService {
 		}
 		
 		//保存密码
-		int ret = Member.dao.updatePay(dto.getMobile(), MD5Util.string2MD5(dto.getPayPwd()));
+		int ret = Member.dao.updatePay(dto.getMobile(), dto.getPayPwd());
 		if(ret != 0){
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
 			data.setMessage("保存成功");
@@ -2290,13 +2296,13 @@ public class LoginService {
 			data.setMessage("对不起，用户不存在");
 			return data;
 		}
-		if(!StringUtil.equals(member.getStr("paypwd"), MD5Util.string2MD5(dto.getOldPwd()))){
+		if(!StringUtil.equals(member.getStr("paypwd"), dto.getOldPwd())){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，旧支付密码错误");
 			return data;
 		}
 		//保存密码
-		int ret = Member.dao.updatePay(dto.getMobile(), MD5Util.string2MD5(dto.getPayPwd()));
+		int ret = Member.dao.updatePay(dto.getMobile(), dto.getPayPwd());
 		if(ret != 0){
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
 			data.setMessage("修改成功");
@@ -2306,5 +2312,98 @@ public class LoginService {
 			data.setMessage("修改失败");
 			return data;
 		}
+	}
+	
+	//绑定会员
+	public ReturnData bindMember(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		int storeId = dto.getStoreId();
+		String mobile = dto.getMobile();
+		if(storeId == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，门店数据有误");
+			return data;
+		}
+		
+		if(StringUtil.isBlank(mobile)){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，用户数据有误");
+			return data;
+		}
+		
+		Store store = Store.dao.queryById(storeId);
+		if(store == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，门店数据有误");
+			return data;
+		}
+		
+		Member member = Member.dao.queryMember(dto.getMobile());
+		if(member == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，用户数据有误");
+			return data;
+		}
+		
+		if(member.getInt("store_id")==null || member.getInt("store_id")!=0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，您已绑定过其他门店，不能重复绑定");
+			return data;
+		}
+		
+		int ret = Member.dao.bindStore(dto.getUserId(), storeId);
+		if(ret != 0){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("绑定成功");
+			return data;
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败");
+			return data;
+		}
+	}
+	
+	//查询会员账号余额
+	public ReturnData queryMemberMoney(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		Member member = Member.dao.queryById(dto.getUserId());
+		if(member == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("用户数据有误");
+			return data;
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("money", member.getBigDecimal("moneys"));
+		data.setData(map);
+		data.setMessage("查询成功");
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		return data;
+	}
+	
+	//提现画面初始化
+	public ReturnData withDrawInit(LoginDTO dto){
+		
+		ReturnData data = new ReturnData();
+		MemberBankcard bankcard = MemberBankcard.dao.queryById(dto.getUserId());
+		if(bankcard == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，您还没有绑定银行卡");
+			return data;
+		}
+		WithDrawInitVO vo = new WithDrawInitVO();
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(bankcard.getStr("bank_name_cd"));
+		if(codeMst != null){
+			vo.setBankIcon(codeMst.getStr("data2"));
+			vo.setBankName(codeMst.getStr("name"));
+		}
+		vo.setBankNo(bankcard.getStr("card_no"));
+		Member member = Member.dao.queryById(dto.getUserId());
+		Map<String, Object> map = new HashMap<>();
+		map.put("bankCard", vo);
+		map.put("money", member.getBigDecimal("moneys"));
+		data.setData(map);
+		data.setMessage("查询成功");
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		return data;
 	}
 }

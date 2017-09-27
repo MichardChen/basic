@@ -32,6 +32,10 @@ function loadProject(data){
 		}
 	});
 }
+
+function downloadImg(id){
+	window.location.href="${CONTEXT_PATH}/storeInfo/generateQRCode?id="+id;
+}
 </script>
 <style>
 .ys1{
@@ -158,6 +162,7 @@ td{
 		    								<input type="button" value="审核未通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=0&id=${s.id}';}"/>
 		    									<input type="button" value="审核通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=1&id=${s.id}';}"/>
 		    							</c:if>
+		    							<input type="button" value="下载二维码" class="ys3" onclick="downloadImg(${s.id})"/>
 		    							<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
 		    					</td>
 		    				</tr>

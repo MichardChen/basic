@@ -63,9 +63,11 @@ public class LoginDTO extends BaseDTO{
 		dto.setIdCardNo(request.getParameter("idCardNo"));
 		dto.setMoney(StringUtil.toBigDecimal(request.getParameter("money")));
 		dto.setPayPwd(request.getParameter("payPwd"));
+		dto.setStoreId(StringUtil.toInteger(request.getParameter("storeId")));
 		return dto;
 	}
 	
+	private int storeId;
 	private String payPwd;
 	private BigDecimal money;
 	private String idCardNo;
@@ -110,6 +112,15 @@ public class LoginDTO extends BaseDTO{
 	private String buyCartIds;
 	private String date;
 	
+	
+	public int getStoreId() {
+		return storeId;
+	}
+
+	public void setStoreId(int storeId) {
+		this.storeId = storeId;
+	}
+
 	public String getPayPwd() {
 		return payPwd;
 	}

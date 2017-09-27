@@ -1,13 +1,10 @@
 package my.pvcloud.util;
 
-import java.awt.event.FocusEvent;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
@@ -100,6 +97,18 @@ public class StringUtil extends StringUtils {
 		int hundreads = (i/100)%10;
 		int thousands =(1/1000)%10;
 		return date1+tens+thousands+hundreads;
+	}
+	
+	public static String getIdCode(){
+		long l = System.currentTimeMillis();
+		//new日期对象
+		Date date = new Date(l);
+		Long long1 = DateUtil.getNowTimestamp().getTime();
+		String date1 = StringUtil.toString(long1);
+		int size = date1.length();
+		String str = date1.substring(size-8, size);
+	    //年月日
+		return "TJ"+str;
 	}
 	
 	public static String toString(BigDecimal num){

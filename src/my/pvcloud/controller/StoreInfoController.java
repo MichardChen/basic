@@ -1,15 +1,21 @@
 package my.pvcloud.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import org.huadalink.route.ControllerBind;
 
@@ -29,6 +35,7 @@ import my.pvcloud.model.TeaModel;
 import my.pvcloud.service.StoreService;
 import my.pvcloud.service.TeaService;
 import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.HttpURLConnectionUtil;
 import my.pvcloud.util.ImageTools;
 import my.pvcloud.util.ImageZipUtil;
 import my.pvcloud.util.QRCodeUtil;
@@ -169,7 +176,28 @@ public class StoreInfoController extends Controller {
 	}
 	
 	//生成二维码
-	public void generateQRCode(){
-		QRCodeUtil.QRCodeCreate("http://blog.csdn.net/u014266877", "D://qrcode.jpg", 15, "D://icon.png");
+	public void generateQRCode() throws Exception{
+		
+		int storeId = StringUtil.toInteger(getPara("id"));
+		QRCodeUtil.QRCodeCreate("http://192.168.1.131:8087/zznj/rest/bindMember?storeId="+storeId, "F://qrcode.jpg", 15, "F://icon.png");
+        HttpServletResponse response = getResponse();
+		response.setContentType("application/binary;charset=ISO8859_1");
+	    //设置Content-Disposition  
+	    response.setHeader("Content-Disposition", "attachment;filename=a.jpeg");  
+	    //读取目标文件，通过response将目标文件写到客户端  
+	    //获取目标文件的绝对路径  
+	    String fullFileName = "F://qrcode.jpg";  
+	    //读取文件  
+	    InputStream in = new FileInputStream(fullFileName);  
+	    OutputStream out = response.getOutputStream();  
+	          
+	    //写文件  
+	    int b;  
+	    while((b=in.read())!= -1)  {  
+	            out.write(b);  
+	        }  
+	          
+	    in.close();  
+	    out.close();  
 	}
 }
