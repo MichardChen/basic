@@ -106,7 +106,7 @@ public interface Constants {
 	
 	
 	/**
-	 * 本地 */
+	 * 本地 
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
 		public static final String TEA = "http://192.168.1.131:82/tea/";
@@ -125,10 +125,10 @@ public interface Constants {
 		public static final String ICON = "F:\\upload\\icon\\";
 		public static final String IMG = "F:\\upload\\img\\";
 		public static final String STORE = "F:\\upload\\store\\";
-	}
+	}*/
 
 	
-	/**服务器
+	/**服务器*/
 	public static interface HOST{
 		public static final String LOCALHOST = "http://139.196.171.205:88/newsimages/";
 		public static final String TEA = "http://139.196.171.205:88/tea/";
@@ -147,7 +147,7 @@ public interface Constants {
 		public static final String ICON = "D:\\upload\\icon\\";
 		public static final String IMG = "D:\\upload\\img\\";
 		public static final String STORE = "D:\\upload\\store\\";
-	}*/
+	}
 	
 	public static interface MEMBER_STATUS{
 		public static final String CERTIFICATED = "040001";
