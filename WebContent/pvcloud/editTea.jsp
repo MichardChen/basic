@@ -7,7 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <meta charset="utf-8">
-<title>添加茶叶</title>
+<title>编辑茶叶</title>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/summernote/css/bootstrap.css">
 <link href="<%=request.getContextPath()%>/summernote/dist/summernote.css" rel="stylesheet"/>
 <script src="<%=request.getContextPath()%>/summernote/js/jquery.min.js"></script>
@@ -74,6 +74,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             });
         }
     </script>
+<form action="${CONTEXT_PATH}/teaInfo/saveTea" method="post" enctype="multipart/form-data">
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
@@ -181,4 +182,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</textarea>
     </div>
 </div>
-
+<div class="modal-footer" style="margin-top:20px;">
+					<input type="submit" class="btn btn-success" value="保存"/>
+				</div>
+			</form>

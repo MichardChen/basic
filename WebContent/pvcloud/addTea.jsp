@@ -74,6 +74,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             });
         }
     </script>
+<form action="${CONTEXT_PATH}/teaInfo/saveTea" method="post" enctype="multipart/form-data">
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
@@ -181,3 +182,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
 </div>
 
+<div class="modal-footer" style="margin-top:20px;">
+					<input type="submit" class="btn btn-success" value="保存"/>
+				</div>
+			</form>
