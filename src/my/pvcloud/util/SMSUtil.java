@@ -23,18 +23,17 @@ public class SMSUtil {
 	 * @throws IOException
 	 */
 	public static String sendMessage(String content,String mobile) throws IOException {
-		/*
 		//发送内容
-		String sign="【妙客良品】";
+		String sign="【同记茶业】";
 		
 		// 创建StringBuffer对象用来操作字符串
 		StringBuffer sb = new StringBuffer("http://210.5.152.195:1860/asmx/smsservice.aspx?");
 
 		// 向StringBuffer追加用户名
-		sb.append("name=13950008282");
+		sb.append("name=dxwtongjichaye");
 
 		// 向StringBuffer追加密码（登陆网页版，在管理中心--基本资料--接口密码，是28位的）
-		sb.append("&pwd=B5E3072F27A7DF49C3FFE4DA088A");
+		sb.append("&pwd=01502BA459C0F2EEC24FA1199CDD");
 
 		// 向StringBuffer追加手机号码
 		sb.append("&mobile="+mobile);

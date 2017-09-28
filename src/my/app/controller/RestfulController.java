@@ -1088,4 +1088,22 @@ public class RestfulController extends Controller{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.withDrawInit(dto));
 	}
+	
+	//获取忘记支付密码，验证码
+	public void getForgetPayCode() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.getForgetPayCode(dto));
+	}
+	
+	//保存忘记支付密码
+	public void saveForgetPayPwd() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.saveForgetPayPwd(dto));
+	}
+	
+	//查询银行卡
+	public void queryBankCard() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryBankCard(dto));
+	}
 }

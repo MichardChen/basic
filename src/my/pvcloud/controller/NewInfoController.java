@@ -249,7 +249,7 @@ public class NewInfoController extends Controller {
 								   ,newsTypeCd
 								   ,hot
 								   ,(Integer)getSessionAttr("agentId")
-								   ,0
+								   ,1
 								   ,content
 								   ,contentUrl);
 		if(ret != 0){

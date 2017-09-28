@@ -106,7 +106,7 @@ public interface Constants {
 	
 	
 	/**
-	 * 本地*/
+	 * 本地 */
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
 		public static final String TEA = "http://192.168.1.131:82/tea/";
@@ -125,7 +125,7 @@ public interface Constants {
 		public static final String ICON = "F:\\upload\\icon\\";
 		public static final String IMG = "F:\\upload\\img\\";
 		public static final String STORE = "F:\\upload\\store\\";
-	} 
+	}
 
 	
 	/**服务器
@@ -254,5 +254,11 @@ public interface Constants {
 		public static final String APPLYING = "190001";
 		public static final String SUCCESS = "190002";
 		public static final String FAIL = "190003";
+	}
+	
+	public static interface SHORT_MESSAGE_TYPE{
+		public static final String REGISTER = "200001";
+		public static final String FORGET_REGISTER_PWD = "200002";
+		public static final String FORGET_PAY_PWD = "200003";
 	}
 }

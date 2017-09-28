@@ -1,5 +1,6 @@
 package my.pvcloud.dto;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,11 @@ public class LoginDTO extends BaseDTO{
 	public LoginDTO(){}
 	
 	public static LoginDTO getInstance(HttpServletRequest request){
+		try {
+			request.setCharacterEncoding("utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		LoginDTO dto = new LoginDTO();
 		dto.setMobile(request.getParameter("mobile"));
 		dto.setUserTypeCd(request.getParameter("userTypeCd"));

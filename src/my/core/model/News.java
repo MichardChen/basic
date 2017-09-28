@@ -28,12 +28,12 @@ public class News extends Model<News> {
 			param.add(title);
 		}
 		
-		sql=" from t_news where 1=1 "+strBuf.toString()+" order by create_time desc";
+		sql=" from t_news where 1=1 "+strBuf.toString()+" order by flg desc,create_time desc";
 		return News.dao.paginate(page, size, select, sql,param.toArray());
 	}
 	
 	public Page<News> queryByPage(int page,int size){
-		String sql=" from t_news order by create_time desc";
+		String sql=" from t_news where flg=1 order by flg desc,create_time desc";
 		String select="select * ";
 		return News.dao.paginate(page, size, select, sql);
 	}
@@ -43,7 +43,7 @@ public class News extends Model<News> {
 		StringBuffer strBuf=new StringBuffer();
 		strBuf.append(" and flg=?");
 		param.add("1");
-		String sql=" from t_news where 1=1"+strBuf+" order by create_time desc,hot_flg desc";
+		String sql=" from t_news where 1=1"+strBuf+" order by flg desc,create_time desc,hot_flg desc";
 		String select="select * ";
 		return News.dao.paginate(page, size, select, sql,param.toArray());
 	}

@@ -57,6 +57,7 @@ import my.core.model.WarehouseTeaMemberItem;
 import my.core.tx.TxProxy;
 import my.core.vo.AddressDetailVO;
 import my.core.vo.AddressVO;
+import my.core.vo.BankCardDetailVO;
 import my.core.vo.BuyCartListVO;
 import my.core.vo.BuyTeaListVO;
 import my.core.vo.CarouselVO;
@@ -95,7 +96,7 @@ public class LoginService {
 		Member member = Member.dao.queryMember(dto.getMobile());
 		ReturnData data = new ReturnData();
 		String code = VertifyUtil.getVertifyCode();
-		VertifyCode vc = VertifyCode.dao.queryVertifyCode(dto.getMobile());
+		VertifyCode vc = VertifyCode.dao.queryVertifyCode(dto.getMobile(),Constants.SHORT_MESSAGE_TYPE.REGISTER);
 		if(vc != null){
 			Timestamp expireTime = vc.getTimestamp("expire_time");
 			Timestamp nowTime = DateUtil.getNowTimestamp();
@@ -110,11 +111,11 @@ public class LoginService {
 			data.setMessage("对不起，您的手机号码已经注册");
 			return data;
 		}else{
-			VertifyCode vCode = VertifyCode.dao.queryVertifyCode(dto.getMobile());
+			VertifyCode vCode = VertifyCode.dao.queryVertifyCode(dto.getMobile(),Constants.SHORT_MESSAGE_TYPE.REGISTER);
 			if(vCode == null){
-				VertifyCode.dao.saveVertifyCode(dto.getMobile(), dto.getUserTypeCd(), code,new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+				VertifyCode.dao.saveVertifyCode(dto.getMobile(), dto.getUserTypeCd(), code,new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()),Constants.SHORT_MESSAGE_TYPE.REGISTER);
 			}else{
-				VertifyCode.dao.updateVertifyCode(dto.getMobile(), code);
+				VertifyCode.dao.updateVertifyCode(dto.getMobile(), code,Constants.SHORT_MESSAGE_TYPE.REGISTER);
 			}
 			//发送短信
 			String shortMsg = "您的验证码是：" + code + "，10分钟内有效，请不要把验证码泄露给其他人。";
@@ -146,7 +147,7 @@ public class LoginService {
 		int sex = dto.getSex();
 		String token = TextUtil.generateUUID();
 		//获取验证码有效时间
-		VertifyCode vCode = VertifyCode.dao.queryVertifyCode(mobile);
+		VertifyCode vCode = VertifyCode.dao.queryVertifyCode(mobile,Constants.SHORT_MESSAGE_TYPE.REGISTER);
 		Timestamp expireTime = vCode == null ? null : (Timestamp)vCode.get("expire_time");
 		Timestamp now = DateUtil.getNowTimestamp();
 		Member member = Member.dao.queryMember(mobile);
@@ -187,7 +188,7 @@ public class LoginService {
 			Map<String, Object> map = new HashMap<>();
 			map.put("member", m);
 			map.put("accessToken", token);
-			VertifyCode.dao.updateVertifyCodeExpire(mobile, now);
+			VertifyCode.dao.updateVertifyCodeExpire(mobile, now,Constants.SHORT_MESSAGE_TYPE.REGISTER);
 			//保存token
 			AcceessToken at = AcceessToken.dao.queryToken(id, Constants.USER_TYPE.USER_TYPE_CLIENT);
 			boolean tokensave = false;
@@ -295,7 +296,7 @@ public class LoginService {
 		Member member = Member.dao.queryMember(dto.getMobile());
 		String code = VertifyUtil.getVertifyCode();
 		ReturnData data = new ReturnData();
-		VertifyCode vc = VertifyCode.dao.queryVertifyCode(dto.getMobile());
+		VertifyCode vc = VertifyCode.dao.queryVertifyCode(dto.getMobile(),Constants.SHORT_MESSAGE_TYPE.FORGET_REGISTER_PWD);
 		if(vc != null){
 			Timestamp expireTime = vc.getTimestamp("expire_time");
 			Timestamp nowTime = DateUtil.getNowTimestamp();
@@ -311,9 +312,9 @@ public class LoginService {
 			return data;
 		}else{
 			//获取VertifyCode
-			VertifyCode vCode = VertifyCode.dao.queryVertifyCode(dto.getMobile());
+			VertifyCode vCode = VertifyCode.dao.queryVertifyCode(dto.getMobile(),Constants.SHORT_MESSAGE_TYPE.FORGET_REGISTER_PWD);
 			if(vCode == null){
-				boolean isSave = VertifyCode.dao.saveVertifyCode(dto.getMobile(), dto.getUserTypeCd(), code,new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+				boolean isSave = VertifyCode.dao.saveVertifyCode(dto.getMobile(), dto.getUserTypeCd(), code,new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()),Constants.SHORT_MESSAGE_TYPE.FORGET_REGISTER_PWD);
 				if(isSave){
 					//发送短信
 					String shortMsg = "您的验证码是：" + code + "，10分钟内有效，请不要把验证码泄露给其他人。";
@@ -339,7 +340,7 @@ public class LoginService {
 				}
 			}else{
 				//更新验证码
-				VertifyCode.dao.updateVertifyCode(dto.getMobile(), code);
+				VertifyCode.dao.updateVertifyCode(dto.getMobile(), code,Constants.SHORT_MESSAGE_TYPE.FORGET_REGISTER_PWD);
 				//发送短信
 				//发送短信
 				String shortMsg = "您的验证码是：" + code + "，10分钟内有效，请不要把验证码泄露给其他人。";
@@ -365,7 +366,7 @@ public class LoginService {
 	//保存修改密码
 	public ReturnData saveForgetPwd(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		VertifyCode vCode = VertifyCode.dao.queryVertifyCode(dto.getMobile());
+		VertifyCode vCode = VertifyCode.dao.queryVertifyCode(dto.getMobile(),Constants.SHORT_MESSAGE_TYPE.FORGET_REGISTER_PWD);
 		if(vCode == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("请重新获取验证码");
@@ -387,7 +388,7 @@ public class LoginService {
 			return data;
 		 }else{
 			//把验证码设置为过期
-			VertifyCode.dao.updateVertifyCodeExpire(dto.getMobile(), now);
+			VertifyCode.dao.updateVertifyCodeExpire(dto.getMobile(), now,Constants.SHORT_MESSAGE_TYPE.FORGET_REGISTER_PWD);
 			//保存密码
 			Member.dao.updatePwd(dto.getMobile(), MD5Util.string2MD5(dto.getUserPwd()));
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
@@ -487,6 +488,7 @@ public class LoginService {
 			nv.setDate(DateUtil.format(n.getTimestamp("create_time"), "yyyy-MM-dd"));
 			nv.setHotFlg(n.getInt("hot_flg"));
 			nv.setImg(n.getStr("news_logo"));
+			nv.setShareUrl(n.getStr("content_url"));
 			CodeMst type = CodeMst.dao.queryCodestByCode(n.getStr("news_type_cd"));
 			if(type != null){
 				nv.setType(type.getStr("name"));
@@ -497,7 +499,7 @@ public class LoginService {
 		map.put("carousel", vos);
 		map.put("news", newsVOs);
 		Member member = Member.dao.queryMember(dto.getMobile());
-		if(StringUtil.isBlank(member.getStr("paypwd"))){
+		if((member != null)&&(StringUtil.isBlank(member.getStr("paypwd")))){
 			map.put("setPaypwdFlg", 0);
 		}else{
 			map.put("setPaypwdFlg", 1);
@@ -789,7 +791,6 @@ public class LoginService {
 	
 	//提交意见反馈
 	public ReturnData saveFeedback(LoginDTO dto){
-				
 		ReturnData data = new ReturnData();
 		FeedBack feedBack = new FeedBack();
 		feedBack.set("user_id", dto.getUserId());
@@ -2396,7 +2397,11 @@ public class LoginService {
 			vo.setBankIcon(codeMst.getStr("data2"));
 			vo.setBankName(codeMst.getStr("name"));
 		}
-		vo.setBankNo(bankcard.getStr("card_no"));
+		String bankNo = bankcard.getStr("card_no");
+		if(StringUtil.isNoneBlank(bankNo)){
+			int size = bankNo.length();
+			vo.setBankNo("尾号"+bankNo.substring(size-4, size));
+		}
 		Member member = Member.dao.queryById(dto.getUserId());
 		Map<String, Object> map = new HashMap<>();
 		map.put("bankCard", vo);
@@ -2404,6 +2409,159 @@ public class LoginService {
 		data.setData(map);
 		data.setMessage("查询成功");
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		return data;
+	}
+	
+	//获取忘记支付密码验证码
+	public ReturnData getForgetPayCode(LoginDTO dto){
+		Member member = Member.dao.queryMember(dto.getMobile());
+		String code = VertifyUtil.getVertifyCode();
+		ReturnData data = new ReturnData();
+		VertifyCode vc = VertifyCode.dao.queryVertifyCode(dto.getMobile(),Constants.SHORT_MESSAGE_TYPE.FORGET_PAY_PWD);
+		if((member != null)&&(StringUtil.isBlank(member.getStr("paypwd")))){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，您还没有支付密码，请先设置");
+			return data;
+		}
+		if(vc != null){
+			Timestamp expireTime = vc.getTimestamp("expire_time");
+			Timestamp nowTime = DateUtil.getNowTimestamp();
+			if(expireTime.after(nowTime)){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("验证码已发送，10分钟内有效，请稍等接收");
+				return data;
+			}
+		}
+		if(member == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，您的手机号码还未注册");
+			return data;
+		}else{
+			//获取VertifyCode
+			VertifyCode vCode = VertifyCode.dao.queryVertifyCode(dto.getMobile(),Constants.SHORT_MESSAGE_TYPE.FORGET_PAY_PWD);
+			if(vCode == null){
+				boolean isSave = VertifyCode.dao.saveVertifyCode(dto.getMobile(), dto.getUserTypeCd(), code,new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()),Constants.SHORT_MESSAGE_TYPE.FORGET_PAY_PWD);
+				if(isSave){
+					//发送短信
+					String shortMsg = "您的验证码是：" + code + "，10分钟内有效，请不要把验证码泄露给其他人。";
+					//发送短信
+					String ret = null;
+					try {
+						ret = SMSUtil.sendMessage(shortMsg, dto.getMobile());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					if(StringUtil.equals(ret, "1")){
+						data.setCode(Constants.STATUS_CODE.FAIL);
+						data.setMessage("验证码发送失败，请重新获取");
+					}else{
+						data.setCode(Constants.STATUS_CODE.SUCCESS);
+						data.setMessage("获取验证码成功，十分钟内有效");
+					}
+					return data;
+				}else{
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("获取验证码失败");
+					return data;
+				}
+			}else{
+				//更新验证码
+				VertifyCode.dao.updateVertifyCode(dto.getMobile(), code,Constants.SHORT_MESSAGE_TYPE.FORGET_PAY_PWD);
+				//发送短信
+				//发送短信
+				String shortMsg = "您的验证码是：" + code + "，10分钟内有效，请不要把验证码泄露给其他人。";
+				//发送短信
+				String ret = null;
+				try {
+					ret = SMSUtil.sendMessage(shortMsg, dto.getMobile());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if(StringUtil.equals(ret, "1")){
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("验证码发送失败，请重新获取");
+				}else{
+					data.setCode(Constants.STATUS_CODE.SUCCESS);
+					data.setMessage("获取验证码成功，十分钟内有效");
+				}
+				return data;
+			}
+		}
+	}
+	
+	//保存忘记支付密码
+	public ReturnData saveForgetPayPwd(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		String payPwd = dto.getPayPwd();
+		Member member = Member.dao.queryById(dto.getUserId());
+		if(member == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("用户数据出错");
+			return data;
+		}
+		if(StringUtil.isNoneBlank(payPwd)&&StringUtil.equals(payPwd, member.getStr("userpwd"))){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，支付密码和登录密码不能一样");
+			return data;
+		}
+		VertifyCode vCode = VertifyCode.dao.queryVertifyCode(dto.getMobile(),Constants.SHORT_MESSAGE_TYPE.FORGET_PAY_PWD);
+		if(vCode == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("请重新获取验证码");
+			return data;
+		}
+		if(!StringUtil.equals(dto.getCode(), vCode.getStr("code"))){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("请输入正确的验证码");
+			return data;
+		}
+		//判断验证码是不是过期
+		Timestamp expireTime = (Timestamp)vCode.get("expire_time");
+		Timestamp now = DateUtil.getNowTimestamp();
+		if((expireTime != null)&&(now.after(expireTime))){
+			//true，就是过期了
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("验证码过期了，请重新获取");
+			return data;
+		 }else{
+			//把验证码设置为过期
+			VertifyCode.dao.updateVertifyCodeExpire(dto.getMobile(), now,Constants.SHORT_MESSAGE_TYPE.FORGET_PAY_PWD);
+			//保存密码
+			Member.dao.updatePay(dto.getMobile(), dto.getPayPwd());
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("密码修改成功");
+			return data;
+		 }
+	}
+	
+	//查询银行卡
+	public ReturnData queryBankCard(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		MemberBankcard bankcard = MemberBankcard.dao.queryById(dto.getUserId());
+		if(bankcard == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，您还没有绑定银行卡");
+			return data;
+		}
+		
+		BankCardDetailVO vo = new BankCardDetailVO();
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(bankcard.getStr("bank_name_cd"));
+		if(codeMst != null){
+			vo.setBankName(codeMst.getStr("name"));
+			vo.setCardImg(codeMst.getStr("data3"));
+		}
+		CodeMst phone = CodeMst.dao.queryCodestByCode(Constants.PHONE.CUSTOM);
+		String cardNo = bankcard.getStr("card_no");
+		int size = cardNo.length();
+		vo.setCardNo("**** **** **** "+cardNo.substring(size-4, size));
+		Map<String, Object> map = new HashMap<>();
+		map.put("card", vo);
+		if(phone !=null){
+			map.put("phone", phone.getStr("data2"));
+		}
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
 		return data;
 	}
 }

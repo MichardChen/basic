@@ -193,4 +193,22 @@ public class StringUtil extends StringUtils {
 			return Float.parseFloat(str);
 		}
 	}
+	
+	public static String checkCode(String codePara){
+		try{
+			if(codePara!=null || !("").equals(codePara)){
+				if(codePara.equals(new String(codePara.getBytes("iso-8859-1"),"iso-8859-1"))){
+					codePara=new String(codePara.getBytes("iso-8859-1"),"utf-8");
+				}else if(codePara.equals(new String(codePara.getBytes("utf-8"),"utf-8"))){
+					codePara=new String(codePara.getBytes("utf-8"),"utf-8");
+				}else if(codePara.equals(new String(codePara.getBytes("gbk"),"gbk"))){
+					codePara=new String(codePara.getBytes("gbk"),"utf-8");
+				}
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return codePara;
+	}
 }
