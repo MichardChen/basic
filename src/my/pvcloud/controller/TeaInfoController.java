@@ -288,11 +288,11 @@ public class TeaInfoController extends Controller {
         tea.set("product_date", DateUtil.stringToDate(getPara("birthday")));
         tea.set("sale_from_date", DateUtil.stringToDate(getPara("fromtime")));
         tea.set("sale_to_date", DateUtil.stringToDate(getPara("totime")));
-        tea.set("quality", StringUtil.toInteger(getPara("size1")));
+        tea.set("weight", StringUtil.toInteger(getPara("size1")));
         tea.set("size",  StringUtil.toInteger(getPara("size2")));
         tea.set("total_output", StringUtil.toInteger(getPara("amount")));
       //  tea.set("stock", StringUtil.toInteger(getPara("warehouse")));
-     //   tea.set("tea_price",price);
+        tea.set("tea_price",price);
         tea.set("sale_count",0);
         tea.set("certificate_flg", StringUtil.toInteger(getPara("certificate")));
         tea.set("type_cd",typeCd);
@@ -310,7 +310,6 @@ public class TeaInfoController extends Controller {
 			WarehouseTeaMember houseTea = new WarehouseTeaMember();
 		    houseTea.set("warehouse_id", houseId);
 		    houseTea.set("tea_id", tea.getInt("id"));
-		    houseTea.set("price", price);
 		    houseTea.set("stock", StringUtil.toInteger(getPara("warehouse")));
 		    houseTea.set("member_id", (Integer)getSessionAttr("agentId"));
 		    houseTea.set("member_type_cd", Constants.USER_TYPE.PLATFORM_USER);

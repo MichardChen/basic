@@ -975,7 +975,7 @@ public class LoginService {
 		}
 		vo.setProductPlace(tea.getStr("product_place"));
 		vo.setSaleTime(tea.getDate("sale_from_date")+"至"+tea.getDate("sale_to_date"));
-		vo.setSize(tea.getInt("quality")+"克/片、"+tea.getInt("size")+"片/件");
+		vo.setSize(tea.getInt("weight")+"克/片、"+tea.getInt("size")+"片/件");
 		vo.setSize2(tea.getInt("size")+"片/件");
 		CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
 		if(type != null){
@@ -2394,7 +2394,7 @@ public class LoginService {
 		WithDrawInitVO vo = new WithDrawInitVO();
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(bankcard.getStr("bank_name_cd"));
 		if(codeMst != null){
-			vo.setBankIcon(codeMst.getStr("data2"));
+			vo.setCardImg(codeMst.getStr("data2"));
 			vo.setBankName(codeMst.getStr("name"));
 		}
 		String bankNo = bankcard.getStr("card_no");

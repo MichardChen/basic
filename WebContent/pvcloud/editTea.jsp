@@ -95,8 +95,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>规格</td>
-			<td><input type="number" name="size1" maxlength="30" style="width: 50px;" value="${teaInfo.size1}"/>&nbsp;(克/片)&nbsp;&nbsp;
-			<input type="number" name="size2" maxlength="30" style="width: 50px;" value="${teaInfo.size2}"/>&nbsp;(片/件)</td>
+			<td><input type="number" name="size1" maxlength="30" style="width: 50px;" value="${teaInfo.weight}"/>&nbsp;(克/片)&nbsp;&nbsp;
+			<input type="number" name="size2" maxlength="30" style="width: 50px;" value="${teaInfo.size}"/>&nbsp;(片/件)</td>
 		</tr>
 		<tr>
 			<td>出厂总量</td>
