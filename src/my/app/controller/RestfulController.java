@@ -1106,4 +1106,10 @@ public class RestfulController extends Controller{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryBankCard(dto));
 	}
+	
+	//扫码，查询商家详情
+	public void queryStore() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryStore(dto));
+	}
 }

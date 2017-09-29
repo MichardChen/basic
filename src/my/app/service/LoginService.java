@@ -4,6 +4,7 @@ import java.beans.Transient;
 import java.io.IOException;
 import java.lang.invoke.VolatileCallSite;
 import java.math.BigDecimal;
+import java.net.Socket;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,7 +72,6 @@ import my.core.vo.OrderAnalysisVO;
 import my.core.vo.SaleOrderListVO;
 import my.core.vo.SelectSizeTeaListVO;
 import my.core.vo.StoreDetailListVO;
-import my.core.vo.StoreDetailVO;
 import my.core.vo.TeaDetailModelVO;
 import my.core.vo.TeaPropertyListVO;
 import my.core.vo.TeaStoreListVO;
@@ -86,6 +86,7 @@ import my.pvcloud.util.SMSUtil;
 import my.pvcloud.util.StringUtil;
 import my.pvcloud.util.TextUtil;
 import my.pvcloud.util.VertifyUtil;
+import my.pvcloud.vo.StoreDetailVO;
 
 public class LoginService {
 
@@ -2318,24 +2319,23 @@ public class LoginService {
 	//绑定会员
 	public ReturnData bindMember(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		int storeId = dto.getStoreId();
+		int businessId = dto.getBusinessId();
 		String mobile = dto.getMobile();
-		if(storeId == 0){
+		if(businessId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("绑定失败，门店数据有误");
 			return data;
 		}
-		
-		if(StringUtil.isBlank(mobile)){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败，用户数据有误");
-			return data;
-		}
-		
-		Store store = Store.dao.queryById(storeId);
+		Store store = Store.dao.queryMemberStore(businessId);
 		if(store == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("绑定失败，门店数据有误");
+			return data;
+		}
+		int storeId = store.getInt("id");
+		if(StringUtil.isBlank(mobile)){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，用户数据有误");
 			return data;
 		}
 		
@@ -2559,6 +2559,43 @@ public class LoginService {
 		if(phone !=null){
 			map.put("phone", phone.getStr("data2"));
 		}
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		return data;
+	}
+	
+	//查询门店
+	public ReturnData queryStore(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		Store store = Store.dao.queryMemberStore(dto.getUserId());
+		if(store == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，门店不存在");
+			return data;
+		}
+		StoreDetailVO vo = new StoreDetailVO();
+		vo.setStoreId(store.getInt("id"));
+		vo.setName(store.getStr("store_name"));
+		vo.setBusinessTea(store.getStr("business_tea"));
+		vo.setMobile(store.getStr("link_phone"));
+		vo.setTime(store.getStr("business_fromtime")+"-"+store.getStr("business_totime"));
+		Province p = Province.dao.queryProvince(store.getInt("province_id"));
+		City c = City.dao.queryCity(store.getInt("city_id"));
+		District d = District.dao.queryDistrict(store.getInt("district_id"));
+		String address = "";
+		/*if(p != null){
+			address = address + p.getStr("name");
+		}*/
+		if(c != null){
+			address = c.getStr("name")+"市";
+		}
+		if(d != null){
+			address = address + d.getStr("name");
+		}
+		vo.setAddress(address+store.getStr("store_address"));
+		Map<String, Object> map = new HashMap<>();
+		map.put("store", vo);
 		data.setData(map);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
