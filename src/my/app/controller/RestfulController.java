@@ -845,7 +845,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//账单
-	@Before(RequestInterceptor.class)
+	//@Before(RequestInterceptor.class)
 	public void queryRecord(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		String queryType = dto.getType();
@@ -1111,5 +1111,11 @@ public class RestfulController extends Controller{
 	public void queryStore() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryStore(dto));
+	}
+	
+	//下单
+	public void addOrder() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		
 	}
 }

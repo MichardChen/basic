@@ -11,6 +11,13 @@ public class NewsVO implements Serializable{
 	private int hotFlg;
 	private int newsId;
 	private String shareUrl;
+	private String shareLogo;
+	public String getShareLogo() {
+		return shareLogo;
+	}
+	public void setShareLogo(String shareLogo) {
+		this.shareLogo = shareLogo;
+	}
 	public String getImg() {
 		return img;
 	}

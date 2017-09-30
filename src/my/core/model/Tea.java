@@ -69,6 +69,12 @@ public class Tea extends Model<Tea> {
 		return new Tea().setAttrs(tea).save();
 	}
 	
+	public int saveInfos(Tea tea){
+		Tea t = new Tea().setAttrs(tea);
+		t.save();
+		return t.getInt("id");
+	}
+	
 	public boolean del(int id){
 		return Tea.dao.deleteById(id);
 	}

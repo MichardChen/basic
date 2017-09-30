@@ -183,7 +183,7 @@ public class LoginService {
 		}
 		
 		//保存用户
-		int id = Member.dao.saveMember(mobile, MD5Util.string2MD5(userPwd),sex,dto.getUserTypeCd(),Constants.MEMBER_STATUS.NOT_CERTIFICATED);
+		int id = Member.dao.saveMember(mobile, userPwd,sex,dto.getUserTypeCd(),Constants.MEMBER_STATUS.NOT_CERTIFICATED);
 		if(id != 0){
 			Member m = Member.dao.queryMemberById(id);
 			Map<String, Object> map = new HashMap<>();
@@ -391,7 +391,7 @@ public class LoginService {
 			//把验证码设置为过期
 			VertifyCode.dao.updateVertifyCodeExpire(dto.getMobile(), now,Constants.SHORT_MESSAGE_TYPE.FORGET_REGISTER_PWD);
 			//保存密码
-			Member.dao.updatePwd(dto.getMobile(), MD5Util.string2MD5(dto.getUserPwd()));
+			Member.dao.updatePwd(dto.getMobile(), dto.getUserPwd());
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
 			data.setMessage("密码修改成功");
 			return data;
@@ -413,7 +413,7 @@ public class LoginService {
 			return data;
 		}
 		//保存密码
-		Member.dao.updatePwd(dto.getMobile(), MD5Util.string2MD5(dto.getNewPwd()));
+		Member.dao.updatePwd(dto.getMobile(), dto.getNewPwd());
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("密码修改成功");
 		return data;
@@ -479,6 +479,13 @@ public class LoginService {
 			map.put("bindStoreFlg", 0);
 		}
 		
+		CodeMst shareLogo1 = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.APP_LOGO);
+		if(shareLogo1 != null){
+			map.put("appLogo", shareLogo1.getStr("data2"));
+		}else{
+			map.put("appLogo", null);
+		}
+		
 		//获取前四条资讯
 		Page<News> news = News.dao.queryByPage(1, 4);
 		List<NewsVO> newsVOs = new ArrayList<NewsVO>();
@@ -490,6 +497,11 @@ public class LoginService {
 			nv.setHotFlg(n.getInt("hot_flg"));
 			nv.setImg(n.getStr("news_logo"));
 			nv.setShareUrl(n.getStr("content_url"));
+			CodeMst shareLogo = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.APP_LOGO);
+			if(shareLogo != null){
+				nv.setShareLogo(shareLogo.getStr("data2"));
+			}
+			
 			CodeMst type = CodeMst.dao.queryCodestByCode(n.getStr("news_type_cd"));
 			if(type != null){
 				nv.setType(type.getStr("name"));
@@ -530,6 +542,11 @@ public class LoginService {
 			if(type != null){
 				nv.setType(type.getStr("name"));
 			}
+			CodeMst shareLogo = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.APP_LOGO);
+			if(shareLogo != null){
+				nv.setShareLogo(shareLogo.getStr("data2"));
+			}
+			
 			//nv.setContent(n.getStr("content"));
 			nv.setNewsId(n.getInt("id"));
 			nv.setShareUrl(n.getStr("content_url"));
@@ -957,6 +974,7 @@ public class LoginService {
 		vo.setAmount(StringUtil.toString(tea.getInt("total_output")));
 		vo.setBirthday(DateUtil.format(tea.getDate("product_date")));
 		vo.setBrand(tea.getStr("brand"));
+		vo.setPrice(StringUtil.toString(tea.getBigDecimal("tea_price")));
 		vo.setCertificateFlg(tea.getInt("certificate_flg"));
 		Document mst = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.CERTIFICATE_TIP);
 		if(mst != null){
@@ -970,7 +988,6 @@ public class LoginService {
 		
 		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 		if(wtm != null){
-			vo.setPrice(StringUtil.toString(wtm.getBigDecimal("price")));
 			vo.setStock(StringUtil.toString(wtm.getInt("stock")));
 		}
 		vo.setProductPlace(tea.getStr("product_place"));
@@ -993,10 +1010,10 @@ public class LoginService {
 	//新茶购买记录
 	public ReturnData queryBuyNewTeaRecord(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		List<Order> list = Order.dao.queryBuyNewTeaRecord(dto.getPageSize()
-														 ,dto.getPageNum()
-														 ,dto.getUserId()
-														 ,dto.getDate());
+		List<OrderItem> list = OrderItem.dao.queryBuyNewTeaRecord(dto.getPageSize()
+																 ,dto.getPageNum()
+																 ,dto.getUserId()
+																 ,dto.getDate());
 		List<RecordListModel> models = new ArrayList<>();
 		RecordListModel model = null;
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
@@ -1004,16 +1021,42 @@ public class LoginService {
 			return null;
 		}
 		String type = codeMst.getStr("data2");
-		for(Order order : list){
+		for(OrderItem item : list){
 			model = new RecordListModel();
 			model.setType(type);
-			model.setId(order.getInt("id"));
-			model.setDate(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
-			Tea tea = Tea.dao.queryById(order.getInt("tea_id"));
-			if(tea != null){
-				model.setContent(tea.getStr("tea_title")+"x"+order.getInt("quality")+"片");
+			model.setId(item.getInt("id"));
+			model.setDate(DateUtil.formatTimestampForDate(item.getTimestamp("create_time")));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(item.getInt("wtm_item_id"));
+			if(wtmItem != null){
+				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
+				if(wtm != null){
+					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+					if(tea != null){
+						model.setContent(tea.getStr("tea_title")+"x"+item.getInt("quality")+"片");
+						model.setTea(tea.getStr("tea_title"));
+						String imgs = tea.getStr("cover_img");
+						if(StringUtil.isNoneBlank(imgs)){
+							String[] sp = imgs.split(",");
+							model.setImg(sp[0]);
+						}
+						CodeMst teaType = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+						if(teaType != null){
+							model.setTeaType(teaType.getStr("name"));
+						}
+						model.setQuality(item.getInt("quality"));
+						CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
+						if(sizeType != null){
+							model.setUnit(sizeType.getStr("name"));
+						}
+						
+						WareHouse wHouse = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+						if(wHouse != null){
+							model.setWareHouse(wHouse.getStr("warehouse_name"));
+						}
+					}
+				}
 			}
-			model.setMoneys("-"+StringUtil.toString(order.getBigDecimal("pay_amount")));
+			model.setMoneys("-"+StringUtil.toString(item.getBigDecimal("item_amount")));
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -1027,10 +1070,10 @@ public class LoginService {
 	//卖茶记录
 	public ReturnData querySaleTeaRecord(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		List<Order> list = Order.dao.querySaleTeaRecord(dto.getPageSize()
-														 ,dto.getPageNum()
-														 ,dto.getUserId()
-														 ,dto.getDate());
+		List<OrderItem> list = OrderItem.dao.querySaleTeaRecord(dto.getPageSize()
+															   ,dto.getPageNum()
+															   ,dto.getUserId()
+															   ,dto.getDate());
 		List<RecordListModel> models = new ArrayList<>();
 		RecordListModel model = null;
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
@@ -1038,16 +1081,27 @@ public class LoginService {
 			return null;
 		}
 		String type = codeMst.getStr("data2");
-		for(Order order : list){
+		for(OrderItem item : list){
 			model = new RecordListModel();
 			model.setType(type);
-			model.setId(order.getInt("id"));
-			model.setDate(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
-			Tea tea = Tea.dao.queryById(order.getInt("tea_id"));
-			if(tea != null){
-				model.setContent(tea.getStr("tea_title")+"x"+order.getInt("quality")+"片");
+			model.setId(item.getInt("id"));
+			model.setDate(DateUtil.formatTimestampForDate(item.getTimestamp("create_time")));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(item.getInt("wtm_item_id"));
+			if(wtmItem != null){
+				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
+				if(wtm != null){
+					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+					if(tea != null){
+						model.setContent(tea.getStr("tea_title")+"x"+item.getInt("quality")+"片");
+						model.setTea(tea.getStr("tea_title"));
+						WareHouse wHouse = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+						if(wHouse != null){
+							model.setWareHouse(wHouse.getStr("warehouse_name"));
+						}
+					}
+				}
 			}
-			model.setMoneys("+"+StringUtil.toString(order.getBigDecimal("pay_amount")));
+			model.setMoneys("-"+StringUtil.toString(item.getBigDecimal("item_amount")));
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -2599,6 +2653,14 @@ public class LoginService {
 		data.setData(map);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
+		return data;
+	}
+	
+	//下单
+	public ReturnData addOrder(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		int teaId = dto.getTeaId();
+		
 		return data;
 	}
 }

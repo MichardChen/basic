@@ -187,7 +187,7 @@ public class TeaInfoController extends Controller {
 		render("addTea.jsp");
 	}
 	
-	//保存茶叶
+	//后台保存茶叶
 	public void saveTea(){
 		//表单中有提交图片，要先获取图片
 		UploadFile uploadFile1 = getFile("coverImg1");
@@ -197,7 +197,7 @@ public class TeaInfoController extends Controller {
 		String title = getPara("title");
 		BigDecimal price = StringUtil.toBigDecimal(getPara("price"));
 		String typeCd = getPara("typeCd");
-		String content = getPara("content");
+		String content = StringUtil.formatHTML(title, getPara("content"));
 		FileService fs=new FileService();
 		
 		String logo = "";
@@ -282,8 +282,6 @@ public class TeaInfoController extends Controller {
         Tea tea = new Tea();
         tea.set("tea_title",title);
         tea.set("brand", getPara("brand"));
-       // tea.set("owner_user_id", (Integer)getSessionAttr("agentId"));
-       // tea.set("owner_user_type_cd", Constants.USER_TYPE.PLATFORM_USER);
         tea.set("product_place", getPara("place"));
         tea.set("product_date", DateUtil.stringToDate(getPara("birthday")));
         tea.set("sale_from_date", DateUtil.stringToDate(getPara("fromtime")));
@@ -291,7 +289,6 @@ public class TeaInfoController extends Controller {
         tea.set("weight", StringUtil.toInteger(getPara("size1")));
         tea.set("size",  StringUtil.toInteger(getPara("size2")));
         tea.set("total_output", StringUtil.toInteger(getPara("amount")));
-      //  tea.set("stock", StringUtil.toInteger(getPara("warehouse")));
         tea.set("tea_price",price);
         tea.set("sale_count",0);
         tea.set("certificate_flg", StringUtil.toInteger(getPara("certificate")));
@@ -302,21 +299,26 @@ public class TeaInfoController extends Controller {
         tea.set("desc_url", contentUrl);
         tea.set("cover_img", logo);
         tea.set("flg", 1);
+        tea.set("status",getPara("status"));
         int houseId = getParaToInt("houses");
        
-		boolean ret = Tea.dao.saveInfo(tea);
-		if(ret){
+		int teaId = Tea.dao.saveInfos(tea);
+		if(teaId != 0){
 			//增加仓库-茶叶-用户
 			WarehouseTeaMember houseTea = new WarehouseTeaMember();
 		    houseTea.set("warehouse_id", houseId);
-		    houseTea.set("tea_id", tea.getInt("id"));
+		    houseTea.set("tea_id", teaId);
 		    houseTea.set("stock", StringUtil.toInteger(getPara("warehouse")));
 		    houseTea.set("member_id", (Integer)getSessionAttr("agentId"));
 		    houseTea.set("member_type_cd", Constants.USER_TYPE.PLATFORM_USER);
 		    houseTea.set("create_time", DateUtil.getNowTimestamp());
 		    houseTea.set("update_time", DateUtil.getNowTimestamp());
-		    WarehouseTeaMember.dao.saveInfo(houseTea);
-			setAttr("message","新增成功");
+		    boolean save = WarehouseTeaMember.dao.saveInfo(houseTea);
+		    if(save){
+		    	setAttr("message","新增成功");
+		    }else{
+		    	setAttr("message","新增失败");
+		    }
 		}else{
 			setAttr("message","新增失败");
 		}
@@ -332,7 +334,7 @@ public class TeaInfoController extends Controller {
 		String title = getPara("title");
 		BigDecimal price = StringUtil.toBigDecimal(getPara("price"));
 		String typeCd = getPara("typeCd");
-		String content = getPara("content");
+		String content = StringUtil.formatHTML(title, getPara("content"));
 		FileService fs=new FileService();
 		
 		String logo = "";

@@ -122,6 +122,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</td>
 		</tr>
 		<tr>
+			<td>茶叶状态</td>
+			<td>
+						<select style="height:30px;width:120px;" name="status" id="status">
+							<%-- 	<option value="090001" <c:if test="${s.status=='090001'}">selected="selected"</c:if>>待售</option>
+								<option value="090002" <c:if test="${s.status=='090002'}">selected="selected"</c:if>>发售中</option>
+								<option value="090003" <c:if test="${s.status=='090003'}">selected="selected"</c:if>>已结束</option> --%>
+								<option value="090001">待售</option>
+								<option value="090002">发售中</option>
+								<option value="090003">已结束</option>
+						</select>
+			</td>
+		</tr>
+		<tr>
 			<td>官方茶叶正品保障</td>
 			<td>
 						<select style="height:30px;width:120px;" name="certificate" id="certificate">

@@ -9,6 +9,8 @@ import com.google.common.collect.Ordering;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 
+import my.pvcloud.util.StringUtil;
+
 @TableBind(table = "t_order_item", pk = "id")
 public class OrderItem extends Model<OrderItem> {
 
@@ -48,5 +50,23 @@ public class OrderItem extends Model<OrderItem> {
 	
 	public List<OrderItemModel> queryPriceAnalysis(int teaId,String time1,String time2){
 		return Db.query("SELECT AVG(item_amount) as amount,DATE_FORMAT(create_time,'%Y-%m-%d') as date from  t_order_item  where create_time>='"+time1+"' and create_time<='"+time2+"' and tea_id="+teaId+" GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d') order by create_time asc");
+	}
+	
+	public List<OrderItem> queryBuyNewTeaRecord(int pageSize,int pageNum,int userId,String date){
+		int fromRow = (pageNum-1)*pageSize;
+		if(StringUtil.isNoneBlank(date)){
+			return OrderItem.dao.find("select * from t_order_item where member_id="+userId+" and create_time like '%"+date+"%' order by update_time desc limit "+fromRow+","+pageSize);
+		}else{
+			return OrderItem.dao.find("select * from t_order_item where member_id="+userId+" order by update_time desc limit "+fromRow+","+pageSize);
+		}
+	}
+	
+	public List<OrderItem> querySaleTeaRecord(int pageSize,int pageNum,int userId,String date){
+		int fromRow = (pageNum-1)*pageSize;
+		if(StringUtil.isNoneBlank(date)){
+			return OrderItem.dao.find("select * from t_order_item where sale_user_id="+userId+" and create_time like '%"+date+"%' order by update_time desc limit "+fromRow+","+pageSize);
+		}else{
+			return OrderItem.dao.find("select * from t_order_item where sale_user_id="+userId+" order by update_time desc limit "+fromRow+","+pageSize);
+		}
 	}
 }

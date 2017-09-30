@@ -211,4 +211,20 @@ public class StringUtil extends StringUtils {
 		}
 		return codePara;
 	}
+	
+	public static String formatHTML(String title,String content){
+		
+		String html = "<!DOCTYPE html>"+
+		"<html>"+
+		"<head>"+
+		"<meta charset=\"GBK\">"+
+		"<title>"+title+"</title>"+
+		"</head>"+
+		"<body>"+
+		content+
+		"</body>"+
+		"</html>";
+		
+		return html;
+	}
 }

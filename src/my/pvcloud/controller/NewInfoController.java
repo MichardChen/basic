@@ -210,7 +210,7 @@ public class NewInfoController extends Controller {
 		int hot = StringUtil.toInteger(getPara("hot"));
 		String newsTitle = getPara("newsTitle");
 		String newsTypeCd = getPara("newsTypeCd");
-		String content = getPara("content");
+		String content = StringUtil.formatHTML(newsTitle, getPara("content"));
 		FileService fs=new FileService();
 		
 		String logo = "";

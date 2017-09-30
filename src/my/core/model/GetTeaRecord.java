@@ -7,6 +7,8 @@ import org.huadalink.plugin.tablebind.TableBind;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.pvcloud.util.StringUtil;
+
 @TableBind(table = "t_gettea_record", pk = "id")
 public class GetTeaRecord extends Model<GetTeaRecord> {
 	
@@ -43,7 +45,11 @@ public class GetTeaRecord extends Model<GetTeaRecord> {
 	
 	public List<GetTeaRecord> queryRecords(int pageSize,int pageNum,int memberId,String date){
 		int fromRow = pageSize*(pageNum-1);
-		return GetTeaRecord.dao.find("select * from t_gettea_record where member_id ="+memberId+" and create_time like '%"+date+"%' order by create_time desc limit "+fromRow+","+pageSize);
+		if(StringUtil.isNoneBlank(date)){
+			return GetTeaRecord.dao.find("select * from t_gettea_record where member_id ="+memberId+" and create_time like '%"+date+"%' order by create_time desc limit "+fromRow+","+pageSize);
+		}else{
+			return GetTeaRecord.dao.find("select * from t_gettea_record where member_id ="+memberId+" order by create_time desc limit "+fromRow+","+pageSize);
+		}
 	}
 	
 	public boolean updateInfo(GetTeaRecord tea){
