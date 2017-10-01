@@ -3,6 +3,7 @@ package my.app.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -912,7 +913,6 @@ public class RestfulController extends Controller{
 	}
 	
 	//购物车列表
-	@Before(RequestInterceptor.class)
 	public void queryBuyCartList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryBuyCartLists(dto));
@@ -1113,9 +1113,15 @@ public class RestfulController extends Controller{
 		renderJson(service.queryStore(dto));
 	}
 	
-	//下单
+	//付款
+	public void pay() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.pay(dto));
+	}
+	
+	//购物车下单
 	public void addOrder() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
-		
+		renderJson(service.addOrder(dto));
 	}
 }

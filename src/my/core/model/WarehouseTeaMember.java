@@ -39,6 +39,10 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		return WarehouseTeaMember.dao.findFirst("select * from t_warehouse_tea_member where id = ?",id);
 	}
 	
+	public WarehouseTeaMember queryByUserInfo(int teaId,int memberId,int houseId,String userTypeCd){
+		return WarehouseTeaMember.dao.findFirst("select * from t_warehouse_tea_member where tea_id = ? and member_id=? and warehouse_id=? and member_type_cd=?",teaId,memberId,houseId,userTypeCd);
+	}
+	
 	
 	public WarehouseTeaMember queryWarehouseTeaMember(int id,String memberTypeCd){
 		return WarehouseTeaMember.dao.findFirst("select * from t_warehouse_tea_member where tea_id = ? and member_type_cd=?",id,memberTypeCd);
@@ -129,5 +133,9 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		}else{
 			return false;
 		}
+	}
+	
+	public int addTeaQuality(int quality,int warehouseId,int teaId,int memberId){
+		return Db.update("update t_warehouse_tea_member set stock=stock+"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_id="+warehouseId+" and tea_id="+teaId+" and member_id="+memberId);
 	}
 }

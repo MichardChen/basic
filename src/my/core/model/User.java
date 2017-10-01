@@ -1,11 +1,13 @@
 package my.core.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -107,5 +109,8 @@ public class User extends Model<User> {
 	}
 	public User queryByUserName(String username){
 		return User.dao.findFirst("select m.user_id,p.role_name from s_user m,s_user_role n,s_role p where m.user_id=n.user_id and n.role_id=p.role_id and username=? and effective_mark=1",username);
+	}
+	public int updateMoneys(int userId,BigDecimal moneys){
+		return Db.update("update s_user set moneys="+moneys+" where user_id="+userId);
 	}
 }

@@ -71,9 +71,11 @@ public class LoginDTO extends BaseDTO{
 		dto.setPayPwd(request.getParameter("payPwd"));
 		dto.setStoreId(StringUtil.toInteger(request.getParameter("storeId")));
 		dto.setBusinessId(StringUtil.toInteger(request.getParameter("businessId")));
+		dto.setTeas(request.getParameter("teas"));
 		return dto;
 	}
 	
+	private String teas;
 	private int businessId;
 	private int storeId;
 	private String payPwd;
@@ -120,7 +122,14 @@ public class LoginDTO extends BaseDTO{
 	private String buyCartIds;
 	private String date;
 	
-	
+	public String getTeas() {
+		return teas;
+	}
+
+	public void setTeas(String teas) {
+		this.teas = teas;
+	}
+
 	public int getBusinessId() {
 		return businessId;
 	}

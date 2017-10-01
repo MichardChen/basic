@@ -9,6 +9,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 
 import my.core.constants.Constants;
+import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
 
 @TableBind(table = "t_warehouse_tea_member_item", pk = "id")
@@ -18,7 +19,7 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 
 	
 	public WarehouseTeaMemberItem queryById(int id){
-		return WarehouseTeaMemberItem.dao.findFirst("select * from t_warehouse_tea_member_item where warehouse_tea_member_id = ?",id);
+		return WarehouseTeaMemberItem.dao.findFirst("select * from t_warehouse_tea_member_item where id = ?",id);
 	}
 	
 	public List<WarehouseTeaMemberItem> queryTeaByIdList(int teaId
@@ -71,5 +72,9 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 	public List<WarehouseTeaMemberItem> queryWantSaleTeaList(String memberTypeCd,int userId,int pageSize,int pageNum){
 		int fromRow = (pageNum-1)*pageSize;
 		return WarehouseTeaMemberItem.dao.find("select b.* from t_warehouse_tea_member a inner join t_warehouse_tea_member_item b on a.id=b.warehouse_tea_member_id where a.member_id = ? and a.member_type_cd=? order by b.create_time desc limit ?,? ",userId,memberTypeCd,fromRow,pageSize);
+	}
+	
+	public int cutTeaQuality(int quality,int id){
+		return Db.update("update t_warehouse_tea_member_item set quality=quality-"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 	}
 }

@@ -33,7 +33,7 @@ public class BuyCart extends Model<BuyCart> {
 	
 	public List<BuyCart> queryBuyCart(int pageSize,int pageNum,int memberId){
 		int fromRow = pageSize*(pageNum-1);
-		return BuyCart.dao.find("select * from t_buycart where member_id="+memberId+" and status != '140005' order by create_time desc limit "+fromRow+","+pageSize);
+		return BuyCart.dao.find("select * from t_buycart where member_id="+memberId+" and status = '140002' order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
 	public Long queryBuycartCount(int memberId){

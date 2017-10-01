@@ -59,6 +59,12 @@ public class Order extends Model<Order> {
 		return new Order().setAttrs(order).save();
 	}
 	
+	public Order addInfo(Order order){
+		Order o = new Order().setAttrs(order);
+		o.save();
+		return o;
+	}
+	
 	public boolean del(int id){
 		return Order.dao.deleteById(id);
 	}
