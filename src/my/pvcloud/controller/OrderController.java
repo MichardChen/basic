@@ -3,10 +3,14 @@ package my.pvcloud.controller;
 import java.util.ArrayList;
 
 import my.core.constants.Constants;
+import my.core.model.CodeMst;
 import my.core.model.Member;
 import my.core.model.Order;
+import my.core.model.OrderItem;
 import my.core.model.Tea;
 import my.core.model.User;
+import my.core.model.WarehouseTeaMember;
+import my.core.model.WarehouseTeaMemberItem;
 import my.core.vo.OrderListVO;
 import my.pvcloud.service.OrderService;
 import my.pvcloud.util.DateUtil;
@@ -34,41 +38,65 @@ public class OrderController extends Controller {
 			//默认发售说明
 			
 		}
-		Page<Order> list = service.queryByPage(page, size);
+		Page<OrderItem> list = service.queryOrderItemByPage(page, size);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
-		for(Order order : list.getList()){
+		for(OrderItem order : list.getList()){
 			model = new OrderListVO();
-			Tea tea = Tea.dao.queryById(order.getInt("tea_id"));
-			if(tea == null){
-				continue;
-			}
-			model.setName(tea.getStr("tea_title"));
-			model.setId(order.getInt("id"));
-			model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
-			model.setPayTime(DateUtil.formatTimestampForDate(order.getTimestamp("pay_time")));
-			String saleUserType = order.getStr("sale_user_type");
-			if(StringUtil.isBlank(saleUserType)){
-				continue;
-			}
-			int saleId = order.getInt("sale_user_id");
-			if(StringUtil.equals(saleUserType, Constants.USER_TYPE.USER_TYPE_CLIENT)){
-				Member member = Member.dao.queryById(saleId);
-				if(member != null){
-					model.setSaleUser(member.getStr("name"));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(order.getInt("wtm_item_id"));
+			if(wtmItem != null){
+				int wtmId = wtmItem.getInt("warehouse_tea_member_id");
+				model.setPrice(wtmItem.getBigDecimal("price"));
+				String sizeTypeCd = wtmItem.getStr("size_type_cd");
+				CodeMst size = CodeMst.dao.queryCodestByCode(sizeTypeCd);
+				if(size != null){
+					model.setStock(order.getInt("quality")+size.getStr("name"));
+				}else{
+					model.setStock(StringUtil.toString(order.getInt("quality")));
+				}
+				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmId);
+				if(wtm != null){
+					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+					if(tea == null){
+						continue;
+					}
+					model.setName(tea.getStr("tea_title"));
+					model.setId(order.getInt("id"));
+					Order order2 = Order.dao.queryById(order.getInt("order_id"));
+					if(order2 != null){
+						model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
+						model.setPayTime(DateUtil.formatTimestampForDate(order2.getTimestamp("pay_time")));
+						String saleUserType = order.getStr("sale_user_type");
+						if(StringUtil.isBlank(saleUserType)){
+							continue;
+						}
+						int saleId = order.getInt("sale_id");
+						if(StringUtil.equals(saleUserType, Constants.USER_TYPE.USER_TYPE_CLIENT)){
+							Member member = Member.dao.queryById(saleId);
+							if(member != null){
+								model.setSaleUser(member.getStr("name"));
+							}
+						}else{
+							User user = User.dao.queryById(saleId);
+							if(user != null){
+								model.setSaleUser(user.getStr("username"));
+							}
+						}
+						int buyId = order2.getInt("member_id");
+						Member m = Member.dao.queryById(buyId);
+						if(m != null){
+							model.setBuyUser(m.getStr("name"));
+						}
+					}else{
+						continue;
+					}
+					models.add(model);
+				}else{
+					continue;
 				}
 			}else{
-				User user = User.dao.queryById(saleId);
-				if(user != null){
-					model.setSaleUser(user.getStr("username"));
-				}
+				continue;
 			}
-			int buyId = order.getInt("buy_user_id");
-			Member m = Member.dao.queryById(buyId);
-			if(m != null){
-				model.setBuyUser(m.getStr("name"));
-			}
-			models.add(model);
 		}
 		setAttr("list", list);
 		setAttr("sList", models);
@@ -76,7 +104,7 @@ public class OrderController extends Controller {
 	}
 	
 	/**
-	 * 模糊查询(文本框)
+	 * 模糊查询(分页)
 	 */
 	public void queryByPage(){
 		String title=getSessionAttr("title");
@@ -85,102 +113,159 @@ public class OrderController extends Controller {
         if (page==null || page==0) {
             page = 1;
         }
-        Page<Order> list = service.queryByPageParams(page, size,title);
+		String flg = getPara(0);
+		if(StringUtil.equals(flg,"1")){
+			//默认发售说明
+			
+		}
+		Page<OrderItem> list = service.queryOrderItemByParam(page, size,title);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
-		for(Order order : list.getList()){
+		for(OrderItem order : list.getList()){
 			model = new OrderListVO();
-			Tea tea = Tea.dao.queryById(order.getInt("tea_id"));
-			if(tea == null){
-				continue;
-			}
-			model.setName(tea.getStr("tea_title"));
-			model.setId(order.getInt("id"));
-			model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
-			model.setPayTime(DateUtil.formatTimestampForDate(order.getTimestamp("pay_time")));
-			String saleUserType = order.getStr("sale_user_type");
-			if(StringUtil.isBlank(saleUserType)){
-				continue;
-			}
-			int saleId = order.getInt("sale_user_id");
-			if(StringUtil.equals(saleUserType, Constants.USER_TYPE.USER_TYPE_CLIENT)){
-				Member member = Member.dao.queryById(saleId);
-				if(member != null){
-					model.setSaleUser(member.getStr("name"));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(order.getInt("wtm_item_id"));
+			if(wtmItem != null){
+				int wtmId = wtmItem.getInt("warehouse_tea_member_id");
+				String sizeTypeCd = wtmItem.getStr("size_type_cd");
+				CodeMst size = CodeMst.dao.queryCodestByCode(sizeTypeCd);
+				model.setPrice(wtmItem.getBigDecimal("price"));
+				if(size != null){
+					model.setStock(order.getInt("quality")+size.getStr("name"));
+				}else{
+					model.setStock(StringUtil.toString(order.getInt("quality")));
+				}
+				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmId);
+				if(wtm != null){
+					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+					if(tea == null){
+						continue;
+					}
+					model.setName(tea.getStr("tea_title"));
+					model.setId(order.getInt("id"));
+					Order order2 = Order.dao.queryById(order.getInt("order_id"));
+					if(order2 != null){
+						model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
+						model.setPayTime(DateUtil.formatTimestampForDate(order2.getTimestamp("pay_time")));
+						String saleUserType = order.getStr("sale_user_type");
+						if(StringUtil.isBlank(saleUserType)){
+							continue;
+						}
+						int saleId = order.getInt("sale_id");
+						if(StringUtil.equals(saleUserType, Constants.USER_TYPE.USER_TYPE_CLIENT)){
+							Member member = Member.dao.queryById(saleId);
+							if(member != null){
+								model.setSaleUser(member.getStr("name"));
+							}
+						}else{
+							User user = User.dao.queryById(saleId);
+							if(user != null){
+								model.setSaleUser(user.getStr("username"));
+							}
+						}
+						int buyId = order2.getInt("member_id");
+						Member m = Member.dao.queryById(buyId);
+						if(m != null){
+							model.setBuyUser(m.getStr("name"));
+						}
+					}else{
+						continue;
+					}
+					models.add(model);
+				}else{
+					continue;
 				}
 			}else{
-				User user = User.dao.queryById(saleId);
-				if(user != null){
-					model.setSaleUser(user.getStr("username"));
-				}
+				continue;
 			}
-			int buyId = order.getInt("buy_user_id");
-			Member m = Member.dao.queryById(buyId);
-			if(m != null){
-				model.setBuyUser(m.getStr("name"));
-			}
-			models.add(model);
 		}
 		setAttr("list", list);
 		setAttr("sList", models);
-		render("order.jsp"); 
+		render("order.jsp");
+
 	}
 	
 	/**
-	 * 模糊查询分页
+	 * 模糊查询，搜索
 	 */
 	public void queryByConditionByPage(){
 		
-		String title = getSessionAttr("title");
 		String ptitle = getPara("title");
-		title = ptitle;
+		this.setSessionAttr("title",ptitle);
 		
-		this.setSessionAttr("title",title);
-		
-			Integer page = getParaToInt(1);
-	        if (page==null || page==0) {
-	            page = 1;
-	        }
-	        Page<Order> list = service.queryByPageParams(page, size,title);
-			ArrayList<OrderListVO> models = new ArrayList<>();
-			OrderListVO model = null;
-			for(Order order : list.getList()){
-				model = new OrderListVO();
-				Tea tea = Tea.dao.queryById(order.getInt("tea_id"));
-				if(tea == null){
-					continue;
-				}
-				model.setName(tea.getStr("tea_title"));
-				model.setId(order.getInt("id"));
-				model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
-				model.setPayTime(DateUtil.formatTimestampForDate(order.getTimestamp("pay_time")));
-				String saleUserType = order.getStr("sale_user_type");
-				if(StringUtil.isBlank(saleUserType)){
-					continue;
-				}
-				int saleId = order.getInt("sale_user_id");
-				if(StringUtil.equals(saleUserType, Constants.USER_TYPE.USER_TYPE_CLIENT)){
-					Member member = Member.dao.queryById(saleId);
-					if(member != null){
-						model.setSaleUser(member.getStr("name"));
-					}
+		Integer page = getParaToInt(1);
+	    if (page==null || page==0) {
+	    	page = 1;
+	    }
+		String flg = getPara(0);
+		if(StringUtil.equals(flg,"1")){
+			//默认发售说明
+			
+		}
+		Page<OrderItem> list = service.queryOrderItemByParam(page, size,ptitle);
+		ArrayList<OrderListVO> models = new ArrayList<>();
+		OrderListVO model = null;
+		for(OrderItem order : list.getList()){
+			model = new OrderListVO();
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(order.getInt("wtm_item_id"));
+			if(wtmItem != null){
+				int wtmId = wtmItem.getInt("warehouse_tea_member_id");
+				String sizeTypeCd = wtmItem.getStr("size_type_cd");
+				CodeMst size = CodeMst.dao.queryCodestByCode(sizeTypeCd);
+				if(size != null){
+					model.setStock(order.getInt("quality")+size.getStr("name"));
 				}else{
-					User user = User.dao.queryById(saleId);
-					if(user != null){
-						model.setSaleUser(user.getStr("username"));
+					model.setStock(StringUtil.toString(order.getInt("quality")));
+				}
+				model.setPrice(wtmItem.getBigDecimal("price"));
+				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmId);
+				if(wtm != null){
+					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+					if(tea == null){
+						continue;
 					}
+					model.setName(tea.getStr("tea_title"));
+					model.setId(order.getInt("id"));
+					Order order2 = Order.dao.queryById(order.getInt("order_id"));
+					if(order2 != null){
+						model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
+						model.setPayTime(DateUtil.formatTimestampForDate(order2.getTimestamp("pay_time")));
+						String saleUserType = order.getStr("sale_user_type");
+						if(StringUtil.isBlank(saleUserType)){
+							continue;
+						}
+						int saleId = order.getInt("sale_id");
+						if(StringUtil.equals(saleUserType, Constants.USER_TYPE.USER_TYPE_CLIENT)){
+							Member member = Member.dao.queryById(saleId);
+							if(member != null){
+								model.setSaleUser(member.getStr("name"));
+							}
+						}else{
+							User user = User.dao.queryById(saleId);
+							if(user != null){
+								model.setSaleUser(user.getStr("username"));
+							}
+						}
+						int buyId = order2.getInt("member_id");
+						Member m = Member.dao.queryById(buyId);
+						if(m != null){
+							model.setBuyUser(m.getStr("name"));
+						}
+					}else{
+						continue;
+					}
+					models.add(model);
+				}else{
+					continue;
 				}
-				int buyId = order.getInt("buy_user_id");
-				Member m = Member.dao.queryById(buyId);
-				if(m != null){
-					model.setBuyUser(m.getStr("name"));
-				}
-				models.add(model);
+			}else{
+				continue;
 			}
-			setAttr("list", list);
-			setAttr("sList", models);
-			render("order.jsp"); 
-	     
+		}
+		setAttr("list", list);
+		setAttr("sList", models);
+		render("order.jsp");
+
+	        
 	}
 	
 	/**

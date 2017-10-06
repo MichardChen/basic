@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.ReturnData;
 import my.core.model.Store;
+import my.core.model.StoreImage;
 import my.core.model.Tea;
 import my.pvcloud.model.StoreModel;
 import my.pvcloud.model.TeaModel;
@@ -55,6 +57,7 @@ public class StoreInfoController extends Controller {
 	public void index(){
 		
 		removeSessionAttr("title");
+		removeSessionAttr("status");
 		Page<Store> list = service.queryByPage(page, size);
 		ArrayList<StoreModel> models = new ArrayList<>();
 		StoreModel model = null;
@@ -63,12 +66,10 @@ public class StoreInfoController extends Controller {
 			model.setId(store.getInt("id"));
 			model.setTitle(store.getStr("store_name"));
 			model.setFlg(store.getInt("flg"));
-			if(store.getInt("flg")==1){
-				model.setStatus("通过");
-			}else if(store.getInt("flg")==0){
-				model.setStatus("未通过");
-			}else if(store.getInt("flg")==2){
-				model.setStatus("待审核");
+			model.setStatusCd(store.getStr("status"));
+			CodeMst statusCodeMst = CodeMst.dao.queryCodestByCode(model.getStatusCd());
+			if(statusCodeMst != null){
+				model.setStatus(statusCodeMst.getStr("name"));
 			}
 			models.add(model);
 		}
@@ -83,11 +84,13 @@ public class StoreInfoController extends Controller {
 	public void queryByPage(){
 		String title=getSessionAttr("title");
 		this.setSessionAttr("title",title);
+		String s=getSessionAttr("status");
+		this.setSessionAttr("status",s);
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
         }
-        Page<Store> list = service.queryByPageParams(page, size,title);
+        Page<Store> list = service.queryByPageParams(page, size,title,s);
 		ArrayList<StoreModel> models = new ArrayList<>();
 		StoreModel model = null;
 		for(Store store : list.getList()){
@@ -95,12 +98,10 @@ public class StoreInfoController extends Controller {
 			model.setId(store.getInt("id"));
 			model.setTitle(store.getStr("store_name"));
 			model.setFlg(store.getInt("flg"));
-			if(store.getInt("flg")==1){
-				model.setStatus("通过");
-			}else if(store.getInt("flg")==0){
-				model.setStatus("未通过");
-			}else if(store.getInt("flg")==2){
-				model.setStatus("待审核");
+			model.setStatusCd(store.getStr("status"));
+			CodeMst statusCodeMst = CodeMst.dao.queryCodestByCode(model.getStatusCd());
+			if(statusCodeMst != null){
+				model.setStatus(statusCodeMst.getStr("name"));
 			}
 			models.add(model);
 		}
@@ -115,16 +116,18 @@ public class StoreInfoController extends Controller {
 	public void queryByConditionByPage(){
 		String title = getSessionAttr("title");
 		String ptitle = getPara("title");
+		String s = getPara("status");
 		title = ptitle;
 		
 		this.setSessionAttr("title",title);
+		this.setSessionAttr("status",s);
 		
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
 	        
-	        Page<Store> list = service.queryByPageParams(page, size,title);
+	        Page<Store> list = service.queryByPageParams(page, size,title,s);
 			ArrayList<StoreModel> models = new ArrayList<>();
 			StoreModel model = null;
 			for(Store store : list.getList()){
@@ -132,13 +135,12 @@ public class StoreInfoController extends Controller {
 				model.setId(store.getInt("id"));
 				model.setTitle(store.getStr("store_name"));
 				model.setFlg(store.getInt("flg"));
-				if(store.getInt("flg")==1){
-					model.setStatus("通过");
-				}else if(store.getInt("flg")==0){
-					model.setStatus("未通过");
-				}else if(store.getInt("flg")==2){
-					model.setStatus("待审核");
+				model.setStatusCd(store.getStr("status"));
+				CodeMst statusCodeMst = CodeMst.dao.queryCodestByCode(model.getStatusCd());
+				if(statusCodeMst != null){
+					model.setStatus(statusCodeMst.getStr("name"));
 				}
+				
 				models.add(model);
 			}
 			setAttr("list", list);
@@ -150,9 +152,15 @@ public class StoreInfoController extends Controller {
 	 *新增/修改弹窗
 	 */
 	public void alter(){
-		String id = getPara("id");
-		Store store = service.queryById(StringUtil.toInteger(id));
+		int id = StringUtil.toInteger(getPara("id"));
+		Store store = service.queryById(id);
+		List<StoreImage> imgs = StoreImage.dao.queryStoreImages(id);
+		List<String> url = new ArrayList<>();
+		for(StoreImage imgImage : imgs){
+			url.add(imgImage.getStr("img"));
+		}
 		setAttr("model", store);
+		setAttr("imgs", url);
 		render("storeInfoAlter.jsp");
 	}
 	
@@ -162,8 +170,8 @@ public class StoreInfoController extends Controller {
 	public void update(){
 		try{
 			int id = getParaToInt("id");
-			int flg = StringUtil.toInteger(getPara("flg"));
-			int ret = service.updateFlg(id, flg);
+			String status = getPara("status");
+			int ret = service.updateFlg(id, status);
 			if(ret==0){
 				setAttr("message", "操作成功");
 			}else{

@@ -12,6 +12,7 @@ import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
 import my.core.model.Member;
+import my.core.model.MemberBankcard;
 import my.core.vo.MemberVO;
 import my.pvcloud.model.CustInfo;
 import my.pvcloud.service.MemberService;
@@ -123,9 +124,12 @@ public class MemberController extends Controller {
 	 *新增/修改弹窗
 	 */
 	public void alter(){
-		String id = getPara("id");
-		Member model = service.queryById(StringUtil.toInteger(id));
+		int id = StringUtil.toInteger(getPara("id"));
+		Member model = service.queryById(id);
 		setAttr("model", model);
+		//查询银行卡
+		MemberBankcard bankCard = MemberBankcard.dao.queryByMemberId(id);
+		setAttr("bankCard", bankCard);
 		render("memberAlert.jsp");
 	}
 	

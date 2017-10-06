@@ -1,15 +1,18 @@
 package my.core.model;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+
+import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.StringUtil;
 
 import org.huadalink.plugin.tablebind.TableBind;
 
-import com.google.common.collect.Ordering;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
-
-import my.pvcloud.util.StringUtil;
+import com.jfinal.plugin.activerecord.Page;
 
 @TableBind(table = "t_order_item", pk = "id")
 public class OrderItem extends Model<OrderItem> {
@@ -20,6 +23,25 @@ public class OrderItem extends Model<OrderItem> {
 		return OrderItem.dao.findFirst("select * from t_order_item where id = ?",id);
 	}
 	
+	public Page<OrderItem> queryByPage(int page,int size){
+			String sql=" from t_order_item where 1=1 order by create_time desc";
+			String select="select * ";
+			return OrderItem.dao.paginate(page, size, select, sql);
+	}
+	
+	public Page<OrderItem> queryByPageParams(int page,int size,String date){
+		
+		StringBuffer strBuf=new StringBuffer();
+		
+		if(StringUtil.isNoneBlank(date)){
+			strBuf.append(" and create_time like '%"+date+"%'");
+		}
+			
+		String sql=" from t_order_item where 1=1 "+strBuf+" order by create_time desc";
+		String select="select * ";
+		return OrderItem.dao.paginate(page, size, select, sql);
+	}
+		
 	public boolean updateInfo(OrderItem data){
 		return new OrderItem().setAttrs(data).update();
 	}

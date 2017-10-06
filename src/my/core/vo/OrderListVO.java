@@ -1,6 +1,7 @@
 package my.core.vo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class OrderListVO implements Serializable{
 
@@ -10,7 +11,28 @@ public class OrderListVO implements Serializable{
 	private String buyUser;
 	private String saleUser;
 	private int id;
+	private String stock;
+	private String status;
+	private BigDecimal price;
 	
+	public String getStock() {
+		return stock;
+	}
+	public void setStock(String stock) {
+		this.stock = stock;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public BigDecimal getPrice() {
+		return price;
+	}
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
 	public int getId() {
 		return id;
 	}

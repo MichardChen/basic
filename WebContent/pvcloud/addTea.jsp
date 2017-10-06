@@ -95,12 +95,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>规格</td>
-			<td><input type="number" name="size1" maxlength="30" style="width: 50px;"/>&nbsp;(克/片)&nbsp;&nbsp;
-			<input type="number" name="size2" maxlength="30" style="width: 50px;"/>&nbsp;(片/件)</td>
+			<td><input type="number" name="size1" maxlength="30" style="width: 100px;"/>&nbsp;(克/片)&nbsp;&nbsp;
+			<input type="number" name="size2" maxlength="30" style="width: 100px;"/>&nbsp;(片/件)</td>
 		</tr>
 		<tr>
 			<td>出厂总量</td>
-			<td><input type="number" name="amount" maxlength="30" style="width: 50px;"/>&nbsp;(饼)</td>
+			<td><input type="number" name="amount" maxlength="30" style="width: 100px;"/>&nbsp;(饼)</td>
 		</tr>
 		<tr>
 			<td>茶叶类型</td>
@@ -146,7 +146,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<tr>
 			<td>发售单价</td>
 			<td>
-				<input type="number" name="price" maxlength="30" style="width: 50px;"/>&nbsp;(件)
+				<input type="number" name="price" maxlength="30" style="width: 100px;"/>&nbsp;(件)
 			</td>
 		</tr>
 		<tr>
@@ -157,7 +157,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>库存</td>
-			<td><input type="number" name="warehouse" maxlength="30" style="width: 50px;"/></td>
+			<td><input type="number" name="warehouse" maxlength="30" style="width: 100px;"/></td>
 		</tr>
 		<tr>
 			<td>茶叶图片1</td>

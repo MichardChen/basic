@@ -145,7 +145,8 @@ td{
     				<th>销售者</th>
     				<th>下单时间</th>
     				<th>付款时间</th>
-    				<th>操作</th>
+    				<th>购买量</th>
+    				<th>价格</th>
     			</tr>
     		</thead>
     		<tbody>
@@ -162,9 +163,8 @@ td{
 		    					<td>${s.saleUser}</td>
 		    					<td>${s.createTime}</td>
 		    					<td>${s.payTime}</td>
-		    					<td>
-		    					<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="edit(${s.id})"/>
-		  			</td>
+		    					<td>${s.stock}</td>
+		    					<td>${s.price}</td>
 		    				</tr>
 		    			</c:forEach>
 					</c:if>

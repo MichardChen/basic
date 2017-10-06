@@ -32,6 +32,8 @@ public class WithDrawInfoController extends Controller {
 	public void index(){
 		
 		removeSessionAttr("time");
+		removeSessionAttr("status");
+		removeSessionAttr("mobile");
 		Page<BankCardRecord> list = service.queryByPage(page, size);
 		ArrayList<BankRecordModel> models = new ArrayList<>();
 		BankRecordModel model = null;
@@ -61,11 +63,15 @@ public class WithDrawInfoController extends Controller {
 	public void queryByPage(){
 		String time=getSessionAttr("time");
 		this.setSessionAttr("time",time);
+		String s=getSessionAttr("status");
+		this.setSessionAttr("status",s);
+		String mobile=getSessionAttr("mobile");
+		this.setSessionAttr("mobile",mobile);
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
         }
-        Page<BankCardRecord> list = service.queryByPageParams(page, size,time);
+        Page<BankCardRecord> list = service.queryByPageParams(page, size,time,s,mobile);
 		ArrayList<BankRecordModel> models = new ArrayList<>();
 		BankRecordModel model = null;
 		for(BankCardRecord record : list.getList()){
@@ -94,16 +100,23 @@ public class WithDrawInfoController extends Controller {
 	public void queryByConditionByPage(){
 		String title = getSessionAttr("time");
 		String ptitle = getPara("time");
+		String s = getSessionAttr("status");
+		String st = getPara("status");
 		title = ptitle;
 		
+		//String mobile = getSessionAttr("mobile");
+		String mobile = getPara("mobile");
+		
 		this.setSessionAttr("time",title);
+		this.setSessionAttr("status",st);
+		this.setSessionAttr("mobile", mobile);
 		
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
 	        
-	        Page<BankCardRecord> list = service.queryByPageParams(page, size,title);
+	        Page<BankCardRecord> list = service.queryByPageParams(page, size,title,st,mobile);
 			ArrayList<BankRecordModel> models = new ArrayList<>();
 			BankRecordModel model = null;
 			for(BankCardRecord record : list.getList()){

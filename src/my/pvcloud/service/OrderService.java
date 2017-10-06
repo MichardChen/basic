@@ -1,6 +1,7 @@
 package my.pvcloud.service;
 
 import my.core.model.Order;
+import my.core.model.OrderItem;
 
 import com.jfinal.plugin.activerecord.Page;
 
@@ -8,6 +9,14 @@ public class OrderService {
 
 	public Page<Order> queryByPage(int page,int size){
 		return Order.dao.queryByPage(page, size);
+	}
+	
+	public Page<OrderItem> queryOrderItemByPage(int page,int size){
+		return OrderItem.dao.queryByPage(page, size);
+	}
+	
+	public Page<OrderItem> queryOrderItemByParam(int page,int size,String createDate){
+		return OrderItem.dao.queryByPageParams(page, size,createDate);
 	}
 	
 	public Page<Order> queryByPageParams(int page,int size,String title){

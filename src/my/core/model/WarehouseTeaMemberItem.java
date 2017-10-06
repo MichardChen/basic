@@ -7,6 +7,7 @@ import org.huadalink.plugin.tablebind.TableBind;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Page;
 
 import my.core.constants.Constants;
 import my.pvcloud.util.DateUtil;
@@ -76,5 +77,32 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 	
 	public int cutTeaQuality(int quality,int id){
 		return Db.update("update t_warehouse_tea_member_item set quality=quality-"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	}
+	
+	public Page<WarehouseTeaMemberItem> queryByPage(int page,int size){
+		String sql=" from t_warehouse_tea_member_item where 1=1 order by create_time desc";
+		String select="select * ";
+		return WarehouseTeaMemberItem.dao.paginate(page, size, select, sql);
+	}
+	
+	public Page<WarehouseTeaMemberItem> queryByPageParams(int page,int size,String date){
+		
+		StringBuffer strBuf=new StringBuffer();
+		
+		if(StringUtil.isNoneBlank(date)){
+			strBuf.append(" and create_time like '%"+date+"%'");
+		}
+			
+		String sql=" from t_warehouse_tea_member_item where 1=1 "+strBuf+" order by create_time desc";
+		String select="select * ";
+		return WarehouseTeaMemberItem.dao.paginate(page, size, select, sql);
+	}
+		
+	public boolean updateInfo(WarehouseTeaMemberItem data){
+		return new WarehouseTeaMemberItem().setAttrs(data).update();
+	}
+	
+	public boolean saveInfo(WarehouseTeaMemberItem data){
+		return new WarehouseTeaMemberItem().setAttrs(data).save();
 	}
 }

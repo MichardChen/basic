@@ -74,7 +74,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             });
         }
     </script>
-<form action="${CONTEXT_PATH}/teaInfo/saveTea" method="post" enctype="multipart/form-data">
+<form action="${CONTEXT_PATH}/teaInfo/updateTea" method="post" enctype="multipart/form-data">
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
@@ -95,12 +95,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>规格</td>
-			<td><input type="number" name="size1" maxlength="30" style="width: 50px;" value="${teaInfo.weight}"/>&nbsp;(克/片)&nbsp;&nbsp;
-			<input type="number" name="size2" maxlength="30" style="width: 50px;" value="${teaInfo.size}"/>&nbsp;(片/件)</td>
+			<td><input type="number" name="size1" maxlength="30" style="width: 100px;" value="${teaInfo.weight}"/>&nbsp;(克/片)&nbsp;&nbsp;
+			<input type="number" name="size2" maxlength="30" style="width: 100px;" value="${teaInfo.size}"/>&nbsp;(片/件)</td>
 		</tr>
 		<tr>
 			<td>出厂总量</td>
-			<td><input type="number" name="amount" maxlength="30" style="width: 50px;" value="${teaInfo.total_output}"/>&nbsp;(饼)</td>
+			<td><input type="number" name="amount" maxlength="30" style="width: 100px;" value="${teaInfo.total_output}"/>&nbsp;(饼)</td>
 		</tr>
 		<tr>
 			<td>茶叶类型</td>
@@ -110,6 +110,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="050002" <c:if test="${teaInfo.type_cd=='050002'}">selected="selected"</c:if>>铁观音</option>
 						</select>
 			</td>
+		</tr>
+		<tr>
+			<td>仓库</td>
+			<td>${warehouse}</td>
+		</tr>
+		<tr>
+			<td>库存</td>
+			<td><input type="number" name="warehouse" maxlength="30" style="width: 100px;" value="${stock}"/></td>
 		</tr>
 		<tr>
 			<td>官方茶叶正品保障</td>
@@ -123,7 +131,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<tr>
 			<td>发售单价</td>
 			<td>
-				<input type="number" name="price" maxlength="30" style="width: 50px;" value="${teaInfo.tea_price}"/>&nbsp;(件)
+				<input type="number" name="price" maxlength="30" style="width: 100px;" value="${teaInfo.tea_price}"/>&nbsp;(件)
 			</td>
 		</tr>
 		<tr>
@@ -131,10 +139,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>
 				<input type="text" value="${teaInfo.sale_from_date}" name="fromtime" maxlength="30" style="width: 120px;" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>&nbsp;-&nbsp;<input type="text" value="${teaInfo.sale_to_date}" name="totime" maxlength="30" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 120px;"/>
 			</td>
-		</tr>
-		<tr>
-			<td>库存</td>
-			<td><input type="number" name="warehouse" maxlength="30" style="width: 50px;" value="${teaInfo.stock}"/></td>
 		</tr>
 		<tr>
 			<td style="color: red;font-weight: bold;">是否更新图片</td>
@@ -182,7 +186,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</textarea>
     </div>
 </div>
-<div class="modal-footer" style="margin-top:20px;">
+<div class="modal-footer" style="margin-top:20px;text-align: center;">
 					<input type="submit" class="btn btn-success" value="保存"/>
 				</div>
 			</form>

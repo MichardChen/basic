@@ -93,7 +93,11 @@ public class Member extends Model<Member> {
 	}
 	
 	public int updateMoneys(int userId,BigDecimal moneys){
-		return Db.update("update t_member set moneys="+moneys+" where id="+userId);
+		return Db.update("update t_member set moneys="+moneys+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
+	}
+	
+	public int updateCharge(int userId,BigDecimal moneys){
+		return Db.update("update t_member set moneys=moneys+"+moneys+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
 	}
 	
 	public int updateMemberData(int userId,String userName,int sex,String icon){

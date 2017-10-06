@@ -18,14 +18,14 @@ public class Carousel extends Model<Carousel> {
 	
 	public Page<Carousel> queryByPage(int page,int size){
 			
-		String sql=" from t_carousel where 1=1 order by create_time desc";
+		String sql=" from t_carousel where 1=1 order by flg desc,create_time desc";
 		String select="select * ";
 		return Carousel.dao.paginate(page, size, select, sql);
 	}
 	
 	public List<Carousel> queryCarouselList(int pageSize,int pageNum){
 		int fromRow = pageSize*(pageNum-1);
-		return Carousel.dao.find("select * from t_carousel order by update_time desc limit "+fromRow+","+pageSize);
+		return Carousel.dao.find("select * from t_carousel where flg=1 order by update_time desc limit "+fromRow+","+pageSize);
 	}
 	
 	public Carousel queryById(int id){

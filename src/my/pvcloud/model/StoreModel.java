@@ -9,6 +9,14 @@ public class StoreModel implements Serializable{
 	private String address;
 	private int flg;
 	private String status;
+	private String statusCd;
+	
+	public String getStatusCd() {
+		return statusCd;
+	}
+	public void setStatusCd(String statusCd) {
+		this.statusCd = statusCd;
+	}
 	public int getId() {
 		return id;
 	}

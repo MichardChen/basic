@@ -18,6 +18,7 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.upload.UploadFile;
+import com.sun.java.swing.plaf.motif.resources.motif;
 
 import my.app.service.FileService;
 import my.core.constants.Constants;
@@ -27,6 +28,7 @@ import my.core.model.ReturnData;
 import my.core.model.Tea;
 import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
+import my.core.vo.WareHouseVO;
 import my.pvcloud.model.TeaModel;
 import my.pvcloud.service.TeaService;
 import my.pvcloud.service.WareHouseService;
@@ -176,6 +178,18 @@ public class TeaInfoController extends Controller {
 		}
 		Tea teaInfo = service.queryById(teaId);
 		setAttr("teaInfo", teaInfo);
+		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryPlatTeaInfo(teaId, (Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER);
+		if(wtm != null){
+			int houseId = wtm.getInt("warehouse_id");
+			WareHouse house = WareHouse.dao.queryById(houseId);
+			if(house != null){
+				setAttr("warehouse", house.getStr("warehouse_name"));
+			}else{
+				setAttr("warehouse", null);
+			}
+		}else{
+			setAttr("warehouse", null);
+		}
 		render("custInfoAlter.jsp");
 	}
 	
@@ -421,14 +435,15 @@ public class TeaInfoController extends Controller {
         String contentUrl = Constants.HOST.FILE+uuid+".html";
 		//保存资讯
         Tea tea = new Tea();
-        tea.set("id", StringUtil.toInteger(getPara("id")));
+        int teaId = StringUtil.toInteger(getPara("id"));
+        tea.set("id", teaId);
         tea.set("tea_title",title);
         tea.set("brand", getPara("brand"));
         tea.set("product_place", getPara("place"));
         tea.set("product_date", DateUtil.stringToDate(getPara("birthday")));
         tea.set("sale_from_date", DateUtil.stringToDate(getPara("fromtime")));
         tea.set("sale_to_date", DateUtil.stringToDate(getPara("totime")));
-        tea.set("quality", StringUtil.toInteger(getPara("size1")));
+        tea.set("weight", StringUtil.toInteger(getPara("size1")));
         tea.set("size",  StringUtil.toInteger(getPara("size2")));
         tea.set("total_output", StringUtil.toInteger(getPara("amount")));
        // tea.set("stock", StringUtil.toInteger(getPara("warehouse")));
@@ -448,7 +463,21 @@ public class TeaInfoController extends Controller {
         tea.set("flg", 1);
 		boolean ret = Tea.dao.updateInfo(tea);
 		if(ret){
-			setAttr("message","修改成功");
+			//更新库存
+			int stock = StringUtil.toInteger(getPara("warehouse"));
+			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryPlatTeaInfo(teaId
+																			,(Integer)getSessionAttr("agentId")
+																			,Constants.USER_TYPE.PLATFORM_USER);
+			WarehouseTeaMember wtmsMember = new WarehouseTeaMember();
+			wtmsMember.set("id", wtm.getInt("id"));
+			wtmsMember.set("stock", stock);
+			wtmsMember.set("update_time", DateUtil.getNowTimestamp());
+			boolean updateFlg = WarehouseTeaMember.dao.updateInfo(wtmsMember);
+			if(updateFlg){
+				setAttr("message","修改成功");
+			}else{
+				setAttr("message","修改失败");
+			}
 		}else{
 			setAttr("message","修改失败");
 		}
@@ -524,6 +553,20 @@ public class TeaInfoController extends Controller {
 	public void editTea(){
 		Tea teaInfo = service.queryById(StringUtil.toInteger(getPara("id")));
 		setAttr("teaInfo", teaInfo);
+		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryPlatTeaInfo(StringUtil.toInteger(getPara("id")), (Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER);
+		if(wtm != null){
+			setAttr("stock", wtm.getInt("stock"));
+			int houseId = wtm.getInt("warehouse_id");
+			WareHouse house = WareHouse.dao.queryById(houseId);
+			if(house != null){
+				setAttr("warehouse", house.getStr("warehouse_name"));
+			}else{
+				setAttr("warehouse", null);
+			}
+		}else{
+			setAttr("warehouse", null);
+			setAttr("stock", 0);
+		}
 		render("editTea.jsp");
 	}
 }

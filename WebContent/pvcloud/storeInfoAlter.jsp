@@ -35,6 +35,14 @@ if(str!=''){
 			<td>门店详情</td>
 			<td>${model.store_desc }</td>
 		</tr>
+		<tr>
+			<td>门店图片</td>
+			<td>
+				<c:forEach var="s" items="${imgs}">	
+					<a href="${s}" target="blank">查看图片</a>&nbsp;
+				</c:forEach>
+			</td>
+		</tr>
 	</table>
 </div>
 						

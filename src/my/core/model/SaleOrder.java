@@ -2,9 +2,12 @@ package my.core.model;
 
 import java.util.List;
 
+import my.pvcloud.util.StringUtil;
+
 import org.huadalink.plugin.tablebind.TableBind;
 
 import com.jfinal.plugin.activerecord.Model;
+import com.jfinal.plugin.activerecord.Page;
 
 @TableBind(table = "t_sale_order", pk = "id")
 public class SaleOrder extends Model<SaleOrder> {
@@ -35,4 +38,24 @@ public class SaleOrder extends Model<SaleOrder> {
 	public boolean del(int id){
 		return SaleOrder.dao.deleteById(id);
 	}
+	
+	public Page<SaleOrder> queryByPageParams(int page,int size,String date){
+		
+		StringBuffer strBuf=new StringBuffer();
+		
+		if(StringUtil.isNoneBlank(date)){
+			strBuf.append(" and create_time like '%"+date+"%'");
+		}
+			
+		String sql=" from t_sale_order where 1=1 "+strBuf+" order by create_time desc";
+		String select="select * ";
+		return SaleOrder.dao.paginate(page, size, select, sql);
+	}
+	
+	public Page<SaleOrder> queryByPage(int page,int size){
+		String sql=" from t_sale_order where 1=1 order by create_time desc";
+		String select="select * ";
+		return SaleOrder.dao.paginate(page, size, select, sql);
+	}
+
 }

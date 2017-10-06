@@ -28,13 +28,17 @@ public class Store extends Model<Store> {
 		return Store.dao.paginate(page, size, select, sql);
 	}
 	
-	public Page<Store> queryByPageParams(int page,int size,String title){
+	public Page<Store> queryByPageParams(int page,int size,String title,String status){
 		
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
 		if(StringUtil.isNoneBlank(title)){
 			strBuf.append(" and store_name=?");
 			param.add(title);
+		}
+		if(StringUtil.isNoneBlank(status)){
+			strBuf.append(" and status=?");
+			param.add(status);
 		}
 			
 			String sql=" from t_store where 1=1 "+strBuf+" order by create_time desc";
@@ -69,8 +73,8 @@ public class Store extends Model<Store> {
 		return Store.dao.deleteById(id);
 	}
 	
-	public int updateStoreStatus(int id,int flg){
-		Db.update("update t_store set flg="+flg+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	public int updateStoreStatus(int id,String status){
+		Db.update("update t_store set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 		Store tea = Store.dao.findFirst("select * from t_store where id = ?",id);
 		if(tea != null){
 			return tea.getInt("flg");

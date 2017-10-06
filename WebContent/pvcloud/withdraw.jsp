@@ -117,6 +117,19 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="time" value="${time}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机号</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
+    				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">
+	    				<select name="status" style="height: 30px;">
+	    					<option></option>
+	    					<option value="190001" <c:if test="${status=='190001'}">selected="selected"</c:if>>审核中</option>
+	    					<option value="190002" <c:if test="${status=='190002'}">selected="selected"</c:if>>审核通过并转账</option>
+	    					<option value="190003" <c:if test="${status=='190003'}">selected="selected"</c:if>>审核失败</option>
+	    				</select>	
+    				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
 			   </div>
     		</form>
@@ -152,8 +165,8 @@ td{
 		    					<td>${s.status}</td>
 		    					<td>
 		    							<c:if test="${s.statusCd=='190001'}">
-		    									<input type="button" value="审核未通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190003&id=${s.id}';}"/>
-		    									<input type="button" value="审核通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190002&id=${s.id}';}"/>
+		    									<input type="button" value="审核成功" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190003&id=${s.id}';}"/>
+		    									<input type="button" value="审核失败" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190002&id=${s.id}';}"/>
 		    							</c:if>
 		    					</td>
 		    				</tr>

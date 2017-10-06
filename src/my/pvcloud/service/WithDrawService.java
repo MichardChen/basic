@@ -10,8 +10,8 @@ public class WithDrawService {
 		return BankCardRecord.dao.queryByPage(page, size);
 	}
 	
-	public Page<BankCardRecord> queryByPageParams(int page,int size,String time){
-		return BankCardRecord.dao.queryByPageParams(page, size,time);
+	public Page<BankCardRecord> queryByPageParams(int page,int size,String time,String status,String mobile){
+		return BankCardRecord.dao.queryByPageParams(page, size,time,status,mobile);
 	}
 	
 	public BankCardRecord queryById(int teaId){

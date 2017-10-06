@@ -1,5 +1,7 @@
 package my.app.test;
 
+import my.pvcloud.util.PropertiesUtil;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,5 +28,7 @@ public class Test {
 	}*/
 	
 		String string = "[1,23,45]";
+		PropertiesUtil pUtil = PropertiesUtil.getInstance();
+		System.out.print(pUtil.getProperties("wx_secret"));
 	}
 }

@@ -28,18 +28,26 @@ public class BankCardRecord extends Model<BankCardRecord> {
 		return BankCardRecord.dao.paginate(page, size, select, sql);
 	}
 	
-	public Page<BankCardRecord> queryByPageParams(int page,int size,String time){
+	public Page<BankCardRecord> queryByPageParams(int page,int size,String time,String status,String mobile){
 		
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
 		if(StringUtil.isNoneBlank(time)){
-			strBuf.append(" and create_time >=? and create_time <=?");
+			strBuf.append(" and a.create_time >=? and a.create_time <=?");
 			param.add(DateUtil.formatStringForTimestamp(time+" 00:00:00"));
 			param.add(DateUtil.formatStringForTimestamp(time+" 23:59:59"));
 		}
+		if(StringUtil.isNoneBlank(status)){
+			strBuf.append(" and a.status =?");
+			param.add(status);
+		}
+		if(StringUtil.isNoneBlank(mobile)){
+			strBuf.append(" and b.mobile =?");
+			param.add(mobile);
+		}
 			
-		String sql=" from t_bankcard_record where 1=1 "+strBuf+" order by create_time desc";
-		String select="select * ";
+		String sql=" from t_bankcard_record a inner join t_member b on a.member_id=b.id where 1=1 "+strBuf+" order by a.create_time desc";
+		String select="select a.* ";
 		return BankCardRecord.dao.paginate(page, size, select, sql,param.toArray());
 	}
 	

@@ -235,7 +235,7 @@ public class LoginService {
 			data.setMessage("对不起，您的账号尚未注册");
 			return data;
 		}
-		if(!StringUtil.equals(MD5Util.string2MD5(userPwd), member.getStr("userpwd"))){
+		if(!StringUtil.equals(userPwd, member.getStr("userpwd"))){
 			data.setMessage("对不起吗，密码错误");
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			return data;
@@ -410,7 +410,7 @@ public class LoginService {
 			data.setMessage("对不起，用户不存在");
 			return data;
 		}
-		if(!StringUtil.equals(member.getStr("userPwd"), MD5Util.string2MD5(dto.getOldPwd()))){
+		if(!StringUtil.equals(member.getStr("userPwd"), dto.getOldPwd())){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，旧密码错误");
 			return data;
@@ -431,13 +431,13 @@ public class LoginService {
 			data.setMessage("对不起，用户不存在");
 			return data;
 		}
-		if(!StringUtil.equals(admin.getStr("password"), MD5Util.string2MD5(dto.getOldPwd()))){
+		if(!StringUtil.equals(admin.getStr("password"), dto.getOldPwd())){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，旧密码错误");
 			return data;
 		}
 		//保存密码
-		Admin.dao.updatePwd(dto.getMobile(), MD5Util.string2MD5(dto.getNewPwd()));
+		Admin.dao.updatePwd(dto.getMobile(), dto.getNewPwd());
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("密码修改成功");
 		return data;

@@ -141,7 +141,7 @@ td{
 		    			<c:forEach var="s" items="${sList}">	
 		    				<tr class="bOrder">
 		    					<td>
-		    						 <a href="${s.imgUrl }" target="_blank"><img alt="" src="${s.imgUrl }" width="100px" height="70px"></a>
+		    						 <a href="${s.imgUrl }" target="_blank">点击查看图片</a>
 		    					</td>
 		    					<td> <a href="${s.realUrl }" target="_blank" style="color: black;">${s.realUrl}</a></td>
 		    					<td>

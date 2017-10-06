@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.Map;
 
 import my.core.constants.Constants;
+import my.pvcloud.util.PropertiesUtil;
 
 /* *
  *类名：AlipayNotify
@@ -65,14 +66,16 @@ public class AlipayNotify {
      * @return 生成的签名结果
      */
 	private static boolean getSignVeryfy(Map<String, String> Params, String sign) {
+		
+		PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
     	//过滤空值、sign与sign_type参数
     	Map<String, String> sParaNew = AlipayCore.paraFilter(Params);
         //获取待签名字符串
         String preSignStr = AlipayCore.createLinkString(sParaNew);
         //获得签名验证结果
         boolean isSign = false;
-        if(Constants.ALIPAY_CONFIG.sign_type.equals("RSA")){
-        	isSign = RSA.verify(preSignStr, sign, Constants.ALIPAY_CONFIG.ali_public_key, Constants.ALIPAY_CONFIG.input_charset);
+        if(propertiesUtil.getProperties("ali_sign_type").equals("RSA")){
+        	isSign = RSA.verify(preSignStr, sign, propertiesUtil.getProperties("ali_public_secret_key"), propertiesUtil.getProperties("ali_input_charset"));
         }
         return isSign;
     }
@@ -88,8 +91,8 @@ public class AlipayNotify {
     */
     private static String verifyResponse(String notify_id) {
         //获取远程服务器ATN结果，验证是否是支付宝服务器发来的请求
-
-        String partner = Constants.ALIPAY_CONFIG.partner;
+    	PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
+        String partner = propertiesUtil.getProperties("ali_seller_id");
         String veryfy_url = HTTPS_VERIFY_URL + "partner=" + partner + "&notify_id=" + notify_id;
 
         return checkUrl(veryfy_url);

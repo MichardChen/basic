@@ -107,7 +107,7 @@ public interface Constants {
 	
 	
 	/**
-	 * 本地
+	 * 本地*/
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
 		public static final String TEA = "http://192.168.1.131:82/tea/";
@@ -126,10 +126,10 @@ public interface Constants {
 		public static final String ICON = "F:\\upload\\icon\\";
 		public static final String IMG = "F:\\upload\\img\\";
 		public static final String STORE = "F:\\upload\\store\\";
-	}*/
+	}
 
 	
-	/**服务器*/
+	/**服务器
 	public static interface HOST{
 		public static final String LOCALHOST = "http://139.196.171.205:88/newsimages/";
 		public static final String TEA = "http://139.196.171.205:88/tea/";
@@ -148,7 +148,7 @@ public interface Constants {
 		public static final String ICON = "D:\\upload\\icon\\";
 		public static final String IMG = "D:\\upload\\img\\";
 		public static final String STORE = "D:\\upload\\store\\";
-	}
+	}*/
 	
 	public static interface MEMBER_STATUS{
 		public static final String CERTIFICATED = "040001";
@@ -265,5 +265,17 @@ public interface Constants {
 	
 	public static interface COMMON_SETTING{
 		public static final String APP_LOGO = "210001";
+	}
+	
+	public static interface PAY_STATUS{
+		public static final String WAIT_BUYER_PAY = "220001";
+		public static final String TRADE_SUCCESS = "220002";
+		public static final String TRADE_CLOSED	 = "220003";
+		public static final String TRADE_FINISHED = "220004";
+	}
+	
+	public static interface PAY_TYPE_CD{
+		public static final String WX_PAY = "230001";
+		public static final String ALI_PAY = "230002";
 	}
 }

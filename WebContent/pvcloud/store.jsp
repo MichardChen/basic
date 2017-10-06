@@ -116,10 +116,20 @@ td{
    		<div class="" style="margin-top:15px;margin-bottom:15px;">
     		<form method="post" action="${CONTEXT_PATH}/storeInfo/queryByConditionByPage" class="form-horizontal">
     			<div style="" class="form-group">
-    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">文档名称</label>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">门店名称</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="title" value="${title}"/>
     				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">
+	    				<select name="status" style="height: 30px;">
+		    					<option></option>
+		    					<option value="110001" <c:if test="${status=='110001'}">selected="selected"</c:if>>未认证</option>
+		    					<option value="110002" <c:if test="${status=='110002'}">selected="selected"</c:if>>待审核</option>
+		    					<option value="110003" <c:if test="${status=='110003'}">selected="selected"</c:if>>认证通过</option>
+		    					<option value="110004" <c:if test="${status=='110004'}">selected="selected"</c:if>>认证失败</option>
+		    			</select>	
+	    			</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
 			   </div>
     		</form>
@@ -152,19 +162,11 @@ td{
 		    					<td>${s.title }</td>
 		    					<td>${s.status}</td>
 		    					<td>
-		    							<c:if test="${s.flg==1}">
-		    									<input type="button" value="审核未通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=0&id=${s.id}';}"/>
-		    							</c:if>
-		    								<c:if test="${s.flg==0}">
-		    									<input type="button" value="审核通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=1&id=${s.id}';}"/>
-		    							</c:if>
-		    							<c:if test="${s.flg==2}">
-		    								<input type="button" value="审核未通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=0&id=${s.id}';}"/>
-		    									<input type="button" value="审核通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=1&id=${s.id}';}"/>
-		    							</c:if>
-		    							<input type="button" value="下载二维码" class="ys3" onclick="downloadImg(${s.id})"/>
-		    							<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
-		    					</td>
+		    							<input type="button" value="审核未通过" class="ys3" style="width: 100px;" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=110004&id=${s.id}';}"/>
+		    							<input type="button" value="审核通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=110003&id=${s.id}';}"/>
+		    							<input type="button" value="下载二维码" class="ys3" style="width: 100px;" onclick="downloadImg(${s.id})"/>
+										<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+								</td>
 		    				</tr>
 		    			</c:forEach>
 					</c:if>
