@@ -110,7 +110,7 @@ public class PayAction extends Controller{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		BigDecimal moneys = dto.getMoney();
 		int userId = dto.getUserId();
-		String orderInfo = WXRequestUtil.createOrderInfo(StringUtil.getOrderNo(), "1",userId);
+		String orderInfo = WXRequestUtil.createOrderInfo(StringUtil.getOrderNo(), moneys,userId);
 		String order = WXRequestUtil.httpOrder(orderInfo);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage(order);
@@ -186,11 +186,12 @@ public class PayAction extends Controller{
 	        json4=json4 + "&sign=" + URLEncoder.encode(rsaSign, "UTF-8");
 	
 	        System.out.println(json4.toString());
-	
+	        Map<String, Object> dataMap = new HashMap<>();
+	        dataMap.put("payInfo", json4.toString());
 	        //AliPayMsg apm = new AliPayMsg();
 	        data.setCode(Constants.STATUS_CODE.SUCCESS);
 	        data.setMessage("充值成功");
-	        data.setData(json4.toString());  
+	        data.setData(dataMap);  
 		}else{
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("充值失败");
@@ -274,13 +275,13 @@ public class PayAction extends Controller{
 				userId = payRecord.getInt("member_id");
 			}
 			if(trade_status.equals("TRADE_FINISHED")){
-				int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
+				/*int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
 				if(updateFlg != 0){
 					PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_FINISHED, trade_no);
 					out.println("success");
 				}else{
 					out.println("fail");
-				}
+				}*/
 			}else if(trade_status.equals("TRADE_SUCCESS")){
 				int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
 				if(updateFlg != 0){

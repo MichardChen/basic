@@ -18,31 +18,11 @@ if(str!=''){
 }
 
 function loadProject(data){
-	if(data==0){
-		$(".modal-title").html("新增");
-	}else{
-		$(".modal-title").html("修改");
-	}
-	$.ajax({
-		url : "${CONTEXT_PATH}/documentInfo/addDocument",
-		data : {},
-		dataType : "html",
-		success : function(result){
-			$('.modal-body').html(result);
-		}
-	});
+	window.open("${CONTEXT_PATH}/documentInfo/addDocument");
 }
 
 function edit(data){
-	$(".modal-title").html("修改");
-	$.ajax({
-		url : "${CONTEXT_PATH}/documentInfo/editDocument",
-		data : {id:data},
-		dataType : "html",
-		success : function(result){
-			$('.modal-body').html(result);
-		}
-	});
+	window.open("${CONTEXT_PATH}/documentInfo/editDocument?id="+data);
 }
 </script>
 <style>
@@ -129,7 +109,7 @@ td{
 	    				<input type="text" class="form-control" name="title" value="${title}"/>
     				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
-    			    			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(0)"/></div>
+    			    			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" onclick="loadProject(0)"/></div>
 			   </div>
     		</form>
    		</div>
@@ -161,7 +141,7 @@ td{
 		    					<td>
 		    							<c:if test="${s.flg==1}">
 		    									<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/documentInfo/del?id=${s.id}';}"/>
-		    									<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="edit(${s.id})"/>
+		    									<input type="button" value="编辑" class="ys3" onclick="edit(${s.id})"/>
 		    							</c:if>
 		    						<a href="${s.url}" target="_blank"><input type="button" value="查看" class="ys3"/></a>
 		    					</td>

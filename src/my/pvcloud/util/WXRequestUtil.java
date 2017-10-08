@@ -3,6 +3,7 @@ package my.pvcloud.util;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
@@ -40,7 +41,7 @@ public class WXRequestUtil {
 	 * @param orderId 
 	 * @return 
 	 */  
-	public static String createOrderInfo(String orderNo,String totalFee,int userId){ 
+	public static String createOrderInfo(String orderNo,BigDecimal totalFee,int userId){ 
 	    //生成订单对象  
 	    UnifiedOrderRequestModel unifiedOrderRequest = new UnifiedOrderRequestModel();
 	    PayRecord pr = new PayRecord();
@@ -57,9 +58,9 @@ public class WXRequestUtil {
 		    unifiedOrderRequest.setAppid(propertiesUtil.getProperties("wx_appid"));//公众账号ID  
 		    unifiedOrderRequest.setMch_id(propertiesUtil.getProperties("wx_mch_id"));//商户号  
 		    unifiedOrderRequest.setNonce_str(StringUtil.remove(UUID.randomUUID().toString(),"-"));//随机字符串       <span style="color:#ff0000;"><strong>说明2(见文末)</strong></span>  
-		    unifiedOrderRequest.setBody("微信充值");//商品描述  
+		    unifiedOrderRequest.setBody("掌上茶宝-账户充值");//商品描述  
 		    unifiedOrderRequest.setOut_trade_no(orderNo);//商户订单号  
-		    unifiedOrderRequest.setTotal_fee(totalFee);  //金额需要扩大100倍:1代表支付时是0.01  
+		    unifiedOrderRequest.setTotal_fee(StringUtil.toString(totalFee.multiply(new BigDecimal(100))));  //金额需要扩大100倍:1代表支付时是0.01  
 		    unifiedOrderRequest.setSpbill_create_ip(GetIp());//终端IP  
 		    unifiedOrderRequest.setNotify_url(propertiesUtil.getProperties("wx_notify_url"));//通知地址  
 		    unifiedOrderRequest.setTrade_type("APP");//JSAPI--公众号支付、NATIVE--原生扫码支付、APP--app支付  
@@ -87,12 +88,12 @@ public class WXRequestUtil {
 	           conn.setDoOutput(true);    
 	               
 	           BufferedOutputStream buffOutStr = new BufferedOutputStream(conn.getOutputStream());    
-	           buffOutStr.write(orderInfo.getBytes());  
+	           buffOutStr.write(orderInfo.getBytes("UTF-8"));  
 	           buffOutStr.flush();    
 	           buffOutStr.close();    
 	               
 	           //获取输入流    
-	           BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));    
+	           BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));    
 	               
 	           String line = null;    
 	           StringBuffer sb = new StringBuffer();    
@@ -109,10 +110,10 @@ public class WXRequestUtil {
 	           //<span style="color:#ff0000;"><strong>说明4(见文末)</strong></span>  
 	           if(null!=unifiedOrderRespose   
 	                && "SUCCESS".equals(unifiedOrderRespose.getReturn_code())   
-	                && "SUCCESS".equals(unifiedOrderRespose.getResult_code())){  
-	            return unifiedOrderRespose.getCode_url();  
+	                && "SUCCESS".equals(unifiedOrderRespose.getResult_code())){ 
+	        	   return unifiedOrderRespose.getCode_url();  
 	           }else{  
-	            return null;  
+	        	   return null;  
 	           }  
 	    } catch (Exception e) {  
 	        e.printStackTrace();  

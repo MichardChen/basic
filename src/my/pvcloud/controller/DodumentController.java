@@ -23,10 +23,13 @@ import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.Document;
 import my.core.model.Member;
+import my.core.model.News;
 import my.core.model.ReturnData;
 import my.core.model.Tea;
+import my.core.model.User;
 import my.core.vo.MemberVO;
 import my.pvcloud.model.DocumentModel;
+import my.pvcloud.model.NewsModel;
 import my.pvcloud.model.TeaModel;
 import my.pvcloud.service.Service;
 import my.pvcloud.util.DateUtil;
@@ -120,7 +123,42 @@ public class DodumentController extends Controller {
 	 */
 	public void queryByConditionByPage(){
 		
-	     
+		String title = getSessionAttr("title");
+		String stitle = getPara("title");
+		title = stitle;
+		
+		this.setSessionAttr("title",title);
+		
+		Integer page = getParaToInt(1);
+	    if (page==null || page==0) {
+	    	page = 1;
+	    }
+	    
+	    Page<Document> list = service.queryByPageParams(page, size,title);
+		ArrayList<DocumentModel> models = new ArrayList<>();
+		DocumentModel model = null;
+		for(Document document : list.getList()){
+			model = new DocumentModel();
+			model.setId(document.getInt("id"));
+			model.setContent(document.getStr("content"));
+			model.setFlg(document.getInt("flg"));
+			model.setTitle(document.getStr("title"));
+			model.setUrl(document.getStr("desc_url"));
+			CodeMst type = CodeMst.dao.queryCodestByCode(document.getStr("type_cd"));
+			if(type != null){
+				model.setType(type.getStr("name"));
+			}
+			model.setFlg(document.getInt("flg"));
+			if(document.getInt("flg")==1){
+				model.setStatus("通过");
+			}else{
+				model.setStatus("未通过");
+			}
+			models.add(model);
+		}
+		setAttr("list", list);
+		setAttr("sList", models);
+		render("document.jsp"); 
 	}
 	
 	/**

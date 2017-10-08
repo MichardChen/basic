@@ -43,6 +43,7 @@ import my.core.model.News;
 import my.core.model.Order;
 import my.core.model.OrderItem;
 import my.core.model.OrderItemModel;
+import my.core.model.PayRecord;
 import my.core.model.Province;
 import my.core.model.ReceiveAddress;
 import my.core.model.RecordListModel;
@@ -1184,24 +1185,30 @@ public class LoginService {
 	//充值记录
 	public ReturnData queryRechargeRecords(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		List<BankCardRecord> list = BankCardRecord.dao.queryRecords(dto.getPageSize()
+		List<PayRecord> list = PayRecord.dao.queryRecords(dto.getPageSize(), dto.getPageNum(), dto.getUserId(), dto.getDate());
+		/*List<BankCardRecord> list = BankCardRecord.dao.queryRecords(dto.getPageSize()
 																   ,dto.getPageNum()
 																   ,dto.getUserId()
 																   ,Constants.BANK_MANU_TYPE_CD.RECHARGE
-																   ,dto.getDate());
+																   ,dto.getDate());*/
 		List<RecordListModel> models = new ArrayList<>();
-		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		/*CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
 		if(codeMst == null){
 			return null;
 		}
-		String type = codeMst.getStr("data2");
+		String type = codeMst.getStr("data2");*/
 		RecordListModel model = null;
-		for(BankCardRecord record : list){
+		for(PayRecord record : list){
 			model = new RecordListModel();
-			model.setType(type);
+			CodeMst type = CodeMst.dao.queryCodestByCode(record.getStr("pay_type_cd"));
+			if(type != null){
+				model.setType(type.getStr("name"));
+			}else{
+				model.setType("");
+			}
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
 			model.setMoneys("+"+StringUtil.toString(record.getBigDecimal("moneys")));
-			model.setContent("银行卡充值："+StringUtil.toString(record.getBigDecimal("moneys")));
+			model.setContent("充值："+StringUtil.toString(record.getBigDecimal("moneys")));
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();

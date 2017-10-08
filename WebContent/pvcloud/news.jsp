@@ -18,19 +18,7 @@ if(str!=''){
 }
 
 function loadProject(data){
-	if(data==0){
-		$(".modal-title").html("新增");
-	}else{
-		$(".modal-title").html("修改");
-	}
-	$.ajax({
-		url : "${CONTEXT_PATH}/newsInfo/addNews",
-		data : {},
-		dataType : "html",
-		success : function(result){
-			$('.modal-body').html(result);
-		}
-	});
+	window.open("${CONTEXT_PATH}/newsInfo/addNews");
 }
 
 </script>
@@ -118,7 +106,7 @@ td{
 	    				<input type="text" class="form-control" name="title" value="${title}"/>
     				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
-   			   <div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(0)"/></div>
+   			   <div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" onclick="loadProject(0)"/></div>
 			   </div>
     		</form>
    		</div>
@@ -148,11 +136,11 @@ td{
 		    				<tr class="bOrder">
 		    					<td>${s.title }</td>
 		    					<td>${s.type }</td>
-		    					<td>${s.createUser }</td>
+		    					<td>${s.createUser}</td>
 		    					<td>${s.status }</td>
 		    					<td>${s.createTime}</td>
 		    					<td>
-		    						<input type="button" value="推送" class="ys3" data-toggle="modal" data-target="#myModal" onclick="if(confirm('确认要发布这条资讯?')){window.location='${CONTEXT_PATH}/newsInfo/push?newsId=${s.id}';}"/>
+		    						<%-- <input type="button" value="推送" class="ys3" data-toggle="modal" data-target="#myModal" onclick="if(confirm('确认要发布这条资讯?')){window.location='${CONTEXT_PATH}/newsInfo/push?newsId=${s.id}';}"/> --%>
 		    						<c:if test="${s.flg ==1}">
 		    							<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/newsInfo/del?newsId=${s.id}';}"/>
 		    						</c:if>
