@@ -2209,11 +2209,17 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		int userId = dto.getUserId();
 		BigDecimal money = dto.getMoney();
+		String payPassword = dto.getPayPwd();
 		Member member = Member.dao.queryById(userId);
 		//判断用户存在？
 		if(member == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("提现失败，用户不存在");
+			return data;
+		}
+		if(!StringUtil.equals(payPassword, member.getStr("paypwd"))){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("提现失败，支付密码错误");
 			return data;
 		}
 		//查看绑定银行卡

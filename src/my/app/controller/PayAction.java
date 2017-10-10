@@ -141,31 +141,43 @@ public class PayAction extends Controller{
 			PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
 			 //公共参数
 	        Map<String, String> map = new HashMap<String, String>();
-	        map.put("app_id", propertiesUtil.getProperties("ali_appid"));
+	        /*map.put("app_id", propertiesUtil.getProperties("ali_appid"));
 	        map.put("method", "alipay.trade.app.pay");
 	        map.put("format", "json");
 	        map.put("charset", "utf-8");
-	        map.put("sign_type", "RSA");
+	        map.put("sign_type", "RSA2");
 	        map.put("timestamp", UtilDate.getDateFormatter());
 	        map.put("version", "1.0");
-	        map.put("notify_url", propertiesUtil.getProperties("ali_notify_url"));
+	        map.put("notify_url", propertiesUtil.getProperties("ali_notify_url"));*/
+	        String appID = propertiesUtil.getProperties("ali_appid");
+	        String method = "alipay.trade.app.pay";
+	        String format = "json";
+	        String charset = "utf-8";
+	        String sign_type = "RSA2";
+	        String timestamp = UtilDate.getDateFormatter();
+	        String version = "1.0";
+	        String notify_url = propertiesUtil.getProperties("ali_notify_url");
 	
 	        Map<String, String> m = new HashMap<String, String>();
 	
-	        
-	        m.put("body", "支付宝充值");
-	        m.put("subject", "支付宝充值"+moneys);
+	        //业务参数
+	        m.put("body", "recharge");
+	        m.put("subject", "rechargesub");
 	        m.put("out_trade_no", orderNo);
 	        m.put("timeout_express", "30m");
 	        m.put("total_amount", StringUtil.toString(moneys));
 	        m.put("seller_id", propertiesUtil.getProperties("ali_seller_id"));
 	        m.put("product_code", "QUICK_MSECURITY_PAY");
-	
+	        //业务参数字符串
 	        JSONObject bizcontentJson= JSONObject.fromObject(m);
 	
 	        map.put("biz_content", bizcontentJson.toString());
+	        
+	        String content = "app_id=" + appID + "&biz_content=" + bizcontentJson + "&charset=" + charset + "&method=" + method  
+	                + "&notify_url=" + notify_url + "&sign_type=" + sign_type + "&timestamp=" + timestamp + "&version="  
+	                + version;
 	        //对未签名原始字符串进行签名       
-	        String rsaSign = AlipaySignature.rsaSign(map, propertiesUtil.getProperties("ali_mch_private_secret_key"), "utf-8");
+	        String rsaSign = AlipaySignature.rsa256Sign(content, propertiesUtil.getProperties("ali_mch_private_secret_key"), "utf-8");
 	
 	        Map<String, String> map4 = new HashMap<String, String>();
 	
@@ -173,7 +185,7 @@ public class PayAction extends Controller{
 	        map4.put("method", "alipay.trade.app.pay");
 	        map4.put("format", "json");
 	        map4.put("charset", "utf-8");
-	        map4.put("sign_type", "RSA");
+	        map4.put("sign_type", "RSA2");
 	        map4.put("timestamp", URLEncoder.encode(UtilDate.getDateFormatter(),"UTF-8"));
 	        map4.put("version", "1.0");
 	        map4.put("notify_url",  URLEncoder.encode(propertiesUtil.getProperties("ali_notify_url"),"UTF-8"));
