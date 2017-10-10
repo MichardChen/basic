@@ -2707,7 +2707,7 @@ public class LoginService {
 		Member buyUserMember = Member.dao.queryById(dto.getUserId());
 		//判断账号金额够不够
 		BigDecimal all = item.getBigDecimal("price").multiply(new BigDecimal(quality));
-		if(all.compareTo(buyUserMember.getBigDecimal("moneys"))==-1){
+		if(all.compareTo(buyUserMember.getBigDecimal("moneys"))==1){
 			//余额不够
 			data.setCode(Constants.STATUS_CODE.ACCOUNT_MONEY_NOT_ENOUGH);
 			data.setMessage("对不起，账户余额不足");
@@ -2905,7 +2905,7 @@ public class LoginService {
 		}
 		
 		Member buyUserMember = Member.dao.queryById(dto.getUserId());
-		if(amount.compareTo(buyUserMember.getBigDecimal("moneys"))==-1){
+		if(amount.compareTo(buyUserMember.getBigDecimal("moneys"))==1){
 			//余额不够
 			data.setCode(Constants.STATUS_CODE.ACCOUNT_MONEY_NOT_ENOUGH);
 			data.setMessage("对不起，账户余额不足");
