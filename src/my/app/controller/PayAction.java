@@ -16,8 +16,16 @@ import net.sf.json.JSONObject;
 
 import org.huadalink.route.ControllerBind;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.domain.Data;
 import com.alipay.api.internal.util.AlipaySignature;
+import com.alipay.api.request.AlipayTradeAppPayRequest;
+import com.alipay.api.request.AlipayTradePayRequest;
+import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.alipay.api.response.AlipayTradePayResponse;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 
@@ -117,7 +125,7 @@ public class PayAction extends Controller{
 		renderJson(data);
 	}
 	
-	public void generateAliPayInfo() throws Exception{
+	public void testAliInfo() throws Exception{
 		
 		ReturnData data = new ReturnData();
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
@@ -161,12 +169,12 @@ public class PayAction extends Controller{
 	        Map<String, String> m = new HashMap<String, String>();
 	
 	        //业务参数
-	        m.put("body", "recharge");
-	        m.put("subject", "rechargesub");
+	        //m.put("body", "掌上茶宝");
+	        m.put("subject", "掌上茶宝充值");
 	        m.put("out_trade_no", orderNo);
 	        m.put("timeout_express", "30m");
 	        m.put("total_amount", StringUtil.toString(moneys));
-	        m.put("seller_id", propertiesUtil.getProperties("ali_seller_id"));
+	        //m.put("seller_id", propertiesUtil.getProperties("ali_seller_id"));
 	        m.put("product_code", "QUICK_MSECURITY_PAY");
 	        //业务参数字符串
 	        JSONObject bizcontentJson= JSONObject.fromObject(m);
@@ -186,6 +194,7 @@ public class PayAction extends Controller{
 	        map4.put("format", "json");
 	        map4.put("charset", "utf-8");
 	        map4.put("sign_type", "RSA2");
+	        map4.put("alipay_sdk", "alipay-sdk-java-dynamicVersionNo");
 	        map4.put("timestamp", URLEncoder.encode(UtilDate.getDateFormatter(),"UTF-8"));
 	        map4.put("version", "1.0");
 	        map4.put("notify_url",  URLEncoder.encode(propertiesUtil.getProperties("ali_notify_url"),"UTF-8"));
@@ -253,9 +262,79 @@ public class PayAction extends Controller{
 	
 	
 	//支付宝回调
-	@Transient
 	public void aliCallBack() throws Exception{
 		
+		PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
+		HttpServletRequest request = getRequest();
+		Map<String,String> params = new HashMap<String,String>();
+		Map requestParams = request.getParameterMap();
+		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+		    String name = (String) iter.next();
+		    String[] values = (String[]) requestParams.get(name);
+		    String valueStr = "";
+		    for (int i = 0; i < values.length; i++) {
+		        valueStr = (i == values.length - 1) ? valueStr + values[i]
+		                    : valueStr + values[i] + ",";
+		  }
+		  //乱码解决，这段代码在出现乱码时使用。
+		  //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
+		  params.put(name, valueStr);
+		 }
+		//切记alipaypublickey是支付宝的公钥，请去open.alipay.com对应应用下查看。
+		//boolean AlipaySignature.rsaCheckV1(Map<String, String> params, String publicKey, String charset, String sign_type)
+		boolean flag = AlipaySignature.rsaCheckV1(params, propertiesUtil.getProperties("ali_public_secret_key"), "UTF-8", "RSA2");
+		if(flag){
+			String orderNo = request.getParameter("out_trade_no");
+			String trade_no=request.getParameter("trade_no");
+			String trade_status=request.getParameter("trade_status");
+			 //交易金额
+			String total_fee = request.getParameter("total_amount");
+			
+			 //if(AlipayNotify.verify(params)){//验证成功
+				
+				PayRecord payRecord = PayRecord.dao.queryByOutTradeNo(orderNo);
+				int userId = 0;
+				if(payRecord != null){
+					userId = payRecord.getInt("member_id");
+				}
+				if(trade_status.equals("TRADE_FINISHED")){
+					int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
+					if(updateFlg != 0){
+						PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_FINISHED, trade_no);
+						renderText("success");
+					}else{
+						renderText("fail");
+					}
+				}else if(trade_status.equals("TRADE_SUCCESS")){
+					int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
+					if(updateFlg != 0){
+						PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_SUCCESS, trade_no);
+						renderText("success");
+					}else{
+						renderText("fail");
+					}
+					System.out.println("支付宝支付成功");
+				}else if(trade_status.equals("WAIT_BUYER_PAY")){
+					int updateFlg = PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.WAIT_BUYER_PAY, trade_no);
+					if(updateFlg != 0){
+						renderText("success");
+					}else{
+						renderText("fail");
+					}
+					System.out.println("交易创建，等待买家付款");
+				}else if(trade_status.equals("TRADE_CLOSED")){
+					int updateFlg = PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_CLOSED, trade_no);
+					if(updateFlg != 0){
+						renderText("success");
+					}else{
+						renderText("fail");
+					}
+					System.out.println("未付款交易超时关闭，或支付完成后全额退款");
+				}
+		}else{
+			renderText("fail"); 
+		}
+		/*		
 		HttpServletRequest request = getRequest();
 		Map<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
@@ -287,13 +366,13 @@ public class PayAction extends Controller{
 				userId = payRecord.getInt("member_id");
 			}
 			if(trade_status.equals("TRADE_FINISHED")){
-				/*int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
+				int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
 				if(updateFlg != 0){
 					PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_FINISHED, trade_no);
 					out.println("success");
 				}else{
 					out.println("fail");
-				}*/
+				}
 			}else if(trade_status.equals("TRADE_SUCCESS")){
 				int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
 				if(updateFlg != 0){
@@ -322,6 +401,67 @@ public class PayAction extends Controller{
 			}
 		}else{//验证失败
 		    out.println("fail"); 	//请不要修改或删除
+		}*/
+	}
+	
+	
+	public void generateAliPayInfo() throws Exception{
+		
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		BigDecimal moneys = dto.getMoney().setScale(2);
+		int userId = dto.getUserId();
+		
+		String orderNo = StringUtil.getOrderNo();
+		
+		PayRecord pr = new PayRecord();
+		pr.set("member_id", userId);
+		pr.set("pay_type_cd", Constants.PAY_TYPE_CD.ALI_PAY);
+		pr.set("out_trade_no", orderNo);
+		pr.set("moneys", moneys);
+		pr.set("status",Constants.PAY_STATUS.WAIT_BUYER_PAY);
+		pr.set("create_time", DateUtil.getNowTimestamp());
+		pr.set("update_time", DateUtil.getNowTimestamp());
+		boolean save = PayRecord.dao.saveInfo(pr);
+		if(save){
+			//实例化客户端
+			PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
+			String ppk = propertiesUtil.getProperties("ali_mch_private_secret_key");
+			String pk = propertiesUtil.getProperties("ali_mch_public_secret_key");
+			String appId = propertiesUtil.getProperties("ali_appid");
+			AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", appId, ppk, "json", "UTF-8", pk, "RSA2");
+			//实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
+			AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
+			//SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
+			AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
+			model.setBody("掌上茶宝");
+			model.setSubject("掌上茶宝充值");
+			model.setOutTradeNo(orderNo);
+			model.setTimeoutExpress("30m");
+			model.setTotalAmount(StringUtil.toString(moneys));
+			model.setProductCode("QUICK_MSECURITY_PAY");
+			request.setBizModel(model);
+			request.setNotifyUrl(propertiesUtil.getProperties("ali_notify_url"));
+			try {
+			        //这里和普通的接口调用不同，使用的是sdkExecute
+			        AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
+			        ReturnData data = new ReturnData();
+			        Map<String, Object> dataMap = new HashMap<>();
+			        dataMap.put("payInfo", response.getBody());
+			        //AliPayMsg apm = new AliPayMsg();
+			        data.setCode(Constants.STATUS_CODE.SUCCESS);
+			        data.setMessage("获取支付信息成功");
+			        data.setData(dataMap); 
+			        System.out.println(response.getBody());//就是orderString 可以直接给客户端请求，无需再做处理。
+			        renderJson(data);
+			    } catch (AlipayApiException e) {
+			        e.printStackTrace();
+			}
+		}else{
+			ReturnData data = new ReturnData();
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("获取支付信息失败");
+			renderJson(data);
 		}
+		
 	}
 }

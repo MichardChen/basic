@@ -60,6 +60,12 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		return new WarehouseTeaMember().setAttrs(data).save();
 	}
 	
+	public int saveWarehouseTeaMember(WarehouseTeaMember data){
+		WarehouseTeaMember wtm = new WarehouseTeaMember().setAttrs(data);
+		wtm.save();
+		return wtm.getInt("id");
+	}
+	
 	public boolean del(int id){
 		return WarehouseTeaMember.dao.deleteById(id);
 	}

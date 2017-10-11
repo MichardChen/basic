@@ -265,6 +265,9 @@ public interface Constants {
 	
 	public static interface COMMON_SETTING{
 		public static final String APP_LOGO = "210001";
+		public static final String GONGZHONGHAO = "210002";
+		public static final String MAIL = "210003";
+		public static final String NET = "210004";
 	}
 	
 	public static interface PAY_STATUS{

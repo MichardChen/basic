@@ -74,7 +74,7 @@ public class AlipayNotify {
         String preSignStr = AlipayCore.createLinkString(sParaNew);
         //获得签名验证结果
         boolean isSign = false;
-        if(propertiesUtil.getProperties("ali_sign_type").equals("RSA")){
+        if(propertiesUtil.getProperties("ali_sign_type").equals("RSA2")){
         	isSign = RSA.verify(preSignStr, sign, propertiesUtil.getProperties("ali_public_secret_key"), propertiesUtil.getProperties("ali_input_charset"));
         }
         return isSign;

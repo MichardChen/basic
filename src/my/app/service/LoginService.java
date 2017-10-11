@@ -483,11 +483,35 @@ public class LoginService {
 			map.put("bindStoreFlg", 0);
 		}
 		
+		//app图标
 		CodeMst shareLogo1 = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.APP_LOGO);
 		if(shareLogo1 != null){
 			map.put("appLogo", shareLogo1.getStr("data2"));
 		}else{
 			map.put("appLogo", null);
+		}
+		//客服电话
+		CodeMst phone = CodeMst.dao.queryCodestByCode(Constants.PHONE.CUSTOM);
+		if(phone != null){
+			map.put("phone", phone.getStr("data2"));
+		}else{
+			map.put("phone", null);
+		}
+		//版本号
+		if(StringUtil.equals(dto.getPlatForm(), Constants.PLATFORM.ANDROID)){
+			SystemVersionControl svc = SystemVersionControl.dao.querySystemVersionControl(Constants.VERSION_TYPE.ANDROID);
+			if(svc != null){
+				map.put("version", phone.getStr("mark"));
+			}else{
+				map.put("version", null);
+			}
+		}else{
+			SystemVersionControl svc = SystemVersionControl.dao.querySystemVersionControl(Constants.VERSION_TYPE.IOS);
+			if(svc != null){
+				map.put("version", phone.getStr("mark"));
+			}else{
+				map.put("version", null);
+			}
 		}
 		
 		//获取前四条资讯
@@ -523,7 +547,7 @@ public class LoginService {
 		}
 		map.put("member", member);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
-		data.setMessage("查询成功");;
+		data.setMessage("查询成功");
 		data.setData(map);
 		return data;
 	}

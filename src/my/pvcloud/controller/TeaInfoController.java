@@ -28,6 +28,7 @@ import my.core.model.ReturnData;
 import my.core.model.Tea;
 import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
+import my.core.model.WarehouseTeaMemberItem;
 import my.core.vo.WareHouseVO;
 import my.pvcloud.model.TeaModel;
 import my.pvcloud.service.TeaService;
@@ -327,9 +328,22 @@ public class TeaInfoController extends Controller {
 		    houseTea.set("member_type_cd", Constants.USER_TYPE.PLATFORM_USER);
 		    houseTea.set("create_time", DateUtil.getNowTimestamp());
 		    houseTea.set("update_time", DateUtil.getNowTimestamp());
-		    boolean save = WarehouseTeaMember.dao.saveInfo(houseTea);
-		    if(save){
-		    	setAttr("message","新增成功");
+		    int retId = WarehouseTeaMember.dao.saveWarehouseTeaMember(houseTea);
+		    if(retId != 0){
+		    	WarehouseTeaMemberItem item = new WarehouseTeaMemberItem();
+		    	item.set("warehouse_tea_member_id", retId);
+		    	item.set("price", price);
+		    	item.set("status", getPara("status"));
+		    	item.set("quality", StringUtil.toInteger(getPara("warehouse")));
+		    	item.set("create_time", DateUtil.getNowTimestamp());
+		    	item.set("update_time", DateUtil.getNowTimestamp());
+		    	item.set("size_type_cd", Constants.TEA_UNIT.PIECE);
+		    	boolean save = WarehouseTeaMemberItem.dao.saveInfo(item);
+		    	if(save){
+		    		setAttr("message","新增成功");
+		    	}else{
+		    		setAttr("message","新增失败");
+		    	}
 		    }else{
 		    	setAttr("message","新增失败");
 		    }
@@ -474,7 +488,12 @@ public class TeaInfoController extends Controller {
 			wtmsMember.set("update_time", DateUtil.getNowTimestamp());
 			boolean updateFlg = WarehouseTeaMember.dao.updateInfo(wtmsMember);
 			if(updateFlg){
-				setAttr("message","修改成功");
+				int rets = WarehouseTeaMemberItem.dao.updateTeaInfo(wtm.getInt("id"), price, getPara("status"), stock);
+		    	if(rets != 0){
+		    		setAttr("message","修改成功");
+		    	}else{
+		    		setAttr("message","修改失败");
+		    	}
 			}else{
 				setAttr("message","修改失败");
 			}

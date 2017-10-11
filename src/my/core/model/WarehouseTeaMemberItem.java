@@ -20,7 +20,7 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 
 	
 	public WarehouseTeaMemberItem queryById(int id){
-		return WarehouseTeaMemberItem.dao.findFirst("select * from t_warehouse_tea_member_item where id = ?",id);
+		return WarehouseTeaMemberItem.dao.findFirst("select * from t_warehouse_tea_member_item where warehouse_tea_member_id = ?",id);
 	}
 	
 	public List<WarehouseTeaMemberItem> queryTeaByIdList(int teaId
@@ -76,7 +76,7 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 	}
 	
 	public int cutTeaQuality(int quality,int id){
-		return Db.update("update t_warehouse_tea_member_item set quality=quality-"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+		return Db.update("update t_warehouse_tea_member_item set quality=quality-"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_tea_member_id="+id);
 	}
 	
 	public Page<WarehouseTeaMemberItem> queryByPage(int page,int size){
@@ -104,5 +104,9 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 	
 	public boolean saveInfo(WarehouseTeaMemberItem data){
 		return new WarehouseTeaMemberItem().setAttrs(data).save();
+	}
+	
+	public int updateTeaInfo(int wtmId,BigDecimal price,String status,int quality){
+		return Db.update("update t_warehouse_tea_member_item set price="+price+",status='"+status+"',quality="+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_tea_member_id="+wtmId);
 	}
 }

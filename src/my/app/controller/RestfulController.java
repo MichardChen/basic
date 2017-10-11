@@ -1113,7 +1113,7 @@ public class RestfulController extends Controller{
 		renderJson(service.queryStore(dto));
 	}
 	
-	//付款
+	//付款(选择规格=下单)
 	public void pay() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.pay(dto));
@@ -1121,6 +1121,12 @@ public class RestfulController extends Controller{
 	
 	//购物车下单
 	public void addOrder() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.addOrder(dto));
+	}
+	
+	//联系我们
+	public void contactUs() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.addOrder(dto));
 	}
