@@ -55,6 +55,10 @@ public class Menu extends Model<Menu> {
 		return Menu.dao.findFirst("select * from s_menu where menu_id = ?",id);
 	}
 	
+	public List<Menu> queryAllMenu(){
+		return Menu.dao.find("select * from s_menu");
+	}
+	
 	public boolean updateInfo(Menu data){
 		return new Menu().setAttrs(data).update();
 	}

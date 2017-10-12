@@ -248,7 +248,6 @@ public class RestfulController extends Controller{
 	}
 	
 	//检查版本更新
-	@Before(RequestInterceptor.class)
 	public void queryAppVersion(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryVersion(dto));
@@ -1129,5 +1128,11 @@ public class RestfulController extends Controller{
 	public void contactUs() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.addOrder(dto));
+	}
+	
+	//查询codemst
+	public void queryCodeMst() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryCodeMst(dto));
 	}
 }

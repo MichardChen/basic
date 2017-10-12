@@ -67,6 +67,7 @@ import my.core.vo.BuyCartListVO;
 import my.core.vo.BuyTeaListVO;
 import my.core.vo.CarouselVO;
 import my.core.vo.ChooseAddressVO;
+import my.core.vo.CodeMstVO;
 import my.core.vo.DataListVO;
 import my.core.vo.DocumentListVO;
 import my.core.vo.MessageListVO;
@@ -473,6 +474,14 @@ public class LoginService {
 			map.put("bindCardFlg", 0);
 		}
 		
+		//是否苹果更新
+		CodeMst iosUpdate = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.IOS_UPDATE_SHOW);
+		if(iosUpdate != null){
+			map.put("updateShowFlg", iosUpdate.getInt("data1"));
+		}else{
+			map.put("updateShowFlg", 0);
+		}
+		
 		//判断是否绑定门店
 		Store store = Store.dao.queryMemberStore(dto.getUserId());
 		if(store != null){
@@ -501,14 +510,14 @@ public class LoginService {
 		if(StringUtil.equals(dto.getPlatForm(), Constants.PLATFORM.ANDROID)){
 			SystemVersionControl svc = SystemVersionControl.dao.querySystemVersionControl(Constants.VERSION_TYPE.ANDROID);
 			if(svc != null){
-				map.put("version", phone.getStr("mark"));
+				map.put("version", phone.getStr("version"));
 			}else{
 				map.put("version", null);
 			}
 		}else{
 			SystemVersionControl svc = SystemVersionControl.dao.querySystemVersionControl(Constants.VERSION_TYPE.IOS);
 			if(svc != null){
-				map.put("version", phone.getStr("mark"));
+				map.put("version", phone.getStr("version"));
 			}else{
 				map.put("version", null);
 			}
@@ -877,10 +886,12 @@ public class LoginService {
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("发现新版本："+svc.getStr("mark"));
 				map.put("url", svc.getStr("data1"));
+				map.put("content", "优化App使用速度，完善部分功能");
 			}else{
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("当前版本已是最新版本");
 				map.put("url", null);
+				map.put("content", "");
 			}
 		}
 		if(StringUtil.equals(vtc, Constants.VERSION_TYPE.IOS)){
@@ -889,10 +900,12 @@ public class LoginService {
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("发现新版本："+svc.getStr("mark"));
 				map.put("url", svc.getStr("data2"));
+				map.put("content", "优化App使用速度，完善部分功能");
 			}else{
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("当前版本已是最新版本");
 				map.put("url", null);
+				map.put("content", "");
 			}
 		}
 		data.setData(map);
@@ -3078,5 +3091,22 @@ public class LoginService {
 			data.setMessage("下单失败");
 			return data;
 		}
+	}
+	
+	public ReturnData queryCodeMst(LoginDTO dto) throws Exception{
+		ReturnData data = new ReturnData();
+		List<CodeMst> list = CodeMst.dao.queryCodestByPcode(dto.getCode());
+		List<CodeMstVO> vList = new ArrayList<>();
+		CodeMstVO vo = null;
+		for(CodeMst mst : list){
+			vo = new CodeMstVO();
+			vo.setCode(mst.getStr("code"));
+			vo.setName(mst.getStr("name"));
+			vList.add(vo);
+		}
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		data.setData(vList);
+		return data;
 	}
 }

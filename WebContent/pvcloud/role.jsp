@@ -20,7 +20,7 @@ if(str!=''){
 
 function loadProject(data){
 	$.ajax({
-		url : "${CONTEXT_PATH}/feedbackInfo/alter",
+		url : "${CONTEXT_PATH}/roleInfo/alter",
 		data : {'id':data},
 		dataType : "html",
 		success : function(result){
@@ -103,19 +103,6 @@ td{
 	   </div>
 	  
     	<hr/>	
-    	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
-   		<div class="" style="margin-top:15px;margin-bottom:15px;">
-    		<form method="post" action="${CONTEXT_PATH}/roleInfo/queryByConditionByPage" class="form-horizontal">
-    			<div style="" class="form-group">
-    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">反馈时间</label>
-	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
-    				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
-			   </div>
-    		</form>
-   		</div>
-	</div>		
     <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:690px;position:relative;color:black;margin-left:0px;">
     	<div class="row">
     		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table-responsive" style="padding-left:0px;padding-right:0px;font-size:14px;height:705px;">
@@ -139,7 +126,7 @@ td{
 		    					<td>${s.name }</td>
 		    					<td>${s.path}</td>
 		    					<td>
-		    							<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+		    							<input type="button" value="查看访问权限" style="width: 100px;" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -167,12 +154,13 @@ td{
 		<div class="modal-content" style="width: 120%;margin-left:-10%;">
 			<div class="modal-header">
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">反馈内容</h4>
+				<h4 class="modal-title">访问权限</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/teaInfo/saveTea" method="post" enctype="multipart/form-data">
+			<form action="${CONTEXT_PATH}/roleInfo/saveRole" method="post">
 				<div class="modal-body">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
+					<input type="submit" class="btn btn-success" value="保存"/>
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 				</div>
 			</form>

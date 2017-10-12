@@ -71,7 +71,7 @@ public class OrderItem extends Model<OrderItem> {
 	}
 	
 	public List<OrderItemModel> queryPriceAnalysis(int teaId,String time1,String time2){
-		return Db.query("SELECT AVG(item_amount) as amount,DATE_FORMAT(create_time,'%Y-%m-%d') as date from  t_order_item  where create_time>='"+time1+"' and create_time<='"+time2+"' and tea_id="+teaId+" GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d') order by create_time asc");
+		return Db.query("SELECT AVG(a.item_amount) as amount,DATE_FORMAT(a.create_time,'%Y-%m-%d') as date from  t_order_item a inner join t_warehouse_tea_member_item b on a.wtm_item_id=b.id  inner join t_warehouse_tea_member c on b.warehouse_tea_member_id=c.tea_id   where a.create_time>='"+time1+"' and a.create_time<='"+time2+"' and c.tea_id="+teaId+" GROUP BY DATE_FORMAT(a.create_time,'%Y-%m-%d') order by a.create_time asc");
 	}
 	
 	public List<OrderItem> queryBuyNewTeaRecord(int pageSize,int pageNum,int userId,String date){
