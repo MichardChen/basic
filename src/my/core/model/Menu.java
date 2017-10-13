@@ -30,14 +30,13 @@ public class Menu extends Model<Menu> {
 		return Menu.dao.find("select m.* from s_menu m  where  m.is_show!=0  order by m.menu_id asc");
 	}
 	
-	public Page<Menu> queryMenuListByPage(int page,int size,String date){
+	public Page<Menu> queryMenuListByPage(int page,int size,String name){
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
 		String sql="";
 		String select="select *";
-		if(StringUtil.isNoneBlank(date)){
-			strBuf.append("and create_time>=?");
-			param.add(DateUtil.formatStringForTimestamp(date+" 00:00:00"));
+		if(StringUtil.isNoneBlank(name)){
+			strBuf.append("and menu_name like '%"+name+"%'");
 		}
 		
 		sql=" from s_menu where 1=1 "+strBuf.toString()+" order by create_time desc";

@@ -13,4 +13,12 @@ public class UserRole extends Model<UserRole> {
 	public boolean saveUserRole(int userId,int roleId){
 		return new UserRole().set("user_id", userId).set("role_id", roleId).save();
 	}
+	
+	public boolean saveInfo(UserRole data){
+		return new UserRole().setAttrs(data).save();
+	}
+	
+	public UserRole queryUserRoleByUserId(int userId){
+		return UserRole.dao.findFirst("select * from s_user_role where user_id=?",userId);
+	}
 }

@@ -283,4 +283,10 @@ public interface Constants {
 		public static final String WX_PAY = "230001";
 		public static final String ALI_PAY = "230002";
 	}
+	
+	public static interface BIND_BANKCARD_STATUS{
+		public static final String APPLING = "240001";
+		public static final String APPLY_SUCCESS = "240002";
+		public static final String APPLY_FAIL = "240003";
+	}
 }

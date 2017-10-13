@@ -11,8 +11,8 @@ public class MenuService {
 		return Menu.dao.queryByPage(page, size);
 	}
 	
-	public Page<Menu> queryByPageParams(int page,int size,String date){
-		return Menu.dao.queryMenuListByPage(page, size,date);
+	public Page<Menu> queryByPageParams(int page,int size,String name){
+		return Menu.dao.queryMenuListByPage(page, size,name);
 	}
 	
 	public Menu queryById(int id){

@@ -468,7 +468,13 @@ public class LoginService {
 		MemberBankcard memberBankcard = MemberBankcard.dao.queryByMemberId(dto.getUserId());
 		if(memberBankcard != null){
 			//已绑定
-			map.put("bindCardFlg", 1);
+			String status = memberBankcard.getStr("status");
+			if(StringUtil.isBlank(status)||StringUtil.equals(status, Constants.BIND_BANKCARD_STATUS.APPLING)
+					||StringUtil.equals(status, Constants.BIND_BANKCARD_STATUS.APPLY_SUCCESS)){
+				map.put("bindCardFlg", 1);
+			}else{
+				map.put("bindCardFlg", 0);
+			}
 		}else{
 			//未绑定
 			map.put("bindCardFlg", 0);
@@ -2218,24 +2224,50 @@ public class LoginService {
 	
 	//绑定银行卡
 	public ReturnData bingBankCard(LoginDTO dto){
+		
 		ReturnData data = new ReturnData();
-		MemberBankcard bankcard = new MemberBankcard();
-		bankcard.set("card_no", dto.getCardNo());
-		bankcard.set("bank_name_cd", dto.getCardTypeCd());
-		bankcard.set("owner_name", dto.getName());
-		bankcard.set("id_card_no", dto.getIdCardNo());
-		bankcard.set("stay_mobile", dto.getMobile());
-		bankcard.set("member_id", dto.getUserId());
-		bankcard.set("create_time", DateUtil.getNowTimestamp());
-		bankcard.set("update_time", DateUtil.getNowTimestamp());
-		bankcard.set("card_img", dto.getIcon());
-		boolean ret = MemberBankcard.dao.saveInfo(bankcard);
-		if(ret){
-			data.setCode(Constants.STATUS_CODE.SUCCESS);
-			data.setMessage("绑定成功");
+		MemberBankcard mbc = MemberBankcard.dao.queryByMemberId(dto.getUserId());
+		if(mbc != null){
+			MemberBankcard bankcard = new MemberBankcard();
+			bankcard.set("id", mbc.getInt("id"));
+			bankcard.set("card_no", dto.getCardNo());
+			bankcard.set("bank_name_cd", dto.getCardTypeCd());
+			bankcard.set("owner_name", dto.getName());
+			bankcard.set("id_card_no", dto.getIdCardNo());
+			bankcard.set("stay_mobile", dto.getMobile());
+			bankcard.set("member_id", dto.getUserId());
+			bankcard.set("create_time", DateUtil.getNowTimestamp());
+			bankcard.set("update_time", DateUtil.getNowTimestamp());
+			bankcard.set("card_img", dto.getIcon());
+			bankcard.set("status",Constants.BIND_BANKCARD_STATUS.APPLING);
+			boolean ret = MemberBankcard.dao.updateInfo(bankcard);
+			if(ret){
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("绑定成功");
+			}else{
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("绑定失败");
+			}
 		}else{
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败");
+			MemberBankcard bankcard = new MemberBankcard();
+			bankcard.set("card_no", dto.getCardNo());
+			bankcard.set("bank_name_cd", dto.getCardTypeCd());
+			bankcard.set("owner_name", dto.getName());
+			bankcard.set("id_card_no", dto.getIdCardNo());
+			bankcard.set("stay_mobile", dto.getMobile());
+			bankcard.set("member_id", dto.getUserId());
+			bankcard.set("create_time", DateUtil.getNowTimestamp());
+			bankcard.set("update_time", DateUtil.getNowTimestamp());
+			bankcard.set("card_img", dto.getIcon());
+			bankcard.set("status",Constants.BIND_BANKCARD_STATUS.APPLING);
+			boolean ret = MemberBankcard.dao.saveInfo(bankcard);
+			if(ret){
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("绑定成功");
+			}else{
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("绑定失败");
+			}
 		}
 		return data;
 	}
@@ -2263,9 +2295,22 @@ public class LoginService {
 		MemberBankcard bankcard = MemberBankcard.dao.queryByMemberId(dto.getUserId());
 		if(bankcard == null || StringUtil.isBlank(bankcard.getStr("card_no"))){
 			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("对不起，你还没有绑定银行卡");
+			data.setMessage("对不起，您还没有绑定银行卡");
 			return data;
 		}
+		
+		if((bankcard != null) && StringUtil.equals(Constants.BIND_BANKCARD_STATUS.APPLING, bankcard.getStr("status"))){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，您绑定的银行卡正在审核中");
+			return data;
+		}
+		
+		if((bankcard != null) && StringUtil.equals(Constants.BIND_BANKCARD_STATUS.APPLY_FAIL, bankcard.getStr("status"))){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，您绑定的银行卡审核失败，请重新提交");
+			return data;
+		}
+		
 		BigDecimal moneys = member.getBigDecimal("moneys");
 		if(moneys == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -2505,7 +2550,7 @@ public class LoginService {
 	public ReturnData withDrawInit(LoginDTO dto){
 		
 		ReturnData data = new ReturnData();
-		MemberBankcard bankcard = MemberBankcard.dao.queryById(dto.getUserId());
+		MemberBankcard bankcard = MemberBankcard.dao.queryByMemberId(dto.getUserId());
 		if(bankcard == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，您还没有绑定银行卡");
@@ -2517,6 +2562,7 @@ public class LoginService {
 			vo.setCardImg(codeMst.getStr("data2"));
 			vo.setBankName(codeMst.getStr("name"));
 		}
+		
 		String bankNo = bankcard.getStr("card_no");
 		if(StringUtil.isNoneBlank(bankNo)){
 			int size = bankNo.length();
@@ -2657,8 +2703,14 @@ public class LoginService {
 	//查询银行卡
 	public ReturnData queryBankCard(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		MemberBankcard bankcard = MemberBankcard.dao.queryById(dto.getUserId());
+		MemberBankcard bankcard = MemberBankcard.dao.queryByMemberId(dto.getUserId());
 		if(bankcard == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，您还没有绑定银行卡");
+			return data;
+		}
+		
+		if(StringUtil.isBlank(bankcard.getStr("card_no"))){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，您还没有绑定银行卡");
 			return data;
@@ -2670,10 +2722,14 @@ public class LoginService {
 			vo.setBankName(codeMst.getStr("name"));
 			vo.setCardImg(codeMst.getStr("data3"));
 		}
+		vo.setStatus(bankcard.getStr("status"));
 		CodeMst phone = CodeMst.dao.queryCodestByCode(Constants.PHONE.CUSTOM);
 		String cardNo = bankcard.getStr("card_no");
-		int size = cardNo.length();
-		vo.setCardNo("**** **** **** "+cardNo.substring(size-4, size));
+		if(StringUtil.isNoneBlank(cardNo)){
+			int size = StringUtil.isBlank(cardNo) ? 0 : cardNo.length();
+			vo.setCardNo("**** **** **** "+cardNo.substring(size-4, size));
+		}
+		
 		Map<String, Object> map = new HashMap<>();
 		map.put("card", vo);
 		if(phone !=null){

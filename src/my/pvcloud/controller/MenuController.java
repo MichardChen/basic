@@ -9,29 +9,20 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
-import my.core.model.CodeMst;
-import my.core.model.Document;
-import my.core.model.FeedBack;
-import my.core.model.Member;
 import my.core.model.Menu;
 import my.core.model.Role;
 import my.core.model.RoleMenu;
-import my.core.model.WareHouse;
 import my.core.vo.EditRoleModel;
 import my.core.vo.MenuListVO;
-import my.core.vo.RoleListVO;
 import my.core.vo.RoleMenuVO;
-import my.pvcloud.model.DocumentModel;
-import my.pvcloud.model.FeedBackModel;
-import my.pvcloud.service.FeedBackService;
 import my.pvcloud.service.MenuService;
-import my.pvcloud.service.RoleService;
+import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
 
-@ControllerBind(key = "/roleInfo", path = "/pvcloud")
-public class RoleController extends Controller {
+@ControllerBind(key = "/menuInfo", path = "/pvcloud")
+public class MenuController extends Controller {
 
-	RoleService service = Enhancer.enhance(RoleService.class);
+	MenuService service = Enhancer.enhance(MenuService.class);
 	
 	int page=1;
 	int size=10;
@@ -42,25 +33,19 @@ public class RoleController extends Controller {
 	public void index(){
 		
 		removeSessionAttr("title");
-		Page<Role> list = service.queryByPage(page, size);
-		ArrayList<RoleListVO> models = new ArrayList<>();
-		RoleListVO model = null;
-		for(Role menu : list.getList()){
-			model = new RoleListVO();
-			model.setId(menu.getInt("role_id"));
-			model.setName(menu.getStr("role_name"));
-			RoleMenu roleMenu = RoleMenu.dao.queryById(menu.getInt("role_id"));
-			if(roleMenu != null){
-				Menu menu2 = Menu.dao.queryById(roleMenu.getInt("role_id"));
-				if(menu2 != null){
-					model.setPath(menu2.getStr("url"));
-				}
-			}
+		Page<Menu> list = service.queryByPage(page, size);
+		ArrayList<MenuListVO> models = new ArrayList<>();
+		MenuListVO model = null;
+		for(Menu menu : list.getList()){
+			model = new MenuListVO();
+			model.setId(menu.getInt("menu_id"));
+			model.setName(menu.getStr("menu_name"));
+			model.setPath(menu.getStr("url"));
 			models.add(model);
 		}
 		setAttr("list", list);
 		setAttr("sList", models);
-		render("role.jsp");
+		render("menu.jsp");
 	}
 	
 	/**
@@ -73,25 +58,19 @@ public class RoleController extends Controller {
         if (page==null || page==0) {
             page = 1;
         }
-        Page<Role> list = service.queryByPage(page, size);
-		ArrayList<RoleListVO> models = new ArrayList<>();
-		RoleListVO model = null;
-		for(Role menu : list.getList()){
-			model = new RoleListVO();
-			model.setId(menu.getInt("role_id"));
-			model.setName(menu.getStr("role_name"));
-			RoleMenu roleMenu = RoleMenu.dao.queryById(menu.getInt("role_id"));
-			if(roleMenu != null){
-				Menu menu2 = Menu.dao.queryById(roleMenu.getInt("role_id"));
-				if(menu2 != null){
-					model.setPath(menu2.getStr("url"));
-				}
-			}
+        Page<Menu> list = service.queryByPageParams(page, size,title);
+		ArrayList<MenuListVO> models = new ArrayList<>();
+		MenuListVO model = null;
+		for(Menu menu : list.getList()){
+			model = new MenuListVO();
+			model.setId(menu.getInt("menu_id"));
+			model.setName(menu.getStr("menu_name"));
+			model.setPath(menu.getStr("url"));
 			models.add(model);
 		}
 		setAttr("list", list);
 		setAttr("sList", models);
-		render("role.jsp");
+		render("menu.jsp");
 	}
 	
 	/**
@@ -109,25 +88,19 @@ public class RoleController extends Controller {
 	            page = 1;
 	        }
 	        
-	        Page<Role> list = service.queryByPage(page, size);
-			ArrayList<RoleListVO> models = new ArrayList<>();
-			RoleListVO model = null;
-			for(Role menu : list.getList()){
-				model = new RoleListVO();
-				model.setId(menu.getInt("role_id"));
-				model.setName(menu.getStr("role_name"));
-				RoleMenu roleMenu = RoleMenu.dao.queryById(menu.getInt("role_id"));
-				if(roleMenu != null){
-					Menu menu2 = Menu.dao.queryById(roleMenu.getInt("role_id"));
-					if(menu2 != null){
-						model.setPath(menu2.getStr("url"));
-					}
-				}
+	        Page<Menu> list = service.queryByPageParams(page, size,title);
+			ArrayList<MenuListVO> models = new ArrayList<>();
+			MenuListVO model = null;
+			for(Menu menu : list.getList()){
+				model = new MenuListVO();
+				model.setId(menu.getInt("menu_id"));
+				model.setName(menu.getStr("menu_name"));
+				model.setPath(menu.getStr("url"));
 				models.add(model);
 			}
 			setAttr("list", list);
 			setAttr("sList", models);
-			render("role.jsp");
+			render("menu.jsp");
 	}
 	
 	/**
@@ -135,7 +108,7 @@ public class RoleController extends Controller {
 	 */
 	public void alter(){
 		String id = getPara("id");
-		Role role = Role.dao.queryById(StringUtil.toInteger(id));
+		Menu role = Menu.dao.queryById(StringUtil.toInteger(id));
 		EditRoleModel model = new EditRoleModel();
 		model.setId(role.getInt("role_id"));
 		model.setRoleName(role.getStr("role_name"));
@@ -211,18 +184,24 @@ public class RoleController extends Controller {
 		index();
 	}
 	
-	public void addAlert(){
-		render("addRole.jsp");
+	public void add(){
+		render("addMenu.jsp");
 	}
 	
 
-	public void addRole(){
+	public void saveMenu(){
 		String name = getPara("name");
-		Role role = new Role();
-		role.set("role_name", name);
-		int max = StringUtil.toInteger(Role.dao.queryMaxCode());
-		role.set("role_code", max+1);
-		boolean save = Role.dao.saveInfo(role);
+		String url = getPara("url");
+		Menu menu = new Menu();
+		menu.set("menu_name", name);
+		menu.set("url", url);
+		menu.set("icon", "fa-dashboard");
+		menu.set("is_show", 1);
+		menu.set("create_user", getSessionAttr("agentId"));
+		menu.set("create_time", DateUtil.getNowTimestamp());
+		menu.set("update_time", DateUtil.getNowTimestamp());
+		
+		boolean save = Menu.dao.saveInfo(menu);
 		if(save){
 			setAttr("message","添加成功");
 		}else{

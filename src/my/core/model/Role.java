@@ -8,6 +8,7 @@ import my.pvcloud.util.StringUtil;
 
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -40,6 +41,11 @@ public class Role extends Model<Role> {
 		return Role.dao.paginate(page, size, select, sql);
 	}
 	
+	public List<Role> queryAll(){
+
+		return Role.dao.find("select * from s_role");
+	}
+	
 	public Role queryById(int id){
 		return Role.dao.findFirst("select * from s_role where role_id = ?",id);
 	}
@@ -50,5 +56,9 @@ public class Role extends Model<Role> {
 	
 	public boolean saveInfo(Role data){
 		return new Role().setAttrs(data).save();
+	}
+	
+	public String queryMaxCode(){
+		return Db.queryStr("select max(role_code) from s_role");
 	}
 }

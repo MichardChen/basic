@@ -1004,8 +1004,6 @@ public class RestfulController extends Controller{
 	//绑定银行卡
 	public void bindBankCard(){
 		
-		LoginDTO dto = LoginDTO.getInstance(getRequest());
-		
 		UploadFile uploadFile = getFile("cardImg");
 		
 		ContainFileInterceptor interceptor = new ContainFileInterceptor();
@@ -1014,7 +1012,7 @@ public class RestfulController extends Controller{
 			renderJson(data1);
 			return;
 		}
-		
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		FileService fs=new FileService();
 		String logo1 = "";
 		//上传文件

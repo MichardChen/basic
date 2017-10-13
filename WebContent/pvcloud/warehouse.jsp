@@ -177,7 +177,6 @@ td{
     </div>
 		</div>
 	</div>
-</div>
 <%@include file="../common/layout.jsp"%>
 <div class="modal fade bs-example-modal-lg" id="myModal" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
 	<div class="modal-dialog modal-lg">

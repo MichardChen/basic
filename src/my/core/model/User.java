@@ -11,6 +11,8 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.pvcloud.util.StringUtil;
+
 @TableBind(table = "s_user", pk = "user_id")
 public class User extends Model<User> {
 	public static final User dao = new User();
@@ -112,5 +114,48 @@ public class User extends Model<User> {
 	}
 	public int updateMoneys(int userId,BigDecimal moneys){
 		return Db.update("update s_user set moneys="+moneys+" where user_id="+userId);
+	}
+	
+	public Page<User> queryUserListByPage(int page,int size,String mobile){
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer strBuf=new StringBuffer();
+		String sql="";
+		String select="select *";
+		if(StringUtil.isNoneBlank(mobile)){
+			strBuf.append("and mobile=?");
+			param.add(mobile);
+		}
+		
+		sql=" from s_user where 1=1 "+strBuf.toString()+" order by create_time desc";
+		return User.dao.paginate(page, size, select, sql,param.toArray());
+	}
+	
+	public User queryUser(String mobile){
+		return User.dao.findFirst("select * from s_user where mobile=?",mobile);
+	}
+	
+	public User queryUserById(int id){
+		return User.dao.findFirst("select * from s_user where user_id=?",id);
+	}
+	
+	public Page<User> queryByPage(int page,int size){
+		
+		String sql=" from s_user where 1=1 order by create_time desc";
+		String select="select * ";
+		return User.dao.paginate(page, size, select, sql);
+	}
+	
+	public boolean updateInfo(User data){
+		return new User().setAttrs(data).update();
+	}
+	
+	public boolean saveInfo(User data){
+		return new User().setAttrs(data).save();
+	}
+	
+	public int saveInfos(User data){
+		User t = new User().setAttrs(data);
+		t.save();
+		return t.getInt("user_id");
 	}
 }

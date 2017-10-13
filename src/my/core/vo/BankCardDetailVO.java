@@ -7,6 +7,15 @@ public class BankCardDetailVO implements Serializable{
 	private String cardImg;
 	private String bankName;
 	private String cardNo;
+	private String status;
+	
+	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	public String getCardImg() {
 		return cardImg;
 	}

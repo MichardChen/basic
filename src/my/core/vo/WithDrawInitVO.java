@@ -8,6 +8,7 @@ public class WithDrawInitVO implements Serializable{
 	private String cardImg;
 	private String bankName;
 	private String bankNo;
+	
 	public String getCardImg() {
 		return cardImg;
 	}
