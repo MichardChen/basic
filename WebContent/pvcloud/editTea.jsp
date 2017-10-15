@@ -117,7 +117,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>库存</td>
-			<td><input type="number" name="warehouse" maxlength="30" style="width: 100px;" value="${stock}"/></td>
+			<td><input type="number" name="warehouse" maxlength="30" style="width: 100px;" value="${stock}"/>&nbsp;(片)</td>
+		</tr>
+		<tr>
+			<td>茶叶状态</td>
+			<td>
+						<select style="height:30px;width:120px;" name="status" id="status">
+							 	<option value="090001" <c:if test="${teaInfo.status=='090001'}">selected="selected"</c:if>>待售</option>
+								<option value="090002" <c:if test="${teaInfo.status=='090002'}">selected="selected"</c:if>>发售中</option>
+								<option value="090003" <c:if test="${teaInfo.status=='090003'}">selected="selected"</c:if>>已结束</option>
+						</select>
+			</td>
 		</tr>
 		<tr>
 			<td>官方茶叶正品保障</td>

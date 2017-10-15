@@ -56,5 +56,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</td>
 		</tr>
 	</table>
+	<input type="hidden" name="id" value="${userId}"/>
 </div>
 

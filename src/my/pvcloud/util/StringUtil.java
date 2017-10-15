@@ -227,4 +227,12 @@ public class StringUtil extends StringUtils {
 		
 		return html;
 	}
+	
+	public static String getTeaIcon(String imgs){
+		if(StringUtil.isBlank(imgs)){
+			return "";
+		}
+		String[] strings = imgs.split(",");
+		return strings[0];
+	}
 }

@@ -1,5 +1,6 @@
 package my.pvcloud.controller;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import my.core.model.Member;
 import my.core.model.Menu;
 import my.core.model.Role;
 import my.core.model.RoleMenu;
+import my.core.model.UserMenu;
 import my.core.model.WareHouse;
 import my.core.vo.EditRoleModel;
 import my.core.vo.MenuListVO;
@@ -180,11 +182,21 @@ public class RoleController extends Controller {
 	}
 	
 	//删除角色对应的权限
+	@Transient
 	public void deleteRole(){
 		int roleId = StringUtil.toInteger(getPara("id"));
+		RoleMenu rMenu = RoleMenu.dao.queryById(roleId);
+		int rId = rMenu.getInt("role_id");
+		int mId = rMenu.getInt("menu_id");
 		boolean deleteFlg = RoleMenu.dao.deleteById(roleId);
 		if(deleteFlg){
-			setAttr("message","删除成功");
+			//删除用户菜单
+			int ret = UserMenu.dao.deleteUserMenuByMenuId(mId);
+			if(ret != 0){
+				setAttr("message","删除成功");
+			}else{
+				setAttr("message","删除失败");
+			}
 		}else{
 			setAttr("message","删除失败");
 		}

@@ -116,11 +116,11 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 	
 	public List<Integer> queryPersonTeaId(int memberId,int pageSize,int pageNum){
 		int fromRow = pageSize*(pageNum-1);
-		return Db.query("SELECT tea_id from t_warehouse_tea_member  where member_id="+memberId+" GROUP BY tea_id order by create_time desc limit "+fromRow+","+pageSize);
+		return Db.query("SELECT tea_id from t_warehouse_tea_member  where member_id="+memberId+" and member_type_cd='010001'  GROUP BY tea_id order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
-	public BigDecimal queryTeaStock(int memberId,int teaId){
-		BigDecimal sum = Db.queryBigDecimal("select SUM(stock) from t_warehouse_tea_member where member_id="+memberId+" and tea_id="+teaId);
+	public BigDecimal queryTeaStock(int memberId,int teaId,String memberTypeCd){
+		BigDecimal sum = Db.queryBigDecimal("select SUM(stock) from t_warehouse_tea_member where member_id="+memberId+" and member_type_cd='"+memberTypeCd+"' and tea_id="+teaId);
 		if(sum == null){
 			return new BigDecimal("0");
 		}else{
@@ -128,8 +128,8 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		}
 	}
 	
-	public List<WarehouseTeaMember> queryPersonWarehouseTea(int memberId){
-		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" order by create_time desc");
+	public List<WarehouseTeaMember> queryPersonWarehouseTea(int memberId,String memberTypeCd){
+		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" and member_type_cd='"+memberTypeCd+"' order by create_time desc");
 	}
 	
 	public List<WarehouseTeaMember> querysaleTeaWarehouseTea(int memberId,int teaId){

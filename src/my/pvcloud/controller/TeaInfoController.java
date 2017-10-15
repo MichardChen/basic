@@ -333,7 +333,11 @@ public class TeaInfoController extends Controller {
 		    	WarehouseTeaMemberItem item = new WarehouseTeaMemberItem();
 		    	item.set("warehouse_tea_member_id", retId);
 		    	item.set("price", price);
-		    	item.set("status", getPara("status"));
+		    	String statusStr = Constants.TEA_STATUS.STOP_SALE;
+		    	if(StringUtil.equals(getPara("status"), Constants.NEWTEA_STATUS.ON_SALE)){
+		    		statusStr = Constants.TEA_STATUS.ON_SALE;
+		    	}
+		    	item.set("status", statusStr);
 		    	item.set("quality", StringUtil.toInteger(getPara("warehouse")));
 		    	item.set("create_time", DateUtil.getNowTimestamp());
 		    	item.set("update_time", DateUtil.getNowTimestamp());
@@ -469,7 +473,7 @@ public class TeaInfoController extends Controller {
         tea.set("update_time", DateUtil.getNowTimestamp());
         tea.set("tea_desc", content);
         tea.set("desc_url", contentUrl);
-        
+        tea.set("status",getPara("status"));
         if(reset == 1){
         	tea.set("cover_img", logo);
         }
@@ -488,7 +492,11 @@ public class TeaInfoController extends Controller {
 			wtmsMember.set("update_time", DateUtil.getNowTimestamp());
 			boolean updateFlg = WarehouseTeaMember.dao.updateInfo(wtmsMember);
 			if(updateFlg){
-				int rets = WarehouseTeaMemberItem.dao.updateTeaInfo(wtm.getInt("id"), price, getPara("status"), stock);
+				String status = Constants.TEA_STATUS.STOP_SALE;
+				if(StringUtil.equals(getPara("status"), Constants.NEWTEA_STATUS.ON_SALE)){
+					status = Constants.TEA_STATUS.ON_SALE;
+				}
+				int rets = WarehouseTeaMemberItem.dao.updateTeaInfo(wtm.getInt("id"), price, status, stock);
 		    	if(rets != 0){
 		    		setAttr("message","修改成功");
 		    	}else{

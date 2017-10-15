@@ -239,7 +239,7 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">新增</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/adminInfo/addAdmin" method="post" onsubmit="return check()">
+			<form action="${CONTEXT_PATH}/adminInfo/addAdmin" method="post">
 				<div class="modal-body">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">

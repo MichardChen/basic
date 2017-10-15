@@ -935,7 +935,7 @@ public class RestfulController extends Controller{
 		renderJson(service.queryTeaAnalysis(dto));
 	}
 	
-	//选择规格(具体茶叶的规格)
+	//新茶发行->新茶发行详情->选择规格(具体茶叶的规格)
 	public void queryTeaSize(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaSize(dto));

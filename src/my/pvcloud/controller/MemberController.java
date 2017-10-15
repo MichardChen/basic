@@ -16,6 +16,7 @@ import my.core.model.MemberBankcard;
 import my.core.vo.MemberVO;
 import my.pvcloud.model.CustInfo;
 import my.pvcloud.service.MemberService;
+import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/memberInfo", path = "/pvcloud")
@@ -172,5 +173,21 @@ public class MemberController extends Controller {
 		}else{
 			setAttr("message", "保存失败");
 		}
+	}
+	
+	public void updateStatus(){
+		int id = getParaToInt("id");
+		String status = getPara("status");
+		MemberBankcard member = new MemberBankcard();
+		member.set("id", id);
+		member.set("status", status);
+		member.set("update_time", DateUtil.getNowTimestamp());
+		boolean ret = MemberBankcard.dao.updateInfo(member);
+		if(ret){
+			setAttr("message", "保存成功");
+		}else{
+			setAttr("message", "保存失败");
+		}
+		index();
 	}
 }

@@ -14,6 +14,14 @@ public class UserMenu  extends Model<UserMenu>{
 		 Db.update("delete from s_user_menu where user_id="+userId);
 	}
 	
+	public int deleteUserMenuByuserId(int userId){
+		 return Db.update("delete from s_user_menu where user_id="+userId);
+	}
+	
+	public int deleteUserMenuByMenuId(int menuId){
+		 return Db.update("delete from s_user_menu where menu_id="+menuId);
+	}
+	
 	public boolean saveInfo(UserMenu data){
 		return new UserMenu().setAttrs(data).save();
 	}

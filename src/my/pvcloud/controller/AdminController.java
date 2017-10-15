@@ -63,7 +63,6 @@ public class AdminController extends Controller {
 	public void queryByConditionByPage(){
 			
 		String cmobile = getSessionAttr("cmobile");
-		Page<Member> custInfoList = new Page<Member>(null, 0, 0, 0, 0);
 		
 		String mobile = getPara("mobile");
 		cmobile = mobile;
@@ -139,6 +138,7 @@ public class AdminController extends Controller {
 		List<Role> roles = Role.dao.queryAll();
 		setAttr("roles", roles);
 		setAttr("model", model);
+		setAttr("userId", id);
 		//查询银行卡
 		render("adminAlert.jsp");
 	}
@@ -156,24 +156,65 @@ public class AdminController extends Controller {
 	/**
 	 * 更新用户
 	 */
-	public void updateMember(){
+	@Transient
+	public void updateAdmin(){
 		int id = getParaToInt("id");
-		String mobile = getPara("mobile");
 		String name = getPara("name");
 		BigDecimal moneys = StringUtil.toBigDecimal(getPara("moneys"));
-		String statusString = getPara("status");
-		Member member = new Member();
-		member.set("id", id);
-		member.set("mobile", mobile);
-		member.set("name", name);
-		member.set("moneys", moneys);
-		member.set("status", statusString);
-		boolean ret = Member.dao.updateInfo(member);
-		if(ret){
-			setAttr("message", "保存成功");
+		UserRole ur = UserRole.dao.queryUserRoleByUserId(id);
+		int roleId = StringUtil.toInteger(getPara("roleId"));
+		if(ur == null){
+			setAttr("message", "用户数据不存在");
 		}else{
-			setAttr("message", "保存失败");
+			User user = new User();
+			user.set("user_id", id);
+			user.set("username", name);
+			user.set("password", MD5Util.string2MD5(getPara("password")));
+			user.set("create_user", getSessionAttr("agentId"));
+			user.set("update_time", DateUtil.getNowTimestamp());
+			user.set("moneys", moneys);
+			boolean ret = User.dao.updateInfo(user);
+			if(ret){
+				//更新角色
+				int oldRoleId = ur.getInt("role_id");
+				if(oldRoleId != roleId){
+					//更新角色
+					UserRole uRole = new UserRole();
+					uRole.set("user_role_id", ur.getInt("user_role_id"));
+					uRole.set("user_id", id);
+					uRole.set("role_id", roleId);
+					uRole.set("update_time", DateUtil.getNowTimestamp());
+					boolean update = UserRole.dao.updateInfo(uRole);
+					if(update){
+						setAttr("message", "保存成功");
+						//菜单
+						int delete = UserMenu.dao.deleteUserMenuByuserId(id);
+						if(delete != 0){
+							List<RoleMenu> roleMenus = RoleMenu.dao.queryByRoleId(roleId);
+							for(RoleMenu rm : roleMenus){
+								int menuId = rm.getInt("menu_id");
+								UserMenu uMenu = new UserMenu();
+								uMenu.set("user_id", id);
+								uMenu.set("menu_id", menuId);
+								uMenu.set("create_time", DateUtil.getNowTimestamp());
+								uMenu.set("update_time", DateUtil.getNowTimestamp());
+								boolean save = UserMenu.dao.saveInfo(uMenu);
+								if(save){
+									setAttr("message", "保存成功");
+								}else{
+									setAttr("message", "保存失败");
+								}
+							}
+						}
+					}else{
+						setAttr("message", "保存失败");
+					}
+				}
+			}else{
+				setAttr("message", "保存失败");
+			}
 		}
+		index();
 	}
 	
 	//添加用户

@@ -150,7 +150,7 @@ td{
 		    					<td>${s.name }</td>
 		    					<td>${s.path}</td>
 		    					<td>
-		    							<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject(${s.id})"/>
+		    							<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>

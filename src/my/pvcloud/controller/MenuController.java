@@ -18,6 +18,7 @@ import my.core.vo.RoleMenuVO;
 import my.pvcloud.service.MenuService;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
+import my.pvcloud.vo.MenuDetailVO;
 
 @ControllerBind(key = "/menuInfo", path = "/pvcloud")
 public class MenuController extends Controller {
@@ -108,82 +109,17 @@ public class MenuController extends Controller {
 	 */
 	public void alter(){
 		String id = getPara("id");
-		Menu role = Menu.dao.queryById(StringUtil.toInteger(id));
-		EditRoleModel model = new EditRoleModel();
-		model.setId(role.getInt("role_id"));
-		model.setRoleName(role.getStr("role_name"));
-		List<RoleMenu> list = RoleMenu.dao.queryByRoleId(role.getInt("role_id"));
-		List<RoleMenuVO> vlist = new ArrayList<>();
-		RoleMenuVO vo = null;
-		for(RoleMenu rm : list){
-			vo = new RoleMenuVO();
-			vo.setId(rm.getInt("role_menu_id"));
-			Menu menu = Menu.dao.queryById(rm.getInt("menu_id"));
-			if(menu != null){
-				vo.setPath(menu.getStr("menu_name"));
-				if(StringUtil.isBlank(menu.getStr("url"))){
-					continue;
-				}
-			}else{
-				continue;
-			}
-			vlist.add(vo);
-		}
-		List<Menu> menus = Menu.dao.queryAllMenu();
-		setAttr("menus", menus);
-		setAttr("role", model);
-		setAttr("menu", vlist);
-		render("editRole.jsp");
+		Menu menu = Menu.dao.queryById(StringUtil.toInteger(id));
+		MenuDetailVO model = new MenuDetailVO();
+		model.setMenuId(menu.getInt("menu_id"));
+		model.setName(menu.getStr("menu_name"));
+		model.setPath(menu.getStr("url"));
+		
+		setAttr("menu", model);
+		render("editMenu.jsp");
 	}
 	
-	//保存角色
-	public void saveRole(){
-		String roleName = getPara("name");
-		int roleId = StringUtil.toInteger(getPara("roleId"));
-		Role role = new Role();
-		role.set("role_id", roleId);
-		role.set("role_name", roleName);
-		boolean save = Role.dao.updateInfo(role);
-		if(save){
-			setAttr("message","修改成功");
-		}else{
-			setAttr("message","修改失败");
-		}
-		index();
-	}
-	
-	//删除角色对应的权限
-	public void deleteRole(){
-		int roleId = StringUtil.toInteger(getPara("id"));
-		boolean deleteFlg = RoleMenu.dao.deleteById(roleId);
-		if(deleteFlg){
-			setAttr("message","删除成功");
-		}else{
-			setAttr("message","删除失败");
-		}
-		index();
-	}
-	
-	public void addAuth(){
-		int roleId = StringUtil.toInteger(getPara("roleId"));
-		int menuId = StringUtil.toInteger(getPara("menuId"));
-		RoleMenu rm = RoleMenu.dao.queryByRoleMenuId(roleId,menuId);
-		if(rm != null){
-			setAttr("message","此角色已添加此权限，无需再次添加");
-		}else{
-			RoleMenu rm1 = new RoleMenu();
-			rm1.set("role_id", roleId);
-			rm1.set("menu_id", menuId);
-			boolean save = RoleMenu.dao.saveInfo(rm1);
-			if(save){
-				setAttr("message","添加成功");
-			}else{
-				setAttr("message","添加失败");
-			}
-		}
-		index();
-	}
-	
+		
 	public void add(){
 		render("addMenu.jsp");
 	}
@@ -209,4 +145,25 @@ public class MenuController extends Controller {
 		}
 		index();
 	}
+	
+	public void updateMenu(){
+		String name = getPara("name");
+		String url = getPara("url");
+		int menuId = StringUtil.toInteger(getPara("menuId"));
+		Menu menu = new Menu();
+		menu.set("menu_id", menuId);
+		menu.set("menu_name", name);
+		menu.set("url", url);
+		menu.set("create_user", getSessionAttr("agentId"));
+		menu.set("update_time", DateUtil.getNowTimestamp());
+		
+		boolean save = Menu.dao.updateInfo(menu);
+		if(save){
+			setAttr("message","修改成功");
+		}else{
+			setAttr("message","修改失败");
+		}
+		index();
+	}
+
 }

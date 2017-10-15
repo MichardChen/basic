@@ -23,6 +23,10 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 		return WarehouseTeaMemberItem.dao.findFirst("select * from t_warehouse_tea_member_item where warehouse_tea_member_id = ?",id);
 	}
 	
+	public WarehouseTeaMemberItem queryByKeyId(int id){
+		return WarehouseTeaMemberItem.dao.findFirst("select * from t_warehouse_tea_member_item where id = ?",id);
+	}
+	
 	public List<WarehouseTeaMemberItem> queryTeaByIdList(int teaId
 														,String size
 														,String priceFlg

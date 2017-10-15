@@ -56,6 +56,21 @@ if(str!=''){
 			<td>开户名</td>
 			<td><input type="text" name="moneys" value="${bankCard.owner_name}" style="IME-MODE: disabled;"/></td>
 		</tr>
+		<tr>
+			<td>审核结果</td>
+			<td>
+				<c:if test="${bankCard.status=='240001'}">审核中</c:if>
+				<c:if test="${bankCard.status=='240002'}">审核成功</c:if>
+				<c:if test="${bankCard.status=='240003'}">审核失败</c:if>
+			</td>
+		</tr>
+		<tr>
+			<td>操作</td>
+			<td>
+				<input type="button" value="审核通过" class="ys3" onclick="if(confirm('确认要审核通过?')){window.location='${CONTEXT_PATH}/memberInfo/updateStatus?id=${bankCard.id}&status=240002';}"/>
+				<input type="button" value="审核不通过" class="ys3" onclick="if(confirm('确认要审核失败?')){window.location='${CONTEXT_PATH}/memberInfo/updateStatus?id=${bankCard.id}&status=240003';}"/>
+			</td>
+		</tr>
 		<input type="hidden" name="id" value="${model.id}"/>
 	</table>
 </div>
