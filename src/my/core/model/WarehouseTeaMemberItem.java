@@ -131,12 +131,7 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 	}
 	
 	
-	public boolean updateStatus(int id,String status){
-		int ret = Db.update("update t_warehouse_tea_member_item set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
-		if(ret != 0){
-			return true;
-		}else{
-			return false;
-		}
+	public int updateStatus(int id,String status){
+		return Db.update("update t_warehouse_tea_member_item set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 	}
 }

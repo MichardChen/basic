@@ -2199,9 +2199,15 @@ public class LoginService {
 			boolean ret = WarehouseTeaMember.dao.updateStock(wtmId, stock);
 			if(ret){
 				//更新在售茶叶状态
-				WarehouseTeaMemberItem.dao.u
-				data.setCode(Constants.STATUS_CODE.SUCCESS);
-				data.setMessage("撤单成功");
+				int wtmItemId = saleOrder.getInt("wtm_item_id");
+				int rets = WarehouseTeaMemberItem.dao.updateStatus(wtmItemId, Constants.TEA_STATUS.STOP_SALE);
+				if(rets != 0){
+					data.setCode(Constants.STATUS_CODE.SUCCESS);
+					data.setMessage("撤单成功");
+				}else{
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("撤单失败");
+				}
 			}else{
 				data.setCode(Constants.STATUS_CODE.FAIL);
 				data.setMessage("撤单失败");
