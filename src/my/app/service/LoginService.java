@@ -1995,30 +1995,46 @@ public class LoginService {
 			}
 		}
 		
-		SaleOrder order = new SaleOrder();
-		order.set("warehouse_tea_member_id", warehouseMemberTeaId);
-		order.set("quality", saleNum);
-		order.set("price", salePrice);
-		order.set("size_type_cd", saleType);
-		order.set("create_time", DateUtil.getNowTimestamp());
-		order.set("update_time", DateUtil.getNowTimestamp());
-		order.set("status", Constants.ORDER_STATUS.ON_SALE);
-		order.set("order_no", StringUtil.getOrderNo());
-		boolean save = SaleOrder.dao.saveInfo(order);
-		if(save){
 			//减少库存
 			int ret = WarehouseTeaMember.dao.cutTeaQuality(saleAllPiece, wtm.getInt("warehouse_id"), wtm.getInt("tea_id"), wtm.getInt("member_id"));
 			if(ret != 0){
-				data.setCode(Constants.STATUS_CODE.SUCCESS);
-				data.setMessage("卖茶成功");
+				WarehouseTeaMemberItem wtmItem = new WarehouseTeaMemberItem();
+				wtmItem.set("warehouse_tea_member_id", warehouseMemberTeaId);
+				wtmItem.set("price", salePrice);
+				wtmItem.set("status", Constants.TEA_STATUS.ON_SALE);
+				wtmItem.set("quality", saleNum);
+				wtmItem.set("size_type_cd", saleType);
+				wtmItem.set("create_time", DateUtil.getNowTimestamp());
+				wtmItem.set("update_time", DateUtil.getNowTimestamp());
+				int retId = WarehouseTeaMemberItem.dao.saveItemInfo(wtmItem);
+				if(retId != 0){
+					SaleOrder order = new SaleOrder();
+					order.set("warehouse_tea_member_id", warehouseMemberTeaId);
+					order.set("wtm_item_id", retId);
+					order.set("quality", saleNum);
+					order.set("price", salePrice);
+					order.set("size_type_cd", saleType);
+					order.set("create_time", DateUtil.getNowTimestamp());
+					order.set("update_time", DateUtil.getNowTimestamp());
+					order.set("status", Constants.ORDER_STATUS.ON_SALE);
+					order.set("order_no", StringUtil.getOrderNo());
+					boolean save = SaleOrder.dao.saveInfo(order);
+					if(save){
+						data.setCode(Constants.STATUS_CODE.SUCCESS);
+						data.setMessage("卖茶成功");
+					}else{
+						data.setCode(Constants.STATUS_CODE.FAIL);
+						data.setMessage("卖茶失败");
+					}
+				}else{
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("卖茶失败");
+				}
 			}else{
 				data.setCode(Constants.STATUS_CODE.FAIL);
 				data.setMessage("卖茶失败");
 			}
-		}else{
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("卖茶失败");
-		}
+		
 		return data;
 	}
 	
@@ -2182,6 +2198,8 @@ public class LoginService {
 			int stock = saleOrder.getInt("quality");
 			boolean ret = WarehouseTeaMember.dao.updateStock(wtmId, stock);
 			if(ret){
+				//更新在售茶叶状态
+				WarehouseTeaMemberItem.dao.u
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("撤单成功");
 			}else{
@@ -2406,13 +2424,18 @@ public class LoginService {
 				int teaId = wtm.getInt("tea_id");
 				Tea tea = Tea.dao.queryById(teaId);
 				if(tea != null){
-					vo.setImg(tea.getStr("icon"));
+					vo.setImg(StringUtil.getTeaIcon(tea.getStr("cover_img")));
 					vo.setName(tea.getStr("tea_title"));
 				}
 			}
 			vo.setPrice(order.getBigDecimal("price"));
 			vo.setQuality(order.getInt("quality"));
-			vo.setSize("片");
+			if(StringUtil.equals(order.getStr("size_type_cd"), Constants.TEA_UNIT.PIECE)){
+				vo.setSize("片");
+			}else{
+				vo.setSize("件");
+			}
+			
 			vos.add(vo);
 		}
 		data.setCode(Constants.STATUS_CODE.SUCCESS);

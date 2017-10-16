@@ -110,6 +110,13 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 		return new WarehouseTeaMemberItem().setAttrs(data).save();
 	}
 	
+	
+	public int saveItemInfo(WarehouseTeaMemberItem data){
+		WarehouseTeaMemberItem t = new WarehouseTeaMemberItem().setAttrs(data);
+		t.save();
+		return t.getInt("id");
+	}
+	
 	public int updateTeaInfo(int wtmId,BigDecimal price,String status,int quality){
 		return Db.update("update t_warehouse_tea_member_item set price="+price+",status='"+status+"',quality="+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_tea_member_id="+wtmId);
 	}
@@ -120,6 +127,16 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 			return WarehouseTeaMemberItem.dao.find("select * from t_warehouse_tea_member_item a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id inner join t_tea c on b.tea_id=c.id where c.tea_title like '%"+name+"%' and a.status='160001' order by a.create_time desc limit "+fromRow+","+pageSize);
 		}else{
 			return WarehouseTeaMemberItem.dao.find("select * from t_warehouse_tea_member_item a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where b.member_id != "+userId+" and a.status='160001' order by a.create_time desc limit "+fromRow+","+pageSize);
+		}
+	}
+	
+	
+	public boolean updateStatus(int id,String status){
+		int ret = Db.update("update t_warehouse_tea_member_item set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+		if(ret != 0){
+			return true;
+		}else{
+			return false;
 		}
 	}
 }
