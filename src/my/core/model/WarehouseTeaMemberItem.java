@@ -67,7 +67,7 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 	}
 	
 	public BigDecimal queryOnSaleTeaCount(int memberId,int houserId,int teaId,String typeCd){
-		return Db.queryBigDecimal("select sum(b.quality) from t_warehouse_tea_member a inner join t_warehouse_tea_member_item b where a.member_id="+memberId+" and a.warehouse_id="+houserId+" and tea_id="+teaId+" and member_type_cd='010002' and b.status='160001' and size_type_cd='"+typeCd+"'");
+		return Db.queryBigDecimal("select sum(b.quality) from t_warehouse_tea_member a inner join t_warehouse_tea_member_item b on b.warehouse_tea_member_id=a.id where a.member_id="+memberId+" and a.warehouse_id="+houserId+" and a.tea_id="+teaId+" and member_type_cd='010001' and b.status='160001' and size_type_cd='"+typeCd+"'");
 	}
 	
 	public WarehouseTeaMemberItem queryTeaOnPlatform(String memberTypeCd,int teaId){
@@ -112,5 +112,14 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 	
 	public int updateTeaInfo(int wtmId,BigDecimal price,String status,int quality){
 		return Db.update("update t_warehouse_tea_member_item set price="+price+",status='"+status+"',quality="+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_tea_member_id="+wtmId);
+	}
+	
+	public List<WarehouseTeaMemberItem> queryBuyTeaList(int pageSize,int pageNum,String name,int userId){
+		int fromRow = pageSize*(pageNum-1);
+		if(StringUtil.isNoneBlank(name)){
+			return WarehouseTeaMemberItem.dao.find("select * from t_warehouse_tea_member_item a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id inner join t_tea c on b.tea_id=c.id where c.tea_title like '%"+name+"%' and a.status='160001' order by a.create_time desc limit "+fromRow+","+pageSize);
+		}else{
+			return WarehouseTeaMemberItem.dao.find("select * from t_warehouse_tea_member_item a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where b.member_id != "+userId+" and a.status='160001' order by a.create_time desc limit "+fromRow+","+pageSize);
+		}
 	}
 }

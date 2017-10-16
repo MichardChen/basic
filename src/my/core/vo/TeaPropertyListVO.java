@@ -10,7 +10,14 @@ public class TeaPropertyListVO implements Serializable{
 	private String type;
 	private String stock;
 	private String size;
+	private String warehouse;
 	
+	public String getWarehouse() {
+		return warehouse;
+	}
+	public void setWarehouse(String warehouse) {
+		this.warehouse = warehouse;
+	}
 	public String getSize() {
 		return size;
 	}

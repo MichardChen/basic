@@ -86,9 +86,9 @@ public class OrderItem extends Model<OrderItem> {
 	public List<OrderItem> querySaleTeaRecord(int pageSize,int pageNum,int userId,String date){
 		int fromRow = (pageNum-1)*pageSize;
 		if(StringUtil.isNoneBlank(date)){
-			return OrderItem.dao.find("select * from t_order_item where sale_user_id="+userId+" and create_time like '%"+date+"%' order by update_time desc limit "+fromRow+","+pageSize);
+			return OrderItem.dao.find("select * from t_order_item where sale_id="+userId+" and create_time like '%"+date+"%' order by update_time desc limit "+fromRow+","+pageSize);
 		}else{
-			return OrderItem.dao.find("select * from t_order_item where sale_user_id="+userId+" order by update_time desc limit "+fromRow+","+pageSize);
+			return OrderItem.dao.find("select * from t_order_item where sale_id="+userId+" order by update_time desc limit "+fromRow+","+pageSize);
 		}
 	}
 }

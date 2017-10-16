@@ -128,12 +128,12 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		}
 	}
 	
-	public List<WarehouseTeaMember> queryPersonWarehouseTea(int memberId,String memberTypeCd){
-		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" and member_type_cd='"+memberTypeCd+"' order by create_time desc");
+	public List<WarehouseTeaMember> queryPersonWarehouseTea(int memberId,String memberTypeCd,int teaId){
+		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" and tea_id="+teaId+" and member_type_cd='"+memberTypeCd+"' order by create_time desc");
 	}
 	
-	public List<WarehouseTeaMember> querysaleTeaWarehouseTea(int memberId,int teaId){
-		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" and tea_id="+teaId+" order by create_time desc");
+	public List<WarehouseTeaMember> querysaleTeaWarehouseTea(int memberId,int teaId,String memberTypeCd){
+		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id="+memberId+" and tea_id="+teaId+" and member_type_cd='"+memberTypeCd+"' order by create_time desc");
 	}
 	
 	public boolean updateStock(int id,int stock){
@@ -145,7 +145,25 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		}
 	}
 	
+	public boolean cutStock(int id,int stock){
+		int ret = Db.update("update t_warehouse_tea_member set stock=stock-"+stock+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+		if(ret != 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	public int addTeaQuality(int quality,int warehouseId,int teaId,int memberId){
 		return Db.update("update t_warehouse_tea_member set stock=stock+"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_id="+warehouseId+" and tea_id="+teaId+" and member_id="+memberId);
+	}
+	
+	public int cutTeaQuality(int quality,int warehouseId,int teaId,int memberId){
+		return Db.update("update t_warehouse_tea_member set stock=stock-"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_id="+warehouseId+" and tea_id="+teaId+" and member_id="+memberId);
+	}
+	
+	public List<WarehouseTeaMember> queryWantSaleTeaList(String memberTypeCd,int userId,int pageSize,int pageNum){
+		int fromRow = (pageNum-1)*pageSize;
+		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id = ? and member_type_cd=? order by create_time desc limit ?,?",userId,memberTypeCd,fromRow,pageSize);
 	}
 }
