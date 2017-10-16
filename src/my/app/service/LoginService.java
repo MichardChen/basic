@@ -2836,6 +2836,11 @@ public class LoginService {
 		int wtmItemId = dto.getTeaId();
 		int quality = dto.getQuality();
 		WarehouseTeaMemberItem item = WarehouseTeaMemberItem.dao.queryByKeyId(wtmItemId);
+		if(item == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，茶叶数据出错");
+			return data;
+		}
 		int itemStock = item.getInt("quality");
 		CodeMst sizeType = CodeMst.dao.queryCodestByCode(item.getStr("size_type_cd"));
 		if(quality > itemStock){

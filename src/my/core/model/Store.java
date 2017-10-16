@@ -69,6 +69,12 @@ public class Store extends Model<Store> {
 		return store;
 	}
 	
+	public int saveInfos(Store tea){
+		Store store = new Store().setAttrs(tea);
+		store.save();
+		return store.getInt("id");
+	}
+	
 	public boolean del(int id){
 		return Store.dao.deleteById(id);
 	}

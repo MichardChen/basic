@@ -274,7 +274,7 @@ public class RestfulController extends Controller{
 	
 	//绑定门店
 	public void bindStore(){
-		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		
 		//上传头像
 		UploadFile uploadFile = getFile("img1");
 		UploadFile uploadFile1 = getFile("img2");
@@ -283,6 +283,7 @@ public class RestfulController extends Controller{
 		UploadFile uploadFile4 = getFile("img5");
 		UploadFile uploadFile5 = getFile("img6");
 		
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		ContainFileInterceptor interceptor = new ContainFileInterceptor();
 		ReturnData data1 = interceptor.vertifyToken(getRequest());
 		if(!StringUtil.equals(data1.getCode(), Constants.STATUS_CODE.SUCCESS)){
@@ -321,9 +322,10 @@ public class RestfulController extends Controller{
 		store.set("update_time", DateUtil.getNowTimestamp());
 		store.set("status", Constants.VERTIFY_STATUS.STAY_CERTIFICATE);
 
-		Store s = Store.dao.saveInfo(store);
+		int s = Store.dao.saveInfos(store);
+		System.out.println("==========storeId====="+s);
 		boolean ret = false;
-		if(s == null || s.getInt("id") == 0){
+		if(s == 0){
 			ret = false;
 		}else{
 			ret = true;
@@ -336,7 +338,7 @@ public class RestfulController extends Controller{
 		boolean ret6 = true;
 		ReturnData data = new ReturnData();
 		if(ret){
-			int id = s.getInt("id");
+			int id = s;
 			//表单中有提交图片，要先获取图片
 			FileService fs=new FileService();
 			String logo1 = "";
@@ -511,7 +513,7 @@ public class RestfulController extends Controller{
 			if(ret1 && ret2 && ret3 && ret4 && ret5 && ret6){
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("提交成功，请等待平台审核");
-				findStoreDetail(dto.getUserId());
+				findStoreDetail1(dto.getUserId());
 			}
 		}else{
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -566,9 +568,51 @@ public class RestfulController extends Controller{
 		}
 	}
 	
-	public void findStoreDetail(int memberId){
+	public void findStoreDetail(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		ReturnData data = new ReturnData();
+		int memberId = dto.getUserId();
+		if(memberId == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，用户数据出错");
+			renderJson(data);
+		}
+		Store store = Store.dao.queryById(memberId);
+		StoreDetailVO vo = new StoreDetailVO();
+		if(store != null){
+			vo.setStoreId(store.getInt("id"));
+			vo.setAddress(store.getStr("store_address"));
+			vo.setCityId(store.getInt("city_id"));
+			vo.setDistrictId(store.getInt("district_id"));
+			vo.setProvinceId(store.getInt("province_id"));
+			vo.setFromTime(store.getStr("business_fromtime"));
+			vo.setToTime(store.getStr("business_totime"));
+			vo.setLatitude(store.getFloat("latitude"));
+			vo.setLongitude(store.getFloat("longitude"));
+			vo.setMark(store.getStr("store_desc"));
+			vo.setMobile(store.getStr("link_phone"));
+			vo.setName(store.getStr("store_name"));
+			vo.setTea(store.getStr("business_tea"));
+			List<StoreImage> storeImage = StoreImage.dao.queryStoreImages(store.getInt("id"));
+			ArrayList<String> imgArrayList = new ArrayList<>();
+			for(StoreImage img : storeImage){
+				imgArrayList.add(img.getStr("img"));
+			}
+			vo.setImgs(imgArrayList);
+			vo.setStatus(store.getStr("status"));
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("查询成功");
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("data", vo);
+			data.setData(map);
+			renderJson(data);
+		}
+	}
+	
+	public void findStoreDetail1(int memberId){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		ReturnData data = new ReturnData();
+		System.out.println("===findStoreDetail=storeId=========="+memberId);
 		if(memberId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，用户数据出错");
