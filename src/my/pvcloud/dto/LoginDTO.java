@@ -12,69 +12,71 @@ public class LoginDTO extends BaseDTO{
 	public LoginDTO(){}
 	
 	public static LoginDTO getInstance(HttpServletRequest request){
+		LoginDTO dto = new LoginDTO();
 		try {
 			request.setCharacterEncoding("utf-8");
+			dto.setMobile(request.getParameter("mobile"));
+			dto.setUserTypeCd(request.getParameter("userTypeCd"));
+			dto.setUserPwd(request.getParameter("userPwd"));
+			dto.setUserId(StringUtil.toInteger(request.getParameter("userId")));
+			dto.setToken(request.getParameter("token"));
+			dto.setAccessToken(request.getParameter("accessToken"));
+			dto.setCode(request.getParameter("code"));
+			dto.setOldPwd(request.getParameter("oldPwd"));
+			dto.setNewPwd(request.getParameter("newPwd"));
+			dto.setUserName(StringUtil.checkCode(request.getParameter("userName")));
+			dto.setUserPwd(request.getParameter("userPwd"));
+			dto.setRememberMe(StringUtil.toInteger(request.getParameter("rememberMe")));
+			dto.setNickName(StringUtil.checkCode(request.getParameter("nickName")));
+			dto.setSex(StringUtil.toInteger(request.getParameter("sex")));
+			dto.setStore(StringUtil.toInteger(request.getParameter("store")));
+			dto.setPageNum(StringUtil.toInteger(request.getParameter("pageNum")));
+			dto.setPageSize(StringUtil.toInteger(request.getParameter("pageSize")));
+			dto.setNewsId(StringUtil.toInteger(request.getParameter("newsId")));
+			dto.setDeviceToken(request.getParameter("deviceToken"));
+			dto.setQq(StringUtil.checkCode(request.getParameter("qq")));
+			dto.setWx(StringUtil.checkCode(request.getParameter("wx")));
+			dto.setCardNo(request.getParameter("cardNo"));
+			dto.setProvinceId(StringUtil.toInteger(request.getParameter("provinceId")));
+			dto.setCityId(StringUtil.toInteger(request.getParameter("cityId")));
+			dto.setDistrictId(StringUtil.toInteger(request.getParameter("districtId")));
+			dto.setReceiveMan(StringUtil.checkCode(request.getParameter("receiveMan")));
+			dto.setLinkMan(StringUtil.checkCode(request.getParameter("linkMan")));
+			dto.setAddress(StringUtil.checkCode(request.getParameter("address")));
+			dto.setId(StringUtil.toInteger(request.getParameter("id")));
+			dto.setFlg(StringUtil.toInteger(request.getParameter("flg")));
+			dto.setFeedBack(StringUtil.checkCode(request.getParameter("feedBack")));
+			dto.setVersion(request.getParameter("version"));
+			dto.setPlatForm(request.getParameter("platForm"));
+			dto.setVersionTypeCd(request.getParameter("versionTypeCd"));
+			dto.setType(request.getParameter("typeCd"));
+			dto.setQuality(StringUtil.toInteger(request.getParameter("quality")));
+			dto.setTeaId(StringUtil.toInteger(request.getParameter("teaId")));
+			dto.setCartId(StringUtil.toInteger(request.getParameter("cartId")));
+			dto.setBuyCartIds(request.getParameter("buyCartIds"));
+			dto.setDate(StringUtil.checkCode(request.getParameter("date")));
+			dto.setSize(request.getParameter("size"));
+			dto.setName(StringUtil.checkCode(request.getParameter("name")));
+			dto.setWareHouseId(StringUtil.toInteger(request.getParameter("wareHouseId")));
+			dto.setPriceType(request.getParameter("priceFlg"));
+			dto.setPrice(StringUtil.toBigDecimal(request.getParameter("price")));
+			dto.setAddressId(StringUtil.toInteger(request.getParameter("addressId")));
+			dto.setOrderNo(request.getParameter("orderNo"));
+			dto.setCardTypeCd(request.getParameter("cardTypeCd"));
+			dto.setIdCardNo(request.getParameter("idCardNo"));
+			dto.setMoney(StringUtil.toBigDecimal(request.getParameter("money")));
+			dto.setPayPwd(request.getParameter("payPwd"));
+			dto.setStoreId(StringUtil.toInteger(request.getParameter("storeId")));
+			dto.setBusinessId(StringUtil.toInteger(request.getParameter("businessId")));
+			dto.setTeas(StringUtil.checkCode(request.getParameter("teas")));
+			dto.setCityDistrict(StringUtil.checkCode(request.getParameter("cityDistrict")));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		LoginDTO dto = new LoginDTO();
-		dto.setMobile(request.getParameter("mobile"));
-		dto.setUserTypeCd(request.getParameter("userTypeCd"));
-		dto.setUserPwd(request.getParameter("userPwd"));
-		dto.setUserId(StringUtil.toInteger(request.getParameter("userId")));
-		dto.setToken(request.getParameter("token"));
-		dto.setAccessToken(request.getParameter("accessToken"));
-		dto.setCode(request.getParameter("code"));
-		dto.setOldPwd(request.getParameter("oldPwd"));
-		dto.setNewPwd(request.getParameter("newPwd"));
-		dto.setUserName(request.getParameter("userName"));
-		dto.setUserPwd(request.getParameter("userPwd"));
-		dto.setRememberMe(StringUtil.toInteger(request.getParameter("rememberMe")));
-		dto.setNickName(request.getParameter("nickName"));
-		dto.setSex(StringUtil.toInteger(request.getParameter("sex")));
-		dto.setStore(StringUtil.toInteger(request.getParameter("store")));
-		dto.setPageNum(StringUtil.toInteger(request.getParameter("pageNum")));
-		dto.setPageSize(StringUtil.toInteger(request.getParameter("pageSize")));
-		dto.setNewsId(StringUtil.toInteger(request.getParameter("newsId")));
-		dto.setDeviceToken(request.getParameter("deviceToken"));
-		dto.setQq(request.getParameter("qq"));
-		dto.setWx(request.getParameter("wx"));
-		dto.setCardNo(request.getParameter("cardNo"));
-		dto.setProvinceId(StringUtil.toInteger(request.getParameter("provinceId")));
-		dto.setCityId(StringUtil.toInteger(request.getParameter("cityId")));
-		dto.setDistrictId(StringUtil.toInteger(request.getParameter("districtId")));
-		dto.setReceiveMan(request.getParameter("receiveMan"));
-		dto.setLinkMan(request.getParameter("linkMan"));
-		dto.setAddress(request.getParameter("address"));
-		dto.setId(StringUtil.toInteger(request.getParameter("id")));
-		dto.setFlg(StringUtil.toInteger(request.getParameter("flg")));
-		dto.setFeedBack(request.getParameter("feedBack"));
-		dto.setVersion(request.getParameter("version"));
-		dto.setPlatForm(request.getParameter("platForm"));
-		dto.setVersionTypeCd(request.getParameter("versionTypeCd"));
-		dto.setType(request.getParameter("typeCd"));
-		dto.setQuality(StringUtil.toInteger(request.getParameter("quality")));
-		dto.setTeaId(StringUtil.toInteger(request.getParameter("teaId")));
-		dto.setCartId(StringUtil.toInteger(request.getParameter("cartId")));
-		dto.setBuyCartIds(request.getParameter("buyCartIds"));
-		dto.setDate(request.getParameter("date"));
-		dto.setSize(request.getParameter("size"));
-		dto.setName(request.getParameter("name"));
-		dto.setWareHouseId(StringUtil.toInteger(request.getParameter("wareHouseId")));
-		dto.setPriceType(request.getParameter("priceFlg"));
-		dto.setPrice(StringUtil.toBigDecimal(request.getParameter("price")));
-		dto.setAddressId(StringUtil.toInteger(request.getParameter("addressId")));
-		dto.setOrderNo(request.getParameter("orderNo"));
-		dto.setCardTypeCd(request.getParameter("cardTypeCd"));
-		dto.setIdCardNo(request.getParameter("idCardNo"));
-		dto.setMoney(StringUtil.toBigDecimal(request.getParameter("money")));
-		dto.setPayPwd(request.getParameter("payPwd"));
-		dto.setStoreId(StringUtil.toInteger(request.getParameter("storeId")));
-		dto.setBusinessId(StringUtil.toInteger(request.getParameter("businessId")));
-		dto.setTeas(request.getParameter("teas"));
 		return dto;
 	}
 	
+	private String cityDistrict;
 	private String teas;
 	private int businessId;
 	private int storeId;
@@ -122,6 +124,14 @@ public class LoginDTO extends BaseDTO{
 	private String buyCartIds;
 	private String date;
 	
+	public String getCityDistrict() {
+		return cityDistrict;
+	}
+
+	public void setCityDistrict(String cityDistrict) {
+		this.cityDistrict = cityDistrict;
+	}
+
 	public String getTeas() {
 		return teas;
 	}

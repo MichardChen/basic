@@ -555,11 +555,14 @@ public class LoginService {
 		map.put("carousel", vos);
 		map.put("news", newsVOs);
 		Member member = Member.dao.queryMember(dto.getMobile());
-		if((member != null)&&(StringUtil.isBlank(member.getStr("paypwd")))){
-			map.put("setPaypwdFlg", 0);
-		}else{
+		if((member != null)&&(StringUtil.isNotBlank(member.getStr("paypwd")))){
 			map.put("setPaypwdFlg", 1);
+			member.set("userpwd", "");
+			member.set("paypwd", "");
+		}else{
+			map.put("setPaypwdFlg", 0);
 		}
+
 		map.put("member", member);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
@@ -856,10 +859,10 @@ public class LoginService {
 		FeedBack feedBack = new FeedBack();
 		feedBack.set("user_id", dto.getUserId());
 		feedBack.set("user_type_cd", dto.getUserTypeCd());
-		feedBack.set("feedback", dto.getFeedBack());
+		feedBack.set("feedback", StringUtil.checkCode(dto.getFeedBack()));
 		feedBack.set("create_time", DateUtil.getNowTimestamp());
 		feedBack.set("update_time", DateUtil.getNowTimestamp());
-		feedBack.set("readed", 1);
+		feedBack.set("readed", 0);
 		boolean ret = FeedBack.dao.saveInfo(feedBack);
 		if(!ret){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -1753,7 +1756,7 @@ public class LoginService {
 		}
 		Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
 		SelectSizeTeaListVO vo = new SelectSizeTeaListVO();
-		vo.setId(wtm.getInt("id"));
+		vo.setId(wtmItemId);
 		if(tea != null){
 			vo.setName(tea.getStr("tea_title"));
 			vo.setImg(StringUtil.getTeaIcon(tea.getStr("cover_img")));
@@ -2230,7 +2233,7 @@ public class LoginService {
 			vo = new TeaStoreListVO();
 			vo.setStoreId(store.getInt("id"));
 			vo.setName(store.getStr("store_name"));
-			vo.setAddress(store.getStr("store_address"));
+			vo.setAddress(store.getStr("city_district"));
 			vo.setBusinessTea(store.getStr("business_tea"));
 			StoreImage storeImage = StoreImage.dao.queryStoreFirstImages(vo.getStoreId());
 			if(storeImage != null){

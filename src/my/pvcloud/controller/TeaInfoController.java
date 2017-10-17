@@ -217,8 +217,8 @@ public class TeaInfoController extends Controller {
 		
 		String logo = "";
 		//上传文件
-		String uuid = UUID.randomUUID().toString();
 		if(uploadFile1 != null){
+			String uuid = UUID.randomUUID().toString();
 			String fileName = uploadFile1.getOriginalFileName();
 			String[] names = fileName.split("\\.");
 		    File file=uploadFile1.getFile();
@@ -235,6 +235,7 @@ public class TeaInfoController extends Controller {
 		    file.delete();
 		}
 		if(uploadFile2 != null){
+			String uuid = UUID.randomUUID().toString();
 			String fileName = uploadFile2.getOriginalFileName();
 			String[] names = fileName.split("\\.");
 		    File file=uploadFile2.getFile();
@@ -251,6 +252,7 @@ public class TeaInfoController extends Controller {
 		    file.delete();
 		}
 		if(uploadFile3 != null){
+			String uuid = UUID.randomUUID().toString();
 			String fileName = uploadFile3.getOriginalFileName();
 			String[] names = fileName.split("\\.");
 		    File file=uploadFile3.getFile();
@@ -267,6 +269,7 @@ public class TeaInfoController extends Controller {
 		    file.delete();
 		}
 		if(uploadFile4 != null){
+			String uuid = UUID.randomUUID().toString();
 			String fileName = uploadFile4.getOriginalFileName();
 			String[] names = fileName.split("\\.");
 		    File file=uploadFile4.getFile();
@@ -283,7 +286,10 @@ public class TeaInfoController extends Controller {
 		    file.delete();
 		}
 		//生成html文件
+		String htmlUrl="";
 		try {
+			String uuid = UUID.randomUUID().toString();
+			htmlUrl = Constants.HOST.FILE+uuid;
 			StringBuilder sb = new StringBuilder();
 			FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.FILE+uuid+".html");
 			PrintStream printStream = new PrintStream(fos);
@@ -292,7 +298,7 @@ public class TeaInfoController extends Controller {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-        String contentUrl = Constants.HOST.FILE+uuid+".html";
+        String contentUrl = htmlUrl+".html";
 		//保存资讯
         Tea tea = new Tea();
         tea.set("tea_title",title);
@@ -371,11 +377,12 @@ public class TeaInfoController extends Controller {
 		
 		String logo = "";
 		//上传文件
-		String uuid = UUID.randomUUID().toString();
 		int reset = StringUtil.toInteger(getPara("reset"));
+		String contentUrl = "";
 		if(reset == 1){
 			
 			if(uploadFile1 != null){
+				String uuid = UUID.randomUUID().toString();
 				String fileName = uploadFile1.getOriginalFileName();
 				String[] names = fileName.split("\\.");
 			    File file=uploadFile1.getFile();
@@ -392,6 +399,7 @@ public class TeaInfoController extends Controller {
 			    file.delete();
 			}
 			if(uploadFile2 != null){
+				String uuid = UUID.randomUUID().toString();
 				String fileName = uploadFile2.getOriginalFileName();
 				String[] names = fileName.split("\\.");
 			    File file=uploadFile2.getFile();
@@ -408,6 +416,7 @@ public class TeaInfoController extends Controller {
 			    file.delete();
 			}
 			if(uploadFile3 != null){
+				String uuid = UUID.randomUUID().toString();
 				String fileName = uploadFile3.getOriginalFileName();
 				String[] names = fileName.split("\\.");
 			    File file=uploadFile3.getFile();
@@ -424,6 +433,7 @@ public class TeaInfoController extends Controller {
 			    file.delete();
 			}
 			if(uploadFile4 != null){
+				String uuid = UUID.randomUUID().toString();
 				String fileName = uploadFile4.getOriginalFileName();
 				String[] names = fileName.split("\\.");
 			    File file=uploadFile4.getFile();
@@ -441,6 +451,8 @@ public class TeaInfoController extends Controller {
 			}
 			//生成html文件
 			try {
+				String uuid = UUID.randomUUID().toString();
+				contentUrl = Constants.HOST.FILE+uuid;
 				StringBuilder sb = new StringBuilder();
 				FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.FILE+uuid+".html");
 				PrintStream printStream = new PrintStream(fos);
@@ -450,7 +462,6 @@ public class TeaInfoController extends Controller {
 				e.printStackTrace();
 			}
 		}
-        String contentUrl = Constants.HOST.FILE+uuid+".html";
 		//保存资讯
         Tea tea = new Tea();
         int teaId = StringUtil.toInteger(getPara("id"));

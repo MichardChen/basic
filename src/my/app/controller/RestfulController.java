@@ -294,15 +294,15 @@ public class RestfulController extends Controller{
 		Integer provinceId = getParaToInt("provinceId");
 		Integer cityId = getParaToInt("cityId");
 		Integer districtId = getParaToInt("districtId");
-		String address = getPara("address");
+		String address = StringUtil.checkCode(getPara("address"));
 		Float lgt = StringUtil.toFloat(getPara("longitude"));
 		Float lat = StringUtil.toFloat(getPara("latitude"));
-		String name = getPara("name");
+		String name = StringUtil.checkCode(getPara("name"));
 		String mobile = getPara("mobile");
-		String teaStr = getPara("tea");
-		String fromTime = getPara("fromTime");
-		String toTime = getPara("toTime");
-		String mark = getPara("mark");
+		String teaStr = StringUtil.checkCode(getPara("tea"));
+		String fromTime = StringUtil.checkCode(getPara("fromTime"));
+		String toTime = StringUtil.checkCode(getPara("toTime"));
+		String mark = StringUtil.checkCode(getPara("mark"));
 		
 		Store store = new Store();
 		store.set("province_id", provinceId);
@@ -321,7 +321,8 @@ public class RestfulController extends Controller{
 		store.set("create_time", DateUtil.getNowTimestamp());
 		store.set("update_time", DateUtil.getNowTimestamp());
 		store.set("status", Constants.VERTIFY_STATUS.STAY_CERTIFICATE);
-
+		store.set("city_district", dto.getCityDistrict());
+		
 		int s = Store.dao.saveInfos(store);
 		System.out.println("==========storeId====="+s);
 		boolean ret = false;

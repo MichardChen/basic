@@ -195,6 +195,9 @@ public class StringUtil extends StringUtils {
 	}
 	
 	public static String checkCode(String codePara){
+		if(StringUtil.isBlank(codePara)){
+			return "";
+		}
 		try{
 			if(codePara!=null || !("").equals(codePara)){
 				if(codePara.equals(new String(codePara.getBytes("iso-8859-1"),"iso-8859-1"))){
@@ -205,7 +208,6 @@ public class StringUtil extends StringUtils {
 					codePara=new String(codePara.getBytes("gbk"),"utf-8");
 				}
 			}
-			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
