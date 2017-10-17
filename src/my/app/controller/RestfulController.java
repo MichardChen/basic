@@ -1178,4 +1178,10 @@ public class RestfulController extends Controller{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryCodeMst(dto));
 	}
+	
+	//获取个人数据
+	public void queryPersonData() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryPersonData(dto));
+	}
 }

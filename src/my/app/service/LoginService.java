@@ -70,6 +70,7 @@ import my.core.vo.ChooseAddressVO;
 import my.core.vo.CodeMstVO;
 import my.core.vo.DataListVO;
 import my.core.vo.DocumentListVO;
+import my.core.vo.MemberDataVO;
 import my.core.vo.MessageListVO;
 import my.core.vo.NewTeaSaleListModel;
 import my.core.vo.NewsVO;
@@ -3227,5 +3228,28 @@ public class LoginService {
 		data.setMessage("查询成功");
 		data.setData(vList);
 		return data;
+	}
+	
+	public ReturnData queryPersonData(LoginDTO dto) throws Exception{
+		ReturnData data = new ReturnData();
+		Member member = Member.dao.queryById(dto.getUserId());
+		if(member != null){
+			MemberDataVO vo = new MemberDataVO();
+			vo.setIcon(member.getStr("icon"));
+			vo.setMobile(member.getStr("mobile"));
+			vo.setNickName(member.getStr("nick_name"));
+			vo.setQqNo(member.getStr("qq"));
+			vo.setWxNo(member.getStr("wx"));
+			Map<String, Object> map = new HashMap<>();
+			map.put("member", vo);
+			data.setData(map);
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("查询成功");
+			return data;
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("查询失败");
+			return data;
+		}
 	}
 }

@@ -18,6 +18,7 @@ import my.core.model.Menu;
 import my.core.model.Role;
 import my.core.model.RoleMenu;
 import my.core.model.UserMenu;
+import my.core.model.UserRole;
 import my.core.model.WareHouse;
 import my.core.vo.EditRoleModel;
 import my.core.vo.MenuListVO;
@@ -215,6 +216,15 @@ public class RoleController extends Controller {
 			rm1.set("menu_id", menuId);
 			boolean save = RoleMenu.dao.saveInfo(rm1);
 			if(save){
+				//为角色下的用户添加路径
+				List<UserRole> userRoles = UserRole.dao.queryUserRoleByRoleId(roleId);
+				for(UserRole ur : userRoles){
+					int userId = ur.getInt("user_id");
+					UserMenu uMenu = new UserMenu();
+					uMenu.set("user_id", userId);
+					uMenu.set("menu_id", menuId);
+					UserMenu.dao.saveInfo(uMenu);
+				}
 				setAttr("message","添加成功");
 			}else{
 				setAttr("message","添加失败");

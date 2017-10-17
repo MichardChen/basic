@@ -1,5 +1,7 @@
 package my.core.model;
 
+import java.util.List;
+
 import org.huadalink.plugin.tablebind.TableBind;
 
 import com.jfinal.plugin.activerecord.Model;
@@ -24,5 +26,9 @@ public class UserRole extends Model<UserRole> {
 	
 	public UserRole queryUserRoleByUserId(int userId){
 		return UserRole.dao.findFirst("select * from s_user_role where user_id=?",userId);
+	}
+	
+	public List<UserRole> queryUserRoleByRoleId(int roleId){
+		return UserRole.dao.find("select * from s_user_role where role_id=?",roleId);
 	}
 }
