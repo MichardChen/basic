@@ -56,7 +56,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     async: false, // 设置同步
                     data: data,
                     type: "POST",
-                    url: "newsInfo/uploadFile",//图片上传的url（指定action），返回的是图片上传后的路径，http格式
+                    url: "uploadFile",//图片上传的url（指定action），返回的是图片上传后的路径，http格式
                     cache: false,
                     contentType: false,
                     processData: false,

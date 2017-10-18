@@ -9,6 +9,8 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.core.constants.Constants;
+import my.core.model.Log;
 import my.core.model.Menu;
 import my.core.model.Role;
 import my.core.model.RoleMenu;
@@ -139,6 +141,7 @@ public class MenuController extends Controller {
 		
 		boolean save = Menu.dao.saveInfo(menu);
 		if(save){
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "添加菜单:"+name);
 			setAttr("message","添加成功");
 		}else{
 			setAttr("message","添加失败");
@@ -159,6 +162,7 @@ public class MenuController extends Controller {
 		
 		boolean save = Menu.dao.updateInfo(menu);
 		if(save){
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新菜单:"+name);
 			setAttr("message","修改成功");
 		}else{
 			setAttr("message","修改失败");

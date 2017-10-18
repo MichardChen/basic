@@ -8,8 +8,10 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.FeedBack;
+import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.SystemVersionControl;
 import my.pvcloud.model.FeedBackModel;
@@ -111,6 +113,13 @@ public class SystemController extends Controller {
 			svc.set("update_time", DateUtil.getNowTimestamp());
 			boolean ret = SystemVersionControl.dao.updateInfo(svc);
 			if(ret){
+				SystemVersionControl svcs = SystemVersionControl.dao.querySystemVersionControlById(id);
+				if(svcs != null){
+					CodeMst vcType = CodeMst.dao.queryCodestByCode(svcs.getStr("version_type_cd"));
+					if(vcType != null){
+						Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "保存系统配置:"+vcType.getStr("name"));
+					}
+				}
 				setAttr("message", "保存成功");
 			}else{
 				setAttr("message", "保存失败");

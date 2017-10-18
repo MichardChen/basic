@@ -10,9 +10,11 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.Document;
 import my.core.model.FeedBack;
+import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.Menu;
 import my.core.model.Role;
@@ -175,6 +177,7 @@ public class RoleController extends Controller {
 		role.set("role_name", roleName);
 		boolean save = Role.dao.updateInfo(role);
 		if(save){
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "新增角色:"+roleName);
 			setAttr("message","修改成功");
 		}else{
 			setAttr("message","修改失败");
@@ -190,10 +193,12 @@ public class RoleController extends Controller {
 		int rId = rMenu.getInt("role_id");
 		int mId = rMenu.getInt("menu_id");
 		boolean deleteFlg = RoleMenu.dao.deleteById(roleId);
+		Role role = Role.dao.queryById(rId);
 		if(deleteFlg){
 			//删除用户菜单
 			int ret = UserMenu.dao.deleteUserMenuByMenuId(mId);
 			if(ret != 0){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除角色:"+role.getStr("role_name"));
 				setAttr("message","删除成功");
 			}else{
 				setAttr("message","删除失败");
@@ -215,7 +220,15 @@ public class RoleController extends Controller {
 			rm1.set("role_id", roleId);
 			rm1.set("menu_id", menuId);
 			boolean save = RoleMenu.dao.saveInfo(rm1);
-			if(save){
+			if (save) {
+				Role role = Role.dao.queryById(roleId);
+				Menu menu = Menu.dao.queryById(menuId);
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "为"+role.getStr("role_name")+"角色新增权限："+menu.getStr("menu_name"));
+				setAttr("message","添加成功");
+			}else{
+				setAttr("message","添加失败");
+			}
+			/*if(save){
 				//为角色下的用户添加路径
 				List<UserRole> userRoles = UserRole.dao.queryUserRoleByRoleId(roleId);
 				for(UserRole ur : userRoles){
@@ -225,10 +238,13 @@ public class RoleController extends Controller {
 					uMenu.set("menu_id", menuId);
 					UserMenu.dao.saveInfo(uMenu);
 				}
+				Role role = Role.dao.queryById(roleId);
+				Menu menu = Menu.dao.queryById(menuId);
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "为"+role.getStr("role_name")+"角色新增权限："+menu.getStr("menu_name"));
 				setAttr("message","添加成功");
 			}else{
 				setAttr("message","添加失败");
-			}
+			}*/
 		}
 		index();
 	}
@@ -246,6 +262,7 @@ public class RoleController extends Controller {
 		role.set("role_code", max+1);
 		boolean save = Role.dao.saveInfo(role);
 		if(save){
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "新增角色:"+name);
 			setAttr("message","添加成功");
 		}else{
 			setAttr("message","添加失败");

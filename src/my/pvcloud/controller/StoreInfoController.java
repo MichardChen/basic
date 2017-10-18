@@ -28,6 +28,7 @@ import com.jfinal.upload.UploadFile;
 import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.CodeMst;
+import my.core.model.Log;
 import my.core.model.ReturnData;
 import my.core.model.Store;
 import my.core.model.StoreImage;
@@ -173,6 +174,8 @@ public class StoreInfoController extends Controller {
 			String status = getPara("status");
 			int ret = service.updateFlg(id, status);
 			if(ret==0){
+				Store store = Store.dao.queryById(id);
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新门店状态:"+store.getStr("store_name"));
 				setAttr("message", "操作成功");
 			}else{
 				setAttr("message", "操作失败");

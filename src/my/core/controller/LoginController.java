@@ -1,5 +1,7 @@
 package my.core.controller;
 
+import my.core.constants.Constants;
+import my.core.model.Log;
 import my.core.model.User;
 import my.core.service.UserService;
 
@@ -55,6 +57,7 @@ public class LoginController extends Controller {
 			msg = "登录成功";
 			User user=service.queryByUserName(userName, password);
 			setSessionAttr("agentId", user.get("user_id"));
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "登录");
 		} catch (IncorrectCaptchaException e) {
 			msg = "验证码错误!";
 		} catch (UnknownAccountException e) {
@@ -78,6 +81,7 @@ public class LoginController extends Controller {
 	 * 返回登录界面
 	 */
 	public void checkout() {
+		Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "退出");
 		Subject subject = SecurityUtils.getSubject();
 		if (subject != null) {
 			subject.logout();

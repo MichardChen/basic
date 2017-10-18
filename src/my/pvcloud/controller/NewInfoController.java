@@ -23,6 +23,7 @@ import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.Admin;
 import my.core.model.CodeMst;
+import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.News;
 import my.core.model.ReturnData;
@@ -253,6 +254,7 @@ public class NewInfoController extends Controller {
 								   ,content
 								   ,contentUrl);
 		if(ret != 0){
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "新增资讯:"+newsTitle);
 			setAttr("message","新增成功");
 		}else{
 			setAttr("message","新增失败");
@@ -324,7 +326,6 @@ public class NewInfoController extends Controller {
 				setAttr("message", "修改失败");
 			}
 		}
-		
 		index();
 	}
 	
@@ -336,6 +337,7 @@ public class NewInfoController extends Controller {
 			int newsId = getParaToInt("newsId");
 			int ret = service.updateFlg(newsId, 0);
 			if(ret==0){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除资讯,id:"+newsId);
 				setAttr("message", "删除成功");
 			}else{
 				setAttr("message", "删除失败");

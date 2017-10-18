@@ -8,9 +8,11 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.Document;
 import my.core.model.FeedBack;
+import my.core.model.Log;
 import my.core.model.Member;
 import my.pvcloud.model.DocumentModel;
 import my.pvcloud.model.FeedBackModel;
@@ -144,6 +146,7 @@ public class FeedBackController extends Controller {
 			int flg = StringUtil.toInteger(getPara("flg"));
 			int ret = service.updateFlg(id, flg);
 			if(ret!=0){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "查看反馈消息");
 				setAttr("message", "保存成功");
 			}else{
 				setAttr("message", "保存失败");

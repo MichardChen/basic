@@ -16,6 +16,7 @@ import com.jfinal.upload.UploadFile;
 import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.Carousel;
+import my.core.model.Log;
 import my.core.model.Tea;
 import my.core.model.WareHouse;
 import my.core.vo.WareHouseVO;
@@ -107,6 +108,7 @@ public class WareHouseController extends Controller {
 			//保存
 			boolean ret = WareHouse.dao.saveInfo(house);
 			if(ret){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "新增仓库:"+getPara("name"));
 				setAttr("message","新增成功");
 			}else{
 				setAttr("message","新增失败");
@@ -124,6 +126,7 @@ public class WareHouseController extends Controller {
 		//保存
 		boolean ret = WareHouse.dao.updateInfo(house);
 		if(ret){
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "修改仓库:"+getPara("name"));
 			setAttr("message","修改成功");
 		}else{
 			setAttr("message","修改失败");
@@ -139,6 +142,8 @@ public class WareHouseController extends Controller {
 			int id = getParaToInt("id");
 			int ret = service.updateFlg(id, 0);
 			if(ret==0){
+				WareHouse wareHouse = WareHouse.dao.queryById(id);
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除仓库:"+wareHouse.getStr("warehouse_name"));
 				setAttr("message", "删除成功");
 			}else{
 				setAttr("message", "删除失败");

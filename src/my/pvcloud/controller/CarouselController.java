@@ -20,6 +20,7 @@ import com.jfinal.upload.UploadFile;
 import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.Carousel;
+import my.core.model.Log;
 import my.core.model.News;
 import my.core.model.SystemVersionControl;
 import my.core.model.WareHouse;
@@ -135,6 +136,7 @@ public class CarouselController extends Controller {
 			//保存
 			boolean ret = Carousel.dao.saveInfo(c);
 			if(ret){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "添加轮播图");
 				setAttr("message","新增成功");
 			}else{
 				setAttr("message","新增失败");
@@ -151,6 +153,7 @@ public class CarouselController extends Controller {
 			int id = getParaToInt("id");
 			int ret = service.updateFlg(id, 0);
 			if(ret==0){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除轮播图");
 				setAttr("message", "删除成功");
 			}else{
 				setAttr("message", "删除失败");
@@ -176,6 +179,7 @@ public class CarouselController extends Controller {
 		//保存
 		boolean ret = Carousel.dao.updateInfo(carousel);
 		if(ret){
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新轮播图");
 			setAttr("message","修改成功");
 		}else{
 			setAttr("message","修改失败");

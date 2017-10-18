@@ -11,6 +11,8 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.core.constants.Constants;
+import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
 import my.core.vo.MemberVO;
@@ -169,6 +171,7 @@ public class MemberController extends Controller {
 		member.set("status", statusString);
 		boolean ret = Member.dao.updateInfo(member);
 		if(ret){
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新用户"+mobile+"的信息");
 			setAttr("message", "保存成功");
 		}else{
 			setAttr("message", "保存失败");
@@ -184,6 +187,7 @@ public class MemberController extends Controller {
 		member.set("update_time", DateUtil.getNowTimestamp());
 		boolean ret = MemberBankcard.dao.updateInfo(member);
 		if(ret){
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新用户id:"+id+"的银行卡状态");
 			setAttr("message", "保存成功");
 		}else{
 			setAttr("message", "保存失败");

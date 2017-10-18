@@ -489,6 +489,13 @@ public class LoginService {
 			map.put("updateShowFlg", 0);
 		}
 		
+		Document document = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.TRADE_CONTRACT);
+		if(document != null){
+			map.put("tradeContract", document.getStr("desc_url"));
+		}else{
+			map.put("tradeContract", "");
+		}
+		
 		//判断是否绑定门店
 		Store store = Store.dao.queryMemberStore(dto.getUserId());
 		if(store != null){

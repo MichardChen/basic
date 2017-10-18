@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import my.core.model.Menu;
+import my.core.model.RoleMenu;
 import my.core.model.User;
 import my.core.model.UserMenu;
+import my.core.model.UserRole;
 import my.core.tx.TxProxy;
 import my.core.tx.TxService;
 import my.pvcloud.vo.MenuNav;
@@ -24,9 +26,18 @@ public class IndexService {
 	public List<Menu> getMenuList(int userId){
 		return Menu.dao.getMenuByUserId(userId);
 	}
-	public List<Menu> getUserMenuByUserId(int userId)
-	{
+	public List<Menu> getUserMenuByUserId(int userId){
 		return Menu.dao.getUserMenuByUserId(userId);
+	}
+	
+	public List<Menu> queryUserMenuByUserId(int userId){
+		UserRole ur = UserRole.dao.queryUserRoleByUserId(userId);
+		if(ur != null){
+			int roleId = ur.getInt("role_id");
+			return Menu.dao.getRoleMenuByRoleId(roleId);
+		}else{
+			return null;
+		}
 	}
 	
 	

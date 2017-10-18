@@ -22,6 +22,7 @@ import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.Document;
+import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.News;
 import my.core.model.ReturnData;
@@ -215,6 +216,7 @@ public class DodumentController extends Controller {
 		    document.set("flg", 1);
 		boolean ret = Document.dao.saveInfo(document);
 		if(ret){
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "新增文档");
 			setAttr("message","新增成功");
 		}else{
 			setAttr("message","新增失败");
@@ -290,6 +292,7 @@ public class DodumentController extends Controller {
 			document.set("flg", 1);
 			boolean ret = Document.dao.updateInfo(document);
 			if(ret){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新文档");
 				setAttr("message","修改成功");
 			}else{
 				setAttr("message","修改失败");
@@ -324,6 +327,7 @@ public class DodumentController extends Controller {
 			document.set("flg", 1);
 			boolean ret = Document.dao.saveInfo(document);
 			if(ret){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新文档");
 				setAttr("message","新增成功");
 			}else{
 				setAttr("message","新增失败");

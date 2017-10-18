@@ -30,16 +30,14 @@ public class IndexController extends Controller {
 		int userId=user.get("user_id");
 		int isAdmin=user.get("isadmin") !=null ? user.getInt("isadmin") :0;
 		List<Menu> list=new ArrayList<Menu>();
-		if(isAdmin==1)
-		{	
+		if(isAdmin==1){	
 			//管理员获取所有菜单列表
 			list = service.getMenuList(userId);
 		}else{
 			//获取部分菜单列表
-			list=service.getUserMenuByUserId(userId);
+			list=service.queryUserMenuByUserId(userId);
 		}
 		user.put("menu", list);
-		
 		renderJson(user);
 	}
 	

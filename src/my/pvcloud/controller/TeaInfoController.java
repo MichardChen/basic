@@ -23,6 +23,7 @@ import com.sun.java.swing.plaf.motif.resources.motif;
 import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.CodeMst;
+import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.ReturnData;
 import my.core.model.Tea;
@@ -360,6 +361,7 @@ public class TeaInfoController extends Controller {
 		}else{
 			setAttr("message","新增失败");
 		}
+		Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "上架茶叶:"+title);
 		index();
 	}
 	
@@ -519,6 +521,7 @@ public class TeaInfoController extends Controller {
 		}else{
 			setAttr("message","修改失败");
 		}
+		Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "修改茶叶:"+title);
 		index();
 	}
 	
@@ -562,6 +565,8 @@ public class TeaInfoController extends Controller {
 			int teaId = getParaToInt("id");
 			int ret = service.updateFlg(teaId, 0);
 			if(ret==0){
+				Tea tea = Tea.dao.queryById(teaId);
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "下架茶叶:"+tea.getStr("tea_title"));
 				setAttr("message", "删除成功");
 			}else{
 				setAttr("message", "删除失败");

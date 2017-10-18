@@ -109,13 +109,13 @@ public interface Constants {
 	/**
 	 * 本地
 	public static interface HOST{
-		public static final String LOCALHOST = "http://192.168.1.131:82/newsimages/";
-		public static final String TEA = "http://192.168.1.131:82/tea/";
-		public static final String DOCUMENT = "http://192.168.1.131:82/document/";
-		public static final String FILE = "http://192.168.1.131:82/file/";
-		public static final String ICON = "http://192.168.1.131:82/icon/";
-		public static final String IMG = "http://192.168.1.131:82/img/";
-		public static final String STORE = "http://192.168.1.131:82/store/";
+		public static final String LOCALHOST = "http://192.168.1.7:82/newsimages/";
+		public static final String TEA = "http://192.168.1.7:82/tea/";
+		public static final String DOCUMENT = "http://192.7.1.131:82/document/";
+		public static final String FILE = "http://192.168.1.7:82/file/";
+		public static final String ICON = "http://192.168.1.7:82/icon/";
+		public static final String IMG = "http://192.168.1.7:82/img/";
+		public static final String STORE = "http://192.168.1.7:82/store/";
 	}
 	
 	public static interface FILE_HOST{
@@ -131,13 +131,13 @@ public interface Constants {
 	
 	/**服务器*/
 	public static interface HOST{
-		public static final String LOCALHOST = "http://139.196.171.205:88/newsimages/";
-		public static final String TEA = "http://139.196.171.205:88/tea/";
-		public static final String DOCUMENT = "http://139.196.171.205:88/document/";
-		public static final String FILE = "http://139.196.171.205:88/file/";
-		public static final String ICON = "http://139.196.171.205:88/icon/";
-		public static final String IMG = "http://139.196.171.205:88/img/";
-		public static final String STORE = "http://139.196.171.205:88/store/";
+		public static final String LOCALHOST = "http://www.yibuwangluo.cn:88/newsimages/";
+		public static final String TEA = "http://www.yibuwangluo.cn:88/tea/";
+		public static final String DOCUMENT = "http://www.yibuwangluo.cn:88/document/";
+		public static final String FILE = "http://www.yibuwangluo.cn:88/file/";
+		public static final String ICON = "http://www.yibuwangluo.cn:88/icon/";
+		public static final String IMG = "http://www.yibuwangluo.cn:88/img/";
+		public static final String STORE = "http://www.yibuwangluo.cn:88/store/";
 	}
 	
 	public static interface FILE_HOST{
@@ -175,6 +175,8 @@ public interface Constants {
 		public static final String WAREHOUSE_INTRODUCE = "060006";
 		//茶叶包装及收费标准
 		public static final String TEA_PACKAGE_FEE_STANDARD = "060007";
+		//交易合同
+		public static final String TRADE_CONTRACT = "060008";
 	}
 	
 	public static interface VERSION_TYPE{

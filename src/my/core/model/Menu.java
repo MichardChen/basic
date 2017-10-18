@@ -26,6 +26,12 @@ public class Menu extends Model<Menu> {
 	{
 		return Menu.dao.find("select m.* from s_menu m, s_user_menu um where m.menu_id=um.menu_id and um.user_id=?  order by m.menu_id asc", userId);
 	}
+	
+	public List<Menu> getRoleMenuByRoleId(int roleId)
+	{
+		return Menu.dao.find("select m.* from s_menu m, s_role_menu rm where m.menu_id=rm.menu_id and rm.role_id=?  order by m.menu_id asc", roleId);
+	}
+	
 	public List<Menu> getMenu() {
 		return Menu.dao.find("select m.* from s_menu m  where  m.is_show!=0  order by m.menu_id asc");
 	}

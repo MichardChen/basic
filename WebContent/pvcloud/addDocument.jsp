@@ -56,7 +56,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     async: false, // 设置同步
                     data: data,
                     type: "POST",
-                    url: "teaInfo/uploadFile",//图片上传的url（指定action），返回的是图片上传后的路径，http格式
+                    url: "uploadFile",//图片上传的url（指定action），返回的是图片上传后的路径，http格式
                     cache: false,
                     contentType: false,
                     processData: false,
@@ -91,6 +91,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="060005">认证提示</option>
 							<option value="060006">存储规则和仓库介绍</option>
 							<option value="060007">茶叶包装及收费标准</option>
+							<option value="060008">掌上茶宝平台交易合同</option>
 						</select>
 		</tr>
 		<tr>

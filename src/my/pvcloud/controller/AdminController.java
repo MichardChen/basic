@@ -12,6 +12,8 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.core.constants.Constants;
+import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
 import my.core.model.Role;
@@ -163,6 +165,7 @@ public class AdminController extends Controller {
 		BigDecimal moneys = StringUtil.toBigDecimal(getPara("moneys"));
 		UserRole ur = UserRole.dao.queryUserRoleByUserId(id);
 		int roleId = StringUtil.toInteger(getPara("roleId"));
+		Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新管理员:"+name+"id:"+id+"的数据");
 		if(ur == null){
 			setAttr("message", "用户数据不存在");
 		}else{
@@ -245,6 +248,7 @@ public class AdminController extends Controller {
 		user.set("update_time", DateUtil.getNowTimestamp());
 		user.set("moneys", moneys);
 		int userId = User.dao.saveInfos(user);
+		Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "添加管理员:"+name+"id:"+userId+"的数据");
 		if(userId != 0){
 			//保存用户对于角色
 			UserRole ur = new UserRole();

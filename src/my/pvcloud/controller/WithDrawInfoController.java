@@ -2,8 +2,10 @@ package my.pvcloud.controller;
 
 import java.util.ArrayList;
 
+import my.core.constants.Constants;
 import my.core.model.BankCardRecord;
 import my.core.model.CodeMst;
+import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.Store;
 import my.pvcloud.model.BankRecordModel;
@@ -149,6 +151,10 @@ public class WithDrawInfoController extends Controller {
 			String flg = getPara("status");
 			int ret = service.updateFlg(id, flg);
 			if(ret!=0){
+				CodeMst status = CodeMst.dao.queryCodestByCode(flg);
+				if(status != null){
+					Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "处理提现申请id:"+id+","+status.getStr("name"));
+				}
 				setAttr("message", "操作成功");
 			}else{
 				setAttr("message", "操作失败");

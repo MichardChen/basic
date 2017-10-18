@@ -514,7 +514,7 @@ public class RestfulController extends Controller{
 			if(ret1 && ret2 && ret3 && ret4 && ret5 && ret6){
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("提交成功，请等待平台审核");
-				findStoreDetail1(dto.getUserId());
+				//findStoreDetail1(dto.getUserId());
 			}
 		}else{
 			data.setCode(Constants.STATUS_CODE.FAIL);
