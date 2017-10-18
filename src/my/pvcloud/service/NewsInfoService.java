@@ -7,7 +7,7 @@ import my.core.model.News;
 public class NewsInfoService{
 
 	public Page<News> queryByPage(int page,int size){
-		return News.dao.queryByPage(page, size);
+		return News.dao.queryByAdminPage(page, size);
 	}
 	
 	public News queryById(int newId){

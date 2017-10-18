@@ -122,7 +122,6 @@ td{
     		<thead>
     			<tr>
     				<th>角色名称</th>
-    				<th>访问路径</th>
     				<th>操作</th>
     			</tr>
     		</thead>
@@ -136,7 +135,6 @@ td{
 		    			<c:forEach var="s" items="${sList}">	
 		    				<tr class="bOrder">
 		    					<td>${s.name }</td>
-		    					<td>${s.path}</td>
 		    					<td>
 		    							<input type="button" value="查看访问权限" style="width: 100px;" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
 		    					</td>

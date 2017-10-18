@@ -33,8 +33,7 @@ public class Tea extends Model<Tea> {
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
 		if(StringUtil.isNoneBlank(title)){
-			strBuf.append(" and tea_title=?");
-			param.add(title);
+			strBuf.append(" and tea_title like '%"+title+"%'");
 		}
 			
 			

@@ -21,11 +21,11 @@ if(str!=''){
 		</tr>
 		<tr>
 			<td>注册手机</td>
-			<td><input type="text" name="mobile" value="${model.mobile}" style="IME-MODE: disabled;"/></td>
+			<td>${model.mobile}</td>
 		</tr>
 		<tr>
 			<td>账号余额</td>
-			<td><input type="text" name="moneys" value="${model.moneys}" style="IME-MODE: disabled;"/></td>
+			<td>${model.moneys}</td>
 		</tr>
 		<tr>
 			<td>用户状态</td>

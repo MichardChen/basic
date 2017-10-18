@@ -165,9 +165,7 @@ public class MemberController extends Controller {
 		String statusString = getPara("status");
 		Member member = new Member();
 		member.set("id", id);
-		member.set("mobile", mobile);
 		member.set("name", name);
-		member.set("moneys", moneys);
 		member.set("status", statusString);
 		boolean ret = Member.dao.updateInfo(member);
 		if(ret){

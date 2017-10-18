@@ -453,7 +453,7 @@ public class LoginService {
 	
 	public ReturnData index(LoginDTO dto) throws Exception{
 		ReturnData data = new ReturnData();
-		List<Carousel> carousels = Carousel.dao.queryCarouselList(4, 1);
+		List<Carousel> carousels = Carousel.dao.queryCarouselList(100, 1);
 		List<CarouselVO> vos = new ArrayList<CarouselVO>();
 		CarouselVO vo = null;
 		Map<String, Object> map = new HashMap<>();

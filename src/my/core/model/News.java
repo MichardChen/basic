@@ -24,8 +24,7 @@ public class News extends Model<News> {
 		String sql="";
 		String select="select *";
 		if(StringUtil.isNoneBlank(title)){
-			strBuf.append("and news_title=?");
-			param.add(title);
+			strBuf.append("and news_title like '%"+title+"%'");
 		}
 		
 		sql=" from t_news where 1=1 "+strBuf.toString()+" order by flg desc,create_time desc";
@@ -34,6 +33,12 @@ public class News extends Model<News> {
 	
 	public Page<News> queryByPage(int page,int size){
 		String sql=" from t_news where flg=1 order by flg desc,create_time desc";
+		String select="select * ";
+		return News.dao.paginate(page, size, select, sql);
+	}
+	
+	public Page<News> queryByAdminPage(int page,int size){
+		String sql=" from t_news order by flg desc,create_time desc";
 		String select="select * ";
 		return News.dao.paginate(page, size, select, sql);
 	}
