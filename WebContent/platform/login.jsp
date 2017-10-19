@@ -63,7 +63,7 @@
 			<img src="${CONTEXT_PATH}/assets/img/logo3.png" style=""/>
 		<p>
 		<div class="login-pannel" style="width:600px;margin:auto;">
-			<div class="login-logo"><img src="${CONTEXT_PATH}/assets/img/logo2.png" style="margin-top:20px;"/></div>
+			<div class=""><img src="${CONTEXT_PATH}/assets/img/logo2.png" style="margin-top:20px;"/></div>
 			<div style="width:450px;margin:auto;">
 			<form class="m-t" role="form" id="login_form" method="post"
 				action="${CONTEXT_PATH}/login/checkin" onsubmit="return false;">

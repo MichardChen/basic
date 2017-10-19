@@ -530,7 +530,7 @@ public class RestfulController extends Controller{
 		ReturnData data = new ReturnData();
 		if(memberId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("对不起，用户数据出错");
+			data.setMessage("对不起，您扫描的商家不存在");
 			renderJson(data);
 		}
 		Store store = Store.dao.queryMemberStore(memberId);
@@ -564,7 +564,7 @@ public class RestfulController extends Controller{
 			renderJson(data);
 		}else{
 			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("对不起，你还没有绑定门店");
+			data.setMessage("对不起，您扫描的商家还未绑定门店");
 			renderJson(data);
 		}
 	}
