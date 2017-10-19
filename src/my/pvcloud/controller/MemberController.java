@@ -15,6 +15,8 @@ import my.core.constants.Constants;
 import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
+import my.core.model.MemberStore;
+import my.core.model.Store;
 import my.core.vo.MemberVO;
 import my.pvcloud.model.CustInfo;
 import my.pvcloud.service.MemberService;
@@ -133,6 +135,12 @@ public class MemberController extends Controller {
 		//查询银行卡
 		MemberBankcard bankCard = MemberBankcard.dao.queryByMemberId(id);
 		setAttr("bankCard", bankCard);
+		Store store = Store.dao.queryById(model.getInt("store_id"));
+		if(store != null){
+			setAttr("store", store.getStr("store_name"));
+		}else{
+			setAttr("store", "");
+		}
 		render("memberAlert.jsp");
 	}
 	

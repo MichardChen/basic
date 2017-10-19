@@ -53,6 +53,10 @@ public class Member extends Model<Member> {
 		Db.update("update t_member set userpwd='"+userPwd+"',update_time='"+DateUtil.getNowTimestamp()+"' where mobile="+mobile);
 	}
 	
+	public int updateIdCardInfo(int userId,String idCardNo,String idCardImg){
+		return Db.update("update t_member set id_card_no='"+idCardNo+"',id_card_img='"+idCardImg+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
+	}
+	
 	public Long queryMemberListCount(String memberName){
 		if(!StringUtil.isBlank(memberName)){
 			return Db.queryLong("select count(*) from t_member where name like '%"+memberName+"%'");

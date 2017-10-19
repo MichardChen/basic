@@ -70,12 +70,15 @@ public class LoginDTO extends BaseDTO{
 			dto.setBusinessId(StringUtil.toInteger(request.getParameter("businessId")));
 			dto.setTeas(StringUtil.checkCode(request.getParameter("teas")));
 			dto.setCityDistrict(StringUtil.checkCode(request.getParameter("cityDistrict")));
+			dto.setSellerId(StringUtil.toInteger(request.getParameter("sellerId")));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		return dto;
 	}
 	
+	private int sellerId;
+	private String idCardImg;
 	private String cityDistrict;
 	private String teas;
 	private int businessId;
@@ -124,6 +127,22 @@ public class LoginDTO extends BaseDTO{
 	private String buyCartIds;
 	private String date;
 	
+	public int getSellerId() {
+		return sellerId;
+	}
+
+	public void setSellerId(int sellerId) {
+		this.sellerId = sellerId;
+	}
+
+	public String getIdCardImg() {
+		return idCardImg;
+	}
+
+	public void setIdCardImg(String idCardImg) {
+		this.idCardImg = idCardImg;
+	}
+
 	public String getCityDistrict() {
 		return cityDistrict;
 	}

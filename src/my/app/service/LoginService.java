@@ -2309,8 +2309,14 @@ public class LoginService {
 			bankcard.set("status",Constants.BIND_BANKCARD_STATUS.APPLING);
 			boolean ret = MemberBankcard.dao.updateInfo(bankcard);
 			if(ret){
-				data.setCode(Constants.STATUS_CODE.SUCCESS);
-				data.setMessage("绑定成功");
+				int retValue = Member.dao.updateIdCardInfo(dto.getUserId(), dto.getIdCardNo(), dto.getIdCardImg());
+				if(retValue != 0){
+					data.setCode(Constants.STATUS_CODE.SUCCESS);
+					data.setMessage("绑定成功");
+				}else{
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("绑定失败");
+				}
 			}else{
 				data.setCode(Constants.STATUS_CODE.FAIL);
 				data.setMessage("绑定失败");
@@ -2329,8 +2335,14 @@ public class LoginService {
 			bankcard.set("status",Constants.BIND_BANKCARD_STATUS.APPLING);
 			boolean ret = MemberBankcard.dao.saveInfo(bankcard);
 			if(ret){
-				data.setCode(Constants.STATUS_CODE.SUCCESS);
-				data.setMessage("绑定成功");
+				int retValue = Member.dao.updateIdCardInfo(dto.getUserId(), dto.getIdCardNo(), dto.getIdCardImg());
+				if(retValue != 0){
+					data.setCode(Constants.STATUS_CODE.SUCCESS);
+					data.setMessage("绑定成功");
+				}else{
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("绑定失败");
+				}
 			}else{
 				data.setCode(Constants.STATUS_CODE.FAIL);
 				data.setMessage("绑定失败");
@@ -2547,36 +2559,51 @@ public class LoginService {
 	//绑定会员
 	public ReturnData bindMember(LoginDTO dto){
 		ReturnData data = new ReturnData();
+		//商家id
 		int businessId = dto.getBusinessId();
-		String mobile = dto.getMobile();
+		int userId = dto.getUserId();
 		if(businessId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败，门店数据有误");
+			data.setMessage("绑定失败，您绑定门店不存在");
 			return data;
 		}
 		Store store = Store.dao.queryMemberStore(businessId);
 		if(store == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败，门店数据有误");
+			data.setMessage("绑定失败，您绑定门店不存在");
 			return data;
 		}
+		
 		int storeId = store.getInt("id");
-		if(StringUtil.isBlank(mobile)){
+		if(userId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("绑定失败，用户数据有误");
 			return data;
 		}
 		
-		Member member = Member.dao.queryMember(dto.getMobile());
+		Member member = Member.dao.queryById(userId);
 		if(member == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("绑定失败，用户数据有误");
 			return data;
 		}
 		
-		if(member.getInt("store_id")==null || member.getInt("store_id")!=0){
+		if((member.getInt("store_id")!=null)&&(member.getInt("store_id")!=0) && (member.getInt("store_id")!=storeId)){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("绑定失败，您已绑定过其他门店，不能重复绑定");
+			return data;
+		}
+		
+		if((member.getInt("store_id")!=null)&&(member.getInt("store_id")!=0) && (member.getInt("store_id")==storeId)){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("您已经绑定过此门店了，无需重复绑定");
+			return data;
+		}
+		
+		String status = store.getStr("status");
+		if(!StringUtil.equals(status, Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS)){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，您绑定门店暂未通过审核");
 			return data;
 		}
 		
@@ -2807,7 +2834,7 @@ public class LoginService {
 	//查询门店
 	public ReturnData queryStore(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		Store store = Store.dao.queryMemberStore(dto.getUserId());
+		Store store = Store.dao.queryMemberStore(dto.getSellerId());
 		if(store == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，门店不存在");

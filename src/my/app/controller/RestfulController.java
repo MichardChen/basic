@@ -1050,6 +1050,7 @@ public class RestfulController extends Controller{
 	public void bindBankCard(){
 		
 		UploadFile uploadFile = getFile("cardImg");
+		UploadFile uploadFile1 = getFile("cardImg");
 		
 		ContainFileInterceptor interceptor = new ContainFileInterceptor();
 		ReturnData data1 = interceptor.vertifyToken(getRequest());
@@ -1080,6 +1081,29 @@ public class RestfulController extends Controller{
 		    file.delete();
 		    dto.setIcon(logo1);
 		}
+		
+		String logo2 = "";
+		//上传文件
+		//第一张图
+		String uuid2 = UUID.randomUUID().toString();
+		if(uploadFile1 != null){
+			String fileName = uploadFile1.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile1.getFile();
+		    File t=new File(Constants.FILE_HOST.IMG+uuid2+"."+names[1]);
+		    logo2 = Constants.HOST.IMG+uuid2+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		    dto.setIdCardImg(logo2);
+		}
+		
 		renderJson(service.bingBankCard(dto));
 	}
 	

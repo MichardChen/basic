@@ -65,6 +65,10 @@ if(str!=''){
 			</td>
 		</tr>
 		<tr>
+			<td>绑定门店</td>
+			<td>${store}</td>
+		</tr>
+		<tr>
 			<td>操作</td>
 			<td>
 				<input type="button" value="审核通过" class="ys3" onclick="if(confirm('确认要审核通过?')){window.location='${CONTEXT_PATH}/memberInfo/updateStatus?id=${bankCard.id}&status=240002';}"/>
