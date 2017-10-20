@@ -27,6 +27,11 @@ public class SaleOrder extends Model<SaleOrder> {
 		return SaleOrder.dao.find("select a.* from t_sale_order a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where b.member_id = ? and a.status=? order by a.create_time desc limit ?,?",memberId,status,fromRow,pageSize);
 	}
 	
+	public List<SaleOrder> queryMemberSaleOrders(int memberId,int pageSize,int pageNum,String date){
+		int fromRow = (pageNum-1)*pageSize;
+		return SaleOrder.dao.find("select a.* from t_sale_order a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where b.member_id = ? and a.create_time like '%"+date+"%' order by a.create_time desc limit ?,?",memberId,fromRow,pageSize);
+	}
+	
 	public boolean updateInfo(SaleOrder order){
 		return new SaleOrder().setAttrs(order).update();
 	}

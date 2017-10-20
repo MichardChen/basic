@@ -171,7 +171,7 @@ public class StoreInfoController extends Controller {
 	public void update(){
 		try{
 			int id = getParaToInt("id");
-			String status = getPara("flg");
+			String status = StringUtil.checkCode(getPara("flg"));
 			int ret = service.updateFlg(id, status);
 			if(ret==0){
 				Store store = Store.dao.queryById(id);

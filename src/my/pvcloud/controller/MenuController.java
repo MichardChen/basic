@@ -128,8 +128,8 @@ public class MenuController extends Controller {
 	
 
 	public void saveMenu(){
-		String name = getPara("name");
-		String url = getPara("url");
+		String name = StringUtil.checkCode(getPara("name"));
+		String url = StringUtil.checkCode(getPara("url"));
 		Menu menu = new Menu();
 		menu.set("menu_name", name);
 		menu.set("url", url);
@@ -150,8 +150,8 @@ public class MenuController extends Controller {
 	}
 	
 	public void updateMenu(){
-		String name = getPara("name");
-		String url = getPara("url");
+		String name = StringUtil.checkCode(getPara("name"));
+		String url = StringUtil.checkCode(getPara("url"));
 		int menuId = StringUtil.toInteger(getPara("menuId"));
 		Menu menu = new Menu();
 		menu.set("menu_id", menuId);

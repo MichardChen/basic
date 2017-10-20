@@ -189,7 +189,16 @@ public class LoginService {
 		}
 		
 		//保存用户
-		int id = Member.dao.saveMember(mobile, userPwd,sex,dto.getUserTypeCd(),Constants.MEMBER_STATUS.NOT_CERTIFICATED);
+		String invateCode = dto.getInvateCode();
+		int storeId = 0;
+		Member businessMember = Member.dao.queryMemberByInviteCode(invateCode);
+		if(businessMember != null){
+			Store store = Store.dao.queryMemberStore(businessMember.getInt("id"));
+			if(store != null){
+				storeId = store.getInt("id");
+			}
+		}
+		int id = Member.dao.saveMember(mobile, userPwd,sex,dto.getUserTypeCd(),Constants.MEMBER_STATUS.NOT_CERTIFICATED,storeId);
 		if(id != 0){
 			Member m = Member.dao.queryMemberById(id);
 			Map<String, Object> map = new HashMap<>();
@@ -239,7 +248,7 @@ public class LoginService {
 			return data;
 		}
 		if(!StringUtil.equals(userPwd, member.getStr("userpwd"))){
-			data.setMessage("对不起吗，密码错误");
+			data.setMessage("对不起，密码错误");
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			return data;
 		}
@@ -1141,10 +1150,11 @@ public class LoginService {
 	//卖茶记录
 	public ReturnData querySaleTeaRecord(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		List<OrderItem> list = OrderItem.dao.querySaleTeaRecord(dto.getPageSize()
+		List<SaleOrder> list = SaleOrder.dao.queryMemberSaleOrders(dto.getUserId(), dto.getPageSize(), dto.getPageNum(), dto.getDate());
+		/*List<OrderItem> list = OrderItem.dao.querySaleTeaRecord(dto.getPageSize()
 															   ,dto.getPageNum()
 															   ,dto.getUserId()
-															   ,dto.getDate());
+															   ,dto.getDate());*/
 		List<RecordListModel> models = new ArrayList<>();
 		RecordListModel model = null;
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
@@ -1152,18 +1162,18 @@ public class LoginService {
 			return null;
 		}
 		String type = codeMst.getStr("data2");
-		for(OrderItem item : list){
+		for(SaleOrder saleOrder : list){
 			model = new RecordListModel();
 			model.setType(type);
-			model.setId(item.getInt("id"));
-			model.setDate(DateUtil.formatTimestampForDate(item.getTimestamp("create_time")));
-			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(item.getInt("wtm_item_id"));
+			model.setId(saleOrder.getInt("id"));
+			model.setDate(DateUtil.formatTimestampForDate(saleOrder.getTimestamp("create_time")));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(saleOrder.getInt("wtm_item_id"));
 			if(wtmItem != null){
 				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
 				if(wtm != null){
 					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
 					if(tea != null){
-						model.setContent(tea.getStr("tea_title")+"x"+item.getInt("quality")+"片");
+						model.setContent(tea.getStr("tea_title")+"x"+saleOrder.getInt("quality")+"片");
 						model.setTea(tea.getStr("tea_title"));
 						WareHouse wHouse = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
 						if(wHouse != null){
@@ -1172,7 +1182,7 @@ public class LoginService {
 					}
 				}
 			}
-			model.setMoneys("-"+StringUtil.toString(item.getBigDecimal("item_amount")));
+			model.setMoneys("-"+StringUtil.toString(saleOrder.getBigDecimal("item_amount")));
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -1353,6 +1363,11 @@ public class LoginService {
 		
 		ReturnData data = new ReturnData();
 		BuyCart cart = new BuyCart();
+		if(dto.getQuality() <= 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，茶叶数据不能为0");
+			return data;
+		}
 		cart.set("warehouse_tea_member_item_id", dto.getTeaId());
 		cart.set("quality", dto.getQuality());
 		cart.set("status", Constants.ORDER_STATUS.SHOPPING_CART);
@@ -2877,6 +2892,11 @@ public class LoginService {
 		if(item == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，茶叶数据出错");
+			return data;
+		}
+		if(quality <= 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，购买数量不能为0");
 			return data;
 		}
 		int itemStock = item.getInt("quality");

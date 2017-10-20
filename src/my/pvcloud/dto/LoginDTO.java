@@ -71,6 +71,7 @@ public class LoginDTO extends BaseDTO{
 			dto.setTeas(StringUtil.checkCode(request.getParameter("teas")));
 			dto.setCityDistrict(StringUtil.checkCode(request.getParameter("cityDistrict")));
 			dto.setSellerId(StringUtil.toInteger(request.getParameter("sellerId")));
+			dto.setInvateCode(StringUtil.checkCode(request.getParameter("invateCode")));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -126,7 +127,16 @@ public class LoginDTO extends BaseDTO{
 	private int teaId; 
 	private String buyCartIds;
 	private String date;
+	private String invateCode;
 	
+	public String getInvateCode() {
+		return invateCode;
+	}
+
+	public void setInvateCode(String invateCode) {
+		this.invateCode = invateCode;
+	}
+
 	public int getSellerId() {
 		return sellerId;
 	}

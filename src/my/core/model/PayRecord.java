@@ -74,9 +74,9 @@ public class PayRecord extends Model<PayRecord> {
 		public List<PayRecord> queryRecords(int pageSize,int pageNum,int memberId,String date){
 			int fromRow = pageSize*(pageNum-1);
 			if(StringUtil.isNoneBlank(date)){
-				return PayRecord.dao.find("select * from t_pay_record where member_id ="+memberId+" and create_time like '%"+date+"%' order by create_time desc limit "+fromRow+","+pageSize);
+				return PayRecord.dao.find("select * from t_pay_record where member_id ="+memberId+" and status != '220001' and create_time like '%"+date+"%' order by create_time desc limit "+fromRow+","+pageSize);
 			}else{
-				return PayRecord.dao.find("select * from t_pay_record where member_id ="+memberId+" order by create_time desc limit "+fromRow+","+pageSize);
+				return PayRecord.dao.find("select * from t_pay_record where member_id ="+memberId+" and status != '220001' order by create_time desc limit "+fromRow+","+pageSize);
 			}
 		}
 }

@@ -43,8 +43,12 @@ public class Member extends Model<Member> {
 		return Member.dao.findFirst("select * from t_member where id=?",id);
 	}
 	
-	public int saveMember(String mobile,String userPwd,int sex,String userTypeCd,String status){
-		Member member = new Member().set("mobile", mobile).set("userpwd", userPwd).set("member_grade_cd", userTypeCd).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex).set("status", status).set("id_code", StringUtil.getIdCode());
+	public Member queryMemberByInviteCode(String code){
+		return Member.dao.findFirst("select * from t_member where id_code='"+code+"'");
+	}
+	
+	public int saveMember(String mobile,String userPwd,int sex,String userTypeCd,String status,int storeId){
+		Member member = new Member().set("mobile", mobile).set("userpwd", userPwd).set("member_grade_cd", userTypeCd).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex).set("status", status).set("id_code", StringUtil.getIdCode()).set("store_id", storeId);
 		boolean isSave = member.save();
 		return member.getInt("id");
 	}

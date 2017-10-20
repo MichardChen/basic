@@ -101,9 +101,9 @@ public class SystemController extends Controller {
 	public void saveSystem(){
 		try{
 			int id = getParaToInt("id");
-			String data1 = getPara("data1");
-			String data2 = getPara("data2");
-			String mark = getPara("mark");
+			String data1 = StringUtil.checkCode(getPara("data1"));
+			String data2 = StringUtil.checkCode(getPara("data2"));
+			String mark = StringUtil.checkCode(getPara("mark"));
 			
 			SystemVersionControl svc = new SystemVersionControl();
 			svc.set("id", id);

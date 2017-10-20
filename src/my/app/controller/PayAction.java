@@ -1,8 +1,5 @@
 package my.app.controller;
 
-import java.beans.Transient;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -12,107 +9,39 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
-
 import org.huadalink.route.ControllerBind;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
-import com.alipay.api.domain.Data;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
-import com.alipay.api.request.AlipayTradePayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
-import com.alipay.api.response.AlipayTradePayResponse;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 
-import my.app.service.LoginService;
 import my.core.constants.Constants;
 import my.core.model.Member;
 import my.core.model.PayRecord;
 import my.core.model.ReturnData;
 import my.core.pay.AlipayCore;
-import my.core.pay.AlipayNotify;
 import my.core.pay.RequestXml;
 import my.core.service.MemberService;
 import my.pvcloud.dto.LoginDTO;
-import my.pvcloud.model.PayModel;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.PropertiesUtil;
 import my.pvcloud.util.StringUtil;
 import my.pvcloud.util.UtilDate;
 import my.pvcloud.util.WXRequestUtil;
+import net.sf.json.JSONObject;
 
 @ControllerBind(key = "/pay", path = "/pay")
 public class PayAction extends Controller{
 
 	MemberService service = Enhancer.enhance(MemberService.class);
 
-	//回调
-	public void Vertify() throws Exception{
-		
-		HttpServletRequest request = getRequest();
-		HttpServletResponse response = getResponse();
-		Map<String,String> params = new HashMap<String,String>();
-		Map requestParams = request.getParameterMap();
-		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
-			String name = (String) iter.next();
-			String[] values = (String[]) requestParams.get(name);
-			String valueStr = "";
-			for (int i = 0; i < values.length; i++) {
-				valueStr = (i == values.length - 1) ? valueStr + values[i]
-						: valueStr + values[i] + ",";
-			}
-			params.put(name, valueStr);
-		}
-		
-		response.setContentType("text/html;charset=utf-8");   		
-	    PrintWriter out = response.getWriter(); 
-		
-	    PayModel model = new PayModel();
-	    model.setOutTradeNo(request.getParameter("out_trade_no"));
-		model.setTradeNo(request.getParameter("trade_no"));
-		model.setTradeStatus(request.getParameter("trade_status"));
-		
-		//交易金额
-		model.setTotalFee(request.getParameter("total_fee"));
-		
-		model.setBuyerEmail(request.getParameter("buyer_email"));
-		int count=0;
-		count=Integer.valueOf(model.getOutTradeNo().substring(2,4));
-
-		if(AlipayNotify.verify(params)){//验证成功
-			
-			if(model.getTradeStatus().equals("TRADE_FINISHED")){
-		
-			} else if (model.getTradeStatus().equals("TRADE_SUCCESS")){
-				
-				System.out.println("支付宝支付成功");
-				/*UserInfo userInfo=userInfoBiz.queryAlipayTradeNo(out_trade_no);	
-				List<Alipay> alipayList=alipayBiz.queryByOutTradeNo(out_trade_no);
-				if(userInfo!=null && alipayList.size()==0){
-					
-					userInfo.setTotalCount(userInfo.getTotalCount()+count);
-					userInfoBiz.update(userInfo);
-					Alipay alipay=new Alipay();
-					alipay.setBuyerEmail(buyerEmail);
-					alipay.setTotalFee(total_fee);
-					alipay.setOutTradeNo(out_trade_no);
-					alipay.setTradeNo(trade_no);
-					alipay.setTradeStatus(trade_status);
-					alipay.setCreateDate(new Date());
-					alipayBiz.add(alipay);	
-			}*/
-		}
-			 out.println("success");	//请不要修改或删除
-		}else{//验证失败
-		    out.println("fail"); 	//请不要修改或删除
-		}
-	}
-	
+	//生成微信支付信息
 	public void generateWxPayInfo() throws Exception{
 		ReturnData data = new ReturnData();
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
@@ -125,6 +54,7 @@ public class PayAction extends Controller{
 		renderJson(data);
 	}
 	
+	//支付宝支付测试
 	public void testAliInfo() throws Exception{
 		
 		ReturnData data = new ReturnData();
@@ -334,77 +264,9 @@ public class PayAction extends Controller{
 		}else{
 			renderText("fail"); 
 		}
-		/*		
-		HttpServletRequest request = getRequest();
-		Map<String,String> params = new HashMap<String,String>();
-		Map requestParams = request.getParameterMap();
-		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
-			String name = (String) iter.next();
-			String[] values = (String[]) requestParams.get(name);
-			String valueStr = "";
-			for (int i = 0; i < values.length; i++) {
-				valueStr = (i == values.length - 1) ? valueStr + values[i]:valueStr + values[i] + ",";
-			}
-			params.put(name, valueStr);
-		}
-		
-		HttpServletResponse response = getResponse();
-		response.setContentType("text/html;charset=utf-8");   		
-	    PrintWriter out = response.getWriter(); 
-		
-		String orderNo = request.getParameter("out_trade_no");
-		String trade_no=request.getParameter("trade_no");
-		String trade_status=request.getParameter("trade_status");
-		 //交易金额
-		String total_fee = request.getParameter("total_amount");
-		
-		 if(AlipayNotify.verify(params)){//验证成功
-			
-			PayRecord payRecord = PayRecord.dao.queryByOutTradeNo(orderNo);
-			int userId = 0;
-			if(payRecord != null){
-				userId = payRecord.getInt("member_id");
-			}
-			if(trade_status.equals("TRADE_FINISHED")){
-				int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
-				if(updateFlg != 0){
-					PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_FINISHED, trade_no);
-					out.println("success");
-				}else{
-					out.println("fail");
-				}
-			}else if(trade_status.equals("TRADE_SUCCESS")){
-				int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
-				if(updateFlg != 0){
-					PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_SUCCESS, trade_no);
-					out.println("success");
-				}else{
-					out.println("fail");
-				}
-				System.out.println("支付宝支付成功");
-			}else if(trade_status.equals("WAIT_BUYER_PAY")){
-				int updateFlg = PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.WAIT_BUYER_PAY, trade_no);
-				if(updateFlg != 0){
-					out.println("success");
-				}else{
-					out.println("fail");
-				}
-				System.out.println("交易创建，等待买家付款");
-			}else if(trade_status.equals("TRADE_CLOSED")){
-				int updateFlg = PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_CLOSED, trade_no);
-				if(updateFlg != 0){
-					out.println("success");
-				}else{
-					out.println("fail");
-				}
-				System.out.println("未付款交易超时关闭，或支付完成后全额退款");
-			}
-		}else{//验证失败
-		    out.println("fail"); 	//请不要修改或删除
-		}*/
 	}
 	
-	
+	//生成支付宝支付信息
 	public void generateAliPayInfo() throws Exception{
 		
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
@@ -441,21 +303,21 @@ public class PayAction extends Controller{
 			model.setProductCode("QUICK_MSECURITY_PAY");
 			request.setBizModel(model);
 			request.setNotifyUrl(propertiesUtil.getProperties("ali_notify_url"));
-			try {
-			        //这里和普通的接口调用不同，使用的是sdkExecute
-			        AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
-			        ReturnData data = new ReturnData();
-			        Map<String, Object> dataMap = new HashMap<>();
-			        dataMap.put("payInfo", response.getBody());
-			        //AliPayMsg apm = new AliPayMsg();
-			        data.setCode(Constants.STATUS_CODE.SUCCESS);
-			        data.setMessage("获取支付信息成功");
-			        data.setData(dataMap); 
-			        System.out.println(response.getBody());//就是orderString 可以直接给客户端请求，无需再做处理。
-			        renderJson(data);
-			    } catch (AlipayApiException e) {
-			        e.printStackTrace();
-			}
+			try{
+			     //这里和普通的接口调用不同，使用的是sdkExecute
+			     AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
+			     ReturnData data = new ReturnData();
+			     Map<String, Object> dataMap = new HashMap<>();
+			     dataMap.put("payInfo", response.getBody());
+			     //AliPayMsg apm = new AliPayMsg();
+			     data.setCode(Constants.STATUS_CODE.SUCCESS);
+			     data.setMessage("获取支付信息成功");
+			     data.setData(dataMap); 
+			     System.out.println(response.getBody());//就是orderString 可以直接给客户端请求，无需再做处理。
+			     renderJson(data);
+				} catch (AlipayApiException e) {
+					e.printStackTrace();
+				}
 		}else{
 			ReturnData data = new ReturnData();
 			data.setCode(Constants.STATUS_CODE.FAIL);

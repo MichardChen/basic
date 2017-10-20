@@ -102,8 +102,8 @@ public class CarouselController extends Controller {
 		if(StringUtil.isNoneBlank(getPara("id"))){
 			updateCarousel();
 		}else{
-			String realUrl = getPara("realUrl");
-			String mark = getPara("mark");
+			String realUrl = StringUtil.checkCode(getPara("realUrl"));
+			String mark = StringUtil.checkCode(getPara("mark"));
 			FileService fs=new FileService();
 			
 			String logo = "";
@@ -172,8 +172,8 @@ public class CarouselController extends Controller {
 	
 	public void updateCarousel(){
 		Carousel carousel = new Carousel();
-		carousel.set("mark", getPara("mark"));
-		carousel.set("real_url", getPara("realUrl"));
+		carousel.set("mark", StringUtil.checkCode(getPara("mark")));
+		carousel.set("real_url", StringUtil.checkCode(getPara("realUrl")));
 		carousel.set("update_time", DateUtil.getNowTimestamp());
 		carousel.set("id", StringUtil.toInteger(getPara("id")));
 		//保存

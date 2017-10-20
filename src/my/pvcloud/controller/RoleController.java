@@ -170,7 +170,7 @@ public class RoleController extends Controller {
 	
 	//保存角色
 	public void saveRole(){
-		String roleName = getPara("name");
+		String roleName = StringUtil.checkCode(getPara("name"));
 		int roleId = StringUtil.toInteger(getPara("roleId"));
 		Role role = new Role();
 		role.set("role_id", roleId);
@@ -255,7 +255,7 @@ public class RoleController extends Controller {
 	
 
 	public void addRole(){
-		String name = getPara("name");
+		String name = StringUtil.checkCode(getPara("name"));
 		Role role = new Role();
 		role.set("role_name", name);
 		int max = StringUtil.toInteger(Role.dao.queryMaxCode());

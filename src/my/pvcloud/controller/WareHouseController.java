@@ -100,8 +100,8 @@ public class WareHouseController extends Controller {
 			updateWareHouse();
 		}else{
 			WareHouse house = new WareHouse();
-			house.set("mark", getPara("mark"));
-			house.set("warehouse_name", getPara("name"));
+			house.set("mark", StringUtil.checkCode(getPara("mark")));
+			house.set("warehouse_name", StringUtil.checkCode(getPara("name")));
 			house.set("create_time", DateUtil.getNowTimestamp());
 			house.set("update_time", DateUtil.getNowTimestamp());
 			house.set("flg", 1);
@@ -119,8 +119,8 @@ public class WareHouseController extends Controller {
 	
 	public void updateWareHouse(){
 		WareHouse house = new WareHouse();
-		house.set("mark", getPara("mark"));
-		house.set("warehouse_name", getPara("name"));
+		house.set("mark", StringUtil.checkCode(getPara("mark")));
+		house.set("warehouse_name", StringUtil.checkCode(getPara("name")));
 		house.set("update_time", DateUtil.getNowTimestamp());
 		house.set("id", StringUtil.toInteger(getPara("id")));
 		//保存

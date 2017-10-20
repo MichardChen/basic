@@ -161,7 +161,7 @@ public class AdminController extends Controller {
 	@Transient
 	public void updateAdmin(){
 		int id = getParaToInt("id");
-		String name = getPara("name");
+		String name = StringUtil.checkCode(getPara("name"));
 		BigDecimal moneys = StringUtil.toBigDecimal(getPara("moneys"));
 		UserRole ur = UserRole.dao.queryUserRoleByUserId(id);
 		int roleId = StringUtil.toInteger(getPara("roleId"));
@@ -223,9 +223,9 @@ public class AdminController extends Controller {
 	//添加用户
 	@Transient
 	public void addAdmin(){
-		String mobile = getPara("mobile");
-		String name = getPara("name");
-		String password = getPara("password");
+		String mobile = StringUtil.checkCode(getPara("mobile"));
+		String name = StringUtil.checkCode(getPara("name"));
+		String password = StringUtil.checkCode(getPara("password"));
 		BigDecimal moneys = StringUtil.toBigDecimal(getPara("moneys"));
 		int roleId = StringUtil.toInteger(getPara("roleId"));
 		int createUser = getSessionAttr("agentId");

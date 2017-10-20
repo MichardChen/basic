@@ -167,10 +167,9 @@ public class MemberController extends Controller {
 	 */
 	public void updateMember(){
 		int id = getParaToInt("id");
-		String mobile = getPara("mobile");
-		String name = getPara("name");
-		BigDecimal moneys = StringUtil.toBigDecimal(getPara("moneys"));
-		String statusString = getPara("status");
+		String mobile = StringUtil.checkCode(getPara("mobile"));
+		String name = StringUtil.checkCode(getPara("name"));
+		String statusString = StringUtil.checkCode(getPara("status"));
 		Member member = new Member();
 		member.set("id", id);
 		member.set("name", name);
@@ -186,7 +185,7 @@ public class MemberController extends Controller {
 	
 	public void updateStatus(){
 		int id = getParaToInt("id");
-		String status = getPara("status");
+		String status = StringUtil.checkCode(getPara("status"));
 		MemberBankcard member = new MemberBankcard();
 		member.set("id", id);
 		member.set("status", status);

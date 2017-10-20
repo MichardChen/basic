@@ -209,9 +209,9 @@ public class NewInfoController extends Controller {
 		//表单中有提交图片，要先获取图片
 		UploadFile uploadFile = getFile("newImg");
 		int hot = StringUtil.toInteger(getPara("hot"));
-		String newsTitle = getPara("newsTitle");
-		String newsTypeCd = getPara("newsTypeCd");
-		String content = StringUtil.formatHTML(newsTitle, getPara("content"));
+		String newsTitle = StringUtil.checkCode(getPara("newsTitle"));
+		String newsTypeCd = StringUtil.checkCode(getPara("newsTypeCd"));
+		String content = StringUtil.formatHTML(newsTitle, StringUtil.checkCode(getPara("content")));
 		FileService fs=new FileService();
 		
 		String logo = "";
@@ -300,8 +300,8 @@ public class NewInfoController extends Controller {
 	public void update(){
 		String id = getPara("custId");
 		int integral = getParaToInt("integral");
-		String phoneNum = getPara("phoneNum");
-		String addrname = getPara("addrname");
+		String phoneNum = StringUtil.checkCode(getPara("phoneNum"));
+		String addrname = StringUtil.checkCode(getPara("addrname"));
 		News custInfo = new News();
 		int custId = 0;
 		if(!("").equals(id) && id!=null){

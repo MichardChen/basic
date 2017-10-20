@@ -186,9 +186,9 @@ public class DodumentController extends Controller {
 
 		//新增
 		//表单中有提交图片，要先获取图片
-		String title = getPara("title");
-		String typeCd = getPara("typeCd");
-		String content = getPara("content");
+		String title = StringUtil.checkCode(getPara("title"));
+		String typeCd = StringUtil.checkCode(getPara("typeCd"));
+		String content = StringUtil.checkCode(getPara("content"));
 		FileService fs=new FileService();
 		
 		String logo = "";
@@ -263,9 +263,9 @@ public class DodumentController extends Controller {
 		int id = StringUtil.toInteger(getPara("id"));
 		if(id!=0){
 			//表单中有提交图片，要先获取图片
-			String title = getPara("title");
-			String typeCd = getPara("typeCd");
-			String content = getPara("content");
+			String title = StringUtil.checkCode(getPara("title"));
+			String typeCd = StringUtil.checkCode(getPara("typeCd"));
+			String content = StringUtil.checkCode(getPara("content"));
 			FileService fs=new FileService();
 			
 			//上传文件

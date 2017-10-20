@@ -210,10 +210,10 @@ public class TeaInfoController extends Controller {
 		UploadFile uploadFile2 = getFile("coverImg2");
 		UploadFile uploadFile3 = getFile("coverImg3");
 		UploadFile uploadFile4 = getFile("coverImg4");
-		String title = getPara("title");
-		BigDecimal price = StringUtil.toBigDecimal(getPara("price"));
-		String typeCd = getPara("typeCd");
-		String content = StringUtil.formatHTML(title, getPara("content"));
+		String title = StringUtil.checkCode(getPara("title"));
+		BigDecimal price = StringUtil.toBigDecimal(StringUtil.checkCode(getPara("price")));
+		String typeCd = StringUtil.checkCode(getPara("typeCd"));
+		String content = StringUtil.formatHTML(title, StringUtil.checkCode(getPara("content")));
 		FileService fs=new FileService();
 		
 		String logo = "";
@@ -303,11 +303,11 @@ public class TeaInfoController extends Controller {
 		//保存资讯
         Tea tea = new Tea();
         tea.set("tea_title",title);
-        tea.set("brand", getPara("brand"));
-        tea.set("product_place", getPara("place"));
-        tea.set("product_date", DateUtil.stringToDate(getPara("birthday")));
-        tea.set("sale_from_date", DateUtil.stringToDate(getPara("fromtime")));
-        tea.set("sale_to_date", DateUtil.stringToDate(getPara("totime")));
+        tea.set("brand", StringUtil.checkCode(getPara("brand")));
+        tea.set("product_place", StringUtil.checkCode(getPara("place")));
+        tea.set("product_date", DateUtil.stringToDate(StringUtil.checkCode(getPara("birthday"))));
+        tea.set("sale_from_date", DateUtil.stringToDate(StringUtil.checkCode(getPara("fromtime"))));
+        tea.set("sale_to_date", DateUtil.stringToDate(StringUtil.checkCode(getPara("totime"))));
         tea.set("weight", StringUtil.toInteger(getPara("size1")));
         tea.set("size",  StringUtil.toInteger(getPara("size2")));
         tea.set("total_output", StringUtil.toInteger(getPara("amount")));
@@ -371,10 +371,10 @@ public class TeaInfoController extends Controller {
 		UploadFile uploadFile2 = getFile("coverImg2");
 		UploadFile uploadFile3 = getFile("coverImg3");
 		UploadFile uploadFile4 = getFile("coverImg4");
-		String title = getPara("title");
+		String title = StringUtil.checkCode(getPara("title"));
 		BigDecimal price = StringUtil.toBigDecimal(getPara("price"));
-		String typeCd = getPara("typeCd");
-		String content = StringUtil.formatHTML(title, getPara("content"));
+		String typeCd = StringUtil.checkCode(getPara("typeCd"));
+		String content = StringUtil.formatHTML(title, StringUtil.checkCode(getPara("content")));
 		FileService fs=new FileService();
 		
 		String logo = "";
