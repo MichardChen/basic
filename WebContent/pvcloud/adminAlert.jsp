@@ -31,20 +31,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<table class="table table-responsive">
 		<tr>
 			<td>管理员名称</td>
-			<td><input type="text" name="name"  value="${model.username}" maxlength="30" style="width: 300px;" placeholder="请输入英文名字"/></td>
+			<td><input type="text" name="name" id="name" value="${model.username}" maxlength="30" style="width: 300px;" placeholder="请输入英文名字"/></td>
 		</tr>
 			<tr>
 			<td>密码</td>
-			<td><input type="password" name="password"  value="${model.password}" maxlength="30" style="width: 300px;" placeholder="请输入6-18位密码"/></td>
+			<td><input type="password" name="password" id="password" value="${model.password}" maxlength="30" style="width: 300px;" placeholder="请输入6-18位密码"/></td>
 		</tr>
 			<tr>
 			<td>手机</td>
-			<td><input type="text" name="mobile"  value="${model.mobile}" maxlength="30" style="width: 300px;" placeholder="请输入11位手机号"/></td>
+			<td><input type="text" name="mobile" id="mobile" value="${model.mobile}" maxlength="30" style="width: 300px;" placeholder="请输入11位手机号"/></td>
 		</tr>
-			<tr>
+			<%-- <tr>
 			<td>账号金额</td>
 			<td><input type="number" name="moneys"  step="0.01" value="${model.moneys}" maxlength="30" style="width: 300px;" placeholder="请输入账号金额"/></td>
-		</tr>
+		</tr> --%>
 			<tr>
 			<td>角色</td>
 			<td>

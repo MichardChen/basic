@@ -72,12 +72,14 @@ public class LoginDTO extends BaseDTO{
 			dto.setCityDistrict(StringUtil.checkCode(request.getParameter("cityDistrict")));
 			dto.setSellerId(StringUtil.toInteger(request.getParameter("sellerId")));
 			dto.setInvateCode(StringUtil.checkCode(request.getParameter("invateCode")));
+			dto.setOpenBankName(StringUtil.checkCode(request.getParameter("openBankName")));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		return dto;
 	}
 	
+	private String openBankName;
 	private int sellerId;
 	private String idCardImg;
 	private String cityDistrict;
@@ -129,6 +131,14 @@ public class LoginDTO extends BaseDTO{
 	private String date;
 	private String invateCode;
 	
+	public String getOpenBankName() {
+		return openBankName;
+	}
+
+	public void setOpenBankName(String openBankName) {
+		this.openBankName = openBankName;
+	}
+
 	public String getInvateCode() {
 		return invateCode;
 	}

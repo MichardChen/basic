@@ -73,13 +73,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 });
             });
         }
+        
+        function check(){
+        	var newsTitle = $("#newsTitle").val();
+        	var newImg = $("#newImg").val();
+        	var content = $("#content").val();
+        	if(newsTitle == ""){
+        		alert("请输入标题");
+        		return false;
+        	}
+        	if(newImg == null || newImg == ""){
+        		alert("请输入选择封面");
+        		return false;
+        	}
+        	if(content == null || content == ""){
+        		alert("请输入资讯内容");
+        		return false;
+        	}
+        	return true;
+        }
     </script>
-<form action="${CONTEXT_PATH}/newsInfo/saveNews" method="post" enctype="multipart/form-data">
+<form action="${CONTEXT_PATH}/newsInfo/saveNews" method="post" enctype="multipart/form-data" onsubmit="return check();">
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
 			<td>资讯标题</td>
-			<td><input type="text" name="newsTitle" maxlength="30" placeholder="标题最长30个字" style="width: 300px;"/></td>
+			<td><input type="text" name="newsTitle" id="newsTitle" maxlength="30" placeholder="标题最长30个字" style="width: 300px;"/></td>
 		</tr>
 		<tr>
 			<td>资讯类型</td>
@@ -103,7 +122,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<tr>
 			<td>资讯封面图片</td>
 			<td>
-					<input type="file" name="newImg"/>
+					<input type="file" name="newImg" id="newImg"/>
 			</td>
 		</tr>
 		<tr>

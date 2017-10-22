@@ -16,6 +16,10 @@ if(str!=''){
 <div class="control-group">
 	<table class="table table-responsive">
 		<tr>
+			<td>版本</td>
+			<td><input type="text" name="version" value="${model.version}" style="width: 300px;"/>（如果是安卓新版本，数值加 递增1）</td>
+		</tr>
+		<tr>
 			<td>数据项1</td>
 			<td><input type="text" name="data1" value="${model.data1}" style="width: 300px;"/></td>
 		</tr>

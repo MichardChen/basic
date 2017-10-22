@@ -28,7 +28,7 @@ function loadProject(data){
 		data : {},
 		dataType : "html",
 		success : function(result){
-			$('.modal-body').html(result);
+			$('#model').html(result);
 		}
 	});
 }
@@ -39,9 +39,19 @@ function edit(data){
 		data : {id:data},
 		dataType : "html",
 		success : function(result){
-			$('.modal-body').html(result);
+			$('#model1').html(result);
 		}
 	});
+}
+
+function check(){
+	var warehouseName = $("#warehouseName").val();
+	var mark = $("#mark").val();
+	if(warehouseName == ""){
+		alert("请输入仓库名称");
+		return false;
+	}
+	return true;
 }
 </script>
 <style>
@@ -155,7 +165,7 @@ td{
 		    					<td>
 		    							<c:if test="${s.flg==1}">
 		    									<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/warehouseInfo/del?id=${s.id}';}"/>
-		    									<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="edit(${s.id})"/>
+		    									<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="edit(${s.id})"/>
 		    							</c:if>
 		    					</td>
 		    				</tr>
@@ -183,10 +193,28 @@ td{
 		<div class="modal-content" style="width: 120%;margin-left:-10%;">
 			<div class="modal-header">
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">新增</h4>
+			</div>
+			<form action="${CONTEXT_PATH}/warehouseInfo/saveWareHouse" method="post" onsubmit="return check();">
+				<div class="modal-body" id="model">
+				</div>
+				<div class="modal-footer" style="margin-top:20px;">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<input type="submit" class="btn btn-success" value="保存"/>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myModal1" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="width: 120%;margin-left:-10%;">
+			<div class="modal-header">
+				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">修改</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/warehouseInfo/saveWareHouse" method="post">
-				<div class="modal-body">
+			<form action="${CONTEXT_PATH}/warehouseInfo/updateWareHouse" method="post" onsubmit="return check();">
+				<div class="modal-body" id="model1">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

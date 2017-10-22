@@ -10,8 +10,8 @@ public class StoreService {
 		return Store.dao.queryByPage(page, size);
 	}
 	
-	public Page<Store> queryByPageParams(int page,int size,String title,String status){
-		return Store.dao.queryByPageParams(page, size,title,status);
+	public Page<Store> queryByPageParams(int page,int size,String title,String status,int memberId){
+		return Store.dao.queryByPageParams(page, size,title,status,memberId);
 	}
 	
 	public Store queryById(int teaId){

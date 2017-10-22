@@ -31,12 +31,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<table class="table table-responsive">
 		<tr>
 			<td>仓库名称</td>
-			<td><input type="text" name="name" maxlength="30" style="width: 300px;" value="${data.warehouse_name}"/></td>
+			<td><input type="text" name="name" maxlength="30" id="warehouseName" style="width: 300px;" value="${data.warehouse_name}"/></td>
 		</tr>
 		<tr>
 			<td>备注</td>
 			<td>
-						<input type="text" name="mark" maxlength="30" style="width: 300px;" value="${data.mark}"/>
+						<input type="text" name="mark" maxlength="30" id="mark" style="width: 300px;" value="${data.mark}"/>
 						<input type="hidden" name="id" value="${data.id}"/>
 		</tr>
 	</table>

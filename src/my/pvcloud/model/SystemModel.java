@@ -10,8 +10,14 @@ public class SystemModel implements Serializable{
 	private String data1;
 	private String data2;
 	private String createTime;
+	private String version;
 	
-	
+	public String getVersion() {
+		return version;
+	}
+	public void setVersion(String version) {
+		this.version = version;
+	}
 	public String getCreateTime() {
 		return createTime;
 	}

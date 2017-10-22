@@ -29,6 +29,7 @@ import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.Log;
+import my.core.model.Member;
 import my.core.model.ReturnData;
 import my.core.model.Store;
 import my.core.model.StoreImage;
@@ -59,6 +60,7 @@ public class StoreInfoController extends Controller {
 		
 		removeSessionAttr("title");
 		removeSessionAttr("status");
+		removeSessionAttr("mobile");
 		Page<Store> list = service.queryByPage(page, size);
 		ArrayList<StoreModel> models = new ArrayList<>();
 		StoreModel model = null;
@@ -68,9 +70,15 @@ public class StoreInfoController extends Controller {
 			model.setTitle(store.getStr("store_name"));
 			model.setFlg(store.getInt("flg"));
 			model.setStatusCd(store.getStr("status"));
+			model.setAddress(store.getStr("store_address"));
 			CodeMst statusCodeMst = CodeMst.dao.queryCodestByCode(model.getStatusCd());
 			if(statusCodeMst != null){
 				model.setStatus(statusCodeMst.getStr("name"));
+			}
+			Member member2 = Member.dao.queryById(store.getInt("member_id"));
+			if(member2 != null){
+				model.setMobile(member2.getStr("mobile"));
+				model.setUserName(member2.getStr("name"));
 			}
 			models.add(model);
 		}
@@ -87,11 +95,15 @@ public class StoreInfoController extends Controller {
 		this.setSessionAttr("title",title);
 		String s=getSessionAttr("status");
 		this.setSessionAttr("status",s);
+		String m=getSessionAttr("mobile");
+		this.setSessionAttr("mobile",m);
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
         }
-        Page<Store> list = service.queryByPageParams(page, size,title,s);
+        Member member = Member.dao.queryMember(m);
+        int memerId = member == null ? 0 : member.getInt("id");
+        Page<Store> list = service.queryByPageParams(page, size,title,s,memerId);
 		ArrayList<StoreModel> models = new ArrayList<>();
 		StoreModel model = null;
 		for(Store store : list.getList()){
@@ -100,9 +112,15 @@ public class StoreInfoController extends Controller {
 			model.setTitle(store.getStr("store_name"));
 			model.setFlg(store.getInt("flg"));
 			model.setStatusCd(store.getStr("status"));
+			model.setAddress(store.getStr("store_address"));
 			CodeMst statusCodeMst = CodeMst.dao.queryCodestByCode(model.getStatusCd());
 			if(statusCodeMst != null){
 				model.setStatus(statusCodeMst.getStr("name"));
+			}
+			Member member2 = Member.dao.queryById(store.getInt("member_id"));
+			if(member2 != null){
+				model.setMobile(member2.getStr("mobile"));
+				model.setUserName(member2.getStr("name"));
 			}
 			models.add(model);
 		}
@@ -120,15 +138,19 @@ public class StoreInfoController extends Controller {
 		String s = getPara("status");
 		title = ptitle;
 		
+		String m = getPara("mobile");
+		
 		this.setSessionAttr("title",title);
 		this.setSessionAttr("status",s);
+		this.setSessionAttr("mobile",m);
 		
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
-	        
-	        Page<Store> list = service.queryByPageParams(page, size,title,s);
+	        Member member = Member.dao.queryMember(m);
+	        int memerId = member == null ? 0 : member.getInt("id");
+	        Page<Store> list = service.queryByPageParams(page, size,title,s,memerId);
 			ArrayList<StoreModel> models = new ArrayList<>();
 			StoreModel model = null;
 			for(Store store : list.getList()){
@@ -137,9 +159,15 @@ public class StoreInfoController extends Controller {
 				model.setTitle(store.getStr("store_name"));
 				model.setFlg(store.getInt("flg"));
 				model.setStatusCd(store.getStr("status"));
+				model.setAddress(store.getStr("store_address"));
 				CodeMst statusCodeMst = CodeMst.dao.queryCodestByCode(model.getStatusCd());
 				if(statusCodeMst != null){
 					model.setStatus(statusCodeMst.getStr("name"));
+				}
+				Member member2 = Member.dao.queryById(store.getInt("member_id"));
+				if(member2 != null){
+					model.setMobile(member2.getStr("mobile"));
+					model.setUserName(member2.getStr("name"));
 				}
 				
 				models.add(model);

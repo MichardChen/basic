@@ -24,7 +24,7 @@ function loadProject(data){
 		data : {'id':data},
 		dataType : "html",
 		success : function(result){
-			$('.modal-body').html(result);
+			$('#model2').html(result);
 		}
 	});
 }
@@ -35,9 +35,37 @@ function addMenu(){
 		data : {},
 		dataType : "html",
 		success : function(result){
-			$('.modal-body').html(result);
+			$('#model1').html(result);
 		}
 	});
+}
+
+function check(){
+	var menuName = $("#menuName").val();
+	var menuPath = $("#menuPath").val();
+	if(menuName == ""){
+		alert("请输入菜单名称");
+		return false;
+	}
+	if(menuPath == ""){
+		alert("请输入路径");
+		return false;
+	}
+	return true;
+}
+
+function check1(){
+	var menuName = $("#menuName1").val();
+	var menuPath = $("#menuPath1").val();
+	if(menuName == ""){
+		alert("请输入菜单名称");
+		return false;
+	}
+	if(menuPath == ""){
+		alert("请输入路径");
+		return false;
+	}
+	return true;
 }
 </script>
 <style>
@@ -180,8 +208,8 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">新增菜单</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/menuInfo/saveMenu" method="post">
-				<div class="modal-body">
+			<form action="${CONTEXT_PATH}/menuInfo/saveMenu" method="post" onsubmit="return check();">
+				<div class="modal-body" id="model1">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<input type="submit" class="btn btn-success" value="保存"/>
@@ -198,8 +226,8 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">修改菜单</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/menuInfo/updateMenu" method="post">
-				<div class="modal-body">
+			<form action="${CONTEXT_PATH}/menuInfo/updateMenu" method="post" onsubmit="return check1();">
+				<div class="modal-body" id="model2">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<input type="submit" class="btn btn-success" value="保存"/>

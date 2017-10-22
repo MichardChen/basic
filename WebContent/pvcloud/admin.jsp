@@ -28,7 +28,7 @@ function loadProject(data){
 		data : {id:data},
 		dataType : "html",
 		success : function(result){
-			$('.modal-body').html(result);
+			$('#model2').html(result);
 		}
 	});
 }
@@ -40,7 +40,7 @@ function addAdmin(){
 		data : {},
 		dataType : "html",
 		success : function(result){
-			$('.modal-body').html(result);
+			$('#model1').html(result);
 		}
 	});
 }
@@ -66,6 +66,7 @@ function check(){
 		alert("请输入账号金额");
 		return false;
 	}
+	return true;
 }
 </script>
 <style>
@@ -221,8 +222,8 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">修改</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/adminInfo/updateAdmin" method="post">
-				<div class="modal-body">
+			<form action="${CONTEXT_PATH}/adminInfo/updateAdmin" method="post" onsubmit="return check();">
+				<div class="modal-body" id="model2">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -239,8 +240,8 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">新增</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/adminInfo/addAdmin" method="post">
-				<div class="modal-body">
+			<form action="${CONTEXT_PATH}/adminInfo/addAdmin" method="post" onsubmit="return check();">
+				<div class="modal-body" id="model1">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

@@ -17,7 +17,11 @@ if(str!=''){
 	<table class="table table-responsive">
 		<tr>
 			<td>用户名</td>
-			<td><input type="text" name="name" value="${model.name}"/></td>
+			<td><input type="text" name="userName" value="${model.name}"/></td>
+		</tr>
+		<tr>
+			<td>用户昵称</td>
+			<td><input type="text" name="name" value="${model.nick_name}"/></td>
 		</tr>
 		<tr>
 			<td>注册手机</td>
@@ -37,6 +41,10 @@ if(str!=''){
 			</td>
 		</tr>
 		<tr>
+			<td>绑定门店</td>
+			<td>${store}</td>
+		</tr>
+		<tr>
 			<td><label style="color:red;">银行卡信息</label></td>
 			<td></td>
 		</tr>
@@ -50,11 +58,15 @@ if(str!=''){
 		</tr>
 		<tr>
 			<td>开户预留手机</td>
-			<td><input type="text" name="moneys" value="${bankCard.stay_mobile}" style="IME-MODE: disabled;"/></td>
+			<td><input type="text" value="${bankCard.stay_mobile}" style="IME-MODE: disabled;"/></td>
 		</tr>
 		<tr>
 			<td>开户名</td>
-			<td><input type="text" name="moneys" value="${bankCard.owner_name}" style="IME-MODE: disabled;"/></td>
+			<td><input type="text" value="${bankCard.owner_name}" style="IME-MODE: disabled;"/></td>
+		</tr>
+		<tr>
+			<td>开户支行</td>
+			<td><input type="text" value="${bankCard.open_bank_name}" style="IME-MODE: disabled;"/></td>
 		</tr>
 		<tr>
 			<td>审核结果</td>
@@ -63,10 +75,6 @@ if(str!=''){
 				<c:if test="${bankCard.status=='240002'}">审核成功</c:if>
 				<c:if test="${bankCard.status=='240003'}">审核失败</c:if>
 			</td>
-		</tr>
-		<tr>
-			<td>绑定门店</td>
-			<td>${store}</td>
 		</tr>
 		<tr>
 			<td>操作</td>

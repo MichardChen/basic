@@ -29,6 +29,7 @@ import my.core.model.ReturnData;
 import my.core.model.Tea;
 import my.core.model.User;
 import my.core.vo.MemberVO;
+import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.model.DocumentModel;
 import my.pvcloud.model.NewsModel;
 import my.pvcloud.model.TeaModel;
@@ -188,7 +189,7 @@ public class DodumentController extends Controller {
 		//表单中有提交图片，要先获取图片
 		String title = StringUtil.checkCode(getPara("title"));
 		String typeCd = StringUtil.checkCode(getPara("typeCd"));
-		String content = StringUtil.checkCode(getPara("content"));
+		String content = StringUtil.formatHTML(title,StringUtil.checkCode(getPara("content")));
 		FileService fs=new FileService();
 		
 		String logo = "";
@@ -265,7 +266,7 @@ public class DodumentController extends Controller {
 			//表单中有提交图片，要先获取图片
 			String title = StringUtil.checkCode(getPara("title"));
 			String typeCd = StringUtil.checkCode(getPara("typeCd"));
-			String content = StringUtil.checkCode(getPara("content"));
+			String content = StringUtil.formatHTML(title,StringUtil.checkCode(getPara("content")));
 			FileService fs=new FileService();
 			
 			//上传文件
@@ -359,5 +360,10 @@ public class DodumentController extends Controller {
 		Document document = service.queryById(getParaToInt("id"));
 		setAttr("document", document);
 		render("editDocument.jsp");
+	}
+	
+	public void showHtml(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		render(StringUtil.checkCode(getPara("url")));
 	}
 }

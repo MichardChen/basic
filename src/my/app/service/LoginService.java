@@ -2322,6 +2322,7 @@ public class LoginService {
 			bankcard.set("update_time", DateUtil.getNowTimestamp());
 			bankcard.set("card_img", dto.getIcon());
 			bankcard.set("status",Constants.BIND_BANKCARD_STATUS.APPLING);
+			bankcard.set("open_bank_name", dto.getOpenBankName());
 			boolean ret = MemberBankcard.dao.updateInfo(bankcard);
 			if(ret){
 				int retValue = Member.dao.updateIdCardInfo(dto.getUserId(), dto.getIdCardNo(), dto.getIdCardImg());
@@ -2348,6 +2349,7 @@ public class LoginService {
 			bankcard.set("update_time", DateUtil.getNowTimestamp());
 			bankcard.set("card_img", dto.getIcon());
 			bankcard.set("status",Constants.BIND_BANKCARD_STATUS.APPLING);
+			bankcard.set("open_bank_name", dto.getOpenBankName());
 			boolean ret = MemberBankcard.dao.saveInfo(bankcard);
 			if(ret){
 				int retValue = Member.dao.updateIdCardInfo(dto.getUserId(), dto.getIdCardNo(), dto.getIdCardImg());

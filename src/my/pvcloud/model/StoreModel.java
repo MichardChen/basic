@@ -10,7 +10,21 @@ public class StoreModel implements Serializable{
 	private int flg;
 	private String status;
 	private String statusCd;
+	private String userName;
+	private String mobile;
 	
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
 	public String getStatusCd() {
 		return statusCd;
 	}

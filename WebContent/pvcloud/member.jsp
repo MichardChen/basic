@@ -32,6 +32,17 @@ function loadProject(data){
 		}
 	});
 }
+function loadProject1(data){
+	$(".modal-title").html("查看");
+	$.ajax({
+		url : "${CONTEXT_PATH}/memberInfo/see",
+		data : {id:data},
+		dataType : "html",
+		success : function(result){
+			$('.modal-body').html(result);
+		}
+	});
+}
 </script>
 <style>
 .ys1{
@@ -114,6 +125,10 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="mobile" value="${cmobile}"/>
     				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">用户名</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="cname" value="${cname}"/>
+    				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
 			   </div>
     		</form>
@@ -126,6 +141,7 @@ td{
     		<thead>
     			<tr>
     				<th>用户名</th>
+    				<th>昵称</th>
     				<th>注册号码</th>
     				<th>余额</th>
     				<th>性别</th>
@@ -143,11 +159,14 @@ td{
 		    			<c:forEach var="s" items="${sList}">	
 		    				<tr class="bOrder">
 		    					<td>
+		    						${s.userName}
+		    					</td>
+		    					<td>
 		    						${s.name}
 		    					</td>
 		    					<td>
 		    						${s.mobile}
-		    					</td>
+		  						</td>
 		    					<td>${s.moneys}</td>
 		    					<td>
 		    							${s.sex}
@@ -156,7 +175,8 @@ td{
 		    							${s.createTime}
 		    					</td>
 		    					<td>
-		    						<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+		    						<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+		    						<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -192,6 +212,20 @@ td{
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 					<input type="submit" class="btn btn-success" value="保存"/>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myModal1" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="width: 120%;margin-left:-10%;">
+			<div class="modal-header">
+				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">查看</h4>
+			</div>
+			<form action="${CONTEXT_PATH}/memberInfo/updateMember" method="post">
+				<div class="modal-body">
 				</div>
 			</form>
 		</div>

@@ -31,11 +31,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<table class="table table-responsive">
 		<tr>
 			<td>菜单名称</td>
-			<td><input type="text" name="name" maxlength="30" style="width: 300px;"/></td>
+			<td><input type="text" name="name" id="menuName" maxlength="30" style="width: 300px;"/></td>
 		</tr>
 		<tr>
 			<td>菜单路径</td>
-			<td><input type="text" name="url" maxlength="30" style="width: 300px;"/></td>
+			<td><input type="text" name="url" id="menuPath" maxlength="30" style="width: 300px;"/></td>
 		</tr>
 	</table>
 </div>

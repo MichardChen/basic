@@ -10,6 +10,14 @@ public class MemberVO implements Serializable{
 	private String createTime;
 	private String moneys;
 	private String sex;
+	private String userName;
+	
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 	public int getId() {
 		return id;
 	}

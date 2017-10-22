@@ -35,10 +35,19 @@ function addRole(){
 		data : {},
 		dataType : "html",
 		success : function(result){
-			$('.modal-body').html(result);
+			$('#model1').html(result);
 		}
 	});
 }
+
+function check(){
+	var r = document.getElementById("roleNames");
+	if(r.value == ""){
+		 alert("角色名称不能为空");
+		 return false;
+	 }
+	 return true;
+ }
 </script>
 <style>
 .ys1{
@@ -183,8 +192,8 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">增加角色</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/roleInfo/addRole" method="post">
-				<div class="modal-body">
+			<form action="${CONTEXT_PATH}/roleInfo/addRole" method="post" onsubmit="return check();">
+				<div class="modal-body" id="model1">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<input type="submit" class="btn btn-success" value="保存"/>

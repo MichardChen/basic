@@ -31,7 +31,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<table class="table table-responsive">
 		<tr>
 			<td>角色名称</td>
-			<td><input type="text" name="name" maxlength="30" style="width: 300px;"/></td>
+			<td><input type="text" name="name" id="roleNames" maxlength="30" style="width: 300px;"/></td>
 		</tr>
 	</table>
 </div>

@@ -42,6 +42,7 @@ public class SystemController extends Controller {
 			model.setId(system.getInt("id"));
 			model.setData1(system.getStr("data1"));
 			model.setData2(system.getStr("data2"));
+			model.setVersion(system.getStr("version"));
 			model.setCreateTime(StringUtil.toString(system.getTimestamp("create_time")));
 			model.setMark(system.getStr("mark"));
 			CodeMst type = CodeMst.dao.queryCodestByCode(system.getStr("version_type_cd"));
@@ -72,6 +73,7 @@ public class SystemController extends Controller {
 			model.setId(system.getInt("id"));
 			model.setData1(system.getStr("data1"));
 			model.setData2(system.getStr("data2"));
+			model.setVersion(system.getStr("version"));
 			model.setCreateTime(StringUtil.toString(system.getTimestamp("create_time")));
 			model.setMark(system.getStr("mark"));
 			CodeMst type = CodeMst.dao.queryCodestByCode(system.getStr("version_type_cd"));
@@ -110,6 +112,7 @@ public class SystemController extends Controller {
 			svc.set("data1", data1);
 			svc.set("data2", data2);
 			svc.set("mark", mark);
+			svc.set("version", StringUtil.checkCode(getPara("version")));
 			svc.set("update_time", DateUtil.getNowTimestamp());
 			boolean ret = SystemVersionControl.dao.updateInfo(svc);
 			if(ret){

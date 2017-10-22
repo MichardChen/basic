@@ -72,13 +72,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 });
             });
         }
+        
+        function check(){
+        	var title = $("#title").val();
+        	var content = $("#content").val();
+        	if(title == ""){
+        		alert("请输入标题");
+        		return false;
+        	}
+        	if(content == ""){
+        		alert("请输入内容");
+        		return false;
+        	}
+        	return true;
+        }
     </script>
-<form action="${CONTEXT_PATH}/documentInfo/saveDocument" method="post">
+<form action="${CONTEXT_PATH}/documentInfo/saveDocument" method="post" onsubmit="return check();">
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
 			<td>文档标题</td>
-			<td><input type="text" name="title" maxlength="30" placeholder="标题最长30个字" style="width: 300px;"/></td>
+			<td><input type="text" name="title" id="title" maxlength="30" placeholder="标题最长30个字" style="width: 300px;"/></td>
 		</tr>
 		<tr>
 			<td>文档类型</td>

@@ -41,10 +41,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>手机</td>
 			<td><input type="text" name="mobile" id="mobile" maxlength="30" style="width: 300px;" placeholder="请输入11位手机号"/></td>
 		</tr>
-			<tr>
+			<!-- <tr>
 			<td>账号金额</td>
 			<td><input type="number" name="moneys" id="moneys" step="0.01" maxlength="30" style="width: 300px;" placeholder="请输入账号金额"/></td>
-		</tr>
+		</tr> -->
 			<tr>
 			<td>角色</td>
 			<td>

@@ -28,7 +28,7 @@ public class Store extends Model<Store> {
 		return Store.dao.paginate(page, size, select, sql);
 	}
 	
-	public Page<Store> queryByPageParams(int page,int size,String title,String status){
+	public Page<Store> queryByPageParams(int page,int size,String title,String status,int memberId){
 		
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
@@ -39,6 +39,10 @@ public class Store extends Model<Store> {
 		if(StringUtil.isNoneBlank(status)){
 			strBuf.append(" and status=?");
 			param.add(status);
+		}
+		if(memberId != 0){
+			strBuf.append(" and member_id=?");
+			param.add(memberId);
 		}
 			
 			String sql=" from t_store where 1=1 "+strBuf+" order by create_time desc";

@@ -120,6 +120,10 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="title" value="${title}"/>
     				</div>
+    				<label class="col-sm-2 col-xs-2 col-md-2 control-label">商家注册手机号</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
+    				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
 	    				<select name="status" style="height: 30px;">
@@ -142,6 +146,8 @@ td{
     		<thead>
     			<tr>
     				<th>名称</th>
+    				<th>用户名</th>
+    				<th>注册手机号</th>
     				<th>地址</th>
     				<th>描述</th>
     				<th>状态</th>
@@ -158,6 +164,8 @@ td{
 		    			<c:forEach var="s" items="${sList}">	
 		    				<tr class="bOrder">
 		    					<td>${s.title }</td>
+		    					<td>${s.userName }</td>
+		    					<td>${s.mobile }</td>
 		    					<td>${s.address}</td>
 		    					<td>${s.title }</td>
 		    					<td>${s.status}</td>

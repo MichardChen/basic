@@ -38,6 +38,7 @@ public class MemberController extends Controller {
 		
 		//清除查询条件
 		removeSessionAttr("cmobile");
+		removeSessionAttr("cname");
 		Page<Member> list = service.queryByPage(page, size);
 		ArrayList<MemberVO> models = new ArrayList<>();
 		MemberVO model = null;
@@ -45,7 +46,8 @@ public class MemberController extends Controller {
 			model = new MemberVO();
 			model.setId(member.getInt("id"));
 			model.setMobile(member.getStr("mobile"));
-			model.setName(member.getStr("name"));
+			model.setName(member.getStr("nick_name"));
+			model.setUserName(member.getStr("name"));
 			model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 			model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 			model.setSex(member.getInt("sex")==1?"男":"女");
@@ -62,25 +64,31 @@ public class MemberController extends Controller {
 	public void queryByConditionByPage(){
 			
 		String cmobile = getSessionAttr("cmobile");
+		String cname = getSessionAttr("cname");
 		Page<Member> custInfoList = new Page<Member>(null, 0, 0, 0, 0);
 		
 		String mobile = getPara("mobile");
 		cmobile = mobile;
 		
 		this.setSessionAttr("cmobile",cmobile);
+		String name = getPara("cname");
+		cname = name;
+		
+		this.setSessionAttr("cname",cname);
 		
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
-	        Page<Member> list = service.queryMemberListByPage(page, size,mobile);
+	        Page<Member> list = service.queryMemberListByPage(page, size,mobile,name);
 			ArrayList<MemberVO> models = new ArrayList<>();
 			MemberVO model = null;
 			for(Member member : list.getList()){
 				model = new MemberVO();
 				model.setId(member.getInt("id"));
 				model.setMobile(member.getStr("mobile"));
-				model.setName(member.getStr("name"));
+				model.setName(member.getStr("nick_name"));
+				model.setUserName(member.getStr("name"));
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 				model.setSex(member.getInt("sex")==1?"男":"女");
@@ -99,19 +107,24 @@ public class MemberController extends Controller {
 			
 			String cmobile=getSessionAttr("cmobile");
 			this.setSessionAttr("cmobile",cmobile);
+			
+			String cname=getSessionAttr("cname");
+			this.setSessionAttr("cname",cname);
+			
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
 	        
-	        Page<Member> list = service.queryMemberListByPage(page, size,cmobile);
+	        Page<Member> list = service.queryMemberListByPage(page, size,cmobile,cname);
 			ArrayList<MemberVO> models = new ArrayList<>();
 			MemberVO model = null;
 			for(Member member : list.getList()){
 				model = new MemberVO();
 				model.setId(member.getInt("id"));
 				model.setMobile(member.getStr("mobile"));
-				model.setName(member.getStr("name"));
+				model.setName(member.getStr("nick_name"));
+				model.setUserName(member.getStr("name"));
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 				model.setSex(member.getInt("sex")==1?"男":"女");
@@ -144,17 +157,37 @@ public class MemberController extends Controller {
 		render("memberAlert.jsp");
 	}
 	
+	public void see(){
+		int id = StringUtil.toInteger(getPara("id"));
+		Member model = service.queryById(id);
+		setAttr("model", model);
+		//查询银行卡
+		MemberBankcard bankCard = MemberBankcard.dao.queryByMemberId(id);
+		setAttr("bankCard", bankCard);
+		Store store = Store.dao.queryById(model.getInt("store_id"));
+		if(store != null){
+			setAttr("store", store.getStr("store_name"));
+		}else{
+			setAttr("store", "");
+		}
+		render("memberseeAlert.jsp");
+	}
+	
 	/**
 	 * 删除
 	 */
 	public void del(){
 		try{
-			int id = getParaToInt("id");
-			int ret = service.updateStatus(id, getPara("status"));
-			if(ret==0){
-				setAttr("message", "修改成功");
+			int id = StringUtil.toInteger(getPara("id"));
+			if(id==0){
+				setAttr("message", "用户还没有绑定门店");
 			}else{
-				setAttr("message", "修改失败");
+				int ret = service.updateStatus(id, getPara("status"));
+				if(ret==0){
+					setAttr("message", "修改成功");
+				}else{
+					setAttr("message", "修改失败");
+				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -166,36 +199,46 @@ public class MemberController extends Controller {
 	 * 更新用户
 	 */
 	public void updateMember(){
-		int id = getParaToInt("id");
-		String mobile = StringUtil.checkCode(getPara("mobile"));
-		String name = StringUtil.checkCode(getPara("name"));
-		String statusString = StringUtil.checkCode(getPara("status"));
-		Member member = new Member();
-		member.set("id", id);
-		member.set("name", name);
-		member.set("status", statusString);
-		boolean ret = Member.dao.updateInfo(member);
-		if(ret){
-			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新用户"+mobile+"的信息");
-			setAttr("message", "保存成功");
+		int id = StringUtil.toInteger(getPara("id"));
+		if(id==0){
+			setAttr("message", "用户数据不存在");
 		}else{
-			setAttr("message", "保存失败");
+			String mobile = StringUtil.checkCode(getPara("mobile"));
+			String name = StringUtil.checkCode(getPara("name"));
+			String statusString = StringUtil.checkCode(getPara("status"));
+			Member member = new Member();
+			member.set("id", id);
+			member.set("nick_name", name);
+			member.set("status", statusString);
+			member.set("name", StringUtil.checkCode(getPara("userName")));
+			boolean ret = Member.dao.updateInfo(member);
+			if(ret){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新用户"+mobile+"的信息");
+				setAttr("message", "保存成功");
+			}else{
+				setAttr("message", "保存失败");
+			}
+			index();
 		}
 	}
 	
 	public void updateStatus(){
-		int id = getParaToInt("id");
-		String status = StringUtil.checkCode(getPara("status"));
-		MemberBankcard member = new MemberBankcard();
-		member.set("id", id);
-		member.set("status", status);
-		member.set("update_time", DateUtil.getNowTimestamp());
-		boolean ret = MemberBankcard.dao.updateInfo(member);
-		if(ret){
-			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新用户id:"+id+"的银行卡状态");
-			setAttr("message", "保存成功");
+		int id = StringUtil.toInteger(getPara("id"));
+		if(id==0){
+			setAttr("message", "用户数据不存在");
 		}else{
-			setAttr("message", "保存失败");
+			String status = StringUtil.checkCode(getPara("status"));
+			MemberBankcard member = new MemberBankcard();
+			member.set("id", id);
+			member.set("status", status);
+			member.set("update_time", DateUtil.getNowTimestamp());
+			boolean ret = MemberBankcard.dao.updateInfo(member);
+			if(ret){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新用户id:"+id+"的银行卡状态");
+				setAttr("message", "保存成功");
+			}else{
+				setAttr("message", "保存失败");
+			}
 		}
 		index();
 	}

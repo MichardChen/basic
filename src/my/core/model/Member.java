@@ -21,7 +21,7 @@ public class Member extends Model<Member> {
 	
 	public static final Member dao = new Member();
 	
-	public Page<Member> queryMemberListByPage(int page,int size,String mobile){
+	public Page<Member> queryMemberListByPage(int page,int size,String mobile,String name){
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
 		String sql="";
@@ -30,6 +30,11 @@ public class Member extends Model<Member> {
 			strBuf.append("and mobile=?");
 			param.add(mobile);
 		}
+		if(StringUtil.isNoneBlank(name)){
+			strBuf.append("and name=?");
+			param.add(name);
+		}
+		
 		
 		sql=" from t_member where 1=1 "+strBuf.toString()+" order by create_time desc";
 		return Member.dao.paginate(page, size, select, sql,param.toArray());
