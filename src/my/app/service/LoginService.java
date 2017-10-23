@@ -88,6 +88,7 @@ import my.core.vo.WithDrawInitVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.GDMapUtil;
+import my.pvcloud.util.LngLat;
 import my.pvcloud.util.MD5Util;
 import my.pvcloud.util.SMSUtil;
 import my.pvcloud.util.StringUtil;
@@ -2254,6 +2255,7 @@ public class LoginService {
 		Float minLatitude = new Float(dto.getLatitude1());
 		double localLongtitude = Double.valueOf(dto.getLocalLongtitude());
 		double localLatitude = Double.valueOf(dto.getLocalLatitude());
+		LngLat localLat = new LngLat(localLongtitude, localLatitude);
 		List<Store> stores = Store.dao.queryStoreList(dto.getPageSize()
 													 ,dto.getPageNum()
 													 ,Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS
@@ -2273,8 +2275,14 @@ public class LoginService {
 			vo.setBusinessTea(store.getStr("business_tea"));
 			double lg = Double.valueOf(String.valueOf(store.getFloat("longitude")));
 			double lat = Double.valueOf(String.valueOf(store.getFloat("latitude")));
+			LngLat address = new LngLat(lg, lat);
 			
-			
+			double distance = GDMapUtil.calculateLineDistance(localLat, address);
+			BigDecimal decimals = new BigDecimal(distance);
+			if(decimals != null){
+				BigDecimal km = decimals.divide(new BigDecimal("1000")).setScale(2);
+				vo.setDistance(StringUtil.toString(km)+"Km");
+			}
 			StoreImage storeImage = StoreImage.dao.queryStoreFirstImages(vo.getStoreId());
 			if(storeImage != null){
 				vo.setImg(storeImage.getStr("img"));

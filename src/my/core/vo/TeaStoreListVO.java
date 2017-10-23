@@ -9,7 +9,14 @@ public class TeaStoreListVO implements Serializable{
 	private String name;
 	private String address;
 	private String businessTea;
+	private String distance;
 	
+	public String getDistance() {
+		return distance;
+	}
+	public void setDistance(String distance) {
+		this.distance = distance;
+	}
 	public int getStoreId() {
 		return storeId;
 	}

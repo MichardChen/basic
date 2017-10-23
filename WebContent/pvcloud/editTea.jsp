@@ -73,34 +73,88 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 });
             });
         }
+        
+        function check(){
+        	var title = $("#title").val();
+        	if(title == ""){
+        		alert("请输入茶叶名称");
+        		return false;
+        	}
+        	var brand = $("#brand").val();
+        	if(brand == ""){
+        		alert("请输入茶叶品牌");
+        		return false;
+        	}
+        	var place = $("#place").val();
+        	if(place == ""){
+        		alert("请输入茶叶产地");
+        		return false;
+        	}
+        	var birthday = $("#birthday").val();
+        	if(birthday == ""){
+        		alert("请输入生产日期");
+        		return false;
+        	}
+        	var size1 = $("#size1").val();
+        	if(size1 == ""){
+        		alert("请输入规格");
+        		return false;
+        	}
+        	var size2 = $("#size2").val();
+        	if(size2 == ""){
+        		alert("请输入规格");
+        		return false;
+        	}
+        	var amount = $("#amount").val();
+        	if(amount == ""){
+        		alert("请输入出厂总量");
+        		return false;
+        	}
+        	var price = $("#price").val();
+        	if(price == ""){
+        		alert("请输入发售单价");
+        		return false;
+        	}
+        	var fromtime = $("#fromtime").val();
+        	if(fromtime == ""){
+        		alert("请输入发售时间");
+        		return false;
+        	}
+        	var warehouse = $("#warehouse").val();
+        	if(warehouse == ""){
+        		alert("请输入库存");
+        		return false;
+        	}
+        	return true;
+        }
     </script>
-<form action="${CONTEXT_PATH}/teaInfo/updateTea" method="post" enctype="multipart/form-data">
+<form action="${CONTEXT_PATH}/teaInfo/updateTea" method="post" enctype="multipart/form-data" onsubmit="return check();">
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
 			<td>茶叶名称</td>
-			<td><input type="text" name="title" maxlength="30" value="${teaInfo.tea_title}" style="width: 300px;"/></td>
+			<td><input type="text" name="title" id="title" maxlength="30" value="${teaInfo.tea_title}" style="width: 300px;"/></td>
 		</tr>
 		<tr>
 			<td>茶叶品牌</td>
-			<td><input type="text" name="brand" maxlength="30" value="${teaInfo.brand}" style="width: 300px;"/></td>
+			<td><input type="text" name="brand" id="brand" maxlength="30" value="${teaInfo.brand}" style="width: 300px;"/></td>
 		</tr>
 		<tr>
 			<td>茶叶产地</td>
-			<td><input type="text" name="place" value="${teaInfo.product_place}" maxlength="30" style="width: 300px;"/></td>
+			<td><input type="text" name="place" id="place" value="${teaInfo.product_place}" maxlength="30" style="width: 300px;"/></td>
 		</tr>
 		<tr>
 			<td>生产日期</td>
-			<td><input type="text" name="birthday" value="${teaInfo.product_date}" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/></td>
+			<td><input type="text" name="birthday" id="birthday" value="${teaInfo.product_date}" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/></td>
 		</tr>
 		<tr>
 			<td>规格</td>
-			<td><input type="number" name="size1" maxlength="30" style="width: 100px;" value="${teaInfo.weight}"/>&nbsp;(克/片)&nbsp;&nbsp;
-			<input type="number" name="size2" maxlength="30" style="width: 100px;" value="${teaInfo.size}"/>&nbsp;(片/件)</td>
+			<td><input type="number" name="size1" id="size1" maxlength="30" style="width: 100px;" value="${teaInfo.weight}"/>&nbsp;(克/片)&nbsp;&nbsp;
+			<input type="number" name="size2" id="size2" maxlength="30" style="width: 100px;" value="${teaInfo.size}"/>&nbsp;(片/件)</td>
 		</tr>
 		<tr>
 			<td>出厂总量</td>
-			<td><input type="number" name="amount" maxlength="30" style="width: 100px;" value="${teaInfo.total_output}"/>&nbsp;(饼)</td>
+			<td><input type="number" name="amount" id="amount" maxlength="30" style="width: 100px;" value="${teaInfo.total_output}"/>&nbsp;(饼)</td>
 		</tr>
 		<tr>
 			<td>茶叶类型</td>
@@ -117,7 +171,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>库存</td>
-			<td><input type="number" name="warehouse" maxlength="30" style="width: 100px;" value="${stock}"/>&nbsp;(片)</td>
+			<td><input type="number" name="warehouse" id="warehouse" maxlength="30" style="width: 100px;" value="${stock}"/>&nbsp;(片)</td>
 		</tr>
 		<tr>
 			<td>茶叶状态</td>
@@ -141,13 +195,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<tr>
 			<td>发售单价</td>
 			<td>
-				<input type="number" name="price" maxlength="30" style="width: 100px;" value="${teaInfo.tea_price}"/>&nbsp;(件)
+				<input type="number" name="price" id="price" maxlength="30" style="width: 100px;" value="${teaInfo.tea_price}"/>&nbsp;(件)
 			</td>
 		</tr>
 		<tr>
 			<td>发售时间</td>
 			<td>
-				<input type="text" value="${teaInfo.sale_from_date}" name="fromtime" maxlength="30" style="width: 120px;" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>&nbsp;-&nbsp;<input type="text" value="${teaInfo.sale_to_date}" name="totime" maxlength="30" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 120px;"/>
+				<input type="text" value="${teaInfo.sale_from_date}" name="fromtime" id="fromtime" maxlength="30" style="width: 120px;" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>&nbsp;-&nbsp;<input type="text" value="${teaInfo.sale_to_date}" name="totime" maxlength="30" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 120px;"/>
 			</td>
 		</tr>
 		<tr>
