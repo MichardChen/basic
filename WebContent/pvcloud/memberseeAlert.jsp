@@ -23,9 +23,29 @@ if(str!=''){
 			<td>用户昵称</td>
 			<td>${model.nick_name}</td>
 		</tr>
+			<tr>
+			<td>QQ</td>
+			<td>${model.qq}</td>
+		</tr>
+			<tr>
+			<td>微信</td>
+			<td>${model.wx}</td>
+		</tr>
+		<tr>
+			<td>唯一识别码</td>
+			<td>${model.id_code}</td>
+		</tr>
 		<tr>
 			<td>注册手机</td>
 			<td>${model.mobile}</td>
+		</tr>
+		<tr>
+			<td>注册时间</td>
+			<td>${model.create_time}</td>
+		</tr>
+		<tr>
+			<td>最近一次更新时间</td>
+			<td>${model.update_time}</td>
 		</tr>
 		<tr>
 			<td>账号余额</td>
@@ -54,7 +74,11 @@ if(str!=''){
 		</tr>
 		<tr>
 			<td>银行卡</td>
-			<td><a href="${bankCard.card_img}" target="blank"><img src="${bankCard.card_img}" width="100px;" height="50px;"/></a></td>
+			<td>
+			<c:if test="${bankCard != null}">
+				<a href="${bankCard.card_img}" target="blank"><img src="${bankCard.card_img}" width="100px;" height="50px;"/></a>
+			</c:if>
+			</td>
 		</tr>
 		<tr>
 			<td>开户预留手机</td>

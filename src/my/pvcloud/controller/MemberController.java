@@ -147,6 +147,9 @@ public class MemberController extends Controller {
 		setAttr("model", model);
 		//查询银行卡
 		MemberBankcard bankCard = MemberBankcard.dao.queryByMemberId(id);
+		if((bankCard != null)&&(StringUtil.isBlank(bankCard.getStr("card_img")))){
+			bankCard.set("card_img", "#");
+		}
 		setAttr("bankCard", bankCard);
 		Store store = Store.dao.queryById(model.getInt("store_id"));
 		if(store != null){
@@ -163,6 +166,9 @@ public class MemberController extends Controller {
 		setAttr("model", model);
 		//查询银行卡
 		MemberBankcard bankCard = MemberBankcard.dao.queryByMemberId(id);
+		if((bankCard !=null)&&(StringUtil.isBlank(bankCard.getStr("card_img")))){
+			bankCard.set("card_img", "#");
+		}
 		setAttr("bankCard", bankCard);
 		Store store = Store.dao.queryById(model.getInt("store_id"));
 		if(store != null){
@@ -225,7 +231,7 @@ public class MemberController extends Controller {
 	public void updateStatus(){
 		int id = StringUtil.toInteger(getPara("id"));
 		if(id==0){
-			setAttr("message", "用户数据不存在");
+			setAttr("message", "用户还未绑定银行卡，无法审核");
 		}else{
 			String status = StringUtil.checkCode(getPara("status"));
 			MemberBankcard member = new MemberBankcard();

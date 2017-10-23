@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.Member;
+import my.core.model.Store;
 import my.core.model.Tea;
 import my.core.model.User;
+import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
 import my.core.model.WarehouseTeaMemberItem;
 import my.core.vo.OrderListVO;
@@ -41,6 +43,7 @@ public class SaleOrderController extends Controller {
 		OrderListVO model = null;
 		for(WarehouseTeaMemberItem order : list.getList()){
 			model = new OrderListVO();
+			
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(order.getInt("warehouse_tea_member_id"));
 			model.setPrice(order.getBigDecimal("price"));
 			String sizeTypeCd = order.getStr("size_type_cd");
@@ -61,9 +64,30 @@ public class SaleOrderController extends Controller {
 					if(tea == null){
 						continue;
 					}
+					
+					if(StringUtil.equals(Constants.USER_TYPE.USER_TYPE_CLIENT, wtm.getStr("member_type_cd"))){
+						Store store = Store.dao.queryMemberStore(wtm.getInt("member_id"));
+						if(store != null){
+							model.setStore(store.getStr("store_name"));
+							model.setMobile(store.getStr("link_phone"));
+						}
+					}else{
+						model.setStore("平台");
+					}
+					
+					CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+					if(type != null){
+						model.setType(type.getStr("name"));
+					}
+					
+					WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+					if(house != null){
+						model.setWareHouse(house.getStr("warehouse_name"));
+					}
+					
 					model.setName(tea.getStr("tea_title"));
 					model.setId(order.getInt("id"));
-					model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
+					model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("update_time")));
 					String memberTypeCd = wtm.getStr("member_type_cd");
 					if(StringUtil.equals(memberTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 						Member member = Member.dao.queryById(wtm.getInt("member_id"));
@@ -111,6 +135,7 @@ public class SaleOrderController extends Controller {
 		OrderListVO model = null;
 		for(WarehouseTeaMemberItem order : list.getList()){
 			model = new OrderListVO();
+			
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(order.getInt("warehouse_tea_member_id"));
 			model.setPrice(order.getBigDecimal("price"));
 			String sizeTypeCd = order.getStr("size_type_cd");
@@ -131,9 +156,30 @@ public class SaleOrderController extends Controller {
 					if(tea == null){
 						continue;
 					}
+					
+					if(StringUtil.equals(Constants.USER_TYPE.USER_TYPE_CLIENT, wtm.getStr("member_type_cd"))){
+						Store store = Store.dao.queryMemberStore(wtm.getInt("member_id"));
+						if(store != null){
+							model.setStore(store.getStr("store_name"));
+							model.setMobile(store.getStr("link_phone"));
+						}
+					}else{
+						model.setStore("平台");
+					}
+					
+					CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+					if(type != null){
+						model.setType(type.getStr("name"));
+					}
+					
+					WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+					if(house != null){
+						model.setWareHouse(house.getStr("warehouse_name"));
+					}
+					
 					model.setName(tea.getStr("tea_title"));
 					model.setId(order.getInt("id"));
-					model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
+					model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("update_time")));
 					String memberTypeCd = wtm.getStr("member_type_cd");
 					if(StringUtil.equals(memberTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 						Member member = Member.dao.queryById(wtm.getInt("member_id"));
@@ -204,9 +250,30 @@ public class SaleOrderController extends Controller {
 					if(tea == null){
 						continue;
 					}
+					
+					if(StringUtil.equals(Constants.USER_TYPE.USER_TYPE_CLIENT, wtm.getStr("member_type_cd"))){
+						Store store = Store.dao.queryMemberStore(wtm.getInt("member_id"));
+						if(store != null){
+							model.setStore(store.getStr("store_name"));
+							model.setMobile(store.getStr("link_phone"));
+						}
+					}else{
+						model.setStore("平台");
+					}
+					
+					CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+					if(type != null){
+						model.setType(type.getStr("name"));
+					}
+					
+					WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+					if(house != null){
+						model.setWareHouse(house.getStr("warehouse_name"));
+					}
+					
 					model.setName(tea.getStr("tea_title"));
 					model.setId(order.getInt("id"));
-					model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
+					model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("update_time")));
 					String memberTypeCd = wtm.getStr("member_type_cd");
 					if(StringUtil.equals(memberTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 						Member member = Member.dao.queryById(wtm.getInt("member_id"));

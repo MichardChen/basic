@@ -7,8 +7,10 @@ import my.core.model.CodeMst;
 import my.core.model.Member;
 import my.core.model.Order;
 import my.core.model.OrderItem;
+import my.core.model.Store;
 import my.core.model.Tea;
 import my.core.model.User;
+import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
 import my.core.model.WarehouseTeaMemberItem;
 import my.core.vo.OrderListVO;
@@ -33,6 +35,10 @@ public class OrderController extends Controller {
 	public void index(){
 		
 		removeSessionAttr("title");
+		removeSessionAttr("orderNo");
+		removeSessionAttr("status");
+		removeSessionAttr("addTime");
+		removeSessionAttr("payTime");
 		String flg = getPara(0);
 		if(StringUtil.equals(flg,"1")){
 			//默认发售说明
@@ -43,6 +49,7 @@ public class OrderController extends Controller {
 		OrderListVO model = null;
 		for(OrderItem order : list.getList()){
 			model = new OrderListVO();
+			model.setAmount(StringUtil.toString(order.getBigDecimal("item_amount")));
 			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(order.getInt("wtm_item_id"));
 			if(wtmItem != null){
 				int wtmId = wtmItem.getInt("warehouse_tea_member_id");
@@ -60,12 +67,38 @@ public class OrderController extends Controller {
 					if(tea == null){
 						continue;
 					}
+					model.setProductUrl(tea.getStr("desc_url"));
+					if(StringUtil.equals(Constants.USER_TYPE.USER_TYPE_CLIENT, wtm.getStr("member_type_cd"))){
+						Store store = Store.dao.queryMemberStore(wtm.getInt("member_id"));
+						if(store != null){
+							model.setStore(store.getStr("store_name"));
+							model.setMobile(store.getStr("link_phone"));
+						}
+					}else{
+						model.setStore("平台");
+					}
+					
+					CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+					if(type != null){
+						model.setType(type.getStr("name"));
+					}
+					
+					WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+					if(house != null){
+						model.setWareHouse(house.getStr("warehouse_name"));
+					}
 					model.setName(tea.getStr("tea_title"));
 					model.setId(order.getInt("id"));
 					Order order2 = Order.dao.queryById(order.getInt("order_id"));
 					if(order2 != null){
-						model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
-						model.setPayTime(DateUtil.formatTimestampForDate(order2.getTimestamp("pay_time")));
+						////
+						CodeMst orderStatus = CodeMst.dao.queryCodestByCode(order2.getStr("order_status"));
+						if(orderStatus != null){
+							model.setStatus(orderStatus.getStr("name"));
+						}
+						model.setOrderNo(order2.getStr("order_no"));
+						model.setCreateTime(StringUtil.toString(order.getTimestamp("create_time")));
+						model.setPayTime(StringUtil.toString(order2.getTimestamp("pay_time")));
 						String saleUserType = order.getStr("sale_user_type");
 						if(StringUtil.isBlank(saleUserType)){
 							continue;
@@ -107,8 +140,19 @@ public class OrderController extends Controller {
 	 * 模糊查询(分页)
 	 */
 	public void queryByPage(){
-		String title=getSessionAttr("title");
-		this.setSessionAttr("title",title);
+		
+		String ptitle = getPara("title");
+		this.setSessionAttr("title",ptitle);
+		
+		String porderNo = getPara("orderNo");
+		this.setSessionAttr("orderNo",porderNo);
+
+		String pstatus = getPara("status");
+		this.setSessionAttr("status",pstatus);
+		
+		String ppayTime = getPara("payTime");
+		this.setSessionAttr("payTime",ppayTime);
+		
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
@@ -118,11 +162,12 @@ public class OrderController extends Controller {
 			//默认发售说明
 			
 		}
-		Page<OrderItem> list = service.queryOrderItemByParam(page, size,title);
+		Page<OrderItem> list = service.queryOrderItemByParam(page, size,ptitle,porderNo,pstatus,ppayTime);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
 		for(OrderItem order : list.getList()){
 			model = new OrderListVO();
+			model.setAmount(StringUtil.toString(order.getBigDecimal("item_amount")));
 			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(order.getInt("wtm_item_id"));
 			if(wtmItem != null){
 				int wtmId = wtmItem.getInt("warehouse_tea_member_id");
@@ -140,12 +185,38 @@ public class OrderController extends Controller {
 					if(tea == null){
 						continue;
 					}
+					model.setProductUrl(tea.getStr("desc_url"));
+					CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+					if(type != null){
+						model.setType(type.getStr("name"));
+					}
+					
+					if(StringUtil.equals(Constants.USER_TYPE.USER_TYPE_CLIENT, wtm.getStr("member_type_cd"))){
+						Store store = Store.dao.queryMemberStore(wtm.getInt("member_id"));
+						if(store != null){
+							model.setStore(store.getStr("store_name"));
+							model.setMobile(store.getStr("link_phone"));
+						}
+					}else{
+						model.setStore("平台");
+					}
+					
+					WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+					if(house != null){
+						model.setWareHouse(house.getStr("warehouse_name"));
+					}
+					
 					model.setName(tea.getStr("tea_title"));
 					model.setId(order.getInt("id"));
 					Order order2 = Order.dao.queryById(order.getInt("order_id"));
 					if(order2 != null){
-						model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
-						model.setPayTime(DateUtil.formatTimestampForDate(order2.getTimestamp("pay_time")));
+						CodeMst orderStatus = CodeMst.dao.queryCodestByCode(order2.getStr("order_status"));
+						if(orderStatus != null){
+							model.setStatus(orderStatus.getStr("name"));
+						}
+						model.setOrderNo(order2.getStr("order_no"));
+						model.setCreateTime(StringUtil.toString(order.getTimestamp("create_time")));
+						model.setPayTime(StringUtil.toString(order2.getTimestamp("pay_time")));
 						String saleUserType = order.getStr("sale_user_type");
 						if(StringUtil.isBlank(saleUserType)){
 							continue;
@@ -192,6 +263,15 @@ public class OrderController extends Controller {
 		String ptitle = getPara("title");
 		this.setSessionAttr("title",ptitle);
 		
+		String porderNo = getPara("orderNo");
+		this.setSessionAttr("orderNo",porderNo);
+
+		String pstatus = getPara("status");
+		this.setSessionAttr("status",pstatus);
+		
+		String ppayTime = getPara("payTime");
+		this.setSessionAttr("payTime",ppayTime);
+		
 		Integer page = getParaToInt(1);
 	    if (page==null || page==0) {
 	    	page = 1;
@@ -201,11 +281,12 @@ public class OrderController extends Controller {
 			//默认发售说明
 			
 		}
-		Page<OrderItem> list = service.queryOrderItemByParam(page, size,ptitle);
+		Page<OrderItem> list = service.queryOrderItemByParam(page, size,ptitle,porderNo,pstatus,ppayTime);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
 		for(OrderItem order : list.getList()){
 			model = new OrderListVO();
+			model.setAmount(StringUtil.toString(order.getBigDecimal("item_amount")));
 			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(order.getInt("wtm_item_id"));
 			if(wtmItem != null){
 				int wtmId = wtmItem.getInt("warehouse_tea_member_id");
@@ -223,12 +304,38 @@ public class OrderController extends Controller {
 					if(tea == null){
 						continue;
 					}
+					model.setProductUrl(tea.getStr("desc_url"));
+					CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+					if(type != null){
+						model.setType(type.getStr("name"));
+					}
+					
+					if(StringUtil.equals(Constants.USER_TYPE.USER_TYPE_CLIENT, wtm.getStr("member_type_cd"))){
+						Store store = Store.dao.queryMemberStore(wtm.getInt("member_id"));
+						if(store != null){
+							model.setStore(store.getStr("store_name"));
+							model.setMobile(store.getStr("link_phone"));
+						}
+					}else{
+						model.setStore("平台");
+					}
+					
+					WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+					if(house != null){
+						model.setWareHouse(house.getStr("warehouse_name"));
+					}
+					
 					model.setName(tea.getStr("tea_title"));
 					model.setId(order.getInt("id"));
 					Order order2 = Order.dao.queryById(order.getInt("order_id"));
 					if(order2 != null){
-						model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
-						model.setPayTime(DateUtil.formatTimestampForDate(order2.getTimestamp("pay_time")));
+						CodeMst orderStatus = CodeMst.dao.queryCodestByCode(order2.getStr("order_status"));
+						if(orderStatus != null){
+							model.setStatus(orderStatus.getStr("name"));
+						}
+						model.setOrderNo(order2.getStr("order_no"));
+						model.setCreateTime(StringUtil.toString(order.getTimestamp("create_time")));
+						model.setPayTime(StringUtil.toString(order2.getTimestamp("pay_time")));
 						String saleUserType = order.getStr("sale_user_type");
 						if(StringUtil.isBlank(saleUserType)){
 							continue;

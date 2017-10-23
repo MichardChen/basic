@@ -15,8 +15,8 @@ public class OrderService {
 		return OrderItem.dao.queryByPage(page, size);
 	}
 	
-	public Page<OrderItem> queryOrderItemByParam(int page,int size,String createDate){
-		return OrderItem.dao.queryByPageParams(page, size,createDate);
+	public Page<OrderItem> queryOrderItemByParam(int page,int size,String createDate,String orderNo,String status,String payTime){
+		return OrderItem.dao.queryByPageParams(page, size,createDate,orderNo,status,payTime);
 	}
 	
 	public Page<Order> queryByPageParams(int page,int size,String title){

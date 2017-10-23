@@ -73,6 +73,12 @@ public class LoginDTO extends BaseDTO{
 			dto.setSellerId(StringUtil.toInteger(request.getParameter("sellerId")));
 			dto.setInvateCode(StringUtil.checkCode(request.getParameter("invateCode")));
 			dto.setOpenBankName(StringUtil.checkCode(request.getParameter("openBankName")));
+			dto.setLocalLongtitude(StringUtil.checkCode(request.getParameter("localLongtitude")));
+			dto.setLocalLatitude(StringUtil.checkCode(request.getParameter("localLatitude")));
+			dto.setLongtitude1(StringUtil.checkCode(request.getParameter("longtitude1")));
+			dto.setLatitude1(StringUtil.checkCode(request.getParameter("latitude1")));
+			dto.setLongtitude2(StringUtil.checkCode(request.getParameter("longtitude2")));
+			dto.setLatitude3(StringUtil.checkCode(request.getParameter("latitude3")));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -131,6 +137,61 @@ public class LoginDTO extends BaseDTO{
 	private String date;
 	private String invateCode;
 	
+	private String localLongtitude;
+	private String localLatitude;
+	private String longtitude1;
+	private String latitude1;
+	private String longtitude2;
+	private String latitude3;
+	
+	public String getLocalLongtitude() {
+		return localLongtitude;
+	}
+
+	public String getLocalLatitude() {
+		return localLatitude;
+	}
+
+	public String getLongtitude1() {
+		return longtitude1;
+	}
+
+	public String getLatitude1() {
+		return latitude1;
+	}
+
+	public String getLongtitude2() {
+		return longtitude2;
+	}
+
+	public String getLatitude3() {
+		return latitude3;
+	}
+
+	public void setLocalLongtitude(String localLongtitude) {
+		this.localLongtitude = localLongtitude;
+	}
+
+	public void setLocalLatitude(String localLatitude) {
+		this.localLatitude = localLatitude;
+	}
+
+	public void setLongtitude1(String longtitude1) {
+		this.longtitude1 = longtitude1;
+	}
+
+	public void setLatitude1(String latitude1) {
+		this.latitude1 = latitude1;
+	}
+
+	public void setLongtitude2(String longtitude2) {
+		this.longtitude2 = longtitude2;
+	}
+
+	public void setLatitude3(String latitude3) {
+		this.latitude3 = latitude3;
+	}
+
 	public String getOpenBankName() {
 		return openBankName;
 	}

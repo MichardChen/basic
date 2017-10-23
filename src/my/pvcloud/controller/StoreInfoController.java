@@ -135,12 +135,13 @@ public class StoreInfoController extends Controller {
 	public void queryByConditionByPage(){
 		String title = getSessionAttr("title");
 		String ptitle = getPara("title");
+		this.setSessionAttr("title",ptitle);
 		String s = getPara("status");
-		title = ptitle;
+		
 		
 		String m = getPara("mobile");
 		
-		this.setSessionAttr("title",title);
+		
 		this.setSessionAttr("status",s);
 		this.setSessionAttr("mobile",m);
 		

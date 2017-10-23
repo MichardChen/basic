@@ -120,14 +120,29 @@ td{
 	   </div>
 	  
     	<hr/>			
-   
 	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
    		<div class="" style="margin-top:15px;margin-bottom:15px;">
     		<form method="post" action="${CONTEXT_PATH}/orderInfo/queryByConditionByPage" class="form-horizontal">
     			<div style="" class="form-group">
-    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">下单时间</label>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">订单时间</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+    				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">付款时间</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="payTime" value="${payTime}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+    				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">订单号</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="orderNo" value="${orderNo}"/>
+    				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
+	    			<div class="col-sm- col-xs-1 col-md-1">	
+	    				<select name="status" style="height: 30px;">
+		    					<option></option>
+		    					<option value="140003" <c:if test="${status=='140003'}">selected="selected"</c:if>>下单成功</option>
+		    					<option value="140004" <c:if test="${status=='140004'}">selected="selected"</c:if>>下单失败</option>
+		    			</select>	
     				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
 			   </div>
@@ -141,12 +156,20 @@ td{
     		<thead>
     			<tr>
     				<th>产品名称</th>
-    				<th>购买者</th>
-    				<th>销售者</th>
+    				<th>类型</th>
+    				<th>订单号</th>
+    				<th>仓库</th>
+    				<th>买家</th>
+    				<th>卖家</th>
+    				<th>门店</th>
+    				<th>联系电话</th>
     				<th>下单时间</th>
     				<th>付款时间</th>
-    				<th>购买量</th>
-    				<th>价格</th>
+    				<th>数量</th>
+    				<th>单价</th>
+    				<th>总金额</th>
+    				<th>状态</th>
+    				<th>产品详情</th>
     			</tr>
     		</thead>
     		<tbody>
@@ -159,12 +182,20 @@ td{
 		    			<c:forEach var="s" items="${sList}">	
 		    				<tr class="bOrder">
 		    					<td>${s.name }</td>
+		    						<td>${s.type }</td>
+		    						<td>${s.orderNo }</td>
+		    						<td>${s.wareHouse }</td>
 		    					<td>${s.buyUser}</td>
 		    					<td>${s.saleUser}</td>
+		    						<td>${s.store}</td>
+		    							<td>${s.mobile}</td>
 		    					<td>${s.createTime}</td>
 		    					<td>${s.payTime}</td>
 		    					<td>${s.stock}</td>
 		    					<td>${s.price}</td>
+		    					<td>${s.amount}</td>
+		    					<td>${s.status}</td>
+		    					<td><a href="${s.productUrl}" target="_blank" style="color: blue;">产品详情</a></td>
 		    				</tr>
 		    			</c:forEach>
 					</c:if>

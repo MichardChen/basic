@@ -58,9 +58,15 @@ public class Store extends Model<Store> {
 		return Store.dao.findFirst("select * from t_store where member_id = ?",userId);
 	}
 	
-	public List<Store> queryStoreList(int pageSize,int pageNum,String status){
+	public List<Store> queryStoreList(int pageSize
+									 ,int pageNum
+									 ,String status
+									 ,Float maxLongtitude
+									 ,Float maxLatitude
+									 ,Float minLongtitude
+									 ,Float minLatitude){
 		int fromRow = pageSize*(pageNum-1);
-		return Store.dao.find("select * from t_store where status='"+status+"' order by create_time desc limit "+fromRow+","+pageSize);
+		return Store.dao.find("select * from t_store where status='"+status+"' and "+minLongtitude+"<=longitude<="+maxLongtitude+" and "+minLatitude+"<=latitude<="+maxLatitude+" order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
 	public boolean updateInfo(Store tea){

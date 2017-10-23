@@ -14,7 +14,56 @@ public class OrderListVO implements Serializable{
 	private String stock;
 	private String status;
 	private BigDecimal price;
+	private String type;
+	private String wareHouse;
+	private String orderNo;
+	private String amount;
+	private String store;
+	private String mobile;
+	private String productUrl;
 	
+	public String getProductUrl() {
+		return productUrl;
+	}
+	public void setProductUrl(String productUrl) {
+		this.productUrl = productUrl;
+	}
+	public String getStore() {
+		return store;
+	}
+	public String getMobile() {
+		return mobile;
+	}
+	public void setStore(String store) {
+		this.store = store;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+	public String getType() {
+		return type;
+	}
+	public String getWareHouse() {
+		return wareHouse;
+	}
+	public String getOrderNo() {
+		return orderNo;
+	}
+	public String getAmount() {
+		return amount;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public void setWareHouse(String wareHouse) {
+		this.wareHouse = wareHouse;
+	}
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
 	public String getStock() {
 		return stock;
 	}

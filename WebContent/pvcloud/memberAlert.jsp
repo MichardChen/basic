@@ -24,8 +24,28 @@ if(str!=''){
 			<td><input type="text" name="name" value="${model.nick_name}"/></td>
 		</tr>
 		<tr>
+			<td>QQ</td>
+			<td>${model.qq}</td>
+		</tr>
+			<tr>
+			<td>微信</td>
+			<td>${model.wx}</td>
+		</tr>
+		<tr>
+			<td>唯一识别码</td>
+			<td>${model.id_code}</td>
+		</tr>
+		<tr>
 			<td>注册手机</td>
 			<td>${model.mobile}</td>
+		</tr>
+		<tr>
+			<td>注册时间</td>
+			<td>${model.create_time}</td>
+		</tr>
+		<tr>
+			<td>最近一次更新时间</td>
+			<td>${model.update_time}</td>
 		</tr>
 		<tr>
 			<td>账号余额</td>
@@ -50,23 +70,27 @@ if(str!=''){
 		</tr>
 		<tr>
 			<td>银行卡号</td>
-			<td><input type="text" name="moneys" value="${bankCard.card_no}" style="IME-MODE: disabled;"/></td>
+			<td>${bankCard.card_no}</td>
 		</tr>
 		<tr>
 			<td>银行卡</td>
-			<td><a href="${bankCard.card_img}" target="blank"><img src="${bankCard.card_img}" width="100px;" height="50px;"/></a></td>
+			<td>
+			<c:if test="${bankCard != null}">
+			<a href="${bankCard.card_img}" target="blank"><img src="${bankCard.card_img}" width="100px;" height="50px;"/></a>
+			</c:if>
+			</td>
 		</tr>
 		<tr>
 			<td>开户预留手机</td>
-			<td><input type="text" value="${bankCard.stay_mobile}" style="IME-MODE: disabled;"/></td>
+			<td>${bankCard.stay_mobile}</td>
 		</tr>
 		<tr>
 			<td>开户名</td>
-			<td><input type="text" value="${bankCard.owner_name}" style="IME-MODE: disabled;"/></td>
+			<td>${bankCard.owner_name}</td>
 		</tr>
 		<tr>
 			<td>开户支行</td>
-			<td><input type="text" value="${bankCard.open_bank_name}" style="IME-MODE: disabled;"/></td>
+			<td>${bankCard.open_bank_name}</td>
 		</tr>
 		<tr>
 			<td>审核结果</td>
@@ -77,10 +101,10 @@ if(str!=''){
 			</td>
 		</tr>
 		<tr>
-			<td>操作</td>
+			<td>银行卡审核操作</td>
 			<td>
 				<input type="button" value="审核通过" class="ys3" onclick="if(confirm('确认要审核通过?')){window.location='${CONTEXT_PATH}/memberInfo/updateStatus?id=${bankCard.id}&status=240002';}"/>
-				<input type="button" value="审核不通过" class="ys3" onclick="if(confirm('确认要审核失败?')){window.location='${CONTEXT_PATH}/memberInfo/updateStatus?id=${bankCard.id}&status=240003';}"/>
+				<input type="button" value="审核不通过" class="ys3" style="width:100px;" onclick="if(confirm('确认要审核失败?')){window.location='${CONTEXT_PATH}/memberInfo/updateStatus?id=${bankCard.id}&status=240003';}"/>
 			</td>
 		</tr>
 		<input type="hidden" name="id" value="${model.id}"/>

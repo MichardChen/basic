@@ -87,6 +87,7 @@ import my.core.vo.WarehouseStockVO;
 import my.core.vo.WithDrawInitVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.GDMapUtil;
 import my.pvcloud.util.MD5Util;
 import my.pvcloud.util.SMSUtil;
 import my.pvcloud.util.StringUtil;
@@ -2247,9 +2248,21 @@ public class LoginService {
 	
 	public ReturnData queryTeaStoreList(LoginDTO dto){
 		ReturnData data = new ReturnData();
+		Float maxLongtitude = new Float(dto.getLongtitude2());
+		Float maxLatitude = new Float(dto.getLatitude3());
+		Float minLongtitude = new Float(dto.getLongtitude1());
+		Float minLatitude = new Float(dto.getLatitude1());
+		double localLongtitude = Double.valueOf(dto.getLocalLongtitude());
+		double localLatitude = Double.valueOf(dto.getLocalLatitude());
 		List<Store> stores = Store.dao.queryStoreList(dto.getPageSize()
 													 ,dto.getPageNum()
-													 ,Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS);
+													 ,Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS
+													 ,maxLongtitude
+													 ,maxLatitude
+													 ,minLongtitude
+													 ,minLatitude);
+		
+		
 		List<TeaStoreListVO> list = new ArrayList<>();
 		TeaStoreListVO vo = null;
 		for(Store store : stores){
@@ -2258,6 +2271,10 @@ public class LoginService {
 			vo.setName(store.getStr("store_name"));
 			vo.setAddress(store.getStr("city_district"));
 			vo.setBusinessTea(store.getStr("business_tea"));
+			double lg = Double.valueOf(String.valueOf(store.getFloat("longitude")));
+			double lat = Double.valueOf(String.valueOf(store.getFloat("latitude")));
+			
+			
 			StoreImage storeImage = StoreImage.dao.queryStoreFirstImages(vo.getStoreId());
 			if(storeImage != null){
 				vo.setImg(storeImage.getStr("img"));

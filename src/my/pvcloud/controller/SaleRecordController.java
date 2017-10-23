@@ -1,13 +1,16 @@
 package my.pvcloud.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.Member;
 import my.core.model.SaleOrder;
+import my.core.model.Store;
 import my.core.model.Tea;
 import my.core.model.User;
+import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
 import my.core.vo.OrderListVO;
 import my.pvcloud.service.SaleRecordService;
@@ -50,6 +53,8 @@ public class SaleRecordController extends Controller {
 			}else{
 				model.setStock(StringUtil.toString(order.getInt("quality")));
 			}
+			BigDecimal amount = order.getBigDecimal("price").multiply(new BigDecimal(order.getInt("quality")));
+			model.setAmount(StringUtil.toString(amount));
 			CodeMst status = CodeMst.dao.queryCodestByCode(order.getStr("status"));
 			if(status != null){
 				model.setStatus(status.getStr("name"));
@@ -61,9 +66,27 @@ public class SaleRecordController extends Controller {
 					if(tea == null){
 						continue;
 					}
+					CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+					if(type != null){
+						model.setType(type.getStr("name"));
+					}
+					
+					WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+					if(house != null){
+						model.setWareHouse(house.getStr("warehouse_name"));
+					}
+					if(StringUtil.equals(Constants.USER_TYPE.USER_TYPE_CLIENT, wtm.getStr("member_type_cd"))){
+						Store store = Store.dao.queryMemberStore(wtm.getInt("member_id"));
+						if(store != null){
+							model.setStore(store.getStr("store_name"));
+							model.setMobile(store.getStr("link_phone"));
+						}
+					}else{
+						model.setStore("平台");
+					}
 					model.setName(tea.getStr("tea_title"));
 					model.setId(order.getInt("id"));
-					model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
+					model.setCreateTime(StringUtil.toString(order.getTimestamp("update_time")));
 					String memberTypeCd = wtm.getStr("member_type_cd");
 					if(StringUtil.equals(memberTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 						Member member = Member.dao.queryById(wtm.getInt("member_id"));
@@ -111,6 +134,7 @@ public class SaleRecordController extends Controller {
 		OrderListVO model = null;
 		for(SaleOrder order : list.getList()){
 			model = new OrderListVO();
+			model.setAmount(StringUtil.toString(order.getBigDecimal("item_amount")));
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(order.getInt("warehouse_tea_member_id"));
 			model.setPrice(order.getBigDecimal("price"));
 			String sizeTypeCd = order.getStr("size_type_cd");
@@ -120,6 +144,8 @@ public class SaleRecordController extends Controller {
 			}else{
 				model.setStock(StringUtil.toString(order.getInt("quality")));
 			}
+			BigDecimal amount = order.getBigDecimal("price").multiply(new BigDecimal(order.getInt("quality")));
+			model.setAmount(StringUtil.toString(amount));
 			CodeMst status = CodeMst.dao.queryCodestByCode(order.getStr("status"));
 			if(status != null){
 				model.setStatus(status.getStr("name"));
@@ -131,9 +157,27 @@ public class SaleRecordController extends Controller {
 					if(tea == null){
 						continue;
 					}
+					CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+					if(type != null){
+						model.setType(type.getStr("name"));
+					}
+					
+					WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+					if(house != null){
+						model.setWareHouse(house.getStr("warehouse_name"));
+					}
+					if(StringUtil.equals(Constants.USER_TYPE.USER_TYPE_CLIENT, wtm.getStr("member_type_cd"))){
+						Store store = Store.dao.queryMemberStore(wtm.getInt("member_id"));
+						if(store != null){
+							model.setStore(store.getStr("store_name"));
+							model.setMobile(store.getStr("link_phone"));
+						}
+					}else{
+						model.setStore("平台");
+					}
 					model.setName(tea.getStr("tea_title"));
 					model.setId(order.getInt("id"));
-					model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
+					model.setCreateTime(StringUtil.toString(order.getTimestamp("update_time")));
 					String memberTypeCd = wtm.getStr("member_type_cd");
 					if(StringUtil.equals(memberTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 						Member member = Member.dao.queryById(wtm.getInt("member_id"));
@@ -183,9 +227,12 @@ public class SaleRecordController extends Controller {
 		OrderListVO model = null;
 		for(SaleOrder order : list.getList()){
 			model = new OrderListVO();
+			model.setAmount(StringUtil.toString(order.getBigDecimal("item_amount")));
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(order.getInt("warehouse_tea_member_id"));
 			model.setPrice(order.getBigDecimal("price"));
 			String sizeTypeCd = order.getStr("size_type_cd");
+			BigDecimal amount = order.getBigDecimal("price").multiply(new BigDecimal(order.getInt("quality")));
+			model.setAmount(StringUtil.toString(amount));
 			CodeMst sizeCodeMst = CodeMst.dao.queryCodestByCode(sizeTypeCd);
 			if(sizeCodeMst != null){
 				model.setStock(order.getInt("quality")+sizeCodeMst.getStr("name"));
@@ -204,9 +251,27 @@ public class SaleRecordController extends Controller {
 					if(tea == null){
 						continue;
 					}
+					CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+					if(type != null){
+						model.setType(type.getStr("name"));
+					}
+					
+					WareHouse house = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+					if(house != null){
+						model.setWareHouse(house.getStr("warehouse_name"));
+					}
+					if(StringUtil.equals(Constants.USER_TYPE.USER_TYPE_CLIENT, wtm.getStr("member_type_cd"))){
+						Store store = Store.dao.queryMemberStore(wtm.getInt("member_id"));
+						if(store != null){
+							model.setStore(store.getStr("store_name"));
+							model.setMobile(store.getStr("link_phone"));
+						}
+					}else{
+						model.setStore("平台");
+					}
 					model.setName(tea.getStr("tea_title"));
 					model.setId(order.getInt("id"));
-					model.setCreateTime(DateUtil.formatTimestampForDate(order.getTimestamp("create_time")));
+					model.setCreateTime(StringUtil.toString(order.getTimestamp("update_time")));
 					String memberTypeCd = wtm.getStr("member_type_cd");
 					if(StringUtil.equals(memberTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 						Member member = Member.dao.queryById(wtm.getInt("member_id"));

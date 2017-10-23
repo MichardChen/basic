@@ -141,10 +141,14 @@ td{
     		<thead>
     			<tr>
     				<th>产品名称</th>
+    				<th>店铺</th>
+    				<th>类型</th>
+    				<th>仓库</th>
     				<th>卖家</th>
     				<th>库存</th>
     				<th>销售价</th>
-    				<th>上架时间</th>
+    				<th>总金额</th>
+    				<th>更新时间</th>
     				<th>状态</th>
     			</tr>
     		</thead>
@@ -158,9 +162,13 @@ td{
 		    			<c:forEach var="s" items="${sList}">	
 		    				<tr class="bOrder">
 		    					<td>${s.name}</td>
+		    					<td>${s.store}</td>
+		    					<td>${s.type}</td>
+		    					<td>${s.wareHouse}</td>
 		    					<td>${s.saleUser}</td>
 		    					<td>${s.stock}</td>
 		    					<td>${s.price}</td>
+		    					<td>${s.amount}</td>
 		    					<td>${s.createTime}</td>
 		    					<td>${s.status}</td>
 		    				</tr>
