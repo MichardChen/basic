@@ -13,6 +13,7 @@ import org.huadalink.plugin.tablebind.TableBind;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 
 @TableBind(table = "t_order", pk = "id")
 public class Order extends Model<Order> {
@@ -87,7 +88,40 @@ public class Order extends Model<Order> {
 		}
 	}
 	
-	public List<Order> queryOrderByTime(String date,String orderStatus){
+	public List<Order> queryOrderByTime(String date,String orderStatus,int teaId){
 		return Order.dao.find("select * from t_order where create_time like '%"+date+"%' and order_status='"+orderStatus+"'");
+	}
+	
+	//成交走势
+	public List<Record> queryBargainTrendAvg(String date,int teaId){
+		String sql = "SELECT "+
+				"AVG(b.price) as price,SUM(a.quality) as quality,a.create_time,DATE_FORMAT(a.create_time, '%Y-%m-%d') as createTime "+
+				"FROM t_order_item a "+
+				"LEFT JOIN t_warehouse_tea_member_item b ON a.wtm_item_id = b.id "+
+				"LEFT JOIN t_warehouse_tea_member c on b.warehouse_tea_member_id=c.id "+
+				"LEFT JOIN t_tea d ON d.id = c.tea_id "+
+				"WHERE a.create_time like '%"+date+"%' AND d.id="+teaId+" "+
+				"GROUP BY "+
+				"DATE_FORMAT(a.create_time, '%Y-%m-%d') "+
+				"ORDER BY "+
+				"DATE_FORMAT(a.create_time, '%Y-%m-%d') DESC";
+		
+		List<Record> models = Db.find(sql);
+		return models;
+	}
+	
+	//成交总量和成交总额
+	public List<Record> queryBargainSum(String date,int teaId){
+		String sql = "SELECT "+
+					 "SUM(b.quality) as quality,SUM(a.pay_amount) as amount "+
+					 "FROM t_order a LEFT JOIN t_order_item b on a.id=b.order_id "+
+					 "LEFT JOIN t_warehouse_tea_member_item d on b.wtm_item_id=d.id "+
+					 "LEFT JOIN t_warehouse_tea_member e on d.warehouse_tea_member_id=e.id "+
+					 "WHERE a.create_time LIKE '%"+date+"%' "+
+					 "AND a.order_status = '140003' "+
+					 "AND e.tea_id="+teaId;
+		
+		List<Record> models = Db.find(sql);
+		return models;
 	}
 }

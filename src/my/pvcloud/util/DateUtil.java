@@ -4,8 +4,10 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 日期操作辅助类
@@ -237,4 +239,37 @@ public final class DateUtil {
 		
 		return format(new Date(date.getTime()), "yyyy-MM-dd");
 	}
+	
+	/**
+     * 某一年某个月的每一天
+     */
+    public static List<String> getMonthFullDay(int year,int month){
+    	int day = 1;
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<String> fullDayList = new ArrayList<String>();
+        if(day <= 0 ) day = 1;
+        Calendar cal = Calendar.getInstance();// 获得当前日期对象
+        cal.clear();// 清除信息
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month - 1);// 1月从0开始
+        cal.set(Calendar.DAY_OF_MONTH, day);// 设置为1号,当前日期既为本月第一天
+        int count = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        for (int j = 0; j <= (count-1);) {
+            if(sdf.format(cal.getTime()).equals(getLastDay(year, month)))
+                break;
+            cal.add(Calendar.DAY_OF_MONTH, j == 0 ? +0 : +1);
+            j++;
+            fullDayList.add(sdf.format(cal.getTime()));
+        }
+        return fullDayList;
+    }
+    
+    public static String getLastDay(int year,int month){
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, 0);
+        return sdf.format(cal.getTime());
+    }
 }

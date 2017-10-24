@@ -10,7 +10,14 @@ public class NewTeaSaleListModel implements Serializable{
 	private String status;
 	private int teaId;
 	private String statusName;
+	private String unit;
 	
+	public String getUnit() {
+		return unit;
+	}
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
 	public String getStatusName() {
 		return statusName;
 	}

@@ -36,6 +36,7 @@ import my.app.service.RestService;
 import my.core.constants.Constants;
 import my.core.interceptor.ContainFileInterceptor;
 import my.core.interceptor.RequestInterceptor;
+import my.core.model.Document;
 import my.core.model.Member;
 import my.core.model.ReturnData;
 import my.core.model.Store;
@@ -974,7 +975,7 @@ public class RestfulController extends Controller{
 		renderJson(service.queryTeaByIdList(dto));
 	}
 	
-	//我要买茶茶叶详情
+	//我要买茶分析
 	public void queryTeaAnalysis(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaAnalysis(dto));
@@ -1207,5 +1208,12 @@ public class RestfulController extends Controller{
 	public void queryPersonData() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryPersonData(dto));
+	}
+	
+	//跳转文档
+	public void queryDocument() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		Document document = Document.dao.queryByTypeCd(dto.getType());
+		redirect(document.getStr("desc_url"));
 	}
 }

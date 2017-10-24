@@ -6,8 +6,10 @@ import my.pvcloud.util.StringUtil;
 
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 
 @TableBind(table = "t_sale_order", pk = "id")
 public class SaleOrder extends Model<SaleOrder> {
@@ -63,4 +65,15 @@ public class SaleOrder extends Model<SaleOrder> {
 		return SaleOrder.dao.paginate(page, size, select, sql);
 	}
 
+	public List<Record> queryPriceTrendAvg(String date,int teaId){
+		String sql = "SELECT AVG(a.price) as price,SUM(a.quality) as quality,DATE_FORMAT(a.create_time,'%Y-%m-%d') as createTime from t_sale_order a "
+					+"LEFT  JOIN t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id "
+				    +"LEFT JOIN t_tea c on b.tea_id=c.id "
+					+"WHERE a.create_time like '%"+date+"%' AND c.id="+teaId+" "
+					+"GROUP BY DATE_FORMAT(a.create_time,'%Y-%m-%d') "
+					+"ORDER BY DATE_FORMAT(a.create_time, '%Y-%m-%d') DESC";
+		
+		List<Record> models = Db.find(sql);
+		return models;
+	}
 }

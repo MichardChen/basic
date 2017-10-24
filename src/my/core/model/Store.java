@@ -66,7 +66,7 @@ public class Store extends Model<Store> {
 									 ,Float minLongtitude
 									 ,Float minLatitude){
 		int fromRow = pageSize*(pageNum-1);
-		return Store.dao.find("select * from t_store where status='"+status+"' and "+minLongtitude+"<=longitude<="+maxLongtitude+" and "+minLatitude+"<=latitude<="+maxLatitude+" order by create_time desc limit "+fromRow+","+pageSize);
+		return Store.dao.find("select * from t_store where status='"+status+"' and "+minLongtitude+"<=longitude and longitude<="+maxLongtitude+" and "+minLatitude+"<=latitude and latitude<="+maxLatitude+" order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
 	public boolean updateInfo(Store tea){

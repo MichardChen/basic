@@ -211,7 +211,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>库存</td>
-			<td><input type="number" name="warehouse" id="warehouse" maxlength="30" style="width: 100px;"/>&nbsp;(片)</td>
+			<td><input type="number" name="warehouse" id="warehouse" maxlength="30" style="width: 100px;"/>&nbsp;(件)</td>
 		</tr>
 		<tr>
 			<td>茶叶图片1</td>

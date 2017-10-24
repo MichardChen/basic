@@ -35,33 +35,35 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 														,int pageSize
 														,int pageNum){
 		int fromRow = pageSize*(pageNum-1);
-		String orderby = " order by create_time desc";
-		String sql = "";
+		String orderby = " order by";
+		String sql = " and a.size_type_cd ='"+size+"'";
 		if(StringUtil.equals(priceFlg, "0")){
 			//从低到高
-			sql = sql +" and size_type_cd ='150001'";
-			orderby = orderby +",price asc";
-			sql = " and status='"+Constants.TEA_STATUS.ON_SALE+"'";
+			//sql = sql +" and a.size_type_cd ='150001'";
+			orderby = orderby +" a.price asc";
+			sql = sql+" and a.status='"+Constants.TEA_STATUS.ON_SALE+"'";
 		}else{
 			//从高到低
-			sql = sql +" and size_type_cd ='150002'";
-			orderby = orderby +",price desc";
-			sql = " and status='"+Constants.TEA_STATUS.ON_SALE+"'";
+			//sql = sql +" and a.size_type_cd ='150002'";
+			orderby = orderby +" a.price desc";
+			sql = sql+" and a.status='"+Constants.TEA_STATUS.ON_SALE+"'";
 		}
 		
 		if(quality == 0){
 			//从低到高
-			orderby = orderby +",quality asc";
+			orderby = orderby +",a.quality asc";
 		}else{
 			//从高到低
-			orderby = orderby +",quality desc";
+			orderby = orderby +",a.quality desc";
 		}
 		
 		if(wareHouseId != 0){
 			sql = sql + " and b.warehouse_id="+wareHouseId;
 		}
 		
-		sql = sql + " and b.tea_id="+teaId;
+		orderby = orderby + ",a.create_time desc";
+		
+		sql = sql + " and b.tea_id="+teaId+" and a.quality is not null and a.quality!=0";
 		
 		return WarehouseTeaMemberItem.dao.find("select a.* from t_warehouse_tea_member_item a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where 1=1 "+sql+orderby+" limit "+fromRow+","+pageSize);
 	}
@@ -80,7 +82,7 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 	}
 	
 	public int cutTeaQuality(int quality,int id){
-		return Db.update("update t_warehouse_tea_member_item set quality=quality-"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_tea_member_id="+id);
+		return Db.update("update t_warehouse_tea_member_item set quality=quality-"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 	}
 	
 	public Page<WarehouseTeaMemberItem> queryByPage(int page,int size){

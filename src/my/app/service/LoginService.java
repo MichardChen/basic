@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 import com.sun.org.apache.bcel.internal.classfile.Code;
 
 import my.core.comparator.KeyValueComparator;
@@ -88,6 +89,7 @@ import my.core.vo.WithDrawInitVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.GDMapUtil;
+import my.pvcloud.util.GeoUtil;
 import my.pvcloud.util.LngLat;
 import my.pvcloud.util.MD5Util;
 import my.pvcloud.util.SMSUtil;
@@ -987,9 +989,14 @@ public class LoginService {
 				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
 				if(wtmItem != null){
 					model.setStock(wtmItem.getInt("quality"));
+					model.setTeaId(wtmItem.getInt("id"));
+					CodeMst unit = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
+					if(unit != null){
+						model.setUnit(unit.getStr("name"));
+					}
 				}
 			}
-			model.setTeaId(tea.getInt("id"));
+			
 			String coverImg = tea.getStr("cover_img");
 			String[] imgs = coverImg.split(",");
 			model.setImg(imgs[0]);
@@ -1024,7 +1031,14 @@ public class LoginService {
 	public ReturnData queryNewTeaById(LoginDTO dto){
 				
 		ReturnData data = new ReturnData();
-		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(dto.getId(), Constants.USER_TYPE.PLATFORM_USER);
+		WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(dto.getId());
+		if(wtmItem == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("查询失败，茶叶数据不存在");
+			return data;
+		}
+		//WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(dto.getId(), Constants.USER_TYPE.PLATFORM_USER);
+		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
 		if(wtm == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("查询失败，茶叶数据不存在");
@@ -1036,13 +1050,13 @@ public class LoginService {
 			data.setMessage("查询失败，茶叶数据不存在");
 			return data;
 		}
-		WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
-		if(wtmItem == null){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("查询失败，茶叶数据不存在");
-			return data;
-		}
+		
 		TeaDetailModelVO vo = new TeaDetailModelVO();
+		CodeMst unit = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
+		if(unit != null){
+			vo.setUnit(unit.getStr("name"));
+		}
+		
 		String coverImgs = tea.getStr("cover_img");
 		if(StringUtil.isNoneBlank(coverImgs)){
 			String[] imgs = coverImgs.split(",");
@@ -1069,7 +1083,7 @@ public class LoginService {
 		}
 		vo.setDescUrl(tea.getStr("desc_url"));
 		
-		if(wtm != null){
+		if(wtmItem != null){
 			vo.setStock(StringUtil.toString(wtmItem.getInt("quality")));
 		}
 		vo.setProductPlace(tea.getStr("product_place"));
@@ -1613,14 +1627,44 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		
 		String date = DateUtil.format(new Date(), "yyyy-MM");
-		List<Order> orders = Order.dao.queryOrderByTime(date, Constants.ORDER_STATUS.PAY_SUCCESS);
+		
+		Calendar calendar = Calendar.getInstance();
+		//详细数据
+		Map<String, OrderAnalysisVO> map1 = new HashMap<>();
+		//价格走势
+		Map<String, DataListVO> map2 = new HashMap<>();
+		//成交走势
+		Map<String, OrderItemModel> map3 = new HashMap<>();
+		
+		List<String> allMonthDays = DateUtil.getMonthFullDay(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1);
+		OrderAnalysisVO nullVO = null;
+		DataListVO nullDataListVo = null;
+		OrderItemModel nullItemModel = null;
+		for(String str : allMonthDays){
+			nullVO = new OrderAnalysisVO();
+			nullVO.setAmount(new BigDecimal("0.00"));
+			nullVO.setDate(str);
+			nullVO.setQuality(0);
+			
+			nullDataListVo = new DataListVO();
+			nullDataListVo.setKey(str);
+			nullDataListVo.setValue(new BigDecimal("0.00"));
+			
+			nullItemModel = new OrderItemModel();
+			nullItemModel.setAmount(new BigDecimal("0.00"));
+			nullItemModel.setDate(str);
+			
+			map1.put(str, nullVO);
+			map2.put(str, nullDataListVo);
+			map3.put(str, nullItemModel);
+		}
+		//根据月份筛选出本月成交订单
+		//List<Order> orders = Order.dao.queryOrderByTime(date, Constants.ORDER_STATUS.PAY_SUCCESS);
 		//成交总额
-		BigDecimal allAmount = new BigDecimal("0.00");
 		//成交总量
-		int allQuality = 0;
-		List<OrderAnalysisVO> vos = new ArrayList<>();
-		OrderAnalysisVO vo = null;
-		for(Order order : orders){
+		//List<OrderAnalysisVO> vos = new ArrayList<>();
+		//OrderAnalysisVO vo = null;
+		/*for(Order order : orders){
 			vo = new OrderAnalysisVO();
 			Timestamp time = order.getTimestamp("create_time");
 			int month = time.getMonth()+1;
@@ -1635,16 +1679,24 @@ public class LoginService {
 			allQuality = allQuality + quality;
 			vo.setQuality(quality);
 			vos.add(vo);
-		}
-		//价格走势
+		}*/
+		//价格走势，卖
 		Calendar now =Calendar.getInstance();  
 		now.setTime(new Date());  
 		now.set(Calendar.DATE,now.get(Calendar.DATE)-20);
-		String n = DateUtil.format(now.getTime());
-		List<TeapriceLog> logs = TeapriceLog.dao.queryTeapriceLogs(dto.getTeaId()
-																  ,DateUtil.format(now.getTime())+" 00:00:00"
-																  ,DateUtil.format(new Date())+" 23:59:59");
-		Map<String, BigDecimal> trends = new HashMap<>();
+		String n = DateUtil.format(now.getTime(),"yyyy-MM");
+		
+		List<Record> datas = SaleOrder.dao.queryPriceTrendAvg(n,dto.getTeaId());
+		List<DataListVO> list1 = new ArrayList<>();
+		for(Record record : datas){
+			DataListVO vo = map2.get(record.getStr("createTime"));
+			vo.setValue(record.getBigDecimal("quality"));
+			map2.put(record.getStr("createTime"), vo);
+		}
+		for(String k:map2.keySet()){
+			list1.add(map2.get(k));
+		}
+		/*Map<String, BigDecimal> trends = new HashMap<>();
 		int size = logs.size();
 		if(size != 0){
 			TeapriceLog log = logs.get(0);
@@ -1672,10 +1724,37 @@ public class LoginService {
 					}
 				}
 			}
-		}
+		}*/
 		
 		//成交走势
-		List<OrderItemModel> items = OrderItem.dao.queryPriceAnalysis(dto.getTeaId()
+		List<Record> records = Order.dao.queryBargainTrendAvg(n,dto.getTeaId());
+		
+		List<OrderAnalysisVO> vos = new ArrayList<>();
+		
+		List<OrderItemModel> models = new ArrayList<>();
+		for(Record record : records){
+			String dateStr = record.getStr("createTime");
+			BigDecimal bprice = record.getBigDecimal("price");
+			BigDecimal bquality = record.getBigDecimal("quality");
+			
+			OrderItemModel iModel = map3.get(dateStr);
+			iModel.setAmount(bprice);
+			map3.put(dateStr, iModel);
+			
+			OrderAnalysisVO vo2 = map1.get(dateStr);
+			vo2.setAmount(bprice);
+			vo2.setQuality(StringUtil.toInteger(StringUtil.toString(bquality)));
+			map1.put(dateStr, vo2);
+		}
+		for(String k:map3.keySet()){
+			models.add(map3.get(k));
+		}
+		for(String k:map1.keySet()){
+			vos.add(map1.get(k));
+		}
+		
+		//成交走势，买
+		/*List<OrderItemModel> items = OrderItem.dao.queryPriceAnalysis(dto.getTeaId()
 														  ,DateUtil.format(now.getTime())+" 00:00:00"
 														  ,DateUtil.format(new Date())+" 23:59:59");
 		
@@ -1717,40 +1796,47 @@ public class LoginService {
 					}
 				}
 			}
-		}
+		}*/
 		
+		//详细数据
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		Map<String,Object> map = new HashMap<>();
 		map.put("data", vos);
-		map.put("allQuality", allQuality);
-		map.put("allAmount", allAmount);
-		List<DataListVO> list1 = new ArrayList<>();
-		DataListVO v = null;
+		
+		//查询成交总量和成交总额
+		List<Record> records2 = Order.dao.queryBargainSum(date, dto.getTeaId());
+		if((records2 != null)&&(records2.size() != 0)){
+			Record record0 = records2.get(0);
+			map.put("allQuality", record0.getBigDecimal("quality"));
+			map.put("allAmount", record0.getBigDecimal("amount"));
+		}
+		
+		/*DataListVO v = null;
 		for(String k:trends.keySet()){
 			v = new DataListVO();
 			v.setKey(k);
 			v.setValue(trends.get(k));
 			list1.add(v);
-		}
+		}*/
 		
-		List<DataListVO> list2 = new ArrayList<>();
+		/*List<DataListVO> list2 = new ArrayList<>();
 		DataListVO v2 = null;
 		for(String k:bargainTrend.keySet()){
 			v2 = new DataListVO();
 			v2.setKey(k);
 			v2.setValue(bargainTrend.get(k));
 			list2.add(v2);
-		}
+		}*/
 		
-		KeyValueComparator mc = new KeyValueComparator() ; 
-		Collections.sort(list1, mc) ; 
-		
+		/*KeyValueComparator mc = new KeyValueComparator() ; 
+		Collections.sort(list1, mc) ; */
+		/*
 		KeyValueComparator mc2 = new KeyValueComparator() ; 
 		Collections.sort(list2, mc2) ; 
-		
+		*/
 		map.put("priceTrend", list1);
-		map.put("bargainTrend", list2);
+		map.put("bargainTrend", models);
 		data.setData(map);
 		return data;
 	}
@@ -2248,14 +2334,22 @@ public class LoginService {
 	}
 	
 	public ReturnData queryTeaStoreList(LoginDTO dto){
+		
 		ReturnData data = new ReturnData();
-		Float maxLongtitude = new Float(dto.getLongtitude2());
-		Float maxLatitude = new Float(dto.getLatitude3());
-		Float minLongtitude = new Float(dto.getLongtitude1());
-		Float minLatitude = new Float(dto.getLatitude1());
+		
 		double localLongtitude = Double.valueOf(dto.getLocalLongtitude());
 		double localLatitude = Double.valueOf(dto.getLocalLatitude());
-		LngLat localLat = new LngLat(localLongtitude, localLatitude);
+		CodeMst distance = CodeMst.dao.queryCodestByCode(Constants.DEFAULT_SETTING.MAP_DISTANCE);
+		Long dis = new Long("10000");
+		if(distance != null){
+			dis = new Long(StringUtil.toString(distance.getInt("data1")));
+		}
+		double[] location = GeoUtil.getRectangle(localLongtitude, localLatitude, dis);
+		Float maxLongtitude = new Float(location[2]);
+		Float maxLatitude = new Float(location[3]);
+		Float minLongtitude = new Float(location[0]);
+		Float minLatitude = new Float(location[1]);
+		
 		List<Store> stores = Store.dao.queryStoreList(dto.getPageSize()
 													 ,dto.getPageNum()
 													 ,Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS
@@ -2275,13 +2369,15 @@ public class LoginService {
 			vo.setBusinessTea(store.getStr("business_tea"));
 			double lg = Double.valueOf(String.valueOf(store.getFloat("longitude")));
 			double lat = Double.valueOf(String.valueOf(store.getFloat("latitude")));
-			LngLat address = new LngLat(lg, lat);
-			
-			double distance = GDMapUtil.calculateLineDistance(localLat, address);
-			BigDecimal decimals = new BigDecimal(distance);
+			double dist = GeoUtil.getDistanceOfMeter(localLatitude, localLongtitude,lat, lg);
+			BigDecimal decimals = new BigDecimal(dist);
 			if(decimals != null){
-				BigDecimal km = decimals.divide(new BigDecimal("1000")).setScale(2);
-				vo.setDistance(StringUtil.toString(km)+"Km");
+				BigDecimal km = decimals.divide(new BigDecimal("1000"));
+				if(km.compareTo(new BigDecimal("1")) != 1){
+					vo.setDistance("1Km以内");
+				}else{
+					vo.setDistance(StringUtil.toString(km.setScale(2,BigDecimal.ROUND_HALF_DOWN))+"Km");
+				}
 			}
 			StoreImage storeImage = StoreImage.dao.queryStoreFirstImages(vo.getStoreId());
 			if(storeImage != null){
