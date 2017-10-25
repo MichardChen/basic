@@ -154,7 +154,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>出厂总量</td>
-			<td><input type="number" name="amount" id="amount" maxlength="30" style="width: 100px;" value="${teaInfo.total_output}"/>&nbsp;(饼)</td>
+			<td><input type="number" name="amount" id="amount" maxlength="30" style="width: 100px;" value="${teaInfo.total_output}"/>&nbsp;(片)</td>
 		</tr>
 		<tr>
 			<td>茶叶类型</td>

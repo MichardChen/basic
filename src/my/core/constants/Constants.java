@@ -165,18 +165,24 @@ public interface Constants {
 		public static final String SALE_COMMENT = "060001";
 		//使用帮助
 		public static final String USE_HELP = "060002";
-		//协议合同
+		//协议及合同
 		public static final String CONTRACT_COMMENT = "060003";
 		//新茶发售备注
 		public static final String NEW_TEA_SALE_MARK = "060004";
 		//认证提示
 		public static final String CERTIFICATE_TIP = "060005";
-		//存储规则和仓库介绍
+		//查看存储规则和仓库介绍
 		public static final String WAREHOUSE_INTRODUCE = "060006";
 		//茶叶包装及收费标准
 		public static final String TEA_PACKAGE_FEE_STANDARD = "060007";
 		//交易合同
 		public static final String TRADE_CONTRACT = "060008";
+		//同记服务协议
+		public static final String TONGJI_SERVICE_CONTRACT = "060009";
+		//仓储管理服务协议
+		public static final String WAREHOUSE_SERVICE_CONTRACT = "060010";
+		//买茶弹框提示协议
+		public static final String BUY_TEA_TIP = "060011";
 	}
 	
 	public static interface VERSION_TYPE{
@@ -294,5 +300,9 @@ public interface Constants {
 		public static final String APPLING = "240001";
 		public static final String APPLY_SUCCESS = "240002";
 		public static final String APPLY_FAIL = "240003";
+	}
+	
+	public static interface TEA_TYPE_CD{
+		public static final String PUER = "250001";
 	}
 }

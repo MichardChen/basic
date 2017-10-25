@@ -106,6 +106,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="060006">存储规则和仓库介绍</option>
 							<option value="060007">茶叶包装及收费标准</option>
 							<option value="060008">掌上茶宝平台交易合同</option>
+							<option value="060009">同记服务协议</option>
+							<option value="060010">仓储管理服务协议</option>
 						</select>
 		</tr>
 		<tr>

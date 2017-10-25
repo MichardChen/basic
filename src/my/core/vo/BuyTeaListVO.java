@@ -8,7 +8,7 @@ public class BuyTeaListVO implements Serializable{
 	private int id;
 	private String name;
 	private String size;
-	private BigDecimal price;
+	private String price;
 	private String type;
 	private String img;
 	public int getId() {
@@ -20,7 +20,7 @@ public class BuyTeaListVO implements Serializable{
 	public String getSize() {
 		return size;
 	}
-	public BigDecimal getPrice() {
+	public String getPrice() {
 		return price;
 	}
 	public String getType() {
@@ -38,7 +38,7 @@ public class BuyTeaListVO implements Serializable{
 	public void setSize(String size) {
 		this.size = size;
 	}
-	public void setPrice(BigDecimal price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
 	public void setType(String type) {
@@ -47,6 +47,9 @@ public class BuyTeaListVO implements Serializable{
 	public void setImg(String img) {
 		this.img = img;
 	}
+	
+	
+	
 	
 	
 }

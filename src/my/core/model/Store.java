@@ -98,4 +98,25 @@ public class Store extends Model<Store> {
 			return 0;
 		}
 	}
+	
+	public boolean updateData(int storeId
+						 ,String address
+						 ,Float lgt
+						 ,Float lat
+						 ,String name
+						 ,String mobile
+						 ,String teaStr
+						 ,String fromTime
+						 ,String toTime
+						 ,String mark
+						 ,String status){
+		int ret = Db.update("update t_store set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"',store_address='"+address+"'"
+				+ ",longitude="+lgt+",latitude="+lat+",store_name='"+name+"',link_phone='"+mobile+"',business_tea='"+teaStr
+				+"',business_fromtime='"+fromTime+"',business_totime='"+toTime+"',store_desc='"+mark+"' where id="+storeId);
+		if(ret != 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }

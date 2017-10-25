@@ -20,7 +20,14 @@ public class StoreDetailVO implements Serializable{
 	private String mark;
 	private List<String> imgs;
 	private String status;
+	private String cityDistrict;
 	
+	public String getCityDistrict() {
+		return cityDistrict;
+	}
+	public void setCityDistrict(String cityDistrict) {
+		this.cityDistrict = cityDistrict;
+	}
 	public String getStatus() {
 		return status;
 	}

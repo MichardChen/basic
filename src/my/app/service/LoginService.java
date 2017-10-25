@@ -2,9 +2,7 @@ package my.app.service;
 
 import java.beans.Transient;
 import java.io.IOException;
-import java.lang.invoke.VolatileCallSite;
 import java.math.BigDecimal;
-import java.net.Socket;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,16 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jdt.internal.compiler.lookup.InvocationSite.EmptyWithAstNode;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.sun.org.apache.bcel.internal.classfile.Code;
 
-import my.core.comparator.KeyValueComparator;
 import my.core.constants.Constants;
 import my.core.model.AcceessToken;
 import my.core.model.Admin;
@@ -38,7 +31,6 @@ import my.core.model.FeedBack;
 import my.core.model.GetTeaRecord;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
-import my.core.model.MemberStore;
 import my.core.model.Message;
 import my.core.model.News;
 import my.core.model.Order;
@@ -54,7 +46,6 @@ import my.core.model.Store;
 import my.core.model.StoreImage;
 import my.core.model.SystemVersionControl;
 import my.core.model.Tea;
-import my.core.model.TeapriceLog;
 import my.core.model.User;
 import my.core.model.VertifyCode;
 import my.core.model.WareHouse;
@@ -88,15 +79,13 @@ import my.core.vo.WarehouseStockVO;
 import my.core.vo.WithDrawInitVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
-import my.pvcloud.util.GDMapUtil;
 import my.pvcloud.util.GeoUtil;
-import my.pvcloud.util.LngLat;
-import my.pvcloud.util.MD5Util;
 import my.pvcloud.util.SMSUtil;
 import my.pvcloud.util.StringUtil;
 import my.pvcloud.util.TextUtil;
 import my.pvcloud.util.VertifyUtil;
 import my.pvcloud.vo.StoreDetailVO;
+import sun.org.mozilla.javascript.internal.ast.NewExpression;
 
 public class LoginService {
 
@@ -1068,10 +1057,10 @@ public class LoginService {
 		}
 		vo.setId(wtmItem.getInt("id"));
 		vo.setName(tea.getStr("tea_title"));
-		vo.setAmount(StringUtil.toString(tea.getInt("total_output")));
-		vo.setBirthday(DateUtil.format(tea.getDate("product_date")));
+		vo.setAmount(StringUtil.toString(tea.getInt("total_output"))+"片");
+		vo.setBirthday(DateUtil.formatDateYMD((tea.getDate("product_date"))));
 		vo.setBrand(tea.getStr("brand"));
-		vo.setPrice(StringUtil.toString(tea.getBigDecimal("tea_price")));
+		vo.setPrice(StringUtil.formatMoney(tea.getBigDecimal("tea_price")));
 		vo.setCertificateFlg(tea.getInt("certificate_flg"));
 		Document mst = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.CERTIFICATE_TIP);
 		if(mst != null){
@@ -1087,7 +1076,7 @@ public class LoginService {
 			vo.setStock(StringUtil.toString(wtmItem.getInt("quality")));
 		}
 		vo.setProductPlace(tea.getStr("product_place"));
-		vo.setSaleTime(tea.getDate("sale_from_date")+"至"+tea.getDate("sale_to_date"));
+		vo.setSaleTime(DateUtil.formatDateYMD(tea.getDate("sale_from_date"))+"至"+DateUtil.formatDateYMD(tea.getDate("sale_to_date")));
 		vo.setSize(tea.getInt("weight")+"克/片、"+tea.getInt("size")+"片/件");
 		vo.setSize2(tea.getInt("size")+"片/件");
 		CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
@@ -1530,7 +1519,7 @@ public class LoginService {
 			vo.setName(tea.getStr("tea_title"));
 			/*WarehouseTeaMemberItem item = WarehouseTeaMemberItem.dao.queryTeaOnPlatform(Constants.USER_TYPE.PLATFORM_USER
 																					   ,tea.getInt("id"));*/
-			vo.setPrice(wtm.getBigDecimal("price"));
+			vo.setPrice(StringUtil.toString(wtm.getBigDecimal("price")));
 			
 		/*	if(wtm != null){
 				vo.setPrice(wtm.getBigDecimal("piece_price"));
@@ -1634,12 +1623,12 @@ public class LoginService {
 		//价格走势
 		Map<String, DataListVO> map2 = new HashMap<>();
 		//成交走势
-		Map<String, OrderItemModel> map3 = new HashMap<>();
+		Map<String, DataListVO> map3 = new HashMap<>();
 		
 		List<String> allMonthDays = DateUtil.getMonthFullDay(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1);
 		OrderAnalysisVO nullVO = null;
 		DataListVO nullDataListVo = null;
-		OrderItemModel nullItemModel = null;
+		DataListVO nullItemModel = null;
 		for(String str : allMonthDays){
 			nullVO = new OrderAnalysisVO();
 			nullVO.setAmount(new BigDecimal("0.00"));
@@ -1650,9 +1639,9 @@ public class LoginService {
 			nullDataListVo.setKey(str);
 			nullDataListVo.setValue(new BigDecimal("0.00"));
 			
-			nullItemModel = new OrderItemModel();
-			nullItemModel.setAmount(new BigDecimal("0.00"));
-			nullItemModel.setDate(str);
+			nullItemModel = new DataListVO();
+			nullItemModel.setValue(new BigDecimal("0.00"));
+			nullItemModel.setKey(str);
 			
 			map1.put(str, nullVO);
 			map2.put(str, nullDataListVo);
@@ -1688,12 +1677,20 @@ public class LoginService {
 		
 		List<Record> datas = SaleOrder.dao.queryPriceTrendAvg(n,dto.getTeaId());
 		List<DataListVO> list1 = new ArrayList<>();
+		
 		for(Record record : datas){
 			DataListVO vo = map2.get(record.getStr("createTime"));
-			vo.setValue(record.getBigDecimal("quality"));
+			if(vo == null){
+				vo = new DataListVO();
+				vo.setKey(record.getStr("createTime"));
+			}
+			
+			vo.setValue(record.getBigDecimal("quality") == null ? new BigDecimal("0.00") : record.getBigDecimal("quality"));
 			map2.put(record.getStr("createTime"), vo);
 		}
 		for(String k:map2.keySet()){
+			DataListVO vs = map2.get(k);
+			System.out.println(vs.getKey()+"=="+vs.getValue());
 			list1.add(map2.get(k));
 		}
 		/*Map<String, BigDecimal> trends = new HashMap<>();
@@ -1731,21 +1728,40 @@ public class LoginService {
 		
 		List<OrderAnalysisVO> vos = new ArrayList<>();
 		
-		List<OrderItemModel> models = new ArrayList<>();
+		List<DataListVO> models = new ArrayList<>();
 		for(Record record : records){
 			String dateStr = record.getStr("createTime");
-			BigDecimal bprice = record.getBigDecimal("price");
-			BigDecimal bquality = record.getBigDecimal("quality");
+			BigDecimal bprice = (record.getBigDecimal("price") == null ? new BigDecimal("0.00") : record.getBigDecimal("price"));
+			BigDecimal bquality = (record.getBigDecimal("quality") == null? new BigDecimal("0.00") : record.getBigDecimal("quality"));
 			
-			OrderItemModel iModel = map3.get(dateStr);
-			iModel.setAmount(bprice);
+			DataListVO iModel = map3.get(dateStr);
+			if(iModel == null){
+				iModel = new DataListVO();
+				iModel.setKey(dateStr);
+			}
+			if(bprice == null){
+				iModel.setValue(new BigDecimal("0.00"));
+			}else{
+				iModel.setValue(bprice);
+			}
+			
 			map3.put(dateStr, iModel);
 			
 			OrderAnalysisVO vo2 = map1.get(dateStr);
-			vo2.setAmount(bprice);
+			if(vo2 == null){
+				vo2 = new OrderAnalysisVO();
+				vo2.setDate(dateStr);
+			}
+			
+			if(bprice == null){
+				vo2.setAmount(new BigDecimal("0.00"));
+			}else{
+				vo2.setAmount(bprice);
+			}
 			vo2.setQuality(StringUtil.toInteger(StringUtil.toString(bquality)));
 			map1.put(dateStr, vo2);
 		}
+		
 		for(String k:map3.keySet()){
 			models.add(map3.get(k));
 		}

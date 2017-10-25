@@ -3,6 +3,7 @@ package my.pvcloud.util;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -236,5 +237,10 @@ public class StringUtil extends StringUtils {
 		}
 		String[] strings = imgs.split(",");
 		return strings[0];
+	}
+	
+	public static String formatMoney(BigDecimal money){
+		Double myNumber = Double.valueOf(toString(money));
+		return NumberFormat.getCurrencyInstance().format(myNumber); 
 	}
 }

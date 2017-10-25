@@ -253,7 +253,9 @@ public final class DateUtil {
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month - 1);// 1月从0开始
         cal.set(Calendar.DAY_OF_MONTH, day);// 设置为1号,当前日期既为本月第一天
-        int count = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        
+        Calendar calendar = Calendar.getInstance();
+        int count = calendar.get(Calendar.DAY_OF_MONTH);
         for (int j = 0; j <= (count-1);) {
             if(sdf.format(cal.getTime()).equals(getLastDay(year, month)))
                 break;
@@ -271,5 +273,43 @@ public final class DateUtil {
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, 0);
         return sdf.format(cal.getTime());
+    }
+    
+    public static String formatYMD(Timestamp time){
+    	if(time == null){
+    		return null;
+    	}else{
+    		/*String month = StringUtil.toString(time.getMonth());
+    		String day = StringUtil.toString(time.getDay());
+    		if(time.getMonth() < 10){
+    			month = "0"+month;
+    		}
+    		if(time.getDay() < 10){
+    			day = "0"+day;
+    		}
+    		return time.getYear()+"年"+month+"月"+day+"日";*/
+    		Date date = stringToDate(formatTimestampForDate(time));
+    		SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日");
+    	    return formatter.format(date);
+    	}
+    }
+    
+    public static String formatDateYMD(Date time){
+    	
+    	if(time == null){
+    		return null;
+    	}else{
+    		/*String month = StringUtil.toString(time.getMonth());
+    		String day = StringUtil.toString(time.getDay());
+    		if(time.getMonth() < 10){
+    			month = "0"+month;
+    		}
+    		if(time.getDay() < 10){
+    			day = "0"+day;
+    		}
+    		return time.getYear()+"年"+month+"月"+day+"日";*/
+    		SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日");
+    	    return formatter.format(time);
+    	}
     }
 }
