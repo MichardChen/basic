@@ -152,9 +152,9 @@ td{
 		    					<td>
 		    							<c:if test="${s.flg==1}">
 		    									<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/del?id=${s.id}';}"/>
-		    									<input type="button" value="编辑" class="ys3"  onclick="edit(${s.id})"/>
+		    									<input type="button" value="查看" class="ys3"  onclick="edit(${s.id})"/>
 		    							</c:if>
-		    		      		<a href="${s.url}" target="_blank"><input type="button" value="查看" class="ys3"/></a>
+		    		      		<%-- <a href="${s.url}" target="_blank"><input type="button" value="查看" class="ys3"/></a> --%>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>

@@ -112,12 +112,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	}
         	var price = $("#price").val();
         	if(price == ""){
-        		alert("请输入发售单价");
+        		alert("请输入发行单价");
         		return false;
         	}
         	var fromtime = $("#fromtime").val();
         	if(fromtime == ""){
-        		alert("请输入发售时间");
+        		alert("请输入发行时间");
         		return false;
         	}
         	var warehouse = $("#warehouse").val();
@@ -159,10 +159,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<tr>
 			<td>茶叶类型</td>
 			<td>
-						<select style="height:30px;width:120px;" name="typeCd" id="typeCd">
-							<option value="050001">普洱</option>
-							<option value="050002">铁观音</option>
-						</select>
+					<select style="height:30px;width:120px;" name="typeCd" id="typeCd">
+						<c:forEach var="s" items="${teaType}">
+							<option value="${s.code}">${s.name}</option>
+						</c:forEach>
+					</select>
 			</td>
 		</tr>
 		<tr>
@@ -180,10 +181,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>
 						<select style="height:30px;width:120px;" name="status" id="status">
 							<%-- 	<option value="090001" <c:if test="${s.status=='090001'}">selected="selected"</c:if>>待售</option>
-								<option value="090002" <c:if test="${s.status=='090002'}">selected="selected"</c:if>>发售中</option>
+								<option value="090002" <c:if test="${s.status=='090002'}">selected="selected"</c:if>>发行中</option>
 								<option value="090003" <c:if test="${s.status=='090003'}">selected="selected"</c:if>>已结束</option> --%>
 								<option value="090001">待售</option>
-								<option value="090002">发售中</option>
+								<option value="090002">发行中</option>
 								<option value="090003">已结束</option>
 						</select>
 			</td>
@@ -198,13 +199,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</td>
 		</tr>
 		<tr>
-			<td>发售单价</td>
+			<td>发行单价</td>
 			<td>
-				<input type="number" name="price" id="price" maxlength="30" style="width: 100px;"/>&nbsp;(件)
+				<input type="number" name="price" id="price" maxlength="30" style="width: 100px;"/>&nbsp;(元/件)
 			</td>
 		</tr>
 		<tr>
-			<td>发售时间</td>
+			<td>发行时间</td>
 			<td>
 				<input type="text" name="fromtime" id="fromtime" maxlength="30" style="width: 120px;" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>&nbsp;-&nbsp;<input type="text" name="totime" maxlength="30" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 120px;"/>
 			</td>

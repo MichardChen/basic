@@ -112,12 +112,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	}
         	var price = $("#price").val();
         	if(price == ""){
-        		alert("请输入发售单价");
+        		alert("请输入发行单价");
         		return false;
         	}
         	var fromtime = $("#fromtime").val();
         	if(fromtime == ""){
-        		alert("请输入发售时间");
+        		alert("请输入发行时间");
         		return false;
         	}
         	var warehouse = $("#warehouse").val();
@@ -133,28 +133,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<table class="table table-responsive">
 		<tr>
 			<td>茶叶名称</td>
-			<td><input type="text" name="title" id="title" maxlength="30" value="${teaInfo.tea_title}" style="width: 300px;"/></td>
+			<td>${teaInfo.tea_title}<%-- <input type="text" name="title" id="title" maxlength="30" value="${teaInfo.tea_title}" style="width: 300px;"/> --%></td>
 		</tr>
 		<tr>
 			<td>茶叶品牌</td>
-			<td><input type="text" name="brand" id="brand" maxlength="30" value="${teaInfo.brand}" style="width: 300px;"/></td>
+			<td>${teaInfo.brand}<%-- <input type="text" name="brand" id="brand" maxlength="30" value="${teaInfo.brand}" style="width: 300px;"/> --%></td>
 		</tr>
 		<tr>
 			<td>茶叶产地</td>
-			<td><input type="text" name="place" id="place" value="${teaInfo.product_place}" maxlength="30" style="width: 300px;"/></td>
+			<td>${teaInfo.product_place}<%-- <input type="text" name="place" id="place" value="${teaInfo.product_place}" maxlength="30" style="width: 300px;"/> --%></td>
 		</tr>
 		<tr>
 			<td>生产日期</td>
-			<td><input type="text" name="birthday" id="birthday" value="${teaInfo.product_date}" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/></td>
+			<td>${teaInfo.product_date}<%-- <input type="text" name="birthday" id="birthday" value="${teaInfo.product_date}" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/> --%></td>
 		</tr>
 		<tr>
 			<td>规格</td>
-			<td><input type="number" name="size1" id="size1" maxlength="30" style="width: 100px;" value="${teaInfo.weight}"/>&nbsp;(克/片)&nbsp;&nbsp;
-			<input type="number" name="size2" id="size2" maxlength="30" style="width: 100px;" value="${teaInfo.size}"/>&nbsp;(片/件)</td>
+			<td><%-- <input type="number" name="size1" id="size1" maxlength="30" style="width: 100px;" value="${teaInfo.weight}"/> --%>${teaInfo.weight}&nbsp;(克/片)&nbsp;&nbsp;
+			<%-- <input type="number" name="size2" id="size2" maxlength="30" style="width: 100px;" value="${teaInfo.size}"/> --%>${teaInfo.size}&nbsp;(片/件)</td>
 		</tr>
 		<tr>
 			<td>出厂总量</td>
-			<td><input type="number" name="amount" id="amount" maxlength="30" style="width: 100px;" value="${teaInfo.total_output}"/>&nbsp;(片)</td>
+			<td><%-- <input type="number" name="amount" id="amount" maxlength="30" style="width: 100px;" value="${teaInfo.total_output}"/> --%>${teaInfo.total_output}&nbsp;(片)</td>
 		</tr>
 		<tr>
 			<td>茶叶类型</td>
@@ -171,14 +171,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>库存</td>
-			<td><input type="number" name="warehouse" id="warehouse" maxlength="30" style="width: 100px;" value="${stock}"/>&nbsp;(件)</td>
+			<td>${stock}&nbsp;(件)</td>
 		</tr>
 		<tr>
 			<td>茶叶状态</td>
 			<td>
 						<select style="height:30px;width:120px;" name="status" id="status">
 							 	<option value="090001" <c:if test="${teaInfo.status=='090001'}">selected="selected"</c:if>>待售</option>
-								<option value="090002" <c:if test="${teaInfo.status=='090002'}">selected="selected"</c:if>>发售中</option>
+								<option value="090002" <c:if test="${teaInfo.status=='090002'}">selected="selected"</c:if>>发行中</option>
 								<option value="090003" <c:if test="${teaInfo.status=='090003'}">selected="selected"</c:if>>已结束</option>
 						</select>
 			</td>
@@ -193,18 +193,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</td>
 		</tr>
 		<tr>
-			<td>发售单价</td>
+			<td>发行单价</td>
 			<td>
-				<input type="number" name="price" id="price" maxlength="30" style="width: 100px;" value="${teaInfo.tea_price}"/>&nbsp;(件)
+				<%-- <input type="number" name="price" id="price" maxlength="30" style="width: 100px;" value="${teaInfo.tea_price}"/> --%>${teaInfo.tea_price}&nbsp;(元/件)
 			</td>
 		</tr>
 		<tr>
-			<td>发售时间</td>
+			<td>发行时间</td>
 			<td>
 				<input type="text" value="${teaInfo.sale_from_date}" name="fromtime" id="fromtime" maxlength="30" style="width: 120px;" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>&nbsp;-&nbsp;<input type="text" value="${teaInfo.sale_to_date}" name="totime" maxlength="30" class="Wdate"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 120px;"/>
 			</td>
 		</tr>
-		<tr>
+		<!-- <tr>
 			<td style="color: red;font-weight: bold;">是否更新图片</td>
 			<td>
 						<select style="height:30px;width:120px;" name="reset">
@@ -212,14 +212,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="1">是</option>
 						</select>
 			</td>
-		</tr>
+		</tr> -->
 		<tr>
-			<td>茶叶图片1</td>
+			<td>茶叶图片</td>
 			<td>
-					<input type="file" name="coverImg1"/>
 			</td>
 		</tr>
-		<tr>
+		<c:forEach var="s" items="${list}">
+			<tr>
+				<td><img src="${s}" width="100px;" height="100px;"/></td>
+				<td>
+				</td>
+			</tr>
+		</c:forEach>
+	<!-- 	<tr>
 			<td>茶叶图片2</td>
 			<td>
 					<input type="file" name="coverImg2"/>
@@ -236,7 +242,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>
 					<input type="file" name="coverImg4"/>
 			</td>
-		</tr>
+		</tr> -->
 		<tr>
 					<td>茶叶详情</td>
 					<td>
@@ -251,6 +257,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
 </div>
 <div class="modal-footer" style="margin-top:20px;text-align: center;">
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<!-- <input type="submit" class="btn btn-success" value="保存"/> -->
 				</div>
 			</form>

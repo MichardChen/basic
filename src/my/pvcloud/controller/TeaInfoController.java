@@ -200,6 +200,8 @@ public class TeaInfoController extends Controller {
 		//初始化所有仓库
 		List<WareHouse> houses = houseService.queryAllHouse();
 		setAttr("houses", houses);
+		List<CodeMst> teaType = CodeMst.dao.queryCodestByPcode(Constants.TEA_TYPE_CD.TEA);
+		setAttr("teaType", teaType);
 		render("addTea.jsp");
 	}
 	
@@ -610,6 +612,15 @@ public class TeaInfoController extends Controller {
 			setAttr("warehouse", null);
 			setAttr("stock", 0);
 		}
+		String imgs = teaInfo.getStr("cover_img");
+		List<String> list = new ArrayList<>();
+		if(StringUtil.isNoneBlank(imgs)){
+			String[] images = imgs.split(",");
+			for(String str : images){
+				list.add(str);
+			}
+		}
+		setAttr("list", list);
 		render("editTea.jsp");
 	}
 }

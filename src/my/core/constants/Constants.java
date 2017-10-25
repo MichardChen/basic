@@ -303,6 +303,8 @@ public interface Constants {
 	}
 	
 	public static interface TEA_TYPE_CD{
+		public static final String TEA = "250000";
 		public static final String PUER = "250001";
+		public static final String TIE_GUANYIN = "250002";
 	}
 }
