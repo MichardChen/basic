@@ -38,6 +38,7 @@ public class SaleOrderController extends Controller {
 			//默认发售说明
 			
 		}
+
 		Page<WarehouseTeaMemberItem> list = service.queryWtmItemByPage(page, size);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;

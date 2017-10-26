@@ -44,6 +44,7 @@ public class SaleRecordController extends Controller {
 		OrderListVO model = null;
 		for(SaleOrder order : list.getList()){
 			model = new OrderListVO();
+			model.setOrderNo(order.getStr("order_no"));
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(order.getInt("warehouse_tea_member_id"));
 			model.setPrice(order.getBigDecimal("price"));
 			String sizeTypeCd = order.getStr("size_type_cd");
@@ -134,6 +135,7 @@ public class SaleRecordController extends Controller {
 		OrderListVO model = null;
 		for(SaleOrder order : list.getList()){
 			model = new OrderListVO();
+			model.setOrderNo(order.getStr("order_no"));
 			model.setAmount(StringUtil.toString(order.getBigDecimal("item_amount")));
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(order.getInt("warehouse_tea_member_id"));
 			model.setPrice(order.getBigDecimal("price"));
@@ -227,6 +229,7 @@ public class SaleRecordController extends Controller {
 		OrderListVO model = null;
 		for(SaleOrder order : list.getList()){
 			model = new OrderListVO();
+			model.setOrderNo(order.getStr("order_no"));
 			model.setAmount(StringUtil.toString(order.getBigDecimal("item_amount")));
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(order.getInt("warehouse_tea_member_id"));
 			model.setPrice(order.getBigDecimal("price"));

@@ -50,10 +50,12 @@ a:hover{
 }
 th{
 	white-space:nowrap;
+	text-align: center;
 }
 td{
 	white-space:nowrap;
 	border:0!important;
+	text-align: center;
 }
 .table thead tr{
 	background-color:#F5F6FA;
@@ -85,12 +87,11 @@ td{
 <body class="fixed-nav fixed-sidebar">
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
-		<div class="wrapper wrapper-content animated fadeInRightBig">
-    	<div class="" style="width:100%;color=black;font-size:15px;height:50px;line-height:50px;margin-bottom:20px;">
-	    	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div>
-	   		<div class="fl">日志信息</div>
+		<div class="wrapper wrapper-content animated fadeInRightBig" style="text-align: center;">
+    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
+	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
+	   		<div style="font-size: 30px;color: white;font-weight: bold;">日志信息</div>
 	   </div>
-	  
     	<hr/>	
     	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
    		<div class="" style="margin-top:15px;margin-bottom:15px;">
@@ -111,6 +112,7 @@ td{
     		<table class="table table-responsive" id="myTb" >
     		<thead>
     			<tr>
+    				<th>序列号</th>
     				<th>用户</th>
     				<th>操作</th>
     				<th>操作时间</th>
@@ -123,8 +125,9 @@ td{
 			    		</tr>
 		    		</c:if>
 		    		<c:if test="${list.totalRow>0 }">
-		    			<c:forEach var="s" items="${sList}">	
+		    			<c:forEach var="s" items="${sList}" varStatus="status">	
 		    				<tr class="bOrder">
+		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
 		    					<td>${s.userName}</td>
 		    					<td>${s.mark}</td>
 		    					<td>${s.createTime}</td>

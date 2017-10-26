@@ -13,7 +13,49 @@ public class TeaModel implements Serializable{
 	private String url;
 	private String status;
 	private int flg;
+	private String brand;
+	private String productPlace;
+	private String size;
+	private String amount;
+	private String stock;
+	private String saleStatus;
 	
+	public String getBrand() {
+		return brand;
+	}
+	public String getProductPlace() {
+		return productPlace;
+	}
+	public String getSize() {
+		return size;
+	}
+	public String getAmount() {
+		return amount;
+	}
+	public String getStock() {
+		return stock;
+	}
+	public String getSaleStatus() {
+		return saleStatus;
+	}
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+	public void setProductPlace(String productPlace) {
+		this.productPlace = productPlace;
+	}
+	public void setSize(String size) {
+		this.size = size;
+	}
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+	public void setStock(String stock) {
+		this.stock = stock;
+	}
+	public void setSaleStatus(String saleStatus) {
+		this.saleStatus = saleStatus;
+	}
 	public int getFlg() {
 		return flg;
 	}

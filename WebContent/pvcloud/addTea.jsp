@@ -137,11 +137,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>茶叶品牌</td>
-			<td><input type="text" name="brand" id="brand" maxlength="30" style="width: 300px;"/></td>
+			<td>
+					<select style="height:30px;width:120px;" name="brand" id="brand">
+						<c:forEach var="s" items="${brandType}">
+							<option>${s.name}</option>
+						</c:forEach>
+					</select>
 		</tr>
 		<tr>
 			<td>茶叶产地</td>
-			<td><input type="text" name="place" id="place" maxlength="30" style="width: 300px;"/></td>
+			<td>
+					<select style="height:30px;width:120px;" name="place" id="place">
+						<c:forEach var="s" items="${place}">
+							<option>${s.name}</option>
+						</c:forEach>
+					</select>
 		</tr>
 		<tr>
 			<td>生产日期</td>
@@ -215,25 +225,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td><input type="number" name="warehouse" id="warehouse" maxlength="30" style="width: 100px;"/>&nbsp;(件)</td>
 		</tr>
 		<tr>
-			<td>茶叶图片1</td>
+			<td>茶叶图片1&nbsp;（规格1080*615px）</td>
 			<td>
 					<input type="file" name="coverImg1"/>
 			</td>
 		</tr>
 		<tr>
-			<td>茶叶图片2</td>
+			<td>茶叶图片2&nbsp;（规格1080*615px）</td>
 			<td>
 					<input type="file" name="coverImg2"/>
 			</td>
 		</tr>
 		<tr>
-			<td>茶叶图片3</td>
+			<td>茶叶图片3&nbsp;（规格1080*615px）</td>
 			<td>
 					<input type="file" name="coverImg3"/>
 			</td>
 		</tr>
 		<tr>
-			<td>茶叶图片4</td>
+			<td>茶叶图片4&nbsp;（规格1080*615px）</td>
 			<td>
 					<input type="file" name="coverImg4"/>
 			</td>

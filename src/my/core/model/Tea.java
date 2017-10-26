@@ -48,7 +48,7 @@ public class Tea extends Model<Tea> {
 	
 	public List<Tea> queryNewTeaSale(int pageSize,int pageNum){
 		int fromRow = pageSize*(pageNum-1);
-		return Tea.dao.find("select * from t_tea order by create_time desc limit "+fromRow+","+pageSize);
+		return Tea.dao.find("select * from t_tea where flg=1 order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
 	public List<Tea> queryBuyTeaList(int pageSize,int pageNum,String name){

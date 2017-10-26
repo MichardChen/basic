@@ -109,10 +109,11 @@ public class Store extends Model<Store> {
 						 ,String fromTime
 						 ,String toTime
 						 ,String mark
-						 ,String status){
+						 ,String status
+						 ,String cityDistrict){
 		int ret = Db.update("update t_store set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"',store_address='"+address+"'"
 				+ ",longitude="+lgt+",latitude="+lat+",store_name='"+name+"',link_phone='"+mobile+"',business_tea='"+teaStr
-				+"',business_fromtime='"+fromTime+"',business_totime='"+toTime+"',store_desc='"+mark+"' where id="+storeId);
+				+"',business_fromtime='"+fromTime+"',business_totime='"+toTime+"',store_desc='"+mark+"',city_district='"+cityDistrict+"' where id="+storeId);
 		if(ret != 0){
 			return true;
 		}else{

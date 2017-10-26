@@ -22,7 +22,7 @@ public class NewsInfoService{
 		return News.dao.saveInfo(news);
 	}
 	
-	public int updateFlg(int newId,int flg){
-		return News.dao.updateNewsStatus(newId, flg);
+	public int updateFlg(int newId,int flg,int operateUserId){
+		return News.dao.updateNewsStatus(newId, flg,operateUserId);
 	}
 }

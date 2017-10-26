@@ -683,6 +683,7 @@ public class RestfulController extends Controller{
 		String fromTime = StringUtil.checkCode(getPara("fromTime"));
 		String toTime = StringUtil.checkCode(getPara("toTime"));
 		String mark = StringUtil.checkCode(getPara("mark"));
+		String cityDistrict = StringUtil.checkCode(getPara("cityDistrict"));
 		
 		//Store store = new Store();
 		int storeId = getParaToInt("storeId");
@@ -703,7 +704,7 @@ public class RestfulController extends Controller{
 		store.set("update_time", DateUtil.getNowTimestamp());
 		store.set("status", Constants.VERTIFY_STATUS.STAY_CERTIFICATE);*/
 	
-		boolean ret = Store.dao.updateData(storeId,address, lgt, lat, name, mobile, teaStr, fromTime, toTime, mark, Constants.VERTIFY_STATUS.STAY_CERTIFICATE);
+		boolean ret = Store.dao.updateData(storeId,address, lgt, lat, name, mobile, teaStr, fromTime, toTime, mark, Constants.VERTIFY_STATUS.STAY_CERTIFICATE,cityDistrict);
 		boolean ret1 = true;
 		boolean ret2 = true;
 		boolean ret3 = true;

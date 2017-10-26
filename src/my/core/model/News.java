@@ -1,5 +1,6 @@
 package my.core.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +19,26 @@ public class News extends Model<News> {
 	
 	public static final News dao = new News();
 
-	public Page<News> queryNewsListByPage(int page,int size,String title){
+	public Page<News> queryNewsListByPage(int page,int size,String title,String type,String hot,String fromDate,String toDate){
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
 		String sql="";
 		String select="select *";
 		if(StringUtil.isNoneBlank(title)){
 			strBuf.append("and news_title like '%"+title+"%'");
+		}
+		if(StringUtil.isNoneBlank(type)){
+			strBuf.append("and news_type_cd='"+type+"'");
+		}
+		if(StringUtil.isNoneBlank(hot)){
+			int hots = StringUtil.toInteger(hot);
+			strBuf.append("and hot_flg="+hots);
+		}
+		if(StringUtil.isNoneBlank(fromDate)){
+			strBuf.append("and create_time>='"+fromDate+" 00:00:00'");
+		}
+		if(StringUtil.isNoneBlank(toDate)){
+			strBuf.append("and create_time<='"+toDate+" 23:59:59'");
 		}
 		
 		sql=" from t_news where 1=1 "+strBuf.toString()+" order by flg desc,create_time desc";
@@ -69,8 +83,8 @@ public class News extends Model<News> {
 		return News.dao.deleteById(id);
 	}
 	
-	public int updateNewsStatus(int id,int flg){
-		Db.update("update t_news set flg="+flg+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	public int updateNewsStatus(int id,int flg,int userId){
+		Db.update("update t_news set update_user_id="+userId+",flg="+flg+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 		News news =News.dao.findFirst("select * from t_news where id = ?",id);
 		if(news != null){
 			return news.getInt("flg");
@@ -79,8 +93,8 @@ public class News extends Model<News> {
 		}
 	}
 	
-	public int saveNews(String newsLogo,String newsTitle,String newsTypeCd,int hotFlg,int createUser,int flg,String content,String url){
-		News news = new News().set("news_logo", newsLogo).set("news_title", newsTitle).set("content_url", url).set("news_type_cd", newsTypeCd).set("hot_flg",hotFlg).set("create_user",createUser).set("flg",flg).set("content",content).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp());
+	public int saveNews(String newsLogo,String newsTitle,String newsTypeCd,int hotFlg,int createUser,int flg,String content,String url,int updateUserId){
+		News news = new News().set("news_logo", newsLogo).set("news_title", newsTitle).set("content_url", url).set("news_type_cd", newsTypeCd).set("hot_flg",hotFlg).set("create_user",createUser).set("flg",flg).set("content",content).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("update_user_id", updateUserId);
 		boolean isSave = news.save();
 		return news.getInt("id");
 	}

@@ -307,4 +307,14 @@ public interface Constants {
 		public static final String PUER = "250001";
 		public static final String TIE_GUANYIN = "250002";
 	}
+	
+	public static interface BRAND_TYPE_CD{
+		public static final String BRAND_TYPE = "260000";
+		public static final String TONGJI = "260001";
+	}
+	
+	public static interface PRODUCT_PLACE{
+		public static final String PRODUCT_PLACE_CD = "270000";
+		public static final String PLACE_ONE = "270001";
+	}
 }

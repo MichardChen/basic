@@ -120,7 +120,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</select>
 		</tr>
 		<tr>
-			<td>资讯封面图片</td>
+			<td>资讯封面图片（图片规格300*180px）</td>
 			<td>
 					<input type="file" name="newImg" id="newImg"/>
 			</td>

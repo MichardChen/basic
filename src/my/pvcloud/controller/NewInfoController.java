@@ -48,6 +48,11 @@ public class NewInfoController extends Controller {
 	 */
 	public void index(){
 		removeSessionAttr("title");
+		removeSessionAttr("type");
+		removeSessionAttr("hot");
+		removeSessionAttr("createTime1");
+		removeSessionAttr("createTime2");
+		
 		Page<News> newsList = service.queryByPage(page, size);
 		ArrayList<NewsModel> models = new ArrayList<>();
 		NewsModel model = null;
@@ -77,6 +82,15 @@ public class NewInfoController extends Controller {
 			}else{
 				model.setCreateUser("");
 			}
+			User updateUser = User.dao.queryById(news.getInt("update_user_id"));
+			if(updateUser != null){
+				model.setUpdateUser(updateUser.getStr("username"));
+			}else{
+				model.setUpdateUser("");
+			}
+			model.setContent(StringUtil.substring(news.getStr("content"), 0, 100));
+			model.setUpdateTime(StringUtil.toString(news.getTimestamp("update_time")));
+			model.setHotFlg(news.getInt("hot_flg"));
 			model.setUrl(news.getStr("content_url"));
 			models.add(model);
 		}
@@ -90,11 +104,20 @@ public class NewInfoController extends Controller {
 	 * 模糊查询(文本框)
 	 */
 	public void queryByCondition(){
-		String title = getSessionAttr("title");
-		String stitle = getPara("title");
-		title = stitle;
+		String ptitle = getPara("title");
+		this.setSessionAttr("title",ptitle);
 		
-		this.setSessionAttr("title",title);
+		String ptype = getPara("type");
+		this.setSessionAttr("type",ptype);
+		
+		String phot = getPara("hot");
+		this.setSessionAttr("hot",phot);
+		
+		String pcreateTime1 = getPara("createTime1");
+		this.setSessionAttr("createTime1",pcreateTime1);
+		
+		String pcreateTime2 = getPara("createTime2");
+		this.setSessionAttr("createTime2",pcreateTime2);
 		
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
@@ -102,7 +125,7 @@ public class NewInfoController extends Controller {
 	        }
 	        ArrayList<NewsModel> models = new ArrayList<>();
 			NewsModel model = null;
-			Page<News> newsList = News.dao.queryNewsListByPage(page, size, stitle);
+			Page<News> newsList = News.dao.queryNewsListByPage(page, size, ptitle,ptype,phot,pcreateTime1,pcreateTime2);
 			for(News news : newsList.getList()){
 				model = new NewsModel();
 				model.setId(news.getInt("id"));
@@ -129,6 +152,15 @@ public class NewInfoController extends Controller {
 				}else{
 					model.setCreateUser("");
 				}
+				User updateUser = User.dao.queryById(news.getInt("update_user_id"));
+				if(updateUser != null){
+					model.setUpdateUser(updateUser.getStr("username"));
+				}else{
+					model.setUpdateUser("");
+				}
+				model.setContent(StringUtil.substring(news.getStr("content"), 0, 100));
+				model.setUpdateTime(StringUtil.toString(news.getTimestamp("update_time")));
+				model.setHotFlg(news.getInt("hot_flg"));
 				model.setUrl(news.getStr("content_url"));
 				models.add(model);
 			}
@@ -143,13 +175,19 @@ public class NewInfoController extends Controller {
 	 */
 	public void queryByPage(){
 			String title=getSessionAttr("title");
+			String ptype = getSessionAttr("type");
+			String phot = getSessionAttr("hot");
+			String pcreateTime1 = getSessionAttr("createTime1");
+			String pcreateTime2 = getSessionAttr("createTime2");
+			
+			
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
 	        ArrayList<NewsModel> models = new ArrayList<>();
 			NewsModel model = null;
-			Page<News> newsList = News.dao.queryNewsListByPage(page, size, title);
+			Page<News> newsList = News.dao.queryNewsListByPage(page, size, title,ptype,phot,pcreateTime1,pcreateTime2);
 			for(News news : newsList.getList()){
 				model = new NewsModel();
 				model.setId(news.getInt("id"));
@@ -176,6 +214,15 @@ public class NewInfoController extends Controller {
 				}else{
 					model.setCreateUser("");
 				}
+				User updateUser = User.dao.queryById(news.getInt("update_user_id"));
+				if(updateUser != null){
+					model.setUpdateUser(updateUser.getStr("username"));
+				}else{
+					model.setUpdateUser("");
+				}
+				model.setContent(StringUtil.substring(news.getStr("content"), 0, 100));
+				model.setUpdateTime(StringUtil.toString(news.getTimestamp("update_time")));
+				model.setHotFlg(news.getInt("hot_flg"));
 				model.setUrl(news.getStr("content_url"));
 				models.add(model);
 			}
@@ -243,6 +290,7 @@ public class NewInfoController extends Controller {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		int operateUserId = (Integer)getSessionAttr("agentId");
         String contentUrl = Constants.HOST.FILE+uuid+".html";
 		//保存资讯
 		int ret = News.dao.saveNews(logo
@@ -252,7 +300,8 @@ public class NewInfoController extends Controller {
 								   ,(Integer)getSessionAttr("agentId")
 								   ,1
 								   ,content
-								   ,contentUrl);
+								   ,contentUrl
+								   ,operateUserId);
 		if(ret != 0){
 			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "新增资讯:"+newsTitle);
 			setAttr("message","新增成功");
@@ -311,6 +360,8 @@ public class NewInfoController extends Controller {
 		custInfo.set("integral", integral);
 		custInfo.set("phonenum", phoneNum);
 		custInfo.set("addrname", addrname);
+		int operateUserId=(Integer)getSessionAttr("agentId");
+		custInfo.set("update_user_id", operateUserId);
 		if(custId==0){
 			custInfo.set("register_date", new Date());
 			if(service.saveInfo(custInfo)){
@@ -335,7 +386,8 @@ public class NewInfoController extends Controller {
 	public void del(){
 		try{
 			int newsId = getParaToInt("newsId");
-			int ret = service.updateFlg(newsId, 0);
+			int operateUserId = (Integer)getSessionAttr("agentId");
+			int ret = service.updateFlg(newsId, 0,operateUserId);
 			if(ret==0){
 				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除资讯,id:"+newsId);
 				setAttr("message", "删除成功");
@@ -348,7 +400,7 @@ public class NewInfoController extends Controller {
 		index();
 	}
 
-	//推送
+	/*//推送
 	public void push(){
 		try{
 			int newsId = getParaToInt("newsId");
@@ -362,5 +414,5 @@ public class NewInfoController extends Controller {
 			e.printStackTrace();
 		}
 		index();
-	}
+	}*/
 }

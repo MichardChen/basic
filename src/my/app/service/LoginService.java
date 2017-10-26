@@ -998,7 +998,7 @@ public class LoginService {
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
-		//新茶发售备注
+		//新茶发行列表备注
 		Document newTeaSaleMark = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.NEW_TEA_SALE_MARK);
 		if(newTeaSaleMark != null){
 			map.put("newTeaSaleMark", newTeaSaleMark.getStr("content"));
@@ -1378,13 +1378,14 @@ public class LoginService {
 		cart.set("status", Constants.ORDER_STATUS.SHOPPING_CART);
 		cart.set("create_time", DateUtil.getNowTimestamp());
 		cart.set("update_time", DateUtil.getNowTimestamp());
-		cart.set("size", dto.getSize());
+		
 		WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(dto.getTeaId());
 		if(wtmItem == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("数据不存在");
 			return data;
 		}
+		cart.set("size", wtmItem.getStr("size_type_cd"));
 		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
 		if(wtm == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -2465,7 +2466,7 @@ public class LoginService {
 				int retValue = Member.dao.updateIdCardInfo(dto.getUserId(), dto.getIdCardNo(), dto.getIdCardImg());
 				if(retValue != 0){
 					data.setCode(Constants.STATUS_CODE.SUCCESS);
-					data.setMessage("绑定成功");
+					data.setMessage("绑定成功，待平台审核");
 				}else{
 					data.setCode(Constants.STATUS_CODE.FAIL);
 					data.setMessage("绑定失败");
@@ -2492,7 +2493,7 @@ public class LoginService {
 				int retValue = Member.dao.updateIdCardInfo(dto.getUserId(), dto.getIdCardNo(), dto.getIdCardImg());
 				if(retValue != 0){
 					data.setCode(Constants.STATUS_CODE.SUCCESS);
-					data.setMessage("绑定成功");
+					data.setMessage("绑定成功，待平台审核");
 				}else{
 					data.setCode(Constants.STATUS_CODE.FAIL);
 					data.setMessage("绑定失败");

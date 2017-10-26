@@ -11,6 +11,7 @@
 <link href="${CONTEXT_PATH}/assets/css/common.css" rel="stylesheet">
 <script src="${CONTEXT_PATH}/assets/lib/jquery-2.1.1.min.js"></script>
 <script src="${CONTEXT_PATH}/assets/js/common.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/assets/js/My97DatePicker/WdatePicker.js"></script>
 <script type="text/javascript">
 var str='${message}';
 if(str!=''){
@@ -54,9 +55,11 @@ a:hover{
 }
 th{
 	white-space:nowrap;
+	text-align: center;
 }
 td{
 	white-space:nowrap;
+	text-align: center;
 	border:0!important;
 }
 .table thead tr{
@@ -89,13 +92,12 @@ td{
 <body class="fixed-nav fixed-sidebar">
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
-		<div class="wrapper wrapper-content animated fadeInRightBig">
-    	<div class="" style="width:100%;color=black;font-size:15px;height:50px;line-height:50px;margin-bottom:20px;">
-	    	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div>
-	   		<div class="fl">资讯信息</div>
+		<div class="wrapper wrapper-content animated fadeInRightBig" style="text-align: center;">
+    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
+	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
+	   		<div style="font-size: 30px;color: white;font-weight: bold;">资讯信息</div>
 	   </div>
-	  
-    	<hr/>			
+    	<hr/>	
     
 	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
    		<div class="" style="margin-top:15px;margin-bottom:15px;">
@@ -104,6 +106,34 @@ td{
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">资讯标题</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="title" value="${title}"/>
+    				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">资讯类型</label>
+	    			<div class="col-sm-1 col-xs-1 col-md-1">	
+	    				<select name="type" style="height: 30px;">
+		    					<option></option>
+		    					<option value="030001" <c:if test="${type=='030001'}">selected="selected"</c:if>>平台通知</option>
+		    					<option value="030002" <c:if test="${type=='030002'}">selected="selected"</c:if>>茶品资讯</option>
+		    					<option value="030003" <c:if test="${type=='030003'}">selected="selected"</c:if>>活动专题</option>
+		    					<option value="030004" <c:if test="${type=='030004'}">selected="selected"</c:if>>普洱课堂</option>
+		    					<option value="030005" <c:if test="${type=='030005'}">selected="selected"</c:if>>媒体报道</option>
+		    			</select>	
+    				</div>
+    				</div>
+    				<div style="" class="form-group">
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">是否热门</label>
+	    			<div class="col-sm-1 col-xs-1 col-md-1">	
+	    				<select name="hot" style="height: 30px;">
+		    					<option></option>
+		    					<option value="1" <c:if test="${hot=='1'}">selected="selected"</c:if>>是</option>
+		    					<option value="0" <c:if test="${hot=='0'}">selected="selected"</c:if>>否</option>
+		    			</select>	
+    				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">创建期间</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="createTime1" placeholder="请选择起始时间" value="${createTime1}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+    				</div>
+    				<div class="col-sm-2 col-xs-2 col-md-2">	
+    					   <input type="text" class="form-control" name="createTime2" placeholder="请选择结束时间" value="${createTime2}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
    			   <div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" onclick="loadProject(0)"/></div>
@@ -117,11 +147,15 @@ td{
     		<table class="table table-responsive" id="myTb" >
     		<thead>
     			<tr>
+    				<th>序列号</th>
     				<th>资讯标题</th>
     				<th>资讯类型</th>
     				<th>创建者</th>
+    				<th>最近一次更新者</th>
+    				<th>是否热门</th>
     				<th>状态</th>
     				<th>创建时间</th>
+    				<th>更新时间</th>
     				<th>操作</th>
     			</tr>
     		</thead>
@@ -132,13 +166,20 @@ td{
 			    		</tr>
 		    		</c:if>
 		    		<c:if test="${newsList.totalRow>0 }">
-		    			<c:forEach var="s" items="${sList}">	
+		    			<c:forEach var="s" items="${sList}" varStatus="status">	
 		    				<tr class="bOrder">
+		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
 		    					<td>${s.title }</td>
 		    					<td>${s.type }</td>
 		    					<td>${s.createUser}</td>
+		    					<td>${s.updateUser}</td>
+		    					<td>
+		    						<c:if test="${s.hotFlg==1 }">是</c:if>
+		    						<c:if test="${s.hotFlg==0 }">否</c:if>
+		    					</td>
 		    					<td>${s.status }</td>
 		    					<td>${s.createTime}</td>
+		    						<td>${s.updateTime}</td>
 		    					<td>
 		    						<%-- <input type="button" value="推送" class="ys3" data-toggle="modal" data-target="#myModal" onclick="if(confirm('确认要发布这条资讯?')){window.location='${CONTEXT_PATH}/newsInfo/push?newsId=${s.id}';}"/> --%>
 		    						<c:if test="${s.flg ==1}">

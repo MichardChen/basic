@@ -12,7 +12,36 @@ public class NewsModel implements Serializable{
 	private String createTime;
 	private String url;
 	private int flg;
+	private int hotFlg;
+	private String content;
+	private String updateTime;
+	private String updateUser;
 	
+	
+	public int getHotFlg() {
+		return hotFlg;
+	}
+	public String getContent() {
+		return content;
+	}
+	public String getUpdateTime() {
+		return updateTime;
+	}
+	public String getUpdateUser() {
+		return updateUser;
+	}
+	public void setHotFlg(int hotFlg) {
+		this.hotFlg = hotFlg;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
+	public void setUpdateUser(String updateUser) {
+		this.updateUser = updateUser;
+	}
 	public int getFlg() {
 		return flg;
 	}

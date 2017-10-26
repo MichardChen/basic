@@ -64,6 +64,14 @@ public class TeaInfoController extends Controller {
 			model.setName(tea.getStr("tea_title"));
 			if(wtm != null){
 				model.setPrice(wtm.getBigDecimal("price"));
+				model.setStock(StringUtil.toString(wtm.getInt("stock")));
+				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
+				if(wtmItem != null){
+					CodeMst s = CodeMst.dao.queryCodestByCode(wtmItem.getStr("status"));
+					if(s != null){
+						model.setSaleStatus(s.getStr("name"));
+					}
+				}
 			}
 			model.setUrl(tea.getStr("desc_url"));
 			model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
@@ -72,11 +80,16 @@ public class TeaInfoController extends Controller {
 				model.setType(type.getStr("name"));
 			}
 			model.setFlg(tea.getInt("flg"));
-			if(tea.getInt("flg")==1){
-				model.setStatus("正常");
-			}else{
-				model.setStatus("已删除");
+			CodeMst teaStatus = CodeMst.dao.queryCodestByCode(tea.getStr("status"));
+			if(teaStatus != null){
+				model.setStatus(teaStatus.getStr("name"));
 			}
+			//增加显示字段
+			model.setBrand(tea.getStr("brand"));
+			model.setProductPlace(tea.getStr("product_place"));
+			model.setSize(StringUtil.toString(tea.getInt("weight"))+"克/片，"+StringUtil.toString(tea.getInt("size"))+"片/件");
+			model.setAmount(StringUtil.toString(tea.getInt("total_output")));
+			
 			models.add(model);
 		}
 		setAttr("teaList", list);
@@ -104,6 +117,14 @@ public class TeaInfoController extends Controller {
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 			if(wtm != null){
 				model.setPrice(wtm.getBigDecimal("price"));
+				model.setStock(StringUtil.toString(wtm.getInt("stock")));
+				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
+				if(wtmItem != null){
+					CodeMst s = CodeMst.dao.queryCodestByCode(wtmItem.getStr("status"));
+					if(s != null){
+						model.setSaleStatus(s.getStr("name"));
+					}
+				}
 			}
 			model.setUrl(tea.getStr("desc_url"));
 			model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
@@ -112,11 +133,15 @@ public class TeaInfoController extends Controller {
 				model.setType(type.getStr("name"));
 			}
 			model.setFlg(tea.getInt("flg"));
-			if(tea.getInt("flg")==1){
-				model.setStatus("正常");
-			}else{
-				model.setStatus("已删除");
+			CodeMst teaStatus = CodeMst.dao.queryCodestByCode(tea.getStr("status"));
+			if(teaStatus != null){
+				model.setStatus(teaStatus.getStr("name"));
 			}
+			//增加显示字段
+			model.setBrand(tea.getStr("brand"));
+			model.setProductPlace(tea.getStr("product_place"));
+			model.setSize(StringUtil.toString(tea.getInt("weight"))+"克/片，"+StringUtil.toString(tea.getInt("size"))+"片/件");
+			model.setAmount(StringUtil.toString(tea.getInt("total_output")));
 			models.add(model);
 		}
 		setAttr("teaList", list);
@@ -149,6 +174,14 @@ public class TeaInfoController extends Controller {
 				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 				if(wtm != null){
 					model.setPrice(wtm.getBigDecimal("price"));
+					model.setStock(StringUtil.toString(wtm.getInt("stock")));
+					WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
+					if(wtmItem != null){
+						CodeMst s = CodeMst.dao.queryCodestByCode(wtmItem.getStr("status"));
+						if(s != null){
+							model.setSaleStatus(s.getStr("name"));
+						}
+					}
 				}
 				model.setUrl(tea.getStr("desc_url"));
 				model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
@@ -157,11 +190,15 @@ public class TeaInfoController extends Controller {
 					model.setType(type.getStr("name"));
 				}
 				model.setFlg(tea.getInt("flg"));
-				if(tea.getInt("flg")==1){
-					model.setStatus("正常");
-				}else{
-					model.setStatus("已删除");
+				CodeMst teaStatus = CodeMst.dao.queryCodestByCode(tea.getStr("status"));
+				if(teaStatus != null){
+					model.setStatus(teaStatus.getStr("name"));
 				}
+				//增加显示字段
+				model.setBrand(tea.getStr("brand"));
+				model.setProductPlace(tea.getStr("product_place"));
+				model.setSize(StringUtil.toString(tea.getInt("weight"))+"克/片，"+StringUtil.toString(tea.getInt("size"))+"片/件");
+				model.setAmount(StringUtil.toString(tea.getInt("total_output")));
 				models.add(model);
 			}
 			setAttr("teaList", list);
@@ -202,6 +239,10 @@ public class TeaInfoController extends Controller {
 		setAttr("houses", houses);
 		List<CodeMst> teaType = CodeMst.dao.queryCodestByPcode(Constants.TEA_TYPE_CD.TEA);
 		setAttr("teaType", teaType);
+		List<CodeMst> brandType = CodeMst.dao.queryCodestByPcode(Constants.BRAND_TYPE_CD.BRAND_TYPE);
+		setAttr("brandType", brandType);
+		List<CodeMst> place = CodeMst.dao.queryCodestByPcode(Constants.PRODUCT_PLACE.PRODUCT_PLACE_CD);
+		setAttr("place", place);
 		render("addTea.jsp");
 	}
 	
