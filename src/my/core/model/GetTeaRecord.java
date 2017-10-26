@@ -1,5 +1,6 @@
 package my.core.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.huadalink.plugin.tablebind.TableBind;
@@ -7,6 +8,7 @@ import org.huadalink.plugin.tablebind.TableBind;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
 
 @TableBind(table = "t_gettea_record", pk = "id")
@@ -25,19 +27,21 @@ public class GetTeaRecord extends Model<GetTeaRecord> {
 		return GetTeaRecord.dao.paginate(page, size, select, sql);
 	}
 	
-/*	public Page<GetTeaRecord> queryByPageParams(int page,int size,String title){
+	public Page<GetTeaRecord> queryByPageParams(int page,int size,String time1,String time2){
 		
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
-		if(StringUtil.isNoneBlank(title)){
-			strBuf.append(" and store_name=?");
-			param.add(title);
+		if(StringUtil.isNoneBlank(time1)){
+			strBuf.append(" and create_time>='"+time1+" 00:00:00'");
+		}
+		if(StringUtil.isNoneBlank(time2)){
+			strBuf.append(" and create_time<='"+time2+" 23:59:59'");
 		}
 			
-			String sql=" from t_gettea_record where 1=1 "+strBuf+" order by create_time desc";
-			String select="select * ";
-			return GetTeaRecord.dao.paginate(page, size, select, sql,param.toArray());
-		}*/
+		String sql=" from t_gettea_record where 1=1 "+strBuf+" order by create_time desc";
+		String select="select * ";
+		return GetTeaRecord.dao.paginate(page, size, select, sql,param.toArray());
+	}
 	
 	public GetTeaRecord queryById(int id){
 		return GetTeaRecord.dao.findFirst("select * from t_gettea_record where id = ? order by create_time desc",id);
@@ -63,4 +67,5 @@ public class GetTeaRecord extends Model<GetTeaRecord> {
 	public boolean del(int id){
 		return GetTeaRecord.dao.deleteById(id);
 	}
+	
 }

@@ -30,6 +30,10 @@ public class ReceiveAddress extends Model<ReceiveAddress> {
 		return ReceiveAddress.dao.findFirst("select * from t_receive_address where id = ? and status='"+status+"'",id);
 	}
 	
+	public ReceiveAddress queryByKeyId(int id){
+		return ReceiveAddress.dao.findFirst("select * from t_receive_address where id = ?",id);
+	}
+	
 	public boolean updateInfo(ReceiveAddress address){
 		return new ReceiveAddress().setAttrs(address).update();
 	}
