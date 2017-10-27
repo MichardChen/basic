@@ -80,6 +80,7 @@ public class TeaInfoController extends Controller {
 				model.setType(type.getStr("name"));
 			}
 			model.setFlg(tea.getInt("flg"));
+			model.setStatusCd(tea.getStr("status"));
 			CodeMst teaStatus = CodeMst.dao.queryCodestByCode(tea.getStr("status"));
 			if(teaStatus != null){
 				model.setStatus(teaStatus.getStr("name"));
@@ -133,6 +134,7 @@ public class TeaInfoController extends Controller {
 				model.setType(type.getStr("name"));
 			}
 			model.setFlg(tea.getInt("flg"));
+			model.setStatusCd(tea.getStr("status"));
 			CodeMst teaStatus = CodeMst.dao.queryCodestByCode(tea.getStr("status"));
 			if(teaStatus != null){
 				model.setStatus(teaStatus.getStr("name"));
@@ -190,6 +192,7 @@ public class TeaInfoController extends Controller {
 					model.setType(type.getStr("name"));
 				}
 				model.setFlg(tea.getInt("flg"));
+				model.setStatusCd(tea.getStr("status"));
 				CodeMst teaStatus = CodeMst.dao.queryCodestByCode(tea.getStr("status"));
 				if(teaStatus != null){
 					model.setStatus(teaStatus.getStr("name"));
@@ -620,19 +623,40 @@ public class TeaInfoController extends Controller {
 		index();
 	}
 
-	//推送
-	public void push(){
-		/*try{
-			int newsId = getParaToInt("newsId");
-			int ret = service.updateFlg(newsId, 1);
-			if(ret==0){
-				setAttr("message", "发布成功");
+	//更新茶叶状态
+	public void updateStatus(){
+		try{
+			int teaId = getParaToInt("id");
+			String status = StringUtil.checkCode(getPara("status"));
+			int ret = service.updateStatus(teaId, status);
+			if(ret!=0){
+				//更新在售茶叶
+				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryPlatTeaInfo(teaId, (Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER);
+				if(wtm != null){
+					WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
+					if (wtmItem != null) {
+						String itemStatus = Constants.TEA_STATUS.STOP_SALE;
+						if(StringUtil.equals(status, Constants.NEWTEA_STATUS.ON_SALE)){
+							itemStatus = Constants.TEA_STATUS.ON_SALE;
+						}
+						int retData = WarehouseTeaMemberItem.dao.updateWtmItemStatus(wtmItem.getInt("id"), itemStatus);
+						if(retData != 0){
+							setAttr("message", "修改成功");
+						}else{
+							setAttr("message", "修改失败");
+						}
+					}else{
+						setAttr("message", "修改失败");
+					}
+				}else{
+					setAttr("message", "修改失败");
+				}
 			}else{
-				setAttr("message", "发布失败");
+				setAttr("message", "修改失败");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-		}*/
+		}
 		index();
 	}
 	

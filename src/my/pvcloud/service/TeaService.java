@@ -29,4 +29,8 @@ public class TeaService{
 	public int updateFlg(int id,int flg){
 		return Tea.dao.updateTeaStatus(id, flg);
 	}
+	
+	public int updateStatus(int id,String status){
+		return Tea.dao.updateStatus(id, status);
+	}
 }

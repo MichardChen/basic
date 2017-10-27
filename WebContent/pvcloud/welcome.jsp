@@ -6,6 +6,7 @@
 <head>
 <title>欢迎页</title>
 <%@include file="../common/header.jsp"%>
+<link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
 <link href="${CONTEXT_PATH}/assets/css/starCore.css" rel="stylesheet">
 <link href="${CONTEXT_PATH}/assets/css/common.css" rel="stylesheet">

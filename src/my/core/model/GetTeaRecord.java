@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -27,20 +28,43 @@ public class GetTeaRecord extends Model<GetTeaRecord> {
 		return GetTeaRecord.dao.paginate(page, size, select, sql);
 	}
 	
-	public Page<GetTeaRecord> queryByPageParams(int page,int size,String time1,String time2){
+	public Page<GetTeaRecord> queryByPageParams(int page,int size,String time1,String time2,String mobile,String status){
 		
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
-		if(StringUtil.isNoneBlank(time1)){
-			strBuf.append(" and create_time>='"+time1+" 00:00:00'");
-		}
-		if(StringUtil.isNoneBlank(time2)){
-			strBuf.append(" and create_time<='"+time2+" 23:59:59'");
-		}
+		if(StringUtil.isNoneBlank(mobile)){
+			if(StringUtil.isNoneBlank(time1)){
+				strBuf.append(" and a.create_time>='"+time1+" 00:00:00'");
+			}
+			if(StringUtil.isNoneBlank(time2)){
+				strBuf.append(" and a.create_time<='"+time2+" 23:59:59'");
+			}
+				
+			strBuf.append(" and b.mobile='"+mobile+"'");
 			
-		String sql=" from t_gettea_record where 1=1 "+strBuf+" order by create_time desc";
-		String select="select * ";
-		return GetTeaRecord.dao.paginate(page, size, select, sql,param.toArray());
+			if(StringUtil.isNoneBlank(status)){
+				strBuf.append(" and a.status='"+status+"'");
+			}
+			
+			String sql=" from t_gettea_record a inner join t_member b on a.member_id=b.id where 1=1 "+strBuf+" order by a.create_time desc";
+			String select="select a.* ";
+			return GetTeaRecord.dao.paginate(page, size, select, sql,param.toArray());
+		}else{
+			if(StringUtil.isNoneBlank(time1)){
+				strBuf.append(" and a.create_time>='"+time1+" 00:00:00'");
+			}
+			if(StringUtil.isNoneBlank(time2)){
+				strBuf.append(" and a.create_time<='"+time2+" 23:59:59'");
+			}
+				
+			if(StringUtil.isNoneBlank(status)){
+				strBuf.append(" and a.status='"+status+"'");
+			}
+			
+			String sql=" from t_gettea_record a where 1=1 "+strBuf+" order by a.create_time desc";
+			String select="select a.* ";
+			return GetTeaRecord.dao.paginate(page, size, select, sql,param.toArray());
+		}
 	}
 	
 	public GetTeaRecord queryById(int id){
@@ -68,4 +92,8 @@ public class GetTeaRecord extends Model<GetTeaRecord> {
 		return GetTeaRecord.dao.deleteById(id);
 	}
 	
+	public int updateMsg(int id,String expressName,String expressNo,String mark,String status){
+		
+		return Db.update("update t_gettea_record set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"',express_company='"+expressName+"',express_no='"+expressNo+"',mark='"+mark+"' where id="+id);
+	}
 }

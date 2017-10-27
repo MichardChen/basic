@@ -244,7 +244,8 @@ public interface Constants {
 	
 	public static interface TEA_STATUS{
 		public static final String ON_SALE = "160001";
-		public static final String STOP_SALE = "160002";
+		public static final String RESET_ORDER = "160002";
+		public static final String STOP_SALE = "160003";
 	}
 	
 	public static interface SYSTEM_CONSTANTS{
@@ -316,5 +317,13 @@ public interface Constants {
 	public static interface PRODUCT_PLACE{
 		public static final String PRODUCT_PLACE_CD = "270000";
 		public static final String PLACE_ONE = "270001";
+	}
+	
+	public static interface TAKE_TEA_STATUS{
+		public static final String APPLING = "280001";
+		public static final String APPLY_FAIL = "280002";
+		public static final String APPLY_SUCCESS = "280003";
+		public static final String HAVE_RECEIVED = "280004";
+		public static final String EXCEPTION = "280005";
 	}
 }

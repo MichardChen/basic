@@ -7,6 +7,7 @@
 <title>用户管理</title>
 <%@include file="../common/header.jsp"%>
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
+<link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/starCore.css" rel="stylesheet">
 <link href="${CONTEXT_PATH}/assets/css/common.css" rel="stylesheet">
 <script src="${CONTEXT_PATH}/assets/lib/jquery-2.1.1.min.js"></script>

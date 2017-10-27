@@ -219,14 +219,15 @@ public class StoreInfoController extends Controller {
 	public void generateQRCode() throws Exception{
 		
 		int storeId = StringUtil.toInteger(getPara("id"));
-		QRCodeUtil.QRCodeCreate("http://www.yibuwangluo.cn/zznj/rest/bindMember?storeId="+storeId, "D://upload//ewcode//qrcode.jpg", 15, "D://upload//ewcode//icon.png");
+		QRCodeUtil.QRCodeCreate("http://www.yibuwangluo.cn/zznj/rest/bindMember?storeId="+storeId, "F://upload//eqrcode.jpg", 15, "F://upload//icon.png");
+		//QRCodeUtil.QRCodeCreate("http://www.yibuwangluo.cn/zznj/rest/bindMember?storeId="+storeId, "D://upload//eqrcode.jpg", 15, "D://upload//ewcode//icon.png");
         HttpServletResponse response = getResponse();
 		response.setContentType("application/binary;charset=ISO8859_1");
 	    //设置Content-Disposition  
 	    response.setHeader("Content-Disposition", "attachment;filename=a.jpeg");  
 	    //读取目标文件，通过response将目标文件写到客户端  
 	    //获取目标文件的绝对路径  
-	    String fullFileName = "D://upload//ewcode//qrcode.jpg";  
+	    String fullFileName = "F://upload//qrcode.jpg";  
 	    //读取文件  
 	    InputStream in = new FileInputStream(fullFileName);  
 	    OutputStream out = response.getOutputStream();  

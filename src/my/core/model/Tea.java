@@ -87,4 +87,8 @@ public class Tea extends Model<Tea> {
 			return 0;
 		}
 	}
+	
+	public int updateStatus(int id,String status){
+		return Db.update("update t_tea set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	}
 }

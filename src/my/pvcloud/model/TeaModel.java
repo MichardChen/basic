@@ -19,7 +19,14 @@ public class TeaModel implements Serializable{
 	private String amount;
 	private String stock;
 	private String saleStatus;
+	private String statusCd;
 	
+	public String getStatusCd() {
+		return statusCd;
+	}
+	public void setStatusCd(String statusCd) {
+		this.statusCd = statusCd;
+	}
 	public String getBrand() {
 		return brand;
 	}

@@ -81,6 +81,7 @@ import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.GeoUtil;
 import my.pvcloud.util.SMSUtil;
+import my.pvcloud.util.SortUtil;
 import my.pvcloud.util.StringUtil;
 import my.pvcloud.util.TextUtil;
 import my.pvcloud.util.VertifyUtil;
@@ -1172,7 +1173,7 @@ public class LoginService {
 			model.setType(type);
 			model.setId(saleOrder.getInt("id"));
 			model.setDate(DateUtil.formatTimestampForDate(saleOrder.getTimestamp("create_time")));
-			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(saleOrder.getInt("wtm_item_id"));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(saleOrder.getInt("wtm_item_id") == null?0:saleOrder.getInt("wtm_item_id"));
 			if(wtmItem != null){
 				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
 				if(wtm != null){
@@ -1691,7 +1692,7 @@ public class LoginService {
 		}
 		for(String k:map2.keySet()){
 			DataListVO vs = map2.get(k);
-			System.out.println(vs.getKey()+"=="+vs.getValue());
+			//System.out.println(vs.getKey()+"=="+vs.getValue());
 			list1.add(map2.get(k));
 		}
 		/*Map<String, BigDecimal> trends = new HashMap<>();
@@ -1819,6 +1820,7 @@ public class LoginService {
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		Map<String,Object> map = new HashMap<>();
+		Collections.sort(vos);
 		map.put("data", vos);
 		
 		//查询成交总量和成交总额
@@ -1852,7 +1854,9 @@ public class LoginService {
 		KeyValueComparator mc2 = new KeyValueComparator() ; 
 		Collections.sort(list2, mc2) ; 
 		*/
-		map.put("priceTrend", list1);
+		Collections.sort(list1);
+		Collections.sort(models);
+		map.put("priceTrend",list1);
 		map.put("bargainTrend", models);
 		data.setData(map);
 		return data;
@@ -1862,7 +1866,7 @@ public class LoginService {
 	public ReturnData queryTeaSize(LoginDTO dto){
 		ReturnData data = new ReturnData();
 		int wtmItemId = dto.getTeaId();
-		String sizeTypeCd = dto.getSize();
+		//String sizeTypeCd = dto.getSize();
 		
 		if(wtmItemId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -1895,7 +1899,7 @@ public class LoginService {
 				vo.setType(type.getStr("name"));
 			}
 		}
-		
+		String sizeTypeCd = item.getStr("size_type_cd");
 		vo.setPrice(StringUtil.toString(item.getBigDecimal("price")));
 		if(StringUtil.equals(sizeTypeCd, Constants.TEA_UNIT.PIECE)){
 			vo.setSize("片");
@@ -2260,6 +2264,8 @@ public class LoginService {
 		record.set("create_time", DateUtil.getNowTimestamp());
 		record.set("update_time", DateUtil.getNowTimestamp());
 		record.set("address_id", addressId);
+		record.set("status", Constants.TAKE_TEA_STATUS.APPLING);
+		record.set("size_type_cd", Constants.TEA_UNIT.PIECE);
 		boolean save = GetTeaRecord.dao.saveInfo(record);
 		if(save){
 			WarehouseTeaMember warehouseTeaMember = new WarehouseTeaMember();

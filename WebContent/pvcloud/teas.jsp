@@ -6,6 +6,7 @@
 <head>
 <title>用户管理</title>
 <%@include file="../common/header.jsp"%>
+<link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
 <link href="${CONTEXT_PATH}/assets/css/starCore.css" rel="stylesheet">
 <link href="${CONTEXT_PATH}/assets/css/common.css" rel="stylesheet">
@@ -132,7 +133,7 @@ td{
     				<th>茶名称</th>
     				<th>茶类型</th>
     				<th>茶价格</th>
-    				<th>茶叶状态</th>
+    				<th>茶叶发行状态</th>
     				<!-- 新增 -->
     				<th>品牌</th>
     				<th>产地</th>
@@ -172,6 +173,16 @@ td{
 		    							<c:if test="${s.flg==1}">
 		    									<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/del?id=${s.id}';}"/>
 		    									<input type="button" value="查看" class="ys3"  onclick="edit(${s.id})"/>
+		    							</c:if>
+		    							<!-- 停售 -->
+		    							<c:if test="${s.statusCd == '090001' }">
+		    									<input type="button" value="发行" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090002';}"/>
+		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
+		    							</c:if>
+		    							<!-- 发行 -->
+		    							<c:if test="${s.statusCd == '090002' }">
+		    									<input type="button" value="停售" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090001';}"/>
+		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
 		    							</c:if>
 		    		      		<%-- <a href="${s.url}" target="_blank"><input type="button" value="查看" class="ys3"/></a> --%>
 		    					</td>

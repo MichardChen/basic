@@ -1,9 +1,8 @@
 package my.core.vo;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class DataListVO implements Serializable{
+public class DataListVO implements Comparable<DataListVO>{
 
 	private String key;
 	private BigDecimal value;
@@ -20,5 +19,8 @@ public class DataListVO implements Serializable{
 		this.value = value;
 	}
 	
+	public int compareTo(DataListVO arg0) {
+        return this.getKey().compareTo(arg0.getKey());
+    }
 	
 }

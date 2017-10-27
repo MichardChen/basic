@@ -123,6 +123,10 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 		return Db.update("update t_warehouse_tea_member_item set price="+price+",status='"+status+"',quality="+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_tea_member_id="+wtmId);
 	}
 	
+	public int updateWtmItemStatus(int wtmId,String status){
+		return Db.update("update t_warehouse_tea_member_item set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+wtmId);
+	}
+	
 	public List<WarehouseTeaMemberItem> queryBuyTeaList(int pageSize,int pageNum,String name,int userId){
 		int fromRow = pageSize*(pageNum-1);
 		if(StringUtil.isNoneBlank(name)){

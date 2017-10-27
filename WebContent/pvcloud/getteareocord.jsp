@@ -6,6 +6,7 @@
 <head>
 <title>用户管理</title>
 <%@include file="../common/header.jsp"%>
+<link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
 <link href="${CONTEXT_PATH}/assets/css/starCore.css" rel="stylesheet">
 <link href="${CONTEXT_PATH}/assets/css/common.css" rel="stylesheet">
@@ -17,16 +18,18 @@ var str='${message}';
 if(str!=''){
   alert(str);
 }
-
-function loadProject(data){
-	if(data==0){
-		$(".modal-title").html("新增");
+function confrim(){
+	if(confirm('确认要修改数据?')){
+		return true;
 	}else{
-		$(".modal-title").html("修改");
+		return false;
 	}
+}
+function edit(data){
+	$(".modal-title").html("修改");
 	$.ajax({
-		url : "${CONTEXT_PATH}/storeInfo/alter",
-		data : {'id':data},
+		url : "${CONTEXT_PATH}/getTeaRecordInfo/editInt",
+		data : {id:data},
 		dataType : "html",
 		success : function(result){
 			$('.modal-body').html(result);
@@ -121,7 +124,7 @@ td{
     				<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="time2" value="${time2}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
-    				<%-- <label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机号</label>
+    				 <label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机号</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
     				</div>
@@ -129,11 +132,13 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
 	    				<select name="status" style="height: 30px;">
 	    					<option></option>
-	    					<option value="190001" <c:if test="${status=='190001'}">selected="selected"</c:if>>审核中</option>
-	    					<option value="190002" <c:if test="${status=='190002'}">selected="selected"</c:if>>审核通过并转账</option>
-	    					<option value="190003" <c:if test="${status=='190003'}">selected="selected"</c:if>>审核失败</option>
+	    					<option value="280001" <c:if test="${status=='280001'}">selected="selected"</c:if>>申请中</option>
+	    					<option value="280002" <c:if test="${status=='280002'}">selected="selected"</c:if>>申请失败</option>
+	    					<option value="280003" <c:if test="${status=='280003'}">selected="selected"</c:if>>申请成功，待发货</option>
+	    				 <option value="280004" <c:if test="${status=='280004'}">selected="selected"</c:if>>已收货</option>
+	    					<option value="280005" <c:if test="${status=='280005'}">selected="selected"</c:if>>异常</option>
 	    				</select>	
-    				</div> --%>
+    				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
 			   </div>
     		</form>
@@ -152,6 +157,8 @@ td{
     				<th>取茶数量</th>
     				<th>申请时间</th>
     				<th>邮寄地址</th>
+    				<th>快递信息</th>
+    				<th>备注</th>
     				<th>操作</th>
     			</tr>
     		</thead>
@@ -171,11 +178,10 @@ td{
 		    					<td>${s.quality}</td>
 		    					<td>${s.createTime}</td>
 		    					<td>${s.address}</td>
+		    					<td>${s.express}</td>
+		    					<td>${s.mark}</td>
 		    					<td>
-		    						<%-- 	<c:if test="${s.statusCd=='190001'}">
-		    									<input type="button" value="审核成功" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190003&id=${s.id}';}"/>
-		    									<input type="button" value="审核失败" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190002&id=${s.id}';}"/>
-		    							</c:if> --%>
+		    						<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="edit(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -205,14 +211,14 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">修改</h4>
 			</div>
-			<%-- <form action="${CONTEXT_PATH}/teaInfo/saveTea" method="post" enctype="multipart/form-data">
+		   <form action="${CONTEXT_PATH}/getTeaRecordInfo/updateRecord" method="post" onsubmit="return confrim();">
 				<div class="modal-body">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 					<input type="submit" class="btn btn-success" value="保存"/>
 				</div>
-			</form> --%>
+			</form>
 		</div>
 	</div>
 </div>

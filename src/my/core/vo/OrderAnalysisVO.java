@@ -3,7 +3,7 @@ package my.core.vo;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OrderAnalysisVO implements Serializable{
+public class OrderAnalysisVO implements Comparable<OrderAnalysisVO>{
 
 	private String date;
 	private BigDecimal amount;
@@ -27,5 +27,7 @@ public class OrderAnalysisVO implements Serializable{
 		this.quality = quality;
 	}
 	
-	
+	public int compareTo(OrderAnalysisVO arg0) {
+        return arg0.getDate().compareTo(this.getDate());
+    }
 }

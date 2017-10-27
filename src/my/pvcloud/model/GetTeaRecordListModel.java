@@ -11,7 +11,29 @@ public class GetTeaRecordListModel implements Serializable{
 	private String address;
 	private String createTime;
 	private int id;
+	private String status;
+	private String express;
+	private String mark;
 	
+	
+	public String getExpress() {
+		return express;
+	}
+	public String getMark() {
+		return mark;
+	}
+	public void setExpress(String express) {
+		this.express = express;
+	}
+	public void setMark(String mark) {
+		this.mark = mark;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	public int getId() {
 		return id;
 	}

@@ -10,6 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <title>新增角色</title>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/summernote/css/bootstrap.css">
 <link href="<%=request.getContextPath()%>/summernote/dist/summernote.css" rel="stylesheet"/>
+<link type="image/x-icon" rel="shortcut icon" href="<%=request.getContextPath()%>/assets/img/tjico.ico" />
 <script src="<%=request.getContextPath()%>/summernote/js/jquery.min.js"></script>
 <script src="<%=request.getContextPath()%>/summernote/js/bootstrap.min.js"></script>
 <script src="<%=request.getContextPath()%>/summernote/dist/summernote.js"></script>
