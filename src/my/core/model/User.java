@@ -107,7 +107,7 @@ public class User extends Model<User> {
 		return User.dao.findFirst("select user_id from s_user where username=? and mobile=? and agent_id=?",username,mobile,agentId);
 	}
 	public User queryById(int userId){
-		return User.dao.findFirst("select * from s_user where user_Id=?",userId);
+		return User.dao.findFirst("select * from s_user where user_id=?",userId);
 	}
 	public User queryByUserName(String username){
 		return User.dao.findFirst("select m.user_id,p.role_name from s_user m,s_user_role n,s_role p where m.user_id=n.user_id and n.role_id=p.role_id and username=? and effective_mark=1",username);

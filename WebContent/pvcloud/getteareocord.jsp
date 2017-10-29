@@ -158,6 +158,7 @@ td{
     				<th>申请时间</th>
     				<th>邮寄地址</th>
     				<th>快递信息</th>
+    				<th>状态</th>
     				<th>备注</th>
     				<th>操作</th>
     			</tr>
@@ -179,6 +180,7 @@ td{
 		    					<td>${s.createTime}</td>
 		    					<td>${s.address}</td>
 		    					<td>${s.express}</td>
+		    					<td>${s.status}</td>
 		    					<td>${s.mark}</td>
 		    					<td>
 		    						<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="edit(${s.id})"/>

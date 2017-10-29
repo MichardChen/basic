@@ -184,7 +184,7 @@ td{
 		    									<input type="button" value="停售" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090001';}"/>
 		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
 		    							</c:if>
-		    		      		<%-- <a href="${s.url}" target="_blank"><input type="button" value="查看" class="ys3"/></a> --%>
+		    		      		 <a href="${s.url}" target="_blank"><input type="button" value="查看123" class="ys3"/></a>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>

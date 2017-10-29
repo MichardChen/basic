@@ -57,6 +57,10 @@ public class GetTeaRecordController extends Controller {
 			if(StringUtil.isNoneBlank(record.getStr("express_company"))){
 				express =  record.getStr("express_company");
 			}
+			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
+			if(status != null){
+				model.setStatus(status.getStr("name"));
+			}
 			if(StringUtil.isNoneBlank(record.getStr("express_no"))){
 				expressNo =  record.getStr("express_no");
 			}
@@ -72,7 +76,8 @@ public class GetTeaRecordController extends Controller {
 			if(tea != null){
 				model.setTea(tea.getStr("tea_title"));
 			}
-			ReceiveAddress address = ReceiveAddress.dao.queryByKeyId(record.getInt("address_id"));
+			int addressId = record.getInt("address_id") == null ? 0 :record.getInt("address_id");
+			ReceiveAddress address = ReceiveAddress.dao.queryByKeyId(addressId);
 			if(address != null){
 				String detail = "";
 				Province province = Province.dao.queryProvince(address.getInt("province_id"));
@@ -125,6 +130,10 @@ public class GetTeaRecordController extends Controller {
 			if(StringUtil.isNoneBlank(record.getStr("express_no"))){
 				expressNo =  record.getStr("express_no");
 			}
+			CodeMst s = CodeMst.dao.queryCodestByCode(record.getStr("status"));
+			if(s != null){
+				model.setStatus(s.getStr("name"));
+			}
 			model.setExpress("快递公司："+express+"，单号："+expressNo);
 			model.setMark(record.getStr("mark") == null ? "" : record.getStr("mark"));
 			Member member = Member.dao.queryById(record.getInt("member_id"));
@@ -137,7 +146,8 @@ public class GetTeaRecordController extends Controller {
 			if(tea != null){
 				model.setTea(tea.getStr("tea_title"));
 			}
-			ReceiveAddress address = ReceiveAddress.dao.queryByKeyId(record.getInt("address_id"));
+			int addressId = record.getInt("address_id") == null ? 0 :record.getInt("address_id");
+			ReceiveAddress address = ReceiveAddress.dao.queryByKeyId(addressId);
 			if(address != null){
 				String detail = "";
 				Province province = Province.dao.queryProvince(address.getInt("province_id"));
@@ -194,8 +204,13 @@ public class GetTeaRecordController extends Controller {
 				if(StringUtil.isNoneBlank(record.getStr("express_company"))){
 					express =  record.getStr("express_company");
 				}
+				
 				if(StringUtil.isNoneBlank(record.getStr("express_no"))){
 					expressNo =  record.getStr("express_no");
+				}
+				CodeMst s = CodeMst.dao.queryCodestByCode(record.getStr("status"));
+				if(s != null){
+					model.setStatus(s.getStr("name"));
 				}
 				model.setExpress("快递公司："+express+"，单号："+expressNo);
 				model.setMark(record.getStr("mark") == null ? "" : record.getStr("mark"));
@@ -208,7 +223,8 @@ public class GetTeaRecordController extends Controller {
 				if(tea != null){
 					model.setTea(tea.getStr("tea_title"));
 				}
-				ReceiveAddress address = ReceiveAddress.dao.queryByKeyId(record.getInt("address_id"));
+				int addressId = record.getInt("address_id") == null ? 0 :record.getInt("address_id");
+				ReceiveAddress address = ReceiveAddress.dao.queryByKeyId(addressId);
 				if(address != null){
 					String detail = "";
 					Province province = Province.dao.queryProvince(address.getInt("province_id"));
