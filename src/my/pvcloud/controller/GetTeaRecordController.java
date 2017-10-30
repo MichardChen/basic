@@ -92,9 +92,11 @@ public class GetTeaRecordController extends Controller {
 				if(district != null){
 					detail = detail + district.getStr("name");
 				}
-				String receiveMan = address.getStr("receiveman_name") == null ? "":"收件人:"+address.getStr("receiveman_name");
-				String m = address.getStr("mobile") == null ? "":"电话:"+address.getStr("mobile");
-				model.setAddress(detail+address.getStr("address")+" "+receiveMan+" "+m);
+				String receiveMan = address.getStr("receiveman_name") == null ? "":address.getStr("receiveman_name");
+				String m = address.getStr("mobile") == null ? "":address.getStr("mobile");
+				model.setAddress(detail+address.getStr("address"));
+				model.setLinkMan(receiveMan);
+				model.setLinkTel(m);
 			}
 			models.add(model);
 		}
@@ -162,9 +164,11 @@ public class GetTeaRecordController extends Controller {
 				if(district != null){
 					detail = detail + district.getStr("name");
 				}
-				String receiveMan = address.getStr("receiveman_name") == null ? "":"收件人:"+address.getStr("receiveman_name");
-				String m = address.getStr("mobile") == null ? "":"电话:"+address.getStr("mobile");
-				model.setAddress(detail+address.getStr("address")+" "+receiveMan+" "+m);
+				String receiveMan = address.getStr("receiveman_name") == null ? "":address.getStr("receiveman_name");
+				String m = address.getStr("mobile") == null ? "":address.getStr("mobile");
+				model.setAddress(detail+address.getStr("address"));
+				model.setLinkMan(receiveMan);
+				model.setLinkTel(m);
 			}
 			models.add(model);
 		}
@@ -239,9 +243,11 @@ public class GetTeaRecordController extends Controller {
 					if(district != null){
 						detail = detail + district.getStr("name");
 					}
-					String receiveMan = address.getStr("receiveman_name") == null ? "":"收件人:"+address.getStr("receiveman_name");
-					String m = address.getStr("mobile") == null ? "":"电话:"+address.getStr("mobile");
-					model.setAddress(detail+address.getStr("address")+" "+receiveMan+" "+m);
+					String receiveMan = address.getStr("receiveman_name") == null ? "":address.getStr("receiveman_name");
+					String m = address.getStr("mobile") == null ? "":address.getStr("mobile");
+					model.setAddress(detail+address.getStr("address"));
+					model.setLinkMan(receiveMan);
+					model.setLinkTel(m);
 				}
 				models.add(model);
 			}

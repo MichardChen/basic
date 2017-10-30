@@ -12,6 +12,7 @@ import org.huadalink.plugin.tablebind.TableBind;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
+import com.sun.java.swing.plaf.motif.resources.motif;
 
 @TableBind(table = "t_pay_record", pk = "id")
 public class PayRecord extends Model<PayRecord> {
@@ -78,5 +79,28 @@ public class PayRecord extends Model<PayRecord> {
 			}else{
 				return PayRecord.dao.find("select * from t_pay_record where member_id ="+memberId+" and status != '220001' order by create_time desc limit "+fromRow+","+pageSize);
 			}
+		}
+		
+		public Page<PayRecord> queryPayRecordByPage(int page,int size,String date,String mobile){
+			List<Object> param=new ArrayList<Object>();
+			StringBuffer strBuf=new StringBuffer();
+			String sql="";
+			String select="select *";
+			if(StringUtil.isNoneBlank(date)){
+				strBuf.append("and create_time>=?");
+				param.add(DateUtil.formatStringForTimestamp(date+" 00:00:00"));
+			}
+			Member member = Member.dao.queryMember(mobile);
+			if(StringUtil.isNoneBlank(mobile)){
+				strBuf.append("and member_id=?");
+				if(member == null){
+					param.add(0);
+				}else{
+					param.add(member.getInt("id"));
+				}
+			}
+			
+			sql=" from t_pay_record where 1=1 "+strBuf.toString()+" order by create_time desc";
+			return PayRecord.dao.paginate(page, size, select, sql,param.toArray());
 		}
 }

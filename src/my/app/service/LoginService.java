@@ -1568,7 +1568,8 @@ public class LoginService {
 																					   ,wareHouseId
 																					   ,quality
 																					   ,dto.getPageSize()
-																					   ,dto.getPageNum());
+																					   ,dto.getPageNum()
+																					   ,dto.getUserId());
 		 
 		List<SelectSizeTeaListVO> vos = new ArrayList<>();
 		SelectSizeTeaListVO vo = null;

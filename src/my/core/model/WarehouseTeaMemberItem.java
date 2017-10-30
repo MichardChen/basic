@@ -33,7 +33,8 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 														,int wareHouseId
 														,int quality
 														,int pageSize
-														,int pageNum){
+														,int pageNum
+														,int memberId){
 		int fromRow = pageSize*(pageNum-1);
 		String orderby = " order by";
 		String sql = " and a.size_type_cd ='"+size+"'";
@@ -65,7 +66,7 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 		
 		sql = sql + " and b.tea_id="+teaId+" and a.quality is not null and a.quality!=0";
 		
-		return WarehouseTeaMemberItem.dao.find("select a.* from t_warehouse_tea_member_item a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where 1=1 "+sql+orderby+" limit "+fromRow+","+pageSize);
+		return WarehouseTeaMemberItem.dao.find("select a.* from t_warehouse_tea_member_item a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where 1=1 and b.member_id != "+memberId+" "+sql+orderby+" limit "+fromRow+","+pageSize);
 	}
 	
 	public BigDecimal queryOnSaleTeaCount(int memberId,int houserId,int teaId,String typeCd){

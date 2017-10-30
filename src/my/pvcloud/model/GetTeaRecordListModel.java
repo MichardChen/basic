@@ -14,8 +14,22 @@ public class GetTeaRecordListModel implements Serializable{
 	private String status;
 	private String express;
 	private String mark;
+	private String linkTel;
+	private String linkMan;
 	
 	
+	public String getLinkTel() {
+		return linkTel;
+	}
+	public void setLinkTel(String linkTel) {
+		this.linkTel = linkTel;
+	}
+	public String getLinkMan() {
+		return linkMan;
+	}
+	public void setLinkMan(String linkMan) {
+		this.linkMan = linkMan;
+	}
 	public String getExpress() {
 		return express;
 	}
