@@ -9,8 +9,36 @@ public class WareHouseVO implements Serializable{
 	private String mark;
 	private String createTime;
 	private int flg;
+	private String updateTime;
+	private String createUser;
+	private String updateUser;
+	private int stock;
 	
 	
+	public int getStock() {
+		return stock;
+	}
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
+	public String getUpdateTime() {
+		return updateTime;
+	}
+	public String getCreateUser() {
+		return createUser;
+	}
+	public String getUpdateUser() {
+		return updateUser;
+	}
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
+	public void setCreateUser(String createUser) {
+		this.createUser = createUser;
+	}
+	public void setUpdateUser(String updateUser) {
+		this.updateUser = updateUser;
+	}
 	public int getFlg() {
 		return flg;
 	}

@@ -27,7 +27,7 @@ public class FeedBackService {
 		return FeedBack.dao.saveInfo(data);
 	}
 	
-	public int updateFlg(int id,int flg){
-		return FeedBack.dao.updateFeedBackStatus(id, flg);
+	public int updateFlg(int id,int flg,int operateUserId){
+		return FeedBack.dao.updateFeedBackStatus(id, flg,operateUserId);
 	}
 }

@@ -25,8 +25,8 @@ public class WareHouseService {
 		return WareHouse.dao.saveInfo(data);
 	}
 	
-	public int updateFlg(int id,int flg){
-		return WareHouse.dao.updateWareHouseStatus(id, flg);
+	public int updateFlg(int id,int flg,int updateUserId){
+		return WareHouse.dao.updateWareHouseStatus(id, flg,updateUserId);
 	}
 	
 	public List<WareHouse> queryAllHouse(){

@@ -128,6 +128,9 @@ td{
     				<th>用户注册手机</th>
     				<th>用户姓名</th>
     				<th>反馈内容</th>
+    				<th>反馈时间</th>
+    				<th>处理时间</th>
+    				<th>处理者</th>
     				<th>状态</th>
     				<th>操作</th>
     			</tr>
@@ -145,13 +148,16 @@ td{
 		    					<td>${s.mobile }</td>
 		    					<td>${s.name}</td>
 		    					<td>${s.content }</td>
+		    					<td>${s.createTime}</td>
+		    					<td>${s.updateTime}</td>
+		    					<td>${s.operateUser}</td>
 		    					<td>
-		    							<c:if test="${s.flg==1}">已读</c:if>
-		    							<c:if test="${s.flg==0}">未读</c:if>
+		    							<c:if test="${s.flg==1}">已处理</c:if>
+		    							<c:if test="${s.flg==0}">待处理</c:if>
 		    					</td>
 		    					<td>
 		    							<c:if test="${s.flg==0}">
-		    									<input type="button" value="已读" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/feedbackInfo/update?flg=1&id=${s.id}';}"/>
+		    									<input type="button" value="已处理" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/feedbackInfo/update?flg=1&id=${s.id}';}"/>
 		    							</c:if>
 		    							<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
 		    					</td>

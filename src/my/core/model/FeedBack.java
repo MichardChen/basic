@@ -56,8 +56,8 @@ public class FeedBack extends Model<FeedBack> {
 		return FeedBack.dao.deleteById(id);
 	}
 	
-	public int updateFeedBackStatus(int id,int flg){
-		Db.update("update t_feedback set readed="+flg+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	public int updateFeedBackStatus(int id,int flg,int operateUserId){
+		Db.update("update t_feedback set readed="+flg+",update_time='"+DateUtil.getNowTimestamp()+"',operate_user_id="+operateUserId+" where id="+id);
 		FeedBack feedBack = FeedBack.dao.findFirst("select * from t_feedback where id = ?",id);
 		if(feedBack != null){
 			return feedBack.getInt("id");

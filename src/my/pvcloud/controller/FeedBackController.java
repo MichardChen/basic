@@ -14,6 +14,7 @@ import my.core.model.Document;
 import my.core.model.FeedBack;
 import my.core.model.Log;
 import my.core.model.Member;
+import my.core.model.User;
 import my.pvcloud.model.DocumentModel;
 import my.pvcloud.model.FeedBackModel;
 import my.pvcloud.service.FeedBackService;
@@ -40,6 +41,17 @@ public class FeedBackController extends Controller {
 			model = new FeedBackModel();
 			model.setContent(feedBack.getStr("feedback"));
 			model.setId(feedBack.getInt("id"));
+			model.setCreateTime(StringUtil.toString(feedBack.getTimestamp("create_time")));
+			model.setUpdateTime(StringUtil.toString(feedBack.getTimestamp("update_time")));
+			int operateUserId = feedBack.getInt("operate_user_id")==null?0:feedBack.getInt("operate_user_id");
+			User admin = User.dao.queryById(operateUserId);
+			if(admin != null){
+				model.setOperateUser(admin.getStr("username"));
+			}else{
+				model.setOperateUser("");
+			}
+			
+			
 			Integer userId = feedBack.getInt("user_id");
 			if(userId != null){
 				Member member = Member.dao.queryMemberById(userId);
@@ -74,6 +86,15 @@ public class FeedBackController extends Controller {
 			model.setContent(feedBack.getStr("feedback"));
 			model.setId(feedBack.getInt("id"));
 			Integer userId = feedBack.getInt("user_id");
+			model.setCreateTime(StringUtil.toString(feedBack.getTimestamp("create_time")));
+			model.setUpdateTime(StringUtil.toString(feedBack.getTimestamp("update_time")));
+			int operateUserId = feedBack.getInt("operate_user_id")==null?0:feedBack.getInt("operate_user_id");
+			User admin = User.dao.queryById(operateUserId);
+			if(admin != null){
+				model.setOperateUser(admin.getStr("username"));
+			}else{
+				model.setOperateUser("");
+			}
 			if(userId != null){
 				Member member = Member.dao.queryMemberById(userId);
 				if(member != null){
@@ -112,6 +133,15 @@ public class FeedBackController extends Controller {
 				model.setContent(feedBack.getStr("feedback"));
 				model.setId(feedBack.getInt("id"));
 				Integer userId = feedBack.getInt("user_id");
+				model.setCreateTime(StringUtil.toString(feedBack.getTimestamp("create_time")));
+				model.setUpdateTime(StringUtil.toString(feedBack.getTimestamp("update_time")));
+				int operateUserId = feedBack.getInt("operate_user_id")==null?0:feedBack.getInt("operate_user_id");
+				User admin = User.dao.queryById(operateUserId);
+				if(admin != null){
+					model.setOperateUser(admin.getStr("username"));
+				}else{
+					model.setOperateUser("");
+				}
 				if(userId != null){
 					Member member = Member.dao.queryMemberById(userId);
 					if(member != null){
@@ -144,7 +174,7 @@ public class FeedBackController extends Controller {
 		try{
 			int id = getParaToInt("id");
 			int flg = StringUtil.toInteger(getPara("flg"));
-			int ret = service.updateFlg(id, flg);
+			int ret = service.updateFlg(id, flg,(Integer)getSessionAttr("agentId"));
 			if(ret!=0){
 				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "查看反馈消息");
 				setAttr("message", "保存成功");

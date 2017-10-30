@@ -166,4 +166,8 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		int fromRow = (pageNum-1)*pageSize;
 		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id = ? and member_type_cd=? order by create_time desc limit ?,?",userId,memberTypeCd,fromRow,pageSize);
 	}
+	
+	public Long queryWarehouseTeaMemberListCount(int wareHouseId){
+		return Db.queryLong("select count(1) from t_warehouse_tea_member where warehouse_id="+wareHouseId+" and stock is not null and stock != 0");
+	}
 }

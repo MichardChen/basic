@@ -11,8 +11,28 @@ public class FeedBackModel implements Serializable{
 	private String content;
 	private int id;
 	private int flg;
+	private String createTime;
+	private String updateTime;
+	private String operateUser;
 	
-	
+	public String getCreateTime() {
+		return createTime;
+	}
+	public String getUpdateTime() {
+		return updateTime;
+	}
+	public String getOperateUser() {
+		return operateUser;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
+	public void setOperateUser(String operateUser) {
+		this.operateUser = operateUser;
+	}
 	public int getFlg() {
 		return flg;
 	}

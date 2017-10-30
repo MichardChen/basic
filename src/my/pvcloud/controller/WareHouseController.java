@@ -18,7 +18,9 @@ import my.core.constants.Constants;
 import my.core.model.Carousel;
 import my.core.model.Log;
 import my.core.model.Tea;
+import my.core.model.User;
 import my.core.model.WareHouse;
+import my.core.model.WarehouseTeaMember;
 import my.core.vo.WareHouseVO;
 import my.pvcloud.service.WareHouseService;
 import my.pvcloud.util.DateUtil;
@@ -49,6 +51,28 @@ public class WareHouseController extends Controller {
 			model.setCreateTime(StringUtil.toString(house.getTimestamp("create_time")));
 			model.setName(house.getStr("warehouse_name"));
 			model.setFlg(house.getInt("flg"));
+			model.setUpdateTime(StringUtil.toString(house.getTimestamp("update_time")));
+			int updateUserId = house.getInt("update_user_id") == null ? 0 : house.getInt("update_user_id");
+			int createUserId = house.getInt("create_user_id") == null ? 0 : house.getInt("create_user_id");
+			User updateUser = User.dao.queryById(updateUserId);
+			User createUser = User.dao.queryById(createUserId);
+			if(createUser != null){
+				model.setCreateUser(createUser.getStr("username"));
+			}else{
+				model.setCreateUser("");
+			}
+			if(updateUser != null){
+				model.setUpdateUser(updateUser.getStr("username"));
+			}else{
+				model.setUpdateUser("");
+			}
+			
+			Long stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
+			if(stock != null){
+				model.setStock(stock.intValue());
+			}else{
+				model.setStock(0);
+			}
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -75,6 +99,26 @@ public class WareHouseController extends Controller {
 				model.setCreateTime(StringUtil.toString(house.getTimestamp("create_time")));
 				model.setName(house.getStr("warehouse_name"));
 				model.setFlg(house.getInt("flg"));
+				int updateUserId = house.getInt("update_user_id") == null ? 0 : house.getInt("update_user_id");
+				int createUserId = house.getInt("create_user_id") == null ? 0 : house.getInt("create_user_id");
+				User updateUser = User.dao.queryById(updateUserId);
+				User createUser = User.dao.queryById(createUserId);
+				if(createUser != null){
+					model.setCreateUser(createUser.getStr("username"));
+				}else{
+					model.setCreateUser("");
+				}
+				if(updateUser != null){
+					model.setUpdateUser(updateUser.getStr("username"));
+				}else{
+					model.setUpdateUser("");
+				}
+				Long stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
+				if(stock != null){
+					model.setStock(stock.intValue());
+				}else{
+					model.setStock(0);
+				}
 				models.add(model);
 			}
 			setAttr("list", list);
@@ -105,6 +149,8 @@ public class WareHouseController extends Controller {
 			house.set("create_time", DateUtil.getNowTimestamp());
 			house.set("update_time", DateUtil.getNowTimestamp());
 			house.set("flg", 1);
+			house.set("create_user_id", (Integer)getSessionAttr("agentId"));
+			house.set("update_user_id", (Integer)getSessionAttr("agentId"));
 			//保存
 			boolean ret = WareHouse.dao.saveInfo(house);
 			if(ret){
@@ -123,6 +169,7 @@ public class WareHouseController extends Controller {
 		house.set("warehouse_name", StringUtil.checkCode(getPara("name")));
 		house.set("update_time", DateUtil.getNowTimestamp());
 		house.set("id", StringUtil.toInteger(getPara("id")));
+		house.set("update_user_id", (Integer)getSessionAttr("agentId"));
 		//保存
 		boolean ret = WareHouse.dao.updateInfo(house);
 		if(ret){
@@ -140,13 +187,18 @@ public class WareHouseController extends Controller {
 	public void del(){
 		try{
 			int id = getParaToInt("id");
-			int ret = service.updateFlg(id, 0);
-			if(ret==0){
-				WareHouse wareHouse = WareHouse.dao.queryById(id);
-				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除仓库:"+wareHouse.getStr("warehouse_name"));
-				setAttr("message", "删除成功");
+			Long wtmCounts = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(id);
+			if((wtmCounts != null)&&(wtmCounts.intValue() != 0)){
+				setAttr("message", "删除失败，此仓库还有在库茶叶，不能删除");
 			}else{
-				setAttr("message", "删除失败");
+				int ret = service.updateFlg(id, 0,(Integer)getSessionAttr("agentId"));
+				if(ret==0){
+					WareHouse wareHouse = WareHouse.dao.queryById(id);
+					Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除仓库:"+wareHouse.getStr("warehouse_name"));
+					setAttr("message", "删除成功");
+				}else{
+					setAttr("message", "删除失败");
+				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();

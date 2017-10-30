@@ -48,8 +48,8 @@ public class WareHouse extends Model<WareHouse> {
 		return WareHouse.dao.deleteById(id);
 	}
 	
-	public int updateWareHouseStatus(int id,int flg){
-		Db.update("update t_warehouse set flg="+flg+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	public int updateWareHouseStatus(int id,int flg,int updateUserId){
+		Db.update("update t_warehouse set flg="+flg+",update_time='"+DateUtil.getNowTimestamp()+"',update_user_id="+updateUserId+" where id="+id);
 		WareHouse carousel = WareHouse.dao.findFirst("select * from t_warehouse where id = ?",id);
 		if(carousel != null){
 			return carousel.getInt("flg");

@@ -215,7 +215,8 @@ public class NewInfoController extends Controller {
 				}else{
 					model.setCreateUser("");
 				}
-				User updateUser = User.dao.queryById(news.getInt("update_user_id"));
+				int updateUserId = news.getInt("update_user_id") == null ? 0 : news.getInt("update_user_id");
+				User updateUser = User.dao.queryById(updateUserId);
 				if(updateUser != null){
 					model.setUpdateUser(updateUser.getStr("username"));
 				}else{
