@@ -102,7 +102,7 @@ td{
 <body class="fixed-nav fixed-sidebar">
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
-		<div class="wrapper wrapper-content animated fadeInRightBig">
+		<div class="wrapper wrapper-content animated">
     	<div class="" style="width:100%;color=black;font-size:15px;height:50px;line-height:50px;margin-bottom:20px;">
 	    	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div>
 	   		<div class="fl">充值记录</div>

@@ -63,8 +63,9 @@ public class GetTeaRecordController extends Controller {
 			}
 			if(StringUtil.isNoneBlank(record.getStr("express_no"))){
 				expressNo =  record.getStr("express_no");
+				model.setExpress("快递公司："+express+"，单号："+expressNo);
 			}
-			model.setExpress("快递公司："+express+"，单号："+expressNo);
+			
 			model.setMark(record.getStr("mark") == null ? "" : record.getStr("mark"));
 			Member member = Member.dao.queryById(record.getInt("member_id"));
 			if(member != null){
@@ -131,12 +132,13 @@ public class GetTeaRecordController extends Controller {
 			}
 			if(StringUtil.isNoneBlank(record.getStr("express_no"))){
 				expressNo =  record.getStr("express_no");
+				model.setExpress("快递公司："+express+"，单号："+expressNo);
 			}
 			CodeMst s = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 			if(s != null){
 				model.setStatus(s.getStr("name"));
 			}
-			model.setExpress("快递公司："+express+"，单号："+expressNo);
+			
 			model.setMark(record.getStr("mark") == null ? "" : record.getStr("mark"));
 			Member member = Member.dao.queryById(record.getInt("member_id"));
 			if(member != null){
@@ -211,12 +213,13 @@ public class GetTeaRecordController extends Controller {
 				
 				if(StringUtil.isNoneBlank(record.getStr("express_no"))){
 					expressNo =  record.getStr("express_no");
+					model.setExpress("快递公司："+express+"，单号："+expressNo);
 				}
 				CodeMst s = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 				if(s != null){
 					model.setStatus(s.getStr("name"));
 				}
-				model.setExpress("快递公司："+express+"，单号："+expressNo);
+				
 				model.setMark(record.getStr("mark") == null ? "" : record.getStr("mark"));
 				if(member != null){
 					model.setMobile(member.getStr("mobile"));

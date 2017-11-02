@@ -261,6 +261,7 @@ public class NewInfoController extends Controller {
 		String newsTitle = StringUtil.checkCode(getPara("newsTitle"));
 		String newsTypeCd = StringUtil.checkCode(getPara("newsTypeCd"));
 		String content = StringUtil.formatHTML(newsTitle, StringUtil.checkCode(getPara("content")));
+		String useLink = StringUtil.checkCode(getPara("useLink"));
 		FileService fs=new FileService();
 		
 		String logo = "";
@@ -292,8 +293,12 @@ public class NewInfoController extends Controller {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		String contentUrl = Constants.HOST.FILE+uuid+".html";
 		int operateUserId = (Integer)getSessionAttr("agentId");
-        String contentUrl = Constants.HOST.FILE+uuid+".html";
+		if(StringUtil.equals(useLink, "1")){
+			contentUrl = StringUtil.checkCode(getPara("link"));
+		}
+        
 		//保存资讯
 		int ret = News.dao.saveNews(logo
 								   ,newsTitle

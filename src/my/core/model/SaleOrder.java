@@ -46,17 +46,26 @@ public class SaleOrder extends Model<SaleOrder> {
 		return SaleOrder.dao.deleteById(id);
 	}
 	
-	public Page<SaleOrder> queryByPageParams(int page,int size,String date){
-		
+	public Page<SaleOrder> queryByPageParams(int page,int size,String date,int userId){
 		StringBuffer strBuf=new StringBuffer();
-		
-		if(StringUtil.isNoneBlank(date)){
-			strBuf.append(" and create_time like '%"+date+"%'");
+		if(userId == 0){
+			if(StringUtil.isNoneBlank(date)){
+				strBuf.append(" and create_time like '%"+date+"%'");
+			}
+				
+			String sql=" from t_sale_order where 1=1 "+strBuf+" order by create_time desc";
+			String select="select * ";
+			return SaleOrder.dao.paginate(page, size, select, sql);
+		}else{
+			if(StringUtil.isNoneBlank(date)){
+				strBuf.append(" and a.create_time like '%"+date+"%'");
+			}
+			strBuf.append(" and b.member_id="+userId);
+				
+			String sql=" from t_sale_order a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where 1=1 "+strBuf+" order by a.create_time desc";
+			String select="select * ";
+			return SaleOrder.dao.paginate(page, size, select, sql);
 		}
-			
-		String sql=" from t_sale_order where 1=1 "+strBuf+" order by create_time desc";
-		String select="select * ";
-		return SaleOrder.dao.paginate(page, size, select, sql);
 	}
 	
 	public Page<SaleOrder> queryByPage(int page,int size){

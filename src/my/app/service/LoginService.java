@@ -1002,7 +1002,7 @@ public class LoginService {
 		//新茶发行列表备注
 		Document newTeaSaleMark = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.NEW_TEA_SALE_MARK);
 		if(newTeaSaleMark != null){
-			map.put("newTeaSaleMark", newTeaSaleMark.getStr("content"));
+			map.put("newTeaSaleMark", newTeaSaleMark.getStr("desc_url"));
 		}
 		//发售说明
 		Document saleComment = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.SALE_COMMENT);
@@ -2440,7 +2440,7 @@ public class LoginService {
 			StoreImage image = images.get(i);
 			imgs.add(image.getStr("img"));
 		}
-		
+		vo.setImgs(imgs);
 		Map<String, Object> map = new HashMap<>();
 		map.put("store", vo);
 		data.setData(map);

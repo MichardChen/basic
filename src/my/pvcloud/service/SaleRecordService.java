@@ -11,8 +11,8 @@ public class SaleRecordService {
 		return SaleOrder.dao.queryByPage(page, size);
 	}
 	
-	public Page<SaleOrder> querySaleOrderByParam(int page,int size,String createDate){
-		return SaleOrder.dao.queryByPageParams(page, size,createDate);
+	public Page<SaleOrder> querySaleOrderByParam(int page,int size,String createDate,int userId){
+		return SaleOrder.dao.queryByPageParams(page, size,createDate,userId);
 	}
 	
 	public SaleOrder queryById(int id){

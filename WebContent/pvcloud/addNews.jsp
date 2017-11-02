@@ -87,10 +87,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         		alert("请输入选择封面");
         		return false;
         	}
-        	if(content == null || content == ""){
-        		alert("请输入资讯内容");
-        		return false;
+        	if($("#useLink").val() == 0){
+        		if(content == null || content == ""){
+            		alert("请输入资讯内容");
+            		return false;
+            	}
+        	}else{
+        		if($("#link").val() == null || $("#link").val() == ""){
+            		alert("请输入第三方链接");
+            		return false;
+            	}
         	}
+        	
         	return true;
         }
     </script>
@@ -119,6 +127,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="1">是</option>
 							<option value="0">否</option>
 						</select>
+		</tr>
+		<tr>
+			<td>是否使用第三方链接(注意：选择是，资讯内容无需编辑内容)</td>
+			<td>
+						<select style="height:30px;width:300px;" name="useLink" id="useLink">
+							<option value="1">是</option>
+							<option value="0">否</option>
+						</select>
+		</tr>
+		<tr>
+			<td>文章链接</td>
+			<td>
+					<input type="text" name="link" id="link"/>
+			</td>
 		</tr>
 		<tr>
 			<td>资讯封面图片（图片规格300*180px）</td>

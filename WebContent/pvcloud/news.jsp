@@ -93,7 +93,7 @@ td{
 <body class="fixed-nav fixed-sidebar">
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
-		<div class="wrapper wrapper-content animated fadeInRightBig" style="text-align: center;">
+		<div class="wrapper wrapper-content animated" style="text-align: center;">
     	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
 	   		<div style="font-size: 30px;color: white;font-weight: bold;">资讯信息</div>
@@ -149,7 +149,7 @@ td{
     		<thead>
     			<tr>
     				<th>序列号</th>
-    				<th>资讯标题</th>
+    				<th style="border: 1px solid red;width: 20px;">资讯标题</th>
     				<th>资讯类型</th>
     				<th>创建者</th>
     				<th>最近一次更新者</th>
@@ -170,7 +170,7 @@ td{
 		    			<c:forEach var="s" items="${sList}" varStatus="status">	
 		    				<tr class="bOrder">
 		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
-		    					<td>${s.title }</td>
+		    					<td style="border: 1px solid red;width: 20px;">${s.title }</td>
 		    					<td>${s.type }</td>
 		    					<td>${s.createUser}</td>
 		    					<td>${s.updateUser}</td>

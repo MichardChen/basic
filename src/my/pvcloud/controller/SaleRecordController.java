@@ -121,6 +121,8 @@ public class SaleRecordController extends Controller {
 	public void queryByPage(){
 		String title=getSessionAttr("title");
 		this.setSessionAttr("title",title);
+		String mobile=getSessionAttr("mobile");
+		this.setSessionAttr("mobile",mobile);
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
@@ -130,7 +132,12 @@ public class SaleRecordController extends Controller {
 			//默认发售说明
 			
 		}
-		Page<SaleOrder> list = service.querySaleOrderByParam(page, size,title);
+		Member m = Member.dao.queryMember(mobile);
+		int userId = 0;
+		if(m != null){
+			userId=m.getInt("id");
+		}
+		Page<SaleOrder> list = service.querySaleOrderByParam(page, size,title,userId);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
 		for(SaleOrder order : list.getList()){
@@ -214,6 +221,8 @@ public class SaleRecordController extends Controller {
 		
 		String ptitle = getPara("title");
 		this.setSessionAttr("title",ptitle);
+		String pmobile = getPara("mobile");
+		this.setSessionAttr("mobile",pmobile);
 		
 		Integer page = getParaToInt(1);
 	    if (page==null || page==0) {
@@ -224,7 +233,12 @@ public class SaleRecordController extends Controller {
 			//默认发售说明
 			
 		}
-		Page<SaleOrder> list = service.querySaleOrderByParam(page, size,ptitle);
+		Member m = Member.dao.queryMember(pmobile);
+		int userId = 0;
+		if(m != null){
+			userId=m.getInt("id");
+		}
+		Page<SaleOrder> list = service.querySaleOrderByParam(page, size,ptitle,userId);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
 		for(SaleOrder order : list.getList()){
