@@ -149,7 +149,7 @@ td{
     		<thead>
     			<tr>
     				<th>序列号</th>
-    				<th style="border: 1px solid red;width: 20px;">资讯标题</th>
+    				<th>资讯标题</th>
     				<th>资讯类型</th>
     				<th>创建者</th>
     				<th>最近一次更新者</th>

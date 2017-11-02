@@ -20,16 +20,16 @@ public class Menu extends Model<Menu> {
 	public static final Menu dao = new Menu();
 
 	public List<Menu> getMenuByUserId(int userId) {
-		return Menu.dao.find("select m.* from s_menu m, s_role_menu rm, s_user_role ur where m.menu_id=rm.menu_id and rm.role_id=ur.role_id and m.is_show!=0 and ur.user_id=? ", userId);
+		return Menu.dao.find("select m.* from s_menu m, s_role_menu rm, s_user_role ur where m.menu_id=rm.menu_id and rm.role_id=ur.role_id and m.is_show!=0 and ur.user_id=? order by CAST(m.sort as SIGNED) asc", userId);
 	}
 	public List<Menu> getUserMenuByUserId(int userId)
 	{
-		return Menu.dao.find("select m.* from s_menu m, s_user_menu um where m.menu_id=um.menu_id and um.user_id=?  order by m.menu_id asc", userId);
+		return Menu.dao.find("select m.* from s_menu m, s_user_menu um where m.menu_id=um.menu_id and um.user_id=?  order by CAST(m.sort as SIGNED) asc", userId);
 	}
 	
 	public List<Menu> getRoleMenuByRoleId(int roleId)
 	{
-		return Menu.dao.find("select m.* from s_menu m, s_role_menu rm where m.menu_id=rm.menu_id and rm.role_id=?  order by m.menu_id asc", roleId);
+		return Menu.dao.find("select m.* from s_menu m, s_role_menu rm where m.menu_id=rm.menu_id and rm.role_id=?  order by CAST(m.sort as SIGNED) asc", roleId);
 	}
 	
 	public List<Menu> getMenu() {
