@@ -31,10 +31,43 @@ public class IndexService {
 	}
 	
 	public List<Menu> queryUserMenuByUserId(int userId){
-		UserRole ur = UserRole.dao.queryUserRoleByUserId(userId);
-		if(ur != null){
-			int roleId = ur.getInt("role_id");
-			return Menu.dao.getRoleMenuByRoleId(roleId);
+		List<Menu> menus = new ArrayList<>();
+		List<UserRole> ur = UserRole.dao.queryUserRoleByUserListId(userId);
+		if((ur != null)&&(ur.size() != 0)){
+			for(UserRole userRole : ur){
+				int roleId = userRole.getInt("role_id");
+				if(roleId != 0){
+					List<RoleMenu> list = RoleMenu.dao.queryByRoleId(roleId);
+					for (RoleMenu rm : list) {
+						Menu m = Menu.dao.queryById(rm.getInt("menu_id"));
+						if(m != null){
+							if(m.getInt("p_menu_id")==null || m.getInt("p_menu_id")==0){
+								List<Menu> menus2 = Menu.dao.getMenuByPid(m.getInt("menu_id"));
+								if(!menus.contains(m)){
+									menus.add(m);
+								}else{
+									continue;
+								}
+								
+								for(Menu ms:menus2){
+									if(!menus.contains(m)){
+										menus.add(ms);
+									}else{
+										continue;
+									}
+								}
+							}else{
+								if(!menus.contains(m)){
+									menus.add(m);
+								}else{
+									continue;
+								}
+							}
+						}
+					}
+				}
+			}
+			return menus;
 		}else{
 			return null;
 		}

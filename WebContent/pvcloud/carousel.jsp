@@ -6,7 +6,6 @@
 <head>
 <title>系统设置</title>
 <%@include file="../common/header.jsp"%>
-<link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
 <link href="${CONTEXT_PATH}/assets/css/starCore.css" rel="stylesheet">
 <link href="${CONTEXT_PATH}/assets/css/common.css" rel="stylesheet">
@@ -114,13 +113,14 @@ td{
 <body class="fixed-nav fixed-sidebar">
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
-		<div class="wrapper wrapper-content animated" style="text-align: center;">
+		<div class="wrapper wrapper-content animated fadeInRightBig" style="text-align: center;">
     	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
 	   		<div style="font-size: 30px;color: white;font-weight: bold;">轮播信息</div>
 	   </div>
     	<hr/>	
     	<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(0)"/></div>
+    </div>
     <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:690px;position:relative;color:black;margin-left:0px;">
     	<div class="row">
     		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table-responsive" style="padding-left:0px;padding-right:0px;font-size:14px;height:705px;">
@@ -181,7 +181,7 @@ td{
     </div>
 		</div>
 	</div>
-	</div>
+</div>
 <%@include file="../common/layout.jsp"%>
 <div class="modal fade bs-example-modal-lg" id="myModal" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
 	<div class="modal-dialog modal-lg">
