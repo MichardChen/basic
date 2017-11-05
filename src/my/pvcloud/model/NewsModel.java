@@ -16,8 +16,14 @@ public class NewsModel implements Serializable{
 	private String content;
 	private String updateTime;
 	private String updateUser;
+	private int topFlg;
 	
-	
+	public int getTopFlg() {
+		return topFlg;
+	}
+	public void setTopFlg(int topFlg) {
+		this.topFlg = topFlg;
+	}
 	public int getHotFlg() {
 		return hotFlg;
 	}

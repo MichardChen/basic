@@ -129,7 +129,7 @@ public interface Constants {
 	}*/
 
 	
-	/**服务器*/
+	/**139服务器
 	public static interface HOST{
 		public static final String LOCALHOST = "http://www.yibuwangluo.cn:88/newsimages/";
 		public static final String TEA = "http://www.yibuwangluo.cn:88/tea/";
@@ -148,6 +148,27 @@ public interface Constants {
 		public static final String ICON = "D:\\upload\\icon\\";
 		public static final String IMG = "D:\\upload\\img\\";
 		public static final String STORE = "D:\\upload\\store\\";
+	}*/
+	
+	/**centos服务器*/
+	public static interface HOST{
+		public static final String LOCALHOST = "http://118.31.69.244:88/tea/";
+		public static final String TEA = "http://118.31.69.244:88/tea/";
+		public static final String DOCUMENT = "http://118.31.69.244:88/document/";
+		public static final String FILE = "http://118.31.69.244:88/file/";
+		public static final String ICON = "http://118.31.69.244:88/icon/";
+		public static final String IMG = "http://118.31.69.244:88/img/";
+		public static final String STORE = "http://118.31.69.244:88/store/";
+	}
+	
+	public static interface FILE_HOST{
+		public static final String LOCALHOST = "/home/data/images/tea/";
+		public static final String TEA = "/home/data/images/tea/";
+		public static final String DOCUMENT = "/home/data/images/document/";
+		public static final String FILE = "/home/data/images/file/";
+		public static final String ICON = "/home/data/images/icon/";
+		public static final String IMG = "/home/data/images/img/";
+		public static final String STORE = "/home/data/images/store/";
 	}
 	
 	public static interface MEMBER_STATUS{

@@ -21,23 +21,38 @@ public class Member extends Model<Member> {
 	
 	public static final Member dao = new Member();
 	
-	public Page<Member> queryMemberListByPage(int page,int size,String mobile,String name){
+	public Page<Member> queryMemberListByPage(int page,int size,String mobile,String name,String storeName){
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
-		String sql="";
-		String select="select *";
-		if(StringUtil.isNoneBlank(mobile)){
-			strBuf.append("and mobile=?");
-			param.add(mobile);
+		if(StringUtil.isBlank(storeName)){
+			String sql="";
+			String select="select *";
+			if(StringUtil.isNoneBlank(mobile)){
+				strBuf.append("and mobile=?");
+				param.add(mobile);
+			}
+			if(StringUtil.isNoneBlank(name)){
+				strBuf.append("and name=?");
+				param.add(name);
+			}
+			
+			sql=" from t_member where 1=1 "+strBuf.toString()+" order by create_time desc";
+			return Member.dao.paginate(page, size, select, sql,param.toArray());
+		}else{
+			String sql="";
+			String select="select a.*";
+			if(StringUtil.isNoneBlank(mobile)){
+				strBuf.append("and a.mobile=?");
+				param.add(mobile);
+			}
+			if(StringUtil.isNoneBlank(name)){
+				strBuf.append("and a.name=?");
+				param.add(name);
+			}
+			strBuf.append("and b.store_name like '%"+storeName+"%'");
+			sql=" from t_member a inner join t_store b on a.store_id=b.id where 1=1 "+strBuf.toString()+" order by a.create_time desc";
+			return Member.dao.paginate(page, size, select, sql,param.toArray());
 		}
-		if(StringUtil.isNoneBlank(name)){
-			strBuf.append("and name=?");
-			param.add(name);
-		}
-		
-		
-		sql=" from t_member where 1=1 "+strBuf.toString()+" order by create_time desc";
-		return Member.dao.paginate(page, size, select, sql,param.toArray());
 	}
 	
 	public Member queryMember(String mobile){

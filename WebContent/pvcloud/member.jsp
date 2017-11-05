@@ -134,6 +134,10 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="cname" value="${cname}"/>
     				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">门店</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="storeName" value="${storeName}"/>
+    				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
 			   </div>
     		</form>
@@ -149,6 +153,7 @@ td{
     				<th>用户名</th>
     				<th>昵称</th>
     				<th>注册号码</th>
+    				<th>绑定门店</th>
     				<th>余额</th>
     				<th>性别</th>
     				<th>创建时间</th>
@@ -173,6 +178,9 @@ td{
 		    					</td>
 		    					<td>
 		    						${s.mobile}
+		  						</td>
+		  						<td>
+		    						${s.store}
 		  						</td>
 		    					<td>${s.moneys}</td>
 		    					<td>

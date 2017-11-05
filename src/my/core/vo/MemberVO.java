@@ -11,7 +11,16 @@ public class MemberVO implements Serializable{
 	private String moneys;
 	private String sex;
 	private String userName;
+	private String store;
 	
+	
+	
+	public String getStore() {
+		return store;
+	}
+	public void setStore(String store) {
+		this.store = store;
+	}
 	public String getUserName() {
 		return userName;
 	}

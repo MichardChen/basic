@@ -145,7 +145,7 @@ td{
     <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:690px;position:relative;color:black;margin-left:0px;">
     	<div class="row">
     		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table-responsive" style="padding-left:0px;padding-right:0px;font-size:14px;height:705px;">
-    		<table class="table table-responsive" id="myTb" >
+    		<table class="table table-responsive" id="myTb">
     		<thead>
     			<tr>
     				<th>序列号</th>
@@ -185,6 +185,12 @@ td{
 		    						<%-- <input type="button" value="推送" class="ys3" data-toggle="modal" data-target="#myModal" onclick="if(confirm('确认要发布这条资讯?')){window.location='${CONTEXT_PATH}/newsInfo/push?newsId=${s.id}';}"/> --%>
 		    						<c:if test="${s.flg ==1}">
 		    							<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/newsInfo/del?newsId=${s.id}';}"/>
+		    						</c:if>
+		    						<c:if test="${s.topFlg ==0}">
+		    							<input type="button" value="置顶" class="ys3" onclick="if(confirm('确认要置顶?')){window.location='${CONTEXT_PATH}/newsInfo/saveTop?top=1&newsId=${s.id}';}"/>
+		    						</c:if>
+		    						<c:if test="${s.topFlg ==1}">
+		    							<input type="button" value="取消置顶" class="ys3" onclick="if(confirm('确认要取消置顶?')){window.location='${CONTEXT_PATH}/newsInfo/saveTop?top=0&newsId=${s.id}';}"/>
 		    						</c:if>
 		    						<a href="${s.url}" target="_blank"><input type="button" value="查看" class="ys3"/></a>
 		    					</td>

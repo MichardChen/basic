@@ -93,6 +93,7 @@ public class NewInfoController extends Controller {
 			model.setUpdateTime(StringUtil.toString(news.getTimestamp("update_time")));
 			model.setHotFlg(news.getInt("hot_flg"));
 			model.setUrl(news.getStr("content_url"));
+			model.setTopFlg(news.getInt("top_flg")==null?0:news.getInt("top_flg"));
 			models.add(model);
 		}
 		
@@ -145,7 +146,7 @@ public class NewInfoController extends Controller {
 				}else{
 					model.setStatus("删除");
 				}
-				
+				model.setTopFlg(news.getInt("top_flg")==null?0:news.getInt("top_flg"));
 				model.setCreateTime(StringUtil.toString(news.getTimestamp("create_time")));
 				User user = User.dao.queryById(news.getInt("create_user"));
 				if(user != null){
@@ -199,7 +200,7 @@ public class NewInfoController extends Controller {
 				}else{
 					model.setType("");
 				}
-				
+				model.setTopFlg(news.getInt("top_flg")==null?0:news.getInt("top_flg"));
 				Integer status = (Integer)news.getInt("flg");
 				model.setFlg(status);
 				if(status == 1){
@@ -407,19 +408,33 @@ public class NewInfoController extends Controller {
 		index();
 	}
 
-	/*//推送
-	public void push(){
+	//置顶
+	public void saveTop(){
 		try{
 			int newsId = getParaToInt("newsId");
-			int ret = service.updateFlg(newsId, 1);
-			if(ret==0){
-				setAttr("message", "发布成功");
+			int topFlg = getParaToInt("top");
+			int max = 1;
+			if(topFlg == 0){
+				//取消置顶
+				max = 0;
 			}else{
-				setAttr("message", "发布失败");
+				//置顶
+				News news = News.dao.queryMaxNews();
+				if(news != null){
+					if(news.getInt("top_flg")!=null){
+						max = news.getInt("top_flg")+1;
+					}
+				}
+			}
+			int ret = News.dao.saveTop(newsId,max);
+			if(ret!=0){
+				setAttr("message", "操作成功");
+			}else{
+				setAttr("message", "操作失败");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		index();
-	}*/
+	}
 }

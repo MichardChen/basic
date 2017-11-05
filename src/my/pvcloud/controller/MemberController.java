@@ -39,6 +39,7 @@ public class MemberController extends Controller {
 		//清除查询条件
 		removeSessionAttr("cmobile");
 		removeSessionAttr("cname");
+		removeSessionAttr("storeName");
 		Page<Member> list = service.queryByPage(page, size);
 		ArrayList<MemberVO> models = new ArrayList<>();
 		MemberVO model = null;
@@ -51,6 +52,12 @@ public class MemberController extends Controller {
 			model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 			model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 			model.setSex(member.getInt("sex")==1?"男":"女");
+			Store store = Store.dao.queryById(member.getInt("store_id"));
+			if(store != null){
+				model.setStore(store.getStr("store_name"));
+			}else{
+				model.setStore("");
+			}
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -65,22 +72,26 @@ public class MemberController extends Controller {
 			
 		String cmobile = getSessionAttr("cmobile");
 		String cname = getSessionAttr("cname");
+		String storeName = getSessionAttr("storeName");
 		Page<Member> custInfoList = new Page<Member>(null, 0, 0, 0, 0);
 		
 		String mobile = getPara("mobile");
 		cmobile = mobile;
-		
 		this.setSessionAttr("cmobile",cmobile);
+		
 		String name = getPara("cname");
 		cname = name;
-		
 		this.setSessionAttr("cname",cname);
+		
+		String storeNames = getPara("storeName");
+		storeName = storeNames;
+		this.setSessionAttr("storeName",storeName);
 		
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
-	        Page<Member> list = service.queryMemberListByPage(page, size,mobile,name);
+	        Page<Member> list = service.queryMemberListByPage(page, size,mobile,name,storeName);
 			ArrayList<MemberVO> models = new ArrayList<>();
 			MemberVO model = null;
 			for(Member member : list.getList()){
@@ -92,6 +103,12 @@ public class MemberController extends Controller {
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 				model.setSex(member.getInt("sex")==1?"男":"女");
+				Store store = Store.dao.queryById(member.getInt("store_id"));
+				if(store != null){
+					model.setStore(store.getStr("store_name"));
+				}else{
+					model.setStore("");
+				}
 				models.add(model);
 			}
 			setAttr("list", list);
@@ -111,12 +128,15 @@ public class MemberController extends Controller {
 			String cname=getSessionAttr("cname");
 			this.setSessionAttr("cname",cname);
 			
+			String storeName=getSessionAttr("storeName");
+			this.setSessionAttr("storeName",storeName);
+			
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
 	        
-	        Page<Member> list = service.queryMemberListByPage(page, size,cmobile,cname);
+	        Page<Member> list = service.queryMemberListByPage(page, size,cmobile,cname,storeName);
 			ArrayList<MemberVO> models = new ArrayList<>();
 			MemberVO model = null;
 			for(Member member : list.getList()){
@@ -128,6 +148,12 @@ public class MemberController extends Controller {
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 				model.setSex(member.getInt("sex")==1?"男":"女");
+				Store store = Store.dao.queryById(member.getInt("store_id"));
+				if(store != null){
+					model.setStore(store.getStr("store_name"));
+				}else{
+					model.setStore("");
+				}
 				models.add(model);
 			}
 			setAttr("list", list);
