@@ -162,7 +162,7 @@ td{
     		</thead>
     		<tbody>
     				<c:if test="${newsList.totalRow==0 }">
-			    		<tr>
+			    		<tr> 
 			    			<td colspan="7" style="font-size:30px;padding-top:18%;padding-left:45%;">没有找到相关数据</td>
 			    		</tr>
 		    		</c:if>
