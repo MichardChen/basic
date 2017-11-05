@@ -16,16 +16,19 @@ import my.core.constants.Constants;
 import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
+import my.core.model.Menu;
 import my.core.model.Role;
 import my.core.model.RoleMenu;
 import my.core.model.User;
 import my.core.model.UserMenu;
 import my.core.model.UserRole;
 import my.core.vo.MemberVO;
+import my.pvcloud.model.RoleModel;
 import my.pvcloud.service.AdminService;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.MD5Util;
 import my.pvcloud.util.StringUtil;
+import my.pvcloud.vo.MenuDetailVO;
 
 @ControllerBind(key = "/adminInfo", path = "/pvcloud")
 public class AdminController extends Controller {
@@ -133,18 +136,75 @@ public class AdminController extends Controller {
 	public void alter(){
 		int id = StringUtil.toInteger(getPara("id"));
 		User model = service.queryById(id);
-		UserRole uRole = UserRole.dao.queryUserRoleByUserId(id);
-		if(uRole != null){
-			setAttr("roleId", uRole.getInt("role_id"));
+		List<UserRole> uRole = UserRole.dao.queryUserRoleByUserListId(id);
+		List<RoleModel> rList = new ArrayList<>();
+		RoleModel model2 = null;
+		if((uRole != null)&&(uRole.size() != 0)){
+			for(UserRole userRole : uRole){
+				Role role = Role.dao.queryById(userRole.getInt("role_id"));
+				if(role != null){
+					model2 = new RoleModel();
+					model2.setId(userRole.getInt("user_role_id"));
+					model2.setName(role.getStr("role_name"));
+					rList.add(model2);
+				}
+			}
 		}
-		List<Role> roles = Role.dao.queryAll();
-		setAttr("roles", roles);
+		setAttr("roles", rList);
 		setAttr("model", model);
 		setAttr("userId", id);
 		//查询银行卡
 		render("adminAlert.jsp");
 	}
-	
+	//新增角色
+	public void modifyRole(){
+		List<Role> role = Role.dao.queryAll();
+		setAttr("roles", role);
+		int userId = StringUtil.toInteger(getPara("id"));
+		setAttr("userId", userId);
+		render("addAdminRole.jsp");
+	}
+	//添加角色
+	public void addRole(){
+		int roleId = StringUtil.toInteger(getPara("roleId"));
+		int userId = StringUtil.toInteger(getPara("userId"));
+		UserRole ur = UserRole.dao.queryUserRoleByUserRoleId(userId, roleId);
+		if(ur != null){
+			setAttr("message", "添加失败，用户已拥有此角色");
+		}else{
+			UserRole userRole = new UserRole();
+			userRole.set("user_id", userId);
+			userRole.set("role_id", roleId);
+			boolean save = UserRole.dao.saveInfo(userRole);
+			if(save){
+				setAttr("message", "添加成功");
+			}else {
+				setAttr("message", "添加失败");
+			}
+		}
+		index();
+	}
+	//删除角色
+	public void deleteRole(){
+		int userRoleId = StringUtil.toInteger(getPara("id"));
+		boolean delete = UserRole.dao.deleteById(userRoleId);
+		if(delete){
+			setAttr("message", "删除成功");
+		}else {
+			setAttr("message", "删除失败");
+		}
+	}
+	//删除用户角色
+	public void deleteUserRole(){
+		int userRoleId = StringUtil.toInteger(getPara("id"));
+		boolean delete = UserRole.dao.deleteById(userRoleId);
+		if(delete){
+			setAttr("message", "删除成功");
+		}else {
+			setAttr("message", "删除失败");
+		}
+		index();
+	}
 	/**
 	 *新增弹窗
 	 */

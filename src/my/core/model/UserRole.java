@@ -28,7 +28,15 @@ public class UserRole extends Model<UserRole> {
 		return UserRole.dao.findFirst("select * from s_user_role where user_id=?",userId);
 	}
 	
+	public List<UserRole> queryUserRoleByUserListId(int userId){
+		return UserRole.dao.find("select * from s_user_role where user_id=?",userId);
+	}
+	
 	public List<UserRole> queryUserRoleByRoleId(int roleId){
 		return UserRole.dao.find("select * from s_user_role where role_id=?",roleId);
+	}
+	
+	public UserRole queryUserRoleByUserRoleId(int userId,int roleId){
+		return UserRole.dao.findFirst("select * from s_user_role where user_id=? and role_id=?",userId,roleId);
 	}
 }

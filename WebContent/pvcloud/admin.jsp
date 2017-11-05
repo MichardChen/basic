@@ -33,7 +33,21 @@ function loadProject(data){
 		}
 	});
 }
-
+function modifyRole(data){
+	if(data==0){
+		$(".modal-title").html("新增");
+	}else{
+		$(".modal-title").html("修改");
+	}
+	$.ajax({
+		url : "${CONTEXT_PATH}/adminInfo/modifyRole",
+		data : {id:data},
+		dataType : "html",
+		success : function(result){
+			$('#model3').html(result);
+		}
+	});
+}
 function addAdmin(){
 	$(".modal-title").html("新增");
 	$.ajax({
@@ -199,6 +213,7 @@ td{
 		    					</td>
 		    					<td>
 		    						<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+		    						<input type="button" value="添加角色" class="ys3" data-toggle="modal" data-target="#myModal2" onclick="modifyRole(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -247,6 +262,24 @@ td{
 			</div>
 			<form action="${CONTEXT_PATH}/adminInfo/addAdmin" method="post" onsubmit="return check();">
 				<div class="modal-body" id="model1">
+				</div>
+				<div class="modal-footer" style="margin-top:20px;">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<input type="submit" class="btn btn-success" value="保存"/>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myModal2" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="width: 120%;margin-left:-10%;">
+			<div class="modal-header">
+				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">修改</h4>
+			</div>
+			<form action="${CONTEXT_PATH}/adminInfo/addRole" method="post">
+				<div class="modal-body" id="model3">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

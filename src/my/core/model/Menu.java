@@ -36,6 +36,9 @@ public class Menu extends Model<Menu> {
 		return Menu.dao.find("select m.* from s_menu m  where  m.is_show!=0  order by m.menu_id asc");
 	}
 	
+	public List<Menu> getMenuByPid(int pid) {
+		return Menu.dao.find("select m.* from s_menu m  where  m.is_show!=0 and  m.p_menu_id="+pid+" order by m.menu_id asc");
+	}
 	public Page<Menu> queryMenuListByPage(int page,int size,String name){
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
