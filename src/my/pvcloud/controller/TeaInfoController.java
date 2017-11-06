@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.ReturnData;
 import my.core.model.Tea;
+import my.core.model.TeaPrice;
 import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
 import my.core.model.WarehouseTeaMemberItem;
@@ -397,7 +399,19 @@ public class TeaInfoController extends Controller {
 		    	item.set("size_type_cd", Constants.TEA_UNIT.ITEM);
 		    	boolean save = WarehouseTeaMemberItem.dao.saveInfo(item);
 		    	if(save){
-		    		setAttr("message","新增成功");
+		    		TeaPrice teaPrice = new TeaPrice();
+		    		teaPrice.set("tea_id", teaId);
+		    		teaPrice.set("from_price", StringUtil.toBigDecimal(StringUtil.checkCode(getPara("fromPrice"))));
+		    		teaPrice.set("to_price", StringUtil.toBigDecimal(StringUtil.checkCode(getPara("toPrice"))));
+		    		teaPrice.set("expire_time", Timestamp.valueOf(StringUtil.checkCode(getPara("expireDate"))+" 23:59:59"));
+		    		teaPrice.set("update_time", DateUtil.getNowTimestamp());
+		    		teaPrice.set("create_time", DateUtil.getNowTimestamp());
+		    		boolean saveTeaPrice = TeaPrice.dao.saveInfo(teaPrice);
+		    		if(saveTeaPrice){
+		    			setAttr("message","新增成功");
+		    		}else{
+		    			setAttr("message","新增失败");
+		    		}
 		    	}else{
 		    		setAttr("message","新增失败");
 		    	}

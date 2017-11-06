@@ -116,6 +116,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         		alert("请输入发行单价");
         		return false;
         	}
+        	////////
+        	var fromPrice = $("#fromPrice").val();
+        	if(fromPrice == ""){
+        		alert("请输入参考单价");
+        		return false;
+        	}
+        	var toPrice = $("#toPrice").val();
+        	if(toPrice == ""){
+        		alert("请输入参考单价");
+        		return false;
+        	}
+        	var expireDate = $("#expireDate").val();
+        	if(expireDate == ""){
+        		alert("请输入有效截止日期");
+        		return false;
+        	}
+        	//////
         	var fromtime = $("#fromtime").val();
         	if(fromtime == ""){
         		alert("请输入发行时间");
@@ -126,6 +143,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         		alert("请输入库存");
         		return false;
         	}
+        	
         	return true;
         }
     </script>
@@ -214,6 +232,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>
 				<input type="number" name="price" id="price" maxlength="30" style="width: 100px;"/>&nbsp;(元/件)
 			</td>
+		</tr>
+		<tr>
+			<td>参考单价区间</td>
+			<td>
+				<input type="number" name="fromPrice" id="fromPrice" maxlength="30" style="width: 100px;"/>&nbsp;-
+				<input type="number" name="toPrice" id="toPrice" maxlength="30" style="width: 100px;"/>&nbsp;(元/件)
+			</td>
+		</tr>
+		<tr>
+			<td>有效截止日期</td>
+			<td><input type="text" name="expireDate" id="expireDate" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/></td>
 		</tr>
 		<tr>
 			<td>发行时间</td>

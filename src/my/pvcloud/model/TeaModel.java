@@ -20,7 +20,28 @@ public class TeaModel implements Serializable{
 	private String stock;
 	private String saleStatus;
 	private String statusCd;
+	private BigDecimal fromPrice;
+	private BigDecimal toPrice;
+	private String expireDate;
 	
+	public BigDecimal getFromPrice() {
+		return fromPrice;
+	}
+	public void setFromPrice(BigDecimal fromPrice) {
+		this.fromPrice = fromPrice;
+	}
+	public BigDecimal getToPrice() {
+		return toPrice;
+	}
+	public void setToPrice(BigDecimal toPrice) {
+		this.toPrice = toPrice;
+	}
+	public String getExpireDate() {
+		return expireDate;
+	}
+	public void setExpireDate(String expireDate) {
+		this.expireDate = expireDate;
+	}
 	public String getStatusCd() {
 		return statusCd;
 	}
