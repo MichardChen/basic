@@ -39,6 +39,9 @@ public class OrderController extends Controller {
 		removeSessionAttr("status");
 		removeSessionAttr("addTime");
 		removeSessionAttr("payTime");
+		removeSessionAttr("saleMobile");
+		removeSessionAttr("saleUserTypeCd");
+		removeSessionAttr("buyMobile");
 		String flg = getPara(0);
 		if(StringUtil.equals(flg,"1")){
 			//默认发售说明
@@ -153,6 +156,15 @@ public class OrderController extends Controller {
 		String ppayTime = getPara("payTime");
 		this.setSessionAttr("payTime",ppayTime);
 		
+		String saleMobile = getPara("saleMobile");
+		this.setSessionAttr("saleMobile", saleMobile);
+		
+		String saleUserTypeCd = getPara("saleUserTypeCd");
+		this.setSessionAttr("saleUserTypeCd", saleUserTypeCd);
+		
+		String buyMobile = getPara("buyMobile");
+		this.setSessionAttr("buyMobile", buyMobile);
+		
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
@@ -162,7 +174,28 @@ public class OrderController extends Controller {
 			//默认发售说明
 			
 		}
-		Page<OrderItem> list = service.queryOrderItemByParam(page, size,ptitle,porderNo,pstatus,ppayTime);
+		int userId = 0;
+		if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.PLATFORM_USER)){
+			User user = User.dao.queryUser(saleMobile);
+			if(user != null){
+				userId = user.getInt("user_id");
+			}
+		}else if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
+			Member member = Member.dao.queryMember(saleMobile);
+			if(member != null){
+				userId = member.getInt("id");
+			}
+		}
+		
+		//买家
+		int buyUserId = 0;
+		if(StringUtil.isNoneBlank(buyMobile)){
+			Member member = Member.dao.queryMember(buyMobile);
+			if(member != null){
+				buyUserId = member.getInt("id");
+			}
+		}
+		Page<OrderItem> list = service.queryOrderItemByParam(page, size,ptitle,porderNo,pstatus,ppayTime,userId,saleUserTypeCd,buyUserId);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
 		for(OrderItem order : list.getList()){
@@ -272,6 +305,15 @@ public class OrderController extends Controller {
 		String ppayTime = getPara("payTime");
 		this.setSessionAttr("payTime",ppayTime);
 		
+		String saleMobile = getPara("saleMobile");
+		this.setSessionAttr("saleMobile", saleMobile);
+		
+		String saleUserTypeCd = getPara("saleUserTypeCd");
+		this.setSessionAttr("saleUserTypeCd", saleUserTypeCd);
+		
+		String buyMobile = getPara("buyMobile");
+		this.setSessionAttr("buyMobile", buyMobile);
+		
 		Integer page = getParaToInt(1);
 	    if (page==null || page==0) {
 	    	page = 1;
@@ -281,7 +323,29 @@ public class OrderController extends Controller {
 			//默认发售说明
 			
 		}
-		Page<OrderItem> list = service.queryOrderItemByParam(page, size,ptitle,porderNo,pstatus,ppayTime);
+		
+		int userId = 0;
+		if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.PLATFORM_USER)){
+			User user = User.dao.queryUser(saleMobile);
+			if(user != null){
+				userId = user.getInt("user_id");
+			}
+		}else if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
+			Member member = Member.dao.queryMember(saleMobile);
+			if(member != null){
+				userId = member.getInt("id");
+			}
+		}
+		
+		//买家
+		int buyUserId = 0;
+		if(StringUtil.isNoneBlank(buyMobile)){
+			Member member = Member.dao.queryMember(buyMobile);
+			if(member != null){
+				buyUserId = member.getInt("id");
+			}
+		}
+		Page<OrderItem> list = service.queryOrderItemByParam(page, size,ptitle,porderNo,pstatus,ppayTime,userId,saleUserTypeCd,buyUserId);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
 		for(OrderItem order : list.getList()){

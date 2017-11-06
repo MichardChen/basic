@@ -2072,7 +2072,7 @@ public class LoginService {
 		if(platTea == null){
 			map.put("price", 0);
 		}else{
-			map.put("price", platTea.getBigDecimal("price"));
+			map.put("price", platTea.getBigDecimal("price")+"元/件");
 		}
 		
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
@@ -2109,6 +2109,14 @@ public class LoginService {
 			data.setMessage("对不起，此茶叶不存在");
 			return data;
 		}
+		//茶叶按件参考价
+		BigDecimal itemReferencePrice = tea.getBigDecimal("tea_price");
+		//茶叶按片参考价
+		BigDecimal pieceReferencePrice = new BigDecimal("0");
+		if(itemReferencePrice != null){
+			pieceReferencePrice = itemReferencePrice.divide(new BigDecimal(tea.getInt("size")));
+		}
+		
 		int size = tea.getInt("size");
 		int stock = wtm.getInt("stock");
 		if(StringUtil.equals(saleType, Constants.TEA_UNIT.PIECE)){
@@ -2119,6 +2127,22 @@ public class LoginService {
 				data.setMessage("对不起，你销售片数大于库存数");
 				return data;
 			}
+			
+			//判断出售价格是否>50%，出售价格<95%
+			BigDecimal fivePrice = pieceReferencePrice.multiply(new BigDecimal("0.5"));
+			BigDecimal nightPrice = pieceReferencePrice.multiply(new BigDecimal("0.95"));
+			if(salePrice.compareTo(fivePrice)==1){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("对不起，出售单价不能大于参考价的50%");
+				return data;
+			}
+			
+			if(salePrice.compareTo(nightPrice)==-1){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("对不起，出售单价不能小于参考价的95%");
+				return data;
+			}
+			
 		}
 		if(StringUtil.equals(saleType, Constants.TEA_UNIT.ITEM)){
 			//按件
@@ -2127,6 +2151,21 @@ public class LoginService {
 			if (itemNum<saleNum){
 				data.setCode(Constants.STATUS_CODE.FAIL);
 				data.setMessage("对不起，你销售件数大于库存数");
+				return data;
+			}
+			
+			//判断出售价格是否>50%，出售价格<95%
+			BigDecimal fivePrice = itemReferencePrice.multiply(new BigDecimal("0.5"));
+			BigDecimal nightPrice = itemReferencePrice.multiply(new BigDecimal("0.95"));
+			if(salePrice.compareTo(fivePrice)==1){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("对不起，出售单价不能大于参考价的50%");
+				return data;
+			}
+			
+			if(salePrice.compareTo(nightPrice)==-1){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("对不起，出售单价不能小于参考价的95%");
 				return data;
 			}
 		}

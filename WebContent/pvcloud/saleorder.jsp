@@ -79,12 +79,12 @@ a:hover{
 }
 th{
 	white-space:nowrap;
-	text-align: center;
+	text-align: left;
 }
 td{
 	white-space:nowrap;
 	border:0!important;
-	text-align: center;
+	text-align: left;
 }
 .table thead tr{
 	background-color:#F5F6FA;
@@ -129,6 +129,18 @@ td{
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">上架时间</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+    				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">卖家注册电话</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="saleMobile" value="${saleMobile}"/>
+    				</div>
+    					<label class="col-sm-1 col-xs-1 col-md-1 control-label">卖家类型</label>
+	    			<div class="col-sm- col-xs-1 col-md-1">	
+	    				<select name="saleUserTypeCd" style="height: 30px;">
+		    					<option></option>
+		    					<option value="010001" <c:if test="${saleUserTypeCd=='010001'}">selected="selected"</c:if>>普通卖家</option>
+		    					<option value="010002" <c:if test="${saleUserTypeCd=='010002'}">selected="selected"</c:if>>平台卖家</option>
+		    			</select>	
     				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
 			   </div>

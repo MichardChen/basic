@@ -76,12 +76,12 @@ a:hover{
 }
 th{
 	white-space:nowrap;
-	text-align: center;
+	text-align: left;
 }
 td{
 	white-space:nowrap;
 	border:0!important;
-	text-align: center;
+	text-align: left;
 }
 .table thead tr{
 	background-color:#F5F6FA;
@@ -113,7 +113,7 @@ td{
 <body class="fixed-nav fixed-sidebar">
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
-		<div class="wrapper wrapper-content animated fadeInRightBig" style="text-align: center;">
+		<div class="wrapper wrapper-content animated" style="text-align: center;">
     	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
 	   		<div style="font-size: 30px;color: white;font-weight: bold;">轮播信息</div>

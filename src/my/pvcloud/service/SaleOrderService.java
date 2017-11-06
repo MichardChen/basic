@@ -15,8 +15,8 @@ public class SaleOrderService {
 		return WarehouseTeaMemberItem.dao.queryByPage(page, size);
 	}
 	
-	public Page<WarehouseTeaMemberItem> queryWtmItemByParam(int page,int size,String createDate){
-		return WarehouseTeaMemberItem.dao.queryByPageParams(page, size,createDate);
+	public Page<WarehouseTeaMemberItem> queryWtmItemByParam(int page,int size,String createDate,int saleUserId,String saleUserTypeCd){
+		return WarehouseTeaMemberItem.dao.queryByPageParams(page, size,createDate,saleUserId,saleUserTypeCd);
 	}
 	
 	public WarehouseTeaMemberItem queryById(int id){

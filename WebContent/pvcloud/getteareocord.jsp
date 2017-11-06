@@ -69,12 +69,12 @@ a:hover{
 }
 th{
 	white-space:nowrap;
-	text-align: center;
+	text-align: left;
 }
 td{
 	white-space:nowrap;
 	border:0!important;
-	text-align: center;
+	text-align: left;
 }
 .table thead tr{
 	background-color:#F5F6FA;

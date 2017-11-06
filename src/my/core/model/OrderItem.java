@@ -29,7 +29,15 @@ public class OrderItem extends Model<OrderItem> {
 			return OrderItem.dao.paginate(page, size, select, sql);
 	}
 	
-	public Page<OrderItem> queryByPageParams(int page,int size,String date,String orderNo,String status,String payTime){
+	public Page<OrderItem> queryByPageParams(int page
+											,int size
+											,String date
+											,String orderNo
+											,String status
+											,String payTime
+											,int userId
+											,String saleUserTypeCd
+											,int buyUserId){
 		
 		StringBuffer strBuf=new StringBuffer();
 		
@@ -44,6 +52,15 @@ public class OrderItem extends Model<OrderItem> {
 		}
 		if(StringUtil.isNoneBlank(payTime)){
 			strBuf.append(" and b.pay_time like '%"+payTime+"%'");
+		}
+		if(userId != 0){
+			strBuf.append(" and a.sale_id="+userId);
+			if(StringUtil.isNoneBlank(saleUserTypeCd)){
+				strBuf.append(" and a.sale_user_type='"+saleUserTypeCd+"'");
+			}
+		}
+		if(buyUserId != 0){
+			strBuf.append(" and a.member_id="+buyUserId);
 		}
 			
 		String sql=" from t_order_item a inner join t_order b on a.order_id=b.id where 1=1 "+strBuf+" order by b.create_time desc";

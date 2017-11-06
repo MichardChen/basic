@@ -33,6 +33,8 @@ public class SaleOrderController extends Controller {
 	public void index(){
 		
 		removeSessionAttr("title");
+		removeSessionAttr("saleMobile");
+		removeSessionAttr("saleUserTypeCd");
 		String flg = getPara(0);
 		if(StringUtil.equals(flg,"1")){
 			//默认发售说明
@@ -120,8 +122,15 @@ public class SaleOrderController extends Controller {
 	 * 模糊查询(分页)
 	 */
 	public void queryByPage(){
+		
 		String title=getSessionAttr("title");
 		this.setSessionAttr("title",title);
+		
+		String saleMobile=getSessionAttr("saleMobile");
+		this.setSessionAttr("saleMobile",saleMobile);
+		
+		String saleUserTypeCd=getSessionAttr("saleUserTypeCd");
+		this.setSessionAttr("saleUserTypeCd",saleUserTypeCd);
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
@@ -129,9 +138,24 @@ public class SaleOrderController extends Controller {
 		String flg = getPara(0);
 		if(StringUtil.equals(flg,"1")){
 			//默认发售说明
-			
 		}
-		Page<WarehouseTeaMemberItem> list = service.queryWtmItemByParam(page, size,title);
+		int saleUserId = 0;
+		if(StringUtil.isNoneBlank(saleMobile)){
+			if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.PLATFORM_USER)){
+				User user = User.dao.queryUser(saleMobile);
+				if(user != null){
+					saleUserId = user.getInt("user_id");
+				}
+			}
+			
+			if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
+				Member member = Member.dao.queryMember(saleMobile);
+				if(member != null){
+					saleUserId = member.getInt("user_id");
+				}
+			}
+		}
+		Page<WarehouseTeaMemberItem> list = service.queryWtmItemByParam(page, size,title,saleUserId,saleUserTypeCd);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
 		for(WarehouseTeaMemberItem order : list.getList()){
@@ -216,6 +240,11 @@ public class SaleOrderController extends Controller {
 		String ptitle = getPara("title");
 		this.setSessionAttr("title",ptitle);
 		
+		String saleMobile=getPara("saleMobile");
+		this.setSessionAttr("saleMobile",saleMobile);
+		
+		String saleUserTypeCd=getPara("saleUserTypeCd");
+		this.setSessionAttr("saleUserTypeCd",saleUserTypeCd);
 		Integer page = getParaToInt(1);
 	    if (page==null || page==0) {
 	    	page = 1;
@@ -225,7 +254,23 @@ public class SaleOrderController extends Controller {
 			//默认发售说明
 			
 		}
-		Page<WarehouseTeaMemberItem> list = service.queryWtmItemByParam(page, size,ptitle);
+		int saleUserId = 0;
+		if(StringUtil.isNoneBlank(saleMobile)){
+			if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.PLATFORM_USER)){
+				User user = User.dao.queryUser(saleMobile);
+				if(user != null){
+					saleUserId = user.getInt("user_id");
+				}
+			}
+			
+			if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
+				Member member = Member.dao.queryMember(saleMobile);
+				if(member != null){
+					saleUserId = member.getInt("id");
+				}
+			}
+		}
+		Page<WarehouseTeaMemberItem> list = service.queryWtmItemByParam(page, size,ptitle,saleUserId,saleUserTypeCd);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
 		for(WarehouseTeaMemberItem order : list.getList()){

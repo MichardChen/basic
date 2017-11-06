@@ -56,11 +56,11 @@ a:hover{
 }
 th{
 	white-space:nowrap;
-	text-align: center;
+	text-align: left;
 }
 td{
 	white-space:nowrap;
-	text-align: center;
+	text-align: left;
 	border:0!important;
 }
 .table thead tr{
