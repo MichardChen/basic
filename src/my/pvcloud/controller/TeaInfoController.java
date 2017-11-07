@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.io.input.Tailer;
 import org.huadalink.route.ControllerBind;
 
 import com.jfinal.aop.Enhancer;
@@ -29,11 +30,13 @@ import my.core.model.Member;
 import my.core.model.ReturnData;
 import my.core.model.Tea;
 import my.core.model.TeaPrice;
+import my.core.model.TeapriceLog;
 import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
 import my.core.model.WarehouseTeaMemberItem;
 import my.core.vo.WareHouseVO;
 import my.pvcloud.model.TeaModel;
+import my.pvcloud.model.TeaPriceModel;
 import my.pvcloud.service.TeaService;
 import my.pvcloud.service.WareHouseService;
 import my.pvcloud.util.DateUtil;
@@ -699,7 +702,42 @@ public class TeaInfoController extends Controller {
 				list.add(str);
 			}
 		}
+		TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(StringUtil.toInteger(getPara("id")));
+		TeaPriceModel model = new TeaPriceModel();
+		if(teaPrice != null){
+			
+			model.setFromPrice(teaPrice.getBigDecimal("from_price"));
+			model.setToPrice(teaPrice.getBigDecimal("to_price"));
+			model.setDate(DateUtil.formatTimestampForDate(teaPrice.getTimestamp("expire_time")));
+		}
+		setAttr("teaPrice", model);
 		setAttr("list", list);
 		render("editTea.jsp");
+	}
+	
+	public void addTeaPrice(){
+		int teaId = StringUtil.toInteger(StringUtil.checkCode(getPara("id")));
+		setAttr("teaId", teaId);
+		render("addTeaPrice.jsp");
+	}
+	
+	public void saveTeaPrice(){
+		int teaId = StringUtil.toInteger(StringUtil.checkCode(getPara("teaId")));
+		BigDecimal fromPrice = StringUtil.toBigDecimal(StringUtil.checkCode(getPara("fromPrice")));
+		BigDecimal toPrice = StringUtil.toBigDecimal(StringUtil.checkCode(getPara("toPrice")));
+		TeaPrice teaPrice = new TeaPrice();
+		teaPrice.set("tea_id", teaId);
+		teaPrice.set("from_price",fromPrice);
+		teaPrice.set("to_price",toPrice);
+		teaPrice.set("expire_time", Timestamp.valueOf(StringUtil.checkCode(getPara("expireDate"))+" 23:59:59"));
+		teaPrice.set("update_time", DateUtil.getNowTimestamp());
+		teaPrice.set("create_time", DateUtil.getNowTimestamp());
+		boolean saveTeaPrice = TeaPrice.dao.saveInfo(teaPrice);
+		if(saveTeaPrice){
+			setAttr("message","新增成功");
+		}else{
+			setAttr("message","新增失败");
+		}
+		index();
 	}
 }

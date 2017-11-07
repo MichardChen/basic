@@ -33,6 +33,35 @@ function edit(data){
 		}
 	}); */
 }
+function addTeaPrice(data){
+	$.ajax({
+		url : "${CONTEXT_PATH}/teaInfo/addTeaPrice",
+		data : {id:data},
+		dataType : "html",
+		success : function(result){
+			$('#model1').html(result);
+		}
+	});
+}
+
+function check(){
+	var fromPrice = $("#fromPrice").val();
+	var toPrice = $("#toPrice").val();
+	var expireDate = $("#expireDate").val();
+	if(fromPrice == ""){
+		alert("价格不能为空");
+		return false;
+	}
+	if(toPrice == ""){
+		alert("价格不能为空");
+		return false;
+	}
+	if(expireDate == ""){
+		alert("有效截止日期不能为空");
+		return false;
+	}
+	return true;
+}
 </script>
 <style>
 .ys1{
@@ -164,8 +193,8 @@ td{
 		    					<td>${s.brand}</td>
 		    					<td>${s.productPlace}</td>
 		    					<td>${s.size}</td>
-		    					<td>${s.amount}</td>
-		    					<td>${s.stock}</td>
+		    					<td>${s.amount}饼</td>
+		    					<td>${s.stock}件</td>
 		    					<td>${s.saleStatus}</td>
 		    					<!-- 新增完 -->
 		    					<td>${s.createTime}</td>
@@ -184,7 +213,8 @@ td{
 		    									<input type="button" value="停售" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090001';}"/>
 		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
 		    							</c:if>
-		    		      		 <a href="${s.url}" target="_blank"><input type="button" value="查看" class="ys3"/></a>
+		    		      		 <a href="${s.url}" target="_blank"><input type="button" value="查看编辑内容" style="width: 100px;" class="ys3"/></a>
+		    		      		 <input type="button" value="设置参考价" style="width: 100px;" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="addTeaPrice(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -216,6 +246,25 @@ td{
 			</div>
 			<form action="${CONTEXT_PATH}/teaInfo/saveTea" method="post" enctype="multipart/form-data">
 				<div class="modal-body">
+				</div>
+				<div class="modal-footer" style="margin-top:20px;">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<input type="submit" class="btn btn-success" value="保存"/>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- 设置区间价格 -->
+<div class="modal fade bs-example-modal-lg" id="myModal1" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="width: 120%;margin-left:-10%;">
+			<div class="modal-header">
+				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">修改区间价格</h4>
+			</div>
+			<form action="${CONTEXT_PATH}/teaInfo/saveTeaPrice" method="post" onsubmit="return check();">
+				<div class="modal-body" id="model1">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

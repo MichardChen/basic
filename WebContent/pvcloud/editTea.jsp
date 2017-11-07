@@ -156,7 +156,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>出厂总量</td>
-			<td><%-- <input type="number" name="amount" id="amount" maxlength="30" style="width: 100px;" value="${teaInfo.total_output}"/> --%>${teaInfo.total_output}&nbsp;(片)</td>
+			<td><%-- <input type="number" name="amount" id="amount" maxlength="30" style="width: 100px;" value="${teaInfo.total_output}"/> --%>${teaInfo.total_output}&nbsp;(饼)</td>
 		</tr>
 		<tr>
 			<td>茶叶类型</td>
@@ -199,6 +199,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>
 				<%-- <input type="number" name="price" id="price" maxlength="30" style="width: 100px;" value="${teaInfo.tea_price}"/> --%>${teaInfo.tea_price}&nbsp;(元/件)
 			</td>
+		</tr>
+		<tr>
+			<td>参考单价区间</td>
+			<td>
+				<input type="number" name="fromPrice" id="fromPrice" maxlength="30" style="width: 100px;" value="${teaPrice.fromPrice}"/>&nbsp;-
+				<input type="number" name="toPrice" id="toPrice" maxlength="30" style="width: 100px;" value="${teaPrice.toPrice}"/>&nbsp;(元/件)
+			</td>
+		</tr>
+		<tr>
+			<td>有效截止日期</td>
+			<td><input type="text" name="expireDate" id="expireDate" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" value="${teaPrice.date}"/></td>
 		</tr>
 		<tr>
 			<td>发行时间</td>

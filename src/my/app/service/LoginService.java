@@ -42,10 +42,13 @@ import my.core.model.ReceiveAddress;
 import my.core.model.RecordListModel;
 import my.core.model.ReturnData;
 import my.core.model.SaleOrder;
+import my.core.model.ServiceFee;
 import my.core.model.Store;
 import my.core.model.StoreImage;
 import my.core.model.SystemVersionControl;
 import my.core.model.Tea;
+import my.core.model.TeaPrice;
+import my.core.model.TeapriceLog;
 import my.core.model.User;
 import my.core.model.VertifyCode;
 import my.core.model.WareHouse;
@@ -67,6 +70,7 @@ import my.core.vo.MessageListVO;
 import my.core.vo.NewTeaSaleListModel;
 import my.core.vo.NewsVO;
 import my.core.vo.OrderAnalysisVO;
+import my.core.vo.ReferencePriceModel;
 import my.core.vo.SaleOrderListVO;
 import my.core.vo.SelectSizeTeaListVO;
 import my.core.vo.StoreDetailListVO;
@@ -1157,10 +1161,7 @@ public class LoginService {
 	public ReturnData querySaleTeaRecord(LoginDTO dto){
 		ReturnData data = new ReturnData();
 		List<SaleOrder> list = SaleOrder.dao.queryMemberSaleOrders(dto.getUserId(), dto.getPageSize(), dto.getPageNum(), dto.getDate());
-		/*List<OrderItem> list = OrderItem.dao.querySaleTeaRecord(dto.getPageSize()
-															   ,dto.getPageNum()
-															   ,dto.getUserId()
-															   ,dto.getDate());*/
+		
 		List<RecordListModel> models = new ArrayList<>();
 		RecordListModel model = null;
 		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
@@ -1172,6 +1173,11 @@ public class LoginService {
 			model = new RecordListModel();
 			model.setType(type);
 			model.setId(saleOrder.getInt("id"));
+			CodeMst unit = CodeMst.dao.queryCodestByCode(saleOrder.getStr("size_type_cd"));
+			String unitStr = "";
+			if(unit != null){
+				unitStr = unit.getStr("name");
+			}
 			model.setDate(DateUtil.formatTimestampForDate(saleOrder.getTimestamp("create_time")));
 			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(saleOrder.getInt("wtm_item_id") == null?0:saleOrder.getInt("wtm_item_id"));
 			if(wtmItem != null){
@@ -1179,7 +1185,7 @@ public class LoginService {
 				if(wtm != null){
 					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
 					if(tea != null){
-						model.setContent(tea.getStr("tea_title")+"x"+saleOrder.getInt("quality")+"片");
+						model.setContent(tea.getStr("tea_title")+"x"+saleOrder.getInt("quality")+unitStr);
 						model.setTea(tea.getStr("tea_title"));
 						WareHouse wHouse = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
 						if(wHouse != null){
@@ -1188,7 +1194,7 @@ public class LoginService {
 					}
 				}
 			}
-			model.setMoneys("-"+StringUtil.toString(saleOrder.getBigDecimal("item_amount")));
+			model.setMoneys("售价："+saleOrder.getBigDecimal("price")+unitStr);
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -1291,7 +1297,12 @@ public class LoginService {
 			}
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
 			model.setMoneys("+"+StringUtil.toString(record.getBigDecimal("moneys")));
-			model.setContent("充值："+StringUtil.toString(record.getBigDecimal("moneys")));
+			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
+			String statusStr = "";
+			if(status != null){
+				statusStr = status.getStr("name");
+			}
+			model.setContent(statusStr+" 金额："+StringUtil.toString(record.getBigDecimal("moneys")));
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -2064,10 +2075,34 @@ public class LoginService {
 		if(serviceFee != null){
 			serviceFeeStr = serviceFee.getStr("data2");
 		}
-		
+		//参考价
+		TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(tea.getInt("id"));
+		ReferencePriceModel itemModel = new ReferencePriceModel();
+		ReferencePriceModel pieceModel = new ReferencePriceModel();
+		if(teaPrice != null){
+			
+			BigDecimal itemFromPrice = teaPrice.getBigDecimal("from_price") == null ? new BigDecimal("0") : teaPrice.getBigDecimal("from_price");
+			BigDecimal itemToPrice = teaPrice.getBigDecimal("to_price") == null ? new BigDecimal("0") : teaPrice.getBigDecimal("to_price");
+			
+			itemModel.setPriceStr(itemFromPrice+"元/件-"+itemToPrice+"元/件");
+			itemModel.setSizeTypeCd(Constants.TEA_UNIT.ITEM);
+			
+			BigDecimal pieceFromPrice = new BigDecimal("0");
+			BigDecimal pieceToPrice = new BigDecimal("0");
+			if(itemFromPrice.compareTo(new BigDecimal("0"))==1){
+				pieceFromPrice = itemFromPrice.divide(new BigDecimal(tea.getInt("size")));
+			}
+			if(itemToPrice.compareTo(new BigDecimal("0"))==1){
+				pieceToPrice = itemToPrice.divide(new BigDecimal(tea.getInt("size")));
+			}
+			pieceModel.setPriceStr(pieceFromPrice+"元/片-"+pieceToPrice+"元/片");
+			pieceModel.setSizeTypeCd(Constants.TEA_UNIT.PIECE);
+		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("warehouseTeaStock", vos);
 		map.put("serviceFee", serviceFeeStr);
+		map.put("itemReferencePrice", itemModel);
+		map.put("pieceReferencePrice", pieceModel);
 		WarehouseTeaMemberItem platTea = WarehouseTeaMemberItem.dao.queryTeaOnPlatform(Constants.USER_TYPE.PLATFORM_USER, tea.getInt("id"));
 		if(platTea == null){
 			map.put("price", 0);
@@ -2090,6 +2125,34 @@ public class LoginService {
 		BigDecimal salePrice = dto.getPrice();
 		int saleNum = dto.getQuality();
 		int saleAllPiece = 0;
+		//判断用户账号金额是否满足1%服务费
+		int userId = dto.getUserId();
+		Member member = Member.dao.queryById(userId);
+		if(member == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，用户数据出错");
+			return data;
+		}
+		if(saleNum <= 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，出售数据必须大于0");
+			return data;
+		}
+		if(salePrice.compareTo(new BigDecimal("0"))<1){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，出售价格必须大于0");
+			return data;
+		}
+		BigDecimal userAmount = member.getBigDecimal("moneys");
+		BigDecimal onePoint = new BigDecimal("0.01");
+		BigDecimal serviceFee = onePoint.multiply(salePrice.multiply(new BigDecimal(saleNum)));
+		if(userAmount.compareTo(serviceFee)==-1){
+			//余额不足
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("您的账号余额不足，不足以支付1%服务费，请先充值");
+			return data;
+		}
+		
 		if(warehouseMemberTeaId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，茶叶数据出错");
@@ -2109,14 +2172,6 @@ public class LoginService {
 			data.setMessage("对不起，此茶叶不存在");
 			return data;
 		}
-		//茶叶按件参考价
-		BigDecimal itemReferencePrice = tea.getBigDecimal("tea_price");
-		//茶叶按片参考价
-		BigDecimal pieceReferencePrice = new BigDecimal("0");
-		if(itemReferencePrice != null){
-			pieceReferencePrice = itemReferencePrice.divide(new BigDecimal(tea.getInt("size")));
-		}
-		
 		int size = tea.getInt("size");
 		int stock = wtm.getInt("stock");
 		if(StringUtil.equals(saleType, Constants.TEA_UNIT.PIECE)){
@@ -2128,21 +2183,18 @@ public class LoginService {
 				return data;
 			}
 			
-			//判断出售价格是否>50%，出售价格<95%
-			BigDecimal fivePrice = pieceReferencePrice.multiply(new BigDecimal("0.5"));
-			BigDecimal nightPrice = pieceReferencePrice.multiply(new BigDecimal("0.95"));
-			if(salePrice.compareTo(fivePrice)==1){
-				data.setCode(Constants.STATUS_CODE.FAIL);
-				data.setMessage("对不起，出售单价不能大于参考价的50%");
-				return data;
+			//判断出售价格要在参考价范围内
+			TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(tea.getInt("id"));
+			if(teaPrice != null){
+				BigDecimal pieceFromPrice = teaPrice.getBigDecimal("from_price").divide(new BigDecimal(tea.getInt("size")));
+				BigDecimal pieceToPrice = teaPrice.getBigDecimal("to_price").divide(new BigDecimal(tea.getInt("size")));
+				System.out.println(pieceFromPrice+","+pieceToPrice+",售价"+salePrice);
+				if((salePrice.compareTo(pieceFromPrice)==-1)||(salePrice.compareTo(pieceToPrice))==1){
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("对不起，出售单价须在参考价范围内");
+					return data;
+				}
 			}
-			
-			if(salePrice.compareTo(nightPrice)==-1){
-				data.setCode(Constants.STATUS_CODE.FAIL);
-				data.setMessage("对不起，出售单价不能小于参考价的95%");
-				return data;
-			}
-			
 		}
 		if(StringUtil.equals(saleType, Constants.TEA_UNIT.ITEM)){
 			//按件
@@ -2154,19 +2206,17 @@ public class LoginService {
 				return data;
 			}
 			
-			//判断出售价格是否>50%，出售价格<95%
-			BigDecimal fivePrice = itemReferencePrice.multiply(new BigDecimal("0.5"));
-			BigDecimal nightPrice = itemReferencePrice.multiply(new BigDecimal("0.95"));
-			if(salePrice.compareTo(fivePrice)==1){
-				data.setCode(Constants.STATUS_CODE.FAIL);
-				data.setMessage("对不起，出售单价不能大于参考价的50%");
-				return data;
-			}
-			
-			if(salePrice.compareTo(nightPrice)==-1){
-				data.setCode(Constants.STATUS_CODE.FAIL);
-				data.setMessage("对不起，出售单价不能小于参考价的95%");
-				return data;
+			//判断出售价格必须在参考价范围内
+			TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(tea.getInt("id"));
+			if(teaPrice != null){
+				BigDecimal itemFromPrice = teaPrice.getBigDecimal("from_price");
+				BigDecimal itemToPrice = teaPrice.getBigDecimal("to_price");
+				System.out.println(itemFromPrice+","+itemToPrice+",售价"+salePrice);
+				if((salePrice.compareTo(itemFromPrice)==-1)||(salePrice.compareTo(itemToPrice))==1){
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("对不起，出售单价须在参考价范围内");
+					return data;
+				}
 			}
 		}
 		
@@ -2195,8 +2245,50 @@ public class LoginService {
 					order.set("order_no", StringUtil.getOrderNo());
 					boolean save = SaleOrder.dao.saveInfo(order);
 					if(save){
-						data.setCode(Constants.STATUS_CODE.SUCCESS);
-						data.setMessage("卖茶成功");
+						//扣1%服务费
+						int rets = Member.dao.updateMoneys(userId, userAmount.subtract(serviceFee));
+						if(rets != 0){
+							//保存记录
+							ServiceFee fee = new ServiceFee();
+							fee.set("wtm_id", wtm.getInt("id"));
+							fee.set("price", salePrice);
+							fee.set("quality", saleNum);
+							fee.set("size_type_cd", saleType);
+							fee.set("service_fee", serviceFee);
+							fee.set("mark", "服务费："+serviceFee);
+							fee.set("create_time", DateUtil.getNowTimestamp());
+							fee.set("update_time", DateUtil.getNowTimestamp());
+							boolean saveFlg = ServiceFee.dao.saveInfo(fee);
+							if(saveFlg){
+								Message message = new Message();
+								message.set("message_type_cd", Constants.MESSAGE_TYPE.SALE_TEA);
+								CodeMst unit = CodeMst.dao.queryCodestByCode(saleType);
+								String unitStr = "";
+								if(unit != null){
+									unitStr = unit.getStr("name");
+								}
+								message.set("title", "卖茶消息");
+								message.set("message", "出售"+tea.getStr("tea_title")+"，"+saleNum+unitStr+"，单价："+salePrice+"元");
+								message.set("params", "{id:"+retId+"}");
+								message.set("create_time", DateUtil.getNowTimestamp());
+								message.set("update_time", DateUtil.getNowTimestamp());
+								message.set("user_id", userId);
+								boolean messageSave = Message.dao.saveInfo(message);
+								if(messageSave){
+									data.setCode(Constants.STATUS_CODE.SUCCESS);
+									data.setMessage("卖茶成功");
+								}else{
+									data.setCode(Constants.STATUS_CODE.FAIL);
+									data.setMessage("卖茶失败");
+								}
+							}else{
+								data.setCode(Constants.STATUS_CODE.FAIL);
+								data.setMessage("卖茶失败");
+							}
+						}else{
+							data.setCode(Constants.STATUS_CODE.FAIL);
+							data.setMessage("卖茶失败");
+						}
 					}else{
 						data.setCode(Constants.STATUS_CODE.FAIL);
 						data.setMessage("卖茶失败");

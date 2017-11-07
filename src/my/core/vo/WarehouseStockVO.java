@@ -15,7 +15,6 @@ public class WarehouseStockVO implements Serializable{
 	private String name;
 	private int size;
 	
-	
 	public int getSize() {
 		return size;
 	}

@@ -13,6 +13,10 @@ public class TeaPrice extends Model<TeaPrice> {
 		return TeaPrice.dao.findFirst("select * from t_tea_price where id = ?",id);
 	}
 	
+	public TeaPrice queryByTeaId(int teaId){
+		return TeaPrice.dao.findFirst("select * from t_tea_price where tea_id = ? order by expire_time desc",teaId);
+	}
+	
 	public boolean updateInfo(TeaPrice data){
 		return new TeaPrice().setAttrs(data).update();
 	}
