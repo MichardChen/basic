@@ -79,12 +79,14 @@ public class LoginDTO extends BaseDTO{
 			dto.setLatitude1(StringUtil.checkCode(request.getParameter("latitude1")));
 			dto.setLongtitude2(StringUtil.checkCode(request.getParameter("longtitude2")));
 			dto.setLatitude3(StringUtil.checkCode(request.getParameter("latitude3")));
+			dto.setMessageId(StringUtil.toInteger(StringUtil.checkCode(request.getParameter("messageId"))));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		return dto;
 	}
 	
+	private int messageId;
 	private String openBankName;
 	private int sellerId;
 	private String idCardImg;
@@ -144,6 +146,14 @@ public class LoginDTO extends BaseDTO{
 	private String longtitude2;
 	private String latitude3;
 	
+	public int getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(int messageId) {
+		this.messageId = messageId;
+	}
+
 	public String getLocalLongtitude() {
 		return localLongtitude;
 	}

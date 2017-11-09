@@ -143,6 +143,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//上传头像
+	@Before(RequestInterceptor.class)
 	public void uploadIcon() throws Exception{
 		UploadFile uploadFile = getFile("icon");
 		
@@ -261,19 +262,28 @@ public class RestfulController extends Controller{
 		renderJson(service.queryMessageList(dto));
 	}
 	
+	@Before(RequestInterceptor.class)
+	public void queryMessageListDetail(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryMessageListDetail(dto));
+	}
+	
 	//新茶发售列表
+	@Before(RequestInterceptor.class)
 	public void queryNewTeaSaleList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryNewTeaSaleList(dto));
 	}
 	
 	//查询新茶发售详情
+	@Before(RequestInterceptor.class)
 	public void queryNewTeaById(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryNewTeaById(dto));
 	}
 	
 	//绑定门店
+	@Before(RequestInterceptor.class)
 	public void bindStore(){
 		
 		//上传头像
@@ -525,6 +535,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//查询绑定门店详情
+	@Before(RequestInterceptor.class)
 	public void queryStoreDetail(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		int memberId = dto.getUserId();
@@ -570,7 +581,7 @@ public class RestfulController extends Controller{
 			renderJson(data);
 		}
 	}
-	
+	@Before(RequestInterceptor.class)
 	public void findStoreDetail(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		ReturnData data = new ReturnData();
@@ -611,7 +622,7 @@ public class RestfulController extends Controller{
 			renderJson(data);
 		}
 	}
-	
+	@Before(RequestInterceptor.class)
 	public void findStoreDetail1(int memberId){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		ReturnData data = new ReturnData();
@@ -654,6 +665,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//更新绑定门店
+	@Before(RequestInterceptor.class)
 	public void updateBindStore(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		//上传头像
@@ -963,7 +975,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//账单
-	//@Before(RequestInterceptor.class)
+	@Before(RequestInterceptor.class)
 	public void queryRecord(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		String queryType = dto.getType();
@@ -1030,66 +1042,77 @@ public class RestfulController extends Controller{
 	}
 	
 	//购物车列表
+	@Before(RequestInterceptor.class)
 	public void queryBuyCartList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryBuyCartLists(dto));
 	}
 	
 	//我要买茶列表
+	@Before(RequestInterceptor.class)
 	public void queryBuyTeaList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaLists(dto));
 	}
 	
 	//我要买茶按片按件列表
+	@Before(RequestInterceptor.class)
 	public void queryTeaList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaByIdList(dto));
 	}
 	
 	//我要买茶分析
+	@Before(RequestInterceptor.class)
 	public void queryTeaAnalysis(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaAnalysis(dto));
 	}
 	
 	//新茶发行->新茶发行详情->选择规格(具体茶叶的规格)
+	@Before(RequestInterceptor.class)
 	public void queryTeaSize(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaSize(dto));
 	}
 	
 	//茶资产
+	@Before(RequestInterceptor.class)
 	public void queryTeaProperty(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaProperty(dto));
 	}
 	
 	//仓储详情
+	@Before(RequestInterceptor.class)
 	public void queryWareHouseDetail(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryWareHouseDetail(dto));
 	}
 	
 	//我要卖茶出售页面
+	@Before(RequestInterceptor.class)
 	public void saleTea(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.saleTea(dto));
 	}
 	
 	//确定卖茶
+	@Before(RequestInterceptor.class)
 	public void confirmSaleTea(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.confirmSaleTea(dto));
 	}
 	
 	//取茶初始化
+	@Before(RequestInterceptor.class)
 	public void takeTeaInit(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.takeTeaInit(dto));
 	}
 	
 	//取茶
+	@Before(RequestInterceptor.class)
 	public void takeTea(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.takeTea(dto));
@@ -1102,24 +1125,28 @@ public class RestfulController extends Controller{
 	}
 	
 	//撤单
+	@Before(RequestInterceptor.class)
 	public void resetOrder(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.resetOrder(dto));
 	}
 	
 	//我要喝茶列表
+	@Before(RequestInterceptor.class)
 	public void queryTeaStoreList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaStoreList(dto));
 	}
 	
 	//门店详情
+	@Before(RequestInterceptor.class)
 	public void queryTeaStoreDetail(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaStoreDetail(dto));
 	}
 	
 	//绑定银行卡
+	@Before(RequestInterceptor.class)
 	public void bindBankCard(){
 		
 		UploadFile uploadFile = getFile("cardImg");
@@ -1181,48 +1208,56 @@ public class RestfulController extends Controller{
 	}
 	
 	//申请提现
+	@Before(RequestInterceptor.class)
 	public void withDraw(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.withDraw(dto));
 	}
 	
 	//出售列表
+	@Before(RequestInterceptor.class)
 	public void querySaleOrderList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.querySaleOrderList(dto));
 	}
 	
 	//我要卖茶列表
+	@Before(RequestInterceptor.class)
 	public void queryIWantSaleTeaList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryIWantSaleTeaList(dto));
 	}
 	
 	//客户保存支付密码
+	@Before(RequestInterceptor.class)
 	public void savePayPwd() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.saveUserPayPwd(dto));
 	}
 	
 	//客户修改支付密码
+	@Before(RequestInterceptor.class)
 	public void modifyPayPwd() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.modifyUserPayPwd(dto));
 	}
 	
 	//扫码绑定会员
+	@Before(RequestInterceptor.class)
 	public void bindMember() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.bindMember(dto));
 	}
 	
 	//获取账号余额
+	@Before(RequestInterceptor.class)
 	public void queryMemberMoney() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryMemberMoney(dto));
 	}
 	
 	//提现初始化页面
+	@Before(RequestInterceptor.class)
 	public void withDrawInit() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.withDrawInit(dto));
@@ -1235,30 +1270,35 @@ public class RestfulController extends Controller{
 	}
 	
 	//保存忘记支付密码
+	@Before(RequestInterceptor.class)
 	public void saveForgetPayPwd() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.saveForgetPayPwd(dto));
 	}
 	
 	//查询银行卡
+	@Before(RequestInterceptor.class)
 	public void queryBankCard() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryBankCard(dto));
 	}
 	
 	//扫码，查询商家详情
+	@Before(RequestInterceptor.class)
 	public void queryStore() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryStore(dto));
 	}
 	
 	//付款(选择规格=下单)
+	@Before(RequestInterceptor.class)
 	public void pay() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.pay(dto));
 	}
 	
 	//购物车下单
+	@Before(RequestInterceptor.class)
 	public void addOrder() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.addOrder(dto));
@@ -1277,6 +1317,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//获取个人数据
+	@Before(RequestInterceptor.class)
 	public void queryPersonData() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryPersonData(dto));

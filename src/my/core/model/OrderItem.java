@@ -23,6 +23,10 @@ public class OrderItem extends Model<OrderItem> {
 		return OrderItem.dao.findFirst("select * from t_order_item where id = ?",id);
 	}
 	
+	public OrderItem queryByOrderId(int orderId){
+		return OrderItem.dao.findFirst("select * from t_order_item where order_id = ?",orderId);
+	}
+	
 	public Page<OrderItem> queryByPage(int page,int size){
 			String sql=" from t_order_item where 1=1 order by create_time desc";
 			String select="select * ";

@@ -6,13 +6,19 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+
 import ch.qos.logback.core.status.Status;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 public class Test {
 
 	public static void main(String[] args) {
 		
 		 System.out.println(getMonthFullDay(2017,2,1));
+		 JSONObject jsonObject = JSONObject.fromObject("{id:1}");
+		 
+		 System.out.println(jsonObject.getString("id"));
 
 	}
 
