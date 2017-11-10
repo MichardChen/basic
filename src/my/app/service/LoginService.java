@@ -533,16 +533,24 @@ public class LoginService {
 		if(StringUtil.equals(dto.getPlatForm(), Constants.PLATFORM.ANDROID)){
 			SystemVersionControl svc = SystemVersionControl.dao.querySystemVersionControl(Constants.VERSION_TYPE.ANDROID);
 			if(svc != null){
-				map.put("version", phone.getStr("version"));
+				map.put("version", svc.getStr("version"));
+				map.put("url", svc.getStr("data1"));
+				map.put("shareAppUrl", svc.getStr("data2"));
 			}else{
 				map.put("version", null);
+				map.put("url", null);
+				map.put("shareAppUrl", null);
 			}
 		}else{
 			SystemVersionControl svc = SystemVersionControl.dao.querySystemVersionControl(Constants.VERSION_TYPE.IOS);
 			if(svc != null){
-				map.put("version", phone.getStr("version"));
+				map.put("version", svc.getStr("version"));
+				map.put("url", svc.getStr("data2"));
+				map.put("shareAppUrl", svc.getStr("data2"));
 			}else{
 				map.put("version", null);
+				map.put("url", null);
+				map.put("shareAppUrl", null);
 			}
 		}
 		
@@ -2124,8 +2132,10 @@ public class LoginService {
 		}
 		CodeMst serviceFee = CodeMst.dao.queryCodestByCode(Constants.SYSTEM_CONSTANTS.SALE_SERVICE_FEE);
 		String serviceFeeStr = "";
+		String serviceFeePoint = "";
 		if(serviceFee != null){
 			serviceFeeStr = serviceFee.getStr("data2");
+			serviceFeePoint = serviceFee.getStr("data3");
 		}
 		//参考价
 		TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(tea.getInt("id"));
@@ -2157,10 +2167,10 @@ public class LoginService {
 		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("warehouseTeaStock", vos);
-		map.put("serviceFee", serviceFeeStr);
+		map.put("serviceFeeStr", serviceFeeStr);
 		map.put("itemReferencePrice", itemModel);
 		map.put("pieceReferencePrice", pieceModel);
-		map.put("servieFee", "0.01");
+		map.put("serviceFee", serviceFeePoint);
 		WarehouseTeaMemberItem platTea = WarehouseTeaMemberItem.dao.queryTeaOnPlatform(Constants.USER_TYPE.PLATFORM_USER, tea.getInt("id"));
 		if(platTea == null){
 			map.put("price", 0);
@@ -2961,7 +2971,7 @@ public class LoginService {
 			return data;
 		}
 		Map<String, Object> map = new HashMap<>();
-		map.put("money", member.getBigDecimal("moneys"));
+		map.put("money", StringUtil.toString(member.getBigDecimal("moneys")));
 		data.setData(map);
 		data.setMessage("查询成功");
 		data.setCode(Constants.STATUS_CODE.SUCCESS);

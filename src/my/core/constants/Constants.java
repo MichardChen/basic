@@ -152,13 +152,13 @@ public interface Constants {
 	
 	/**centos服务器*/
 	public static interface HOST{
-		public static final String LOCALHOST = "http://118.31.69.244:88/tea/";
-		public static final String TEA = "http://118.31.69.244:88/tea/";
-		public static final String DOCUMENT = "http://118.31.69.244:88/document/";
-		public static final String FILE = "http://118.31.69.244:88/file/";
-		public static final String ICON = "http://118.31.69.244:88/icon/";
-		public static final String IMG = "http://118.31.69.244:88/img/";
-		public static final String STORE = "http://118.31.69.244:88/store/";
+		public static final String LOCALHOST = "http://app.tongjichaye.com:88/tea/";
+		public static final String TEA = "http://app.tongjichaye.com:88/tea/";
+		public static final String DOCUMENT = "http://app.tongjichaye.com:88/document/";
+		public static final String FILE = "http://app.tongjichaye.com:88/file/";
+		public static final String ICON = "http://app.tongjichaye.com:88/icon/";
+		public static final String IMG = "http://app.tongjichaye.com:88/img/";
+		public static final String STORE = "http://app.tongjichaye.com:88/store/";
 	}
 	
 	public static interface FILE_HOST{
