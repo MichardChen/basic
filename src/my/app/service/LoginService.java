@@ -16,6 +16,7 @@ import org.json.JSONException;
 
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
+import com.sun.org.apache.bcel.internal.generic.Select;
 
 import my.core.constants.Constants;
 import my.core.model.AcceessToken;
@@ -23,6 +24,7 @@ import my.core.model.Admin;
 import my.core.model.BankCardRecord;
 import my.core.model.BuyCart;
 import my.core.model.Carousel;
+import my.core.model.CashJournal;
 import my.core.model.City;
 import my.core.model.CodeMst;
 import my.core.model.District;
@@ -2753,11 +2755,28 @@ public class LoginService {
 			if(ret){
 				Member member2 = new Member();
 				member2.set("id", dto.getUserId());
-				member2.set("moneys", moneys.subtract(money));
+				BigDecimal openingMoneys = moneys;
+				BigDecimal closingMoneys = moneys.subtract(money);
+				member2.set("moneys", closingMoneys);
 				boolean ret1 = Member.dao.updateInfo(member2);
 				if(ret1){
 					data.setCode(Constants.STATUS_CODE.SUCCESS);
 					data.setMessage("提现申请成功，请等待平台打款");
+					//提现
+					CashJournal cash = new CashJournal();
+					cash.set("cash_journal_no", StringUtil.getOrderNo());
+					cash.set("member_id", userId);
+					cash.set("pi_type", Constants.PI_TYPE.GET_CASH);
+					cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLING);
+					cash.set("occur_date", new Date());
+					cash.set("act_rev_amount", moneys);
+					cash.set("act_pay_amount", moneys);
+					cash.set("opening_balance", openingMoneys);
+					cash.set("closing_balance", closingMoneys);
+					cash.set("remarks", "申请提现"+moneys);
+					cash.set("create_time", DateUtil.getNowTimestamp());
+					cash.set("update_time", DateUtil.getNowTimestamp());
+					CashJournal.dao.saveInfo(cash);
 					return data;
 				}else{
 					data.setCode(Constants.STATUS_CODE.FAIL);
@@ -3285,11 +3304,11 @@ public class LoginService {
 				int ret = 0;
 				//保存成功，买家扣款，卖家
 				if(StringUtil.equals(wtm.getStr("member_type_cd"), Constants.USER_TYPE.USER_TYPE_CLIENT)){
-					//平台卖家
+					//平台卖家账号加钱
 					Member saleUserMember = Member.dao.queryById(saleUser);
 					ret = Member.dao.updateMoneys(saleUser, all.add(saleUserMember.getBigDecimal("moneys")));
 				}else{
-					//用户卖家
+					//用户卖家加钱
 					User user = User.dao.queryById(saleUser);
 					ret = User.dao.updateMoneys(saleUser, all.add(user.getBigDecimal("moneys")));
 				}
@@ -3298,6 +3317,23 @@ public class LoginService {
 					//买家扣款
 					int rt = Member.dao.updateMoneys(dto.getUserId(), buyUserMember.getBigDecimal("moneys").subtract(all));
 					if(rt != 0){
+						//下单记录
+						CashJournal cash = new CashJournal();
+						cash.set("cash_journal_no", StringUtil.getOrderNo());
+						cash.set("member_id", dto.getUserId());
+						cash.set("pi_type", Constants.PI_TYPE.ADD_ORDER);
+						cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLY_SUCCESS);
+						cash.set("occur_date", new Date());
+						cash.set("act_rev_amount", all);
+						cash.set("act_pay_amount", all);
+						Member member = Member.dao.queryById(dto.getUserId());
+						cash.set("opening_balance", member.getBigDecimal("moneys"));
+						cash.set("closing_balance", member.getBigDecimal("moneys").subtract(all));
+						cash.set("remarks", "下单"+all);
+						cash.set("create_time", DateUtil.getNowTimestamp());
+						cash.set("update_time", DateUtil.getNowTimestamp());
+						CashJournal.dao.saveInfo(cash);
+						
 						//减少卖家库存
 						int update = WarehouseTeaMemberItem.dao.cutTeaQuality(quality, wtmItemId);
 						if(update != 0){
@@ -3500,8 +3536,9 @@ public class LoginService {
 		}
 		
 		//添加订单
+		String orderNo = StringUtil.getOrderNo();
 		Order order = new Order();
-		order.set("order_no", StringUtil.getOrderNo());
+		order.set("order_no", orderNo);
 		order.set("pay_amount", amount);
 		order.set("create_time", DateUtil.getNowTimestamp());
 		order.set("update_time", DateUtil.getNowTimestamp());
@@ -3553,6 +3590,23 @@ public class LoginService {
 						//买家扣款
 						int rt = Member.dao.updateMoneys(dto.getUserId(), buyUserMember.getBigDecimal("moneys").subtract(itemAmount));
 						if(rt != 0){
+							//成功充值记录
+							CashJournal cash = new CashJournal();
+							cash.set("cash_journal_no", orderNo);
+							cash.set("member_id", dto.getUserId());
+							cash.set("pi_type", Constants.PI_TYPE.ADD_ORDER);
+							cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLY_SUCCESS);
+							cash.set("occur_date", new Date());
+							cash.set("act_rev_amount", itemAmount);
+							cash.set("act_pay_amount", itemAmount);
+							Member member = Member.dao.queryById(dto.getUserId());
+							cash.set("opening_balance", member.getBigDecimal("moneys"));
+							cash.set("closing_balance", member.getBigDecimal("moneys").subtract(itemAmount));
+							cash.set("remarks", "下单"+itemAmount);
+							cash.set("create_time", DateUtil.getNowTimestamp());
+							cash.set("update_time", DateUtil.getNowTimestamp());
+							CashJournal.dao.saveInfo(cash);
+							
 							//减少卖家库存
 							int update = WarehouseTeaMemberItem.dao.cutTeaQuality(quality, wtmItemId);
 							if(update != 0){

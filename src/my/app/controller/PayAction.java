@@ -2,6 +2,7 @@ package my.app.controller;
 
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,6 +23,7 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 
 import my.core.constants.Constants;
+import my.core.model.CashJournal;
 import my.core.model.Member;
 import my.core.model.PayRecord;
 import my.core.model.ReturnData;
@@ -230,6 +232,7 @@ public class PayAction extends Controller{
 				if(trade_status.equals("TRADE_FINISHED")){
 					int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
 					if(updateFlg != 0){
+						CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_FAIL);
 						PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_FINISHED, trade_no);
 						renderText("success");
 					}else{
@@ -238,6 +241,7 @@ public class PayAction extends Controller{
 				}else if(trade_status.equals("TRADE_SUCCESS")){
 					int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
 					if(updateFlg != 0){
+						CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_SUCCESS);
 						PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_SUCCESS, trade_no);
 						renderText("success");
 					}else{
@@ -245,6 +249,7 @@ public class PayAction extends Controller{
 					}
 					System.out.println("支付宝支付成功");
 				}else if(trade_status.equals("WAIT_BUYER_PAY")){
+					CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_FAIL);
 					int updateFlg = PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.WAIT_BUYER_PAY, trade_no);
 					if(updateFlg != 0){
 						renderText("success");
@@ -253,6 +258,7 @@ public class PayAction extends Controller{
 					}
 					System.out.println("交易创建，等待买家付款");
 				}else if(trade_status.equals("TRADE_CLOSED")){
+					CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_FAIL);
 					int updateFlg = PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_CLOSED, trade_no);
 					if(updateFlg != 0){
 						renderText("success");
@@ -285,6 +291,24 @@ public class PayAction extends Controller{
 		pr.set("update_time", DateUtil.getNowTimestamp());
 		boolean save = PayRecord.dao.saveInfo(pr);
 		if(save){
+			//成功充值记录
+			CashJournal cash = new CashJournal();
+			cash.set("cash_journal_no", orderNo);
+			cash.set("member_id", userId);
+			cash.set("pi_type", Constants.PI_TYPE.RECHARGE);
+			cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLING);
+			cash.set("occur_date", new Date());
+			cash.set("act_rev_amount", moneys);
+			cash.set("act_pay_amount", moneys);
+			Member member = Member.dao.queryById(userId);
+			cash.set("opening_balance", member.getBigDecimal("moneys"));
+			cash.set("closing_balance", member.getBigDecimal("moneys").add(moneys));
+			cash.set("remarks", "充值"+moneys);
+			cash.set("create_time", DateUtil.getNowTimestamp());
+			cash.set("update_time", DateUtil.getNowTimestamp());
+			CashJournal.dao.saveInfo(cash);
+			
+			
 			//实例化客户端
 			PropertiesUtil propertiesUtil = PropertiesUtil.getInstance();
 			String ppk = propertiesUtil.getProperties("ali_mch_private_secret_key");

@@ -1,13 +1,17 @@
 package my.pvcloud.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 
 import my.core.constants.Constants;
 import my.core.model.BankCardRecord;
+import my.core.model.CashJournal;
 import my.core.model.CodeMst;
 import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.Store;
+import my.core.model.User;
 import my.pvcloud.model.BankRecordModel;
 import my.pvcloud.model.StoreModel;
 import my.pvcloud.service.WithDrawService;
@@ -155,7 +159,82 @@ public class WithDrawInfoController extends Controller {
 				if(status != null){
 					Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "处理提现申请id:"+id+","+status.getStr("name"));
 				}
-				setAttr("message", "操作成功");
+				if(StringUtil.equals(flg, Constants.WITHDRAW_STATUS.FAIL)){
+					//失败，要把金额还回到账号
+					BankCardRecord bankCardRecord = BankCardRecord.dao.queryById(id);
+					if(bankCardRecord != null){
+						Member member = Member.dao.queryById(bankCardRecord.getInt("member_id"));
+						BigDecimal moneys = bankCardRecord.getBigDecimal("moneys");
+						if(moneys != null){
+							int updateFlg = Member.dao.updateCharge(bankCardRecord.getInt("member_id"), moneys);
+							if(updateFlg != 0){
+								//提现失败
+								CashJournal cash = new CashJournal();
+								cash.set("cash_journal_no", StringUtil.getOrderNo());
+								cash.set("member_id", bankCardRecord.getInt("member_id"));
+								cash.set("pi_type", Constants.PI_TYPE.GET_CASH);
+								cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLY_FAIL);
+								cash.set("occur_date", new Date());
+								cash.set("act_rev_amount", moneys);
+								cash.set("act_pay_amount", moneys);
+								cash.set("opening_balance", member.getBigDecimal("moneys"));
+								cash.set("closing_balance", member.getBigDecimal("moneys").add(moneys));
+								cash.set("remarks", "申请提现"+moneys+"，后台审核失败");
+								User admin = User.dao.queryById((Integer)getSessionAttr("agentId"));
+								if(admin != null){
+									cash.set("create_by", admin.getInt("user_id"));
+									cash.set("update_by", admin.getInt("user_id"));
+								}
+								cash.set("create_time", DateUtil.getNowTimestamp());
+								cash.set("update_time", DateUtil.getNowTimestamp());
+								CashJournal.dao.saveInfo(cash);
+								setAttr("message", "操作成功");
+							}else{
+								setAttr("message", "操作失败");
+							}
+						}else{
+							setAttr("message", "操作失败");
+						}
+					}else{
+						setAttr("message", "操作失败");
+					}
+				}
+				
+				if(StringUtil.equals(flg, Constants.WITHDRAW_STATUS.SUCCESS)){
+					//后台审核提现成功
+					BankCardRecord bankCardRecord = BankCardRecord.dao.queryById(id);
+					if(bankCardRecord != null){
+						Member member = Member.dao.queryById(bankCardRecord.getInt("member_id"));
+						BigDecimal moneys = bankCardRecord.getBigDecimal("moneys");
+						if(moneys != null){
+								//提现失败
+								CashJournal cash = new CashJournal();
+								cash.set("cash_journal_no", StringUtil.getOrderNo());
+								cash.set("member_id", bankCardRecord.getInt("member_id"));
+								cash.set("pi_type", Constants.PI_TYPE.GET_CASH);
+								cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLY_SUCCESS);
+								cash.set("occur_date", new Date());
+								cash.set("act_rev_amount", moneys);
+								cash.set("act_pay_amount", moneys);
+								cash.set("opening_balance", member.getBigDecimal("moneys"));
+								cash.set("closing_balance", member.getBigDecimal("moneys"));
+								cash.set("remarks", "申请提现"+moneys+"，后台审核成功");
+								User admin = User.dao.queryById((Integer)getSessionAttr("agentId"));
+								if(admin != null){
+									cash.set("create_by", admin.getInt("user_id"));
+									cash.set("update_by", admin.getInt("user_id"));
+								}
+								cash.set("create_time", DateUtil.getNowTimestamp());
+								cash.set("update_time", DateUtil.getNowTimestamp());
+								CashJournal.dao.saveInfo(cash);
+								setAttr("message", "操作成功");
+							}else{
+								setAttr("message", "操作失败");
+							}
+					}else{
+						setAttr("message", "操作失败");
+					}
+				}
 			}else{
 				setAttr("message", "操作失败");
 			}

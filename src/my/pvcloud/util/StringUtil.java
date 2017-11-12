@@ -100,6 +100,22 @@ public class StringUtil extends StringUtils {
 		return date1+tens+thousands+hundreads;
 	}
 	
+	public static String getCashNo(){
+		long l = System.currentTimeMillis();
+		//new日期对象
+		Date date = new Date(l);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+		String date1 = dateFormat.format(date);
+	    //年月日
+		Random random = new Random();
+		int i = random.nextInt(100000)+100000;
+		int units = i%10;
+		int tens = (i/10)%10;
+		int hundreads = (i/100)%10;
+		int thousands =(1/1000)%10;
+		return "R"+date1+tens+thousands+hundreads;
+	}
+	
 	public static String getIdCode(){
 		long l = System.currentTimeMillis();
 		//new日期对象

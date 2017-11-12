@@ -348,4 +348,16 @@ public interface Constants {
 		public static final String HAVE_RECEIVED = "280004";
 		public static final String EXCEPTION = "280005";
 	}
+	
+	public static interface PI_TYPE{
+		public static final String ADD_ORDER = "290001";
+		public static final String GET_CASH = "290002";
+		public static final String RECHARGE = "290003";
+	}
+	
+	public static interface FEE_TYPE_STATUS{
+		public static final String APPLING = "300001";
+		public static final String APPLY_SUCCESS = "300002";
+		public static final String APPLY_FAIL = "300003";
+	}
 }
