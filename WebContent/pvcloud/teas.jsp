@@ -24,14 +24,6 @@ function loadProject(){
 
 function edit(data){
 	window.open("${CONTEXT_PATH}/teaInfo/editTea?id="+data);
-	/* $.ajax({
-		url : "${CONTEXT_PATH}/teaInfo/editTea",
-		data : {id:data},
-		dataType : "html",
-		success : function(result){
-			//$('.modal-body').html(result);
-		}
-	}); */
 }
 function addTeaPrice(data){
 	$.ajax({
@@ -42,6 +34,33 @@ function addTeaPrice(data){
 			$('#model1').html(result);
 		}
 	});
+}
+function editPrice(data){
+	if(data==0){
+		$(".modal-title").html("新增");
+	}else{
+		$(".modal-title").html("修改");
+	}
+	$.ajax({
+		url : "${CONTEXT_PATH}/teaInfo/alertPrice",
+		data : {'teaId':data},
+		dataType : "html",
+		success : function(result){
+			$('#models1').html(result);
+		}
+	});
+}
+function checkPrice(){
+	var price = $("#price").val();
+	if(price == ""){
+			alert("价格不能为空");
+			return false;
+	}
+	if(price=="0" || price=="0.00"){
+		alert("价格必须大于0");
+		return false;
+	}
+	return true;
 }
 
 function check(){
@@ -54,10 +73,6 @@ function check(){
 	}
 	if(toPrice == ""){
 		alert("价格不能为空");
-		return false;
-	}
-	if(expireDate == ""){
-		alert("有效截止日期不能为空");
 		return false;
 	}
 	return true;
@@ -265,6 +280,25 @@ td{
 			</div>
 			<form action="${CONTEXT_PATH}/teaInfo/saveTeaPrice" method="post" onsubmit="return check();">
 				<div class="modal-body" id="model1">
+				</div>
+				<div class="modal-footer" style="margin-top:20px;">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<input type="submit" class="btn btn-success" value="保存"/>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" id="myModalDialog1" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="width: 120%;margin-left:-10%;">
+			<div class="modal-header">
+				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">修改</h4>
+			</div>
+			<form action="${CONTEXT_PATH}/teaInfo/updateTeaPrice" method="post" onsubmit="return checkPrice();">
+				<div class="modal-body" id="models1">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

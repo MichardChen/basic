@@ -8,6 +8,14 @@ public class TeaPriceModel implements Serializable{
 	private BigDecimal fromPrice;
 	private BigDecimal toPrice;
 	private String date;
+	private BigDecimal referencePrice;
+	
+	public BigDecimal getReferencePrice() {
+		return referencePrice;
+	}
+	public void setReferencePrice(BigDecimal referencePrice) {
+		this.referencePrice = referencePrice;
+	}
 	public BigDecimal getFromPrice() {
 		return fromPrice;
 	}

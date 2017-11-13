@@ -201,6 +201,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</td>
 		</tr>
 		<tr>
+			<td>参考价</td>
+			<td>
+				<input type="number" name="referencePrice" id="referencePrice" maxlength="30" style="width: 100px;" value="${teaPrice.referencePrice}"/>&nbsp;(元/件)
+			</td>
+		</tr>
+		<tr>
 			<td>参考单价区间</td>
 			<td>
 				<input type="number" name="fromPrice" id="fromPrice" maxlength="30" style="width: 100px;" value="${teaPrice.fromPrice}"/>&nbsp;-

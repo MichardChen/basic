@@ -28,6 +28,7 @@ import my.core.model.CodeMst;
 import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.ReturnData;
+import my.core.model.Store;
 import my.core.model.Tea;
 import my.core.model.TeaPrice;
 import my.core.model.TeapriceLog;
@@ -240,6 +241,20 @@ public class TeaInfoController extends Controller {
 		render("custInfoAlter.jsp");
 	}
 	
+	/**
+	 * 修改价格
+	 */
+	public void alertPrice(){
+		String id = getPara("teaId");
+		int teaId = 0;
+		if(!("").equals(id) && id!=null){
+			teaId = getParaToInt("teaId");
+		}
+		Tea teaInfo = service.queryById(teaId);
+		setAttr("model", teaInfo);
+		render("editteaprice.jsp");
+	}
+	
 	//增加资讯初始化
 	public void addTea(){
 		//初始化所有仓库
@@ -404,6 +419,7 @@ public class TeaInfoController extends Controller {
 		    	if(save){
 		    		TeaPrice teaPrice = new TeaPrice();
 		    		teaPrice.set("tea_id", teaId);
+		    		teaPrice.set("reference_price", StringUtil.toBigDecimal(StringUtil.checkCode(getPara("referencePrice"))));
 		    		teaPrice.set("from_price", StringUtil.toBigDecimal(StringUtil.checkCode(getPara("fromPrice"))));
 		    		teaPrice.set("to_price", StringUtil.toBigDecimal(StringUtil.checkCode(getPara("toPrice"))));
 		    		teaPrice.set("expire_time", Timestamp.valueOf(StringUtil.checkCode(getPara("expireDate"))+" 23:59:59"));
@@ -627,7 +643,7 @@ public class TeaInfoController extends Controller {
 		try{
 			int teaId = getParaToInt("id");
 			int ret = service.updateFlg(teaId, 0);
-			if(ret==0){
+			if(ret!=0){
 				Tea tea = Tea.dao.queryById(teaId);
 				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "下架茶叶:"+tea.getStr("tea_title"));
 				setAttr("message", "删除成功");
@@ -705,10 +721,10 @@ public class TeaInfoController extends Controller {
 		TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(StringUtil.toInteger(getPara("id")));
 		TeaPriceModel model = new TeaPriceModel();
 		if(teaPrice != null){
-			
 			model.setFromPrice(teaPrice.getBigDecimal("from_price"));
 			model.setToPrice(teaPrice.getBigDecimal("to_price"));
 			model.setDate(DateUtil.formatTimestampForDate(teaPrice.getTimestamp("expire_time")));
+			model.setReferencePrice(teaPrice.getBigDecimal("reference_price")==null?new BigDecimal("0"):teaPrice.getBigDecimal("reference_price"));
 		}
 		setAttr("teaPrice", model);
 		setAttr("list", list);
@@ -729,6 +745,7 @@ public class TeaInfoController extends Controller {
 		teaPrice.set("tea_id", teaId);
 		teaPrice.set("from_price",fromPrice);
 		teaPrice.set("to_price",toPrice);
+		teaPrice.set("reference_price", StringUtil.toBigDecimal(StringUtil.checkCode(getPara("referencePrice"))));
 		teaPrice.set("expire_time", Timestamp.valueOf(StringUtil.checkCode(getPara("expireDate"))+" 23:59:59"));
 		teaPrice.set("update_time", DateUtil.getNowTimestamp());
 		teaPrice.set("create_time", DateUtil.getNowTimestamp());
@@ -737,6 +754,35 @@ public class TeaInfoController extends Controller {
 			setAttr("message","新增成功");
 		}else{
 			setAttr("message","新增失败");
+		}
+		index();
+	}
+	
+	public void updateTeaPrice(){
+		try{
+			int teaId = getParaToInt("teaId");
+			Tea teas = Tea.dao.queryById(teaId);
+			BigDecimal price = StringUtil.toBigDecimal(getPara("price"));
+			int ret = Tea.dao.updatePrice(teaId, price);
+			if(ret!=0){
+				Tea tea = Tea.dao.queryById(teaId);
+				//保存操作日志
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "修改茶叶价格:原价："+teas.getBigDecimal("tea_price")+",修改后的价格："+tea.getBigDecimal("tea_price"));
+				//保存茶叶变更记录
+				TeapriceLog teapriceLog = new TeapriceLog();
+				teapriceLog.set("tea_id", teaId);
+				teapriceLog.set("price", teas.getBigDecimal("tea_price"));
+				teapriceLog.set("changed_price", price);
+				teapriceLog.set("mark", "修改茶叶价格，原价："+teas.getBigDecimal("tea_price")+"，现价："+price);
+				teapriceLog.set("create_time", DateUtil.getNowTimestamp());
+				teapriceLog.set("update_time", DateUtil.getNowTimestamp());
+				TeapriceLog.dao.saveInfo(teapriceLog);
+				setAttr("message", "修改成功");
+			}else{
+				setAttr("message", "修改失败");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 		index();
 	}

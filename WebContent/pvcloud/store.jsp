@@ -29,10 +29,11 @@ function loadProject(data){
 		data : {'id':data},
 		dataType : "html",
 		success : function(result){
-			$('.modal-body').html(result);
+			$('#model').html(result);
 		}
 	});
 }
+
 
 function downloadImg(id){
 	window.location.href="${CONTEXT_PATH}/storeInfo/generateQRCode?id="+id;
@@ -184,7 +185,6 @@ td{
 					</c:if>
     		</tbody>
     		</table>
-    		  
     		</div>
     		<div id="botton" style="position:absolute;bottom:5px;right:5%;color:black;margin:0 auto;font-size:12px;">
 			    	<c:set var="pageNumber" scope="request" value="${list.pageNumber}" />
@@ -207,8 +207,8 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">修改</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/teaInfo/saveTea" method="post" enctype="multipart/form-data">
-				<div class="modal-body">
+			<form action="${CONTEXT_PATH}/storeInfo/updateStoreImages" method="post" enctype="multipart/form-data">
+				<div class="modal-body" id="model">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

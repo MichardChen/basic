@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,9 @@ import my.core.model.ReturnData;
 import my.core.model.Store;
 import my.core.model.StoreImage;
 import my.core.model.Tea;
+import my.core.model.TeaPrice;
+import my.core.model.WarehouseTeaMember;
+import my.core.model.WarehouseTeaMemberItem;
 import my.pvcloud.model.StoreModel;
 import my.pvcloud.model.TeaModel;
 import my.pvcloud.service.StoreService;
@@ -222,15 +226,22 @@ public class StoreInfoController extends Controller {
 		Store store = Store.dao.queryById(storeId);
 		int memberId = store == null ? 0 : store.getInt("member_id");
 		QRCodeUtil.QRCodeCreate(StringUtil.toString(memberId), "//home//ewcode//qrcode.jpg", 15, "//home//ewcode//icon.png");
+		//QRCodeUtil.QRCodeCreate(StringUtil.toString(memberId), "D://upload//ewcode//qrcode.jpg", 15, "D://upload//ewcode//icon.png");
         HttpServletResponse response = getResponse();
 		response.setContentType("application/binary");
-	    //设置Content-Disposition  
-		String storeName = store.getStr("store_name")==null?"未命名":store.getStr("store_name");
+	    //设置Content-Disposition
+		Member member = Member.dao.queryById(memberId);
+		String idCode = "";
+		if((member != null)&&(StringUtil.isNoneBlank(member.getStr("id_code")))){
+			idCode = member.getStr("id_code")+"_";
+		}
+		String storeName = store.getStr("store_name")==null ? idCode+"未命名" : idCode+store.getStr("store_name");
 		String name = new String(storeName.getBytes(), "ISO-8859-1");
 	    response.setHeader("Content-Disposition", "attachment;filename="+name+".jpeg");  
 	    //读取目标文件，通过response将目标文件写到客户端  
 	    //获取目标文件的绝对路径  
-	    String fullFileName = "//home//ewcode//qrcode.jpg";  
+	    String fullFileName = "//home//ewcode//qrcode.jpg"; 
+	    //String fullFileName = "D://upload//ewcode//qrcode.jpg"; 
 	    //读取文件  
 	    InputStream in = new FileInputStream(fullFileName);  
 	    OutputStream out = response.getOutputStream();  
@@ -243,5 +254,147 @@ public class StoreInfoController extends Controller {
 	          
 	    in.close();  
 	    out.close();  
+	}
+	
+	//更新门店图片
+	public void updateStoreImages(){
+		UploadFile uploadFile1 = getFile("img1");
+		UploadFile uploadFile2 = getFile("img2");
+		UploadFile uploadFile3 = getFile("img3");
+		UploadFile uploadFile4 = getFile("img4");
+		UploadFile uploadFile5 = getFile("img5");
+		UploadFile uploadFile6 = getFile("img6");
+		int storeId = StringUtil.toInteger(StringUtil.checkCode(getPara("storeId")));
+		FileService fs=new FileService();
+		
+		String logo1 = "";
+		String logo2 = "";
+		String logo3 = "";
+		String logo4 = "";
+		String logo5 = "";
+		String logo6 = "";
+		boolean ret1 = true;
+		boolean ret2 = true;
+		boolean ret3 = true;
+		boolean ret4 = true;
+		boolean ret5 = true;
+		boolean ret6 = true;
+		
+		//上传文件
+		if(uploadFile1 != null){
+			String uuid = UUID.randomUUID().toString();
+			String fileName = uploadFile1.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile1.getFile();
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    logo1 = Constants.HOST.TEA+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		    ret1 = StoreImage.dao.updateInfo(logo1, storeId, 1);
+		}
+		if(uploadFile2 != null){
+			String uuid = UUID.randomUUID().toString();
+			String fileName = uploadFile2.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile2.getFile();
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    logo2 =  Constants.HOST.TEA+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		    ret2 = StoreImage.dao.updateInfo(logo2, storeId, 2);
+		}
+		if(uploadFile3 != null){
+			String uuid = UUID.randomUUID().toString();
+			String fileName = uploadFile3.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile3.getFile();
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    logo3 = Constants.HOST.TEA+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		    ret3 = StoreImage.dao.updateInfo(logo3, storeId, 3);
+		}
+		if(uploadFile4 != null){
+			String uuid = UUID.randomUUID().toString();
+			String fileName = uploadFile4.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile4.getFile();
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    logo4 = Constants.HOST.TEA+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		    ret4 = StoreImage.dao.updateInfo(logo4, storeId, 4);
+		}
+		if(uploadFile5 != null){
+			String uuid = UUID.randomUUID().toString();
+			String fileName = uploadFile5.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile5.getFile();
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    logo5 = Constants.HOST.TEA+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		    ret5 = StoreImage.dao.updateInfo(logo5, storeId, 5);
+		}
+		if(uploadFile6 != null){
+			String uuid = UUID.randomUUID().toString();
+			String fileName = uploadFile6.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile6.getFile();
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    logo6 = Constants.HOST.TEA+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		    ret6 = StoreImage.dao.updateInfo(logo6, storeId, 6);
+		}
+		if(ret1 && ret2 && ret3 && ret4 && ret5 && ret6){
+			setAttr("message", "更新成功");
+		}else{
+			setAttr("message", "更新失败");
+		}
+		Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "修改门店图片，门店id："+storeId);
+		index();
 	}
 }

@@ -19,33 +19,50 @@ if(str!=''){
 			<td>门店名称</td>
 			<td>${model.store_name }</td>
 		</tr>
-			<tr>
+		<tr>
+			<td>所属地区</td>
+			<td>${model.city_district }</td>
+		</tr>
+		<tr>
 			<td>门店地址</td>
 			<td>${model.store_address }</td>
 		</tr>
-			<tr>
+		<tr>
+			<td>经纬度</td>
+			<td>经度：${model.longitude }，纬度：${model.latitude}</td>
+		</tr>
+		<tr>
+			<td>主营茶叶</td>
+			<td>${model.business_tea}</td>
+		</tr>
+		<tr>
+			<td>营业时间</td>
+			<td>${model.business_fromtime}-${model.business_totime}</td>
+		</tr>
+		<tr>
 			<td>联系电话</td>
 			<td>${model.link_phone }</td>
 		</tr>
-			<tr>
+		<tr>
 			<td>营业时间:</td>
 			<td>${model.business_fromtime }-${model.business_totime }</td>
 		</tr>
-			<tr>
+		<tr>
 			<td>门店详情</td>
 			<td>${model.store_desc }</td>
 		</tr>
-		<tr>
-			<td>门店图片</td>
-			<td>
-				<c:forEach var="s" items="${imgs}">	
-					<a href="${s}" target="blank">查看图片</a>&nbsp;
-				</c:forEach>
-			</td>
-		</tr>
+		<c:forEach var="s" items="${imgs}" varStatus="status">
+			<tr>
+				<td>
+					<c:if test="${status.index==0}">
+						门店图片<br><label style="color: red;">（可选择文件，保存更新图片）</label>
+					</c:if>
+				</td>
+				<td>
+						<a href="${s}" target="blank">查看图片</a><input type="file" name="img${status.index+1}"/>
+				</td>
+			</tr>
+		</c:forEach>
 	</table>
+	<input type="hidden" name="storeId" id="storeId" value="${model.id}"/>
 </div>
-						
-					
-
-			

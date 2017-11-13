@@ -1,5 +1,6 @@
 package my.core.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,5 +91,9 @@ public class Tea extends Model<Tea> {
 	
 	public int updateStatus(int id,String status){
 		return Db.update("update t_tea set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	}
+	
+	public int updatePrice(int id,BigDecimal price){
+		return Db.update("update t_tea set tea_price="+price+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 	}
 }

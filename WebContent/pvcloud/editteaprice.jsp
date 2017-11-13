@@ -7,7 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <meta charset="utf-8">
-<title>新增</title>
+<title>编辑角色</title>
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/summernote/css/bootstrap.css">
 <link href="<%=request.getContextPath()%>/summernote/dist/summernote.css" rel="stylesheet"/>
@@ -15,7 +15,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="<%=request.getContextPath()%>/summernote/js/bootstrap.min.js"></script>
 <script src="<%=request.getContextPath()%>/summernote/dist/summernote.js"></script>
 <script src="<%=request.getContextPath()%>/summernote/dist/lang/summernote-zh-CN.js"></script>    <!-- 中文-->
-<script type="text/javascript" src="<%=request.getContextPath()%>/assets/js/My97DatePicker/WdatePicker.js"></script>
 <style>
         .m {
             width: 800px;
@@ -28,22 +27,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     if(str!=''){
       alert(str);
     }
-    </script>
+</script>
+<!-- 
+编辑新茶发行价格
+ -->
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
-			<td>参考价</td>
-			<td><input type="number" step="0.01" name="referencePrice" id="referencePrice" maxlength="30" style="width: 100px;"/>(元/件)</td>
+			<td>价格</td>
+			<td>
+					<input type="number" name="price" id="price" step="0.01" maxlength="30" style="width: 300px;" value="${model.tea_price}"/>
+			</td>
 		</tr>
-		<tr>
-			<td>参考单价区间</td>
-			<td><input type="number" step="0.01" name="fromPrice" id="fromPrice" maxlength="30" style="width: 100px;"/>&nbsp;-&nbsp;<input type="number" step="0.01" name="toPrice" id="toPrice" maxlength="30" style="width: 100px;"/>(元/件)</td>
-		</tr>
-		<tr>
-			<td>有效截止日期</td>
-			<td><input type="text" name="expireDate" id="expireDate" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/></td>
-		</tr>
-	</table> 
-	<input type="hidden" id="teaId" name="teaId" value="${teaId}"/>
+	</table>
+	<input type="hidden" name="teaId" id="teaId" value="${model.id}"/>
 </div>
 
