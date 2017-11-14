@@ -131,6 +131,8 @@ td{
     				<th>图片</th>
     				<th>跳转地址</th>
     				<th>状态</th>
+    				<th>添加时间</th>
+    				<th>最近一次修改时间</th>
     				<th>操作</th>
     			</tr>
     		</thead>
@@ -156,6 +158,8 @@ td{
 		    								删除
 		    							</c:if>
 		    					</td>
+		    					<td>${s.createTime}</td>
+		    					<td>${s.updateTime}</td>
 		    					<td>
 		    							<c:if test="${s.flg==1}">
 		    									<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/carouselInfo/del?id=${s.id}';}"/>

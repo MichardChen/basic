@@ -1,8 +1,12 @@
 package my.core.model;
 
+import java.math.BigDecimal;
+
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
+import com.sun.swing.internal.plaf.basic.resources.basic;
 
 @TableBind(table = "t_member_bankcard", pk = "id")
 public class MemberBankcard extends Model<MemberBankcard> {

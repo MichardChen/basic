@@ -153,8 +153,11 @@ td{
     				<th>注册号码</th>
     				<th>绑定门店</th>
     				<th>余额</th>
-    				<th>性别</th>
-    				<th>创建时间</th>
+    				<th>已提现金额</th>
+    				<th>申请提现中金额</th>
+    				<th>支付宝充值金额</th>
+    				<!-- <th>性别</th> -->
+    				<th>注册时间</th>
     				<th>操作</th>
     			</tr>
     		</thead>
@@ -181,9 +184,12 @@ td{
 		    						${s.store}
 		  						</td>
 		    					<td>${s.moneys}</td>
-		    					<td>
+		    					<td>${s.applyedMoneys}</td>
+		    					<td>${s.applingMoneys}</td>
+		    					<td>${s.rechargeMoneys}</td>
+		    					<%-- <td>
 		    							${s.sex}
-		    					</td>
+		    					</td> --%>
 		    					<td>
 		    							${s.createTime}
 		    					</td>

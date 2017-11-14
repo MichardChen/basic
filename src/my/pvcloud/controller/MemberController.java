@@ -12,10 +12,12 @@ import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
 import my.core.constants.Constants;
+import my.core.model.BankCardRecord;
 import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
 import my.core.model.MemberStore;
+import my.core.model.PayRecord;
 import my.core.model.Store;
 import my.core.vo.MemberVO;
 import my.pvcloud.model.CustInfo;
@@ -50,6 +52,15 @@ public class MemberController extends Controller {
 			model.setName(member.getStr("nick_name"));
 			model.setUserName(member.getStr("name"));
 			model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
+			//查询用户已提现金额和提现中的金额
+			BigDecimal applying = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
+			model.setApplingMoneys(StringUtil.toString(applying));
+			BigDecimal applySuccess = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.SUCCESS);
+			model.setApplyedMoneys(StringUtil.toString(applySuccess));
+			BigDecimal paySuccess = PayRecord.dao.sumPay(model.getId(), Constants.PAY_TYPE_CD.ALI_PAY, Constants.PAY_STATUS.TRADE_SUCCESS);
+			model.setRechargeMoneys(StringUtil.toString(paySuccess));
+			
+			
 			model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 			model.setSex(member.getInt("sex")==1?"男":"女");
 			Store store = Store.dao.queryById(member.getInt("store_id"));
@@ -103,6 +114,14 @@ public class MemberController extends Controller {
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 				model.setSex(member.getInt("sex")==1?"男":"女");
+				//查询用户已提现金额和提现中的金额
+				BigDecimal applying = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
+				model.setApplingMoneys(StringUtil.toString(applying));
+				BigDecimal applySuccess = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.SUCCESS);
+				model.setApplyedMoneys(StringUtil.toString(applySuccess));
+				BigDecimal paySuccess = PayRecord.dao.sumPay(model.getId(), Constants.PAY_TYPE_CD.ALI_PAY, Constants.PAY_STATUS.TRADE_SUCCESS);
+				model.setRechargeMoneys(StringUtil.toString(paySuccess));
+				
 				Store store = Store.dao.queryById(member.getInt("store_id"));
 				if(store != null){
 					model.setStore(store.getStr("store_name"));
@@ -148,6 +167,14 @@ public class MemberController extends Controller {
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 				model.setSex(member.getInt("sex")==1?"男":"女");
+				//查询用户已提现金额和提现中的金额
+				BigDecimal applying = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
+				model.setApplingMoneys(StringUtil.toString(applying));
+				BigDecimal applySuccess = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.SUCCESS);
+				model.setApplyedMoneys(StringUtil.toString(applySuccess));
+				BigDecimal paySuccess = PayRecord.dao.sumPay(model.getId(), Constants.PAY_TYPE_CD.ALI_PAY, Constants.PAY_STATUS.TRADE_SUCCESS);
+				model.setRechargeMoneys(StringUtil.toString(paySuccess));
+				
 				Store store = Store.dao.queryById(member.getInt("store_id"));
 				if(store != null){
 					model.setStore(store.getStr("store_name"));

@@ -51,7 +51,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="${s.menu_id}">${s.menu_name}</option>
 						</c:forEach>
 					</select>&nbsp;&nbsp;
-					<input type="button" class="ys3" onclick="addAuth()" value="添加选中权限"/>
+					<input type="button" class="ys3" onclick="addAuth()" style="width:100px;" value="添加选中权限"/>
 			</td>
 		</tr>
 		<tr>

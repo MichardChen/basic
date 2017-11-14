@@ -147,6 +147,7 @@ td{
     				<th>申请人</th>
     				<th>注册号码</th>
     				<th>提现金额</th>
+    				<th>账号余额</th>
     				<th>申请时间</th>
     				<th>状态</th>
     				<th>操作</th>
@@ -165,6 +166,7 @@ td{
 		    					<td>${s.name}</td>
 		    					<td>${s.mobile}</td>
 		    					<td>${s.moneys}</td>
+		    					<td>${s.balance}</td>
 		    					<td>${s.createTime}</td>
 		    					<td>${s.status}</td>
 		    					<td>

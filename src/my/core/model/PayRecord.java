@@ -103,4 +103,8 @@ public class PayRecord extends Model<PayRecord> {
 			sql=" from t_pay_record where 1=1 "+strBuf.toString()+" order by create_time desc";
 			return PayRecord.dao.paginate(page, size, select, sql,param.toArray());
 		}
+		
+		public BigDecimal sumPay(int memberId,String type,String status){
+			return Db.queryBigDecimal("select sum(moneys) from t_pay_record where member_id="+memberId+" and status='"+status+"' and pay_type_cd='"+type+"'");
+		}
 }

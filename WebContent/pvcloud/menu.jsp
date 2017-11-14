@@ -167,6 +167,8 @@ td{
     				<th>序列号</th>
     				<th>角色名称</th>
     				<th>访问路径</th>
+    				<th>创建时间</th>
+    				<th>更新时间</th>
     				<th>操作</th>
     			</tr>
     		</thead>
@@ -182,6 +184,8 @@ td{
 		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
 		    					<td>${s.name }</td>
 		    					<td>${s.path}</td>
+		    					<td>${s.createTime}</td>
+		    					<td>${s.updateTime}</td>
 		    					<td>
 		    							<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject(${s.id})"/>
 		    					</td>

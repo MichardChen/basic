@@ -183,8 +183,8 @@ td{
     				<th>用户名</th>
     				<th>注册号码</th>
     				<th>余额</th>
-    				<th>性别</th>
     				<th>创建时间</th>
+    				<th>备注</th>
     				<th>操作</th>
     			</tr>
     		</thead>
@@ -206,10 +206,10 @@ td{
 		    					</td>
 		    					<td>${s.moneys}</td>
 		    					<td>
-		    							${s.sex}
+		    							${s.createTime}
 		    					</td>
 		    					<td>
-		    							${s.createTime}
+		    							${s.remark}
 		    					</td>
 		    					<td>
 		    						<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>

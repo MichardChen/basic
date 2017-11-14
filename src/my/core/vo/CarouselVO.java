@@ -8,6 +8,21 @@ public class CarouselVO implements Serializable{
 	private String realUrl;
 	private int id;
 	private int flg;
+	private String createTime;
+	private String updateTime;
+	
+	public String getCreateTime() {
+		return createTime;
+	}
+	public String getUpdateTime() {
+		return updateTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
 	public String getImgUrl() {
 		return imgUrl;
 	}

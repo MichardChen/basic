@@ -5,6 +5,21 @@ public class RoleListVO {
 	private int id;
 	private String name;
 	private String path;
+	private String createTime;
+	private String updateTime;
+	
+	public String getCreateTime() {
+		return createTime;
+	}
+	public String getUpdateTime() {
+		return updateTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
 	public int getId() {
 		return id;
 	}

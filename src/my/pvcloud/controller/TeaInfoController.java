@@ -415,6 +415,7 @@ public class TeaInfoController extends Controller {
 		    	item.set("create_time", DateUtil.getNowTimestamp());
 		    	item.set("update_time", DateUtil.getNowTimestamp());
 		    	item.set("size_type_cd", Constants.TEA_UNIT.ITEM);
+		    	item.set("origin_stock", StringUtil.toInteger(getPara("warehouse")));
 		    	boolean save = WarehouseTeaMemberItem.dao.saveInfo(item);
 		    	if(save){
 		    		TeaPrice teaPrice = new TeaPrice();

@@ -65,6 +65,8 @@ public class DodumentController extends Controller {
 			model.setFlg(document.getInt("flg"));
 			model.setTitle(document.getStr("title"));
 			model.setUrl(document.getStr("desc_url"));
+			model.setCreateTime(StringUtil.toString(document.getTimestamp("create_time")));
+			model.setUpdateTime(StringUtil.toString(document.getTimestamp("update_time")));
 			CodeMst type = CodeMst.dao.queryCodestByCode(document.getStr("type_cd"));
 			if(type != null){
 				model.setType(type.getStr("name"));
@@ -103,6 +105,8 @@ public class DodumentController extends Controller {
 			model.setFlg(document.getInt("flg"));
 			model.setTitle(document.getStr("title"));
 			model.setUrl(document.getStr("desc_url"));
+			model.setCreateTime(StringUtil.toString(document.getTimestamp("create_time")));
+			model.setUpdateTime(StringUtil.toString(document.getTimestamp("update_time")));
 			CodeMst type = CodeMst.dao.queryCodestByCode(document.getStr("type_cd"));
 			if(type != null){
 				model.setType(type.getStr("name"));
@@ -146,6 +150,8 @@ public class DodumentController extends Controller {
 			model.setFlg(document.getInt("flg"));
 			model.setTitle(document.getStr("title"));
 			model.setUrl(document.getStr("desc_url"));
+			model.setCreateTime(StringUtil.toString(document.getTimestamp("create_time")));
+			model.setUpdateTime(StringUtil.toString(document.getTimestamp("update_time")));
 			CodeMst type = CodeMst.dao.queryCodestByCode(document.getStr("type_cd"));
 			if(type != null){
 				model.setType(type.getStr("name"));

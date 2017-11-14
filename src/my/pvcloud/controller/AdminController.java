@@ -55,6 +55,7 @@ public class AdminController extends Controller {
 			model.setName(member.getStr("username"));
 			model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 			model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
+			model.setRemark(member.getStr("remark"));
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -89,6 +90,7 @@ public class AdminController extends Controller {
 				model.setName(member.getStr("username"));
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
+				model.setRemark(member.getStr("remark"));
 				models.add(model);
 			}
 			setAttr("list", list);
@@ -120,6 +122,7 @@ public class AdminController extends Controller {
 				model.setName(member.getStr("username"));
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
+				model.setRemark(member.getStr("remark"));
 				models.add(model);
 			}
 			setAttr("list", list);

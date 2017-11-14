@@ -9,7 +9,14 @@ public class BankRecordModel {
 	private int id;
 	private String status;
 	private String statusCd;
+	private String balance;
 	
+	public String getBalance() {
+		return balance;
+	}
+	public void setBalance(String balance) {
+		this.balance = balance;
+	}
 	public String getStatusCd() {
 		return statusCd;
 	}

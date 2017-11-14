@@ -54,6 +54,8 @@ public class CarouselController extends Controller {
 			model.setFlg(carousel.getInt("flg"));
 			model.setRealUrl(carousel.getStr("real_url"));
 			model.setImgUrl(carousel.getStr("img_url"));
+			model.setCreateTime(StringUtil.toString(carousel.getTimestamp("create_time")));
+			model.setUpdateTime(StringUtil.toString(carousel.getTimestamp("update_time")));
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -79,6 +81,8 @@ public class CarouselController extends Controller {
 				model.setFlg(carousel.getInt("flg"));
 				model.setRealUrl(carousel.getStr("real_url"));
 				model.setImgUrl(carousel.getStr("img_url"));
+				model.setCreateTime(StringUtil.toString(carousel.getTimestamp("create_time")));
+				model.setUpdateTime(StringUtil.toString(carousel.getTimestamp("update_time")));
 				models.add(model);
 			}
 			setAttr("list", list);

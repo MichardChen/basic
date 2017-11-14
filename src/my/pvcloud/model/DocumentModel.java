@@ -11,9 +11,21 @@ public class DocumentModel implements Serializable{
 	private int flg;
 	private String status;
 	private String url;
+	private String createTime;
+	private String updateTime;
 	
-	
-	
+	public String getCreateTime() {
+		return createTime;
+	}
+	public String getUpdateTime() {
+		return updateTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
 	public String getUrl() {
 		return url;
 	}

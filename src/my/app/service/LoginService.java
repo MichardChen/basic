@@ -1127,7 +1127,7 @@ public class LoginService {
 		vo.setAmount(StringUtil.toString(tea.getInt("total_output"))+"片");
 		vo.setBirthday(DateUtil.formatDateYMD((tea.getDate("product_date"))));
 		vo.setBrand(tea.getStr("brand"));
-		vo.setPrice(StringUtil.formatMoney(tea.getBigDecimal("tea_price")));
+		vo.setPrice("￥"+StringUtil.toString(tea.getBigDecimal("tea_price")));
 		vo.setCertificateFlg(tea.getInt("certificate_flg"));
 		Document mst = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.CERTIFICATE_TIP);
 		if(mst != null){
@@ -2301,6 +2301,7 @@ public class LoginService {
 				wtmItem.set("size_type_cd", saleType);
 				wtmItem.set("create_time", DateUtil.getNowTimestamp());
 				wtmItem.set("update_time", DateUtil.getNowTimestamp());
+				wtmItem.set("origin_stock", saleNum);
 				int retId = WarehouseTeaMemberItem.dao.saveItemInfo(wtmItem);
 				if(retId != 0){
 					SaleOrder order = new SaleOrder();

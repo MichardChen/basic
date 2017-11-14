@@ -125,6 +125,8 @@ td{
     				<th>文档名称</th>
     				<th>文档类型</th>
     				<th>状态</th>
+    				<th>创建时间</th>
+    				<th>更新时间</th>
     				<th>操作</th>
     			</tr>
     		</thead>
@@ -141,6 +143,8 @@ td{
 		    					<td>${s.title }</td>
 		    					<td>${s.type}</td>
 		    					<td>${s.status}</td>
+		    					<td>${s.createTime}</td>
+		    					<td>${s.updateTime}</td>
 		    					<td>
 		    							<c:if test="${s.flg==1}">
 		    									<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/documentInfo/del?id=${s.id}';}"/>

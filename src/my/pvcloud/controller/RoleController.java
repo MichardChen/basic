@@ -31,6 +31,7 @@ import my.pvcloud.model.FeedBackModel;
 import my.pvcloud.service.FeedBackService;
 import my.pvcloud.service.MenuService;
 import my.pvcloud.service.RoleService;
+import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/roleInfo", path = "/pvcloud")
@@ -54,6 +55,8 @@ public class RoleController extends Controller {
 			model = new RoleListVO();
 			model.setId(menu.getInt("role_id"));
 			model.setName(menu.getStr("role_name"));
+			model.setCreateTime(StringUtil.toString(menu.getTimestamp("create_time")));
+			model.setUpdateTime(StringUtil.toString(menu.getTimestamp("update_time")));
 			RoleMenu roleMenu = RoleMenu.dao.queryById(menu.getInt("role_id"));
 			if(roleMenu != null){
 				Menu menu2 = Menu.dao.queryById(roleMenu.getInt("role_id"));
@@ -85,6 +88,8 @@ public class RoleController extends Controller {
 			model = new RoleListVO();
 			model.setId(menu.getInt("role_id"));
 			model.setName(menu.getStr("role_name"));
+			model.setCreateTime(StringUtil.toString(menu.getTimestamp("create_time")));
+			model.setUpdateTime(StringUtil.toString(menu.getTimestamp("update_time")));
 			RoleMenu roleMenu = RoleMenu.dao.queryById(menu.getInt("role_id"));
 			if(roleMenu != null){
 				Menu menu2 = Menu.dao.queryById(roleMenu.getInt("role_id"));
@@ -121,6 +126,8 @@ public class RoleController extends Controller {
 				model = new RoleListVO();
 				model.setId(menu.getInt("role_id"));
 				model.setName(menu.getStr("role_name"));
+				model.setCreateTime(StringUtil.toString(menu.getTimestamp("create_time")));
+				model.setUpdateTime(StringUtil.toString(menu.getTimestamp("update_time")));
 				RoleMenu roleMenu = RoleMenu.dao.queryById(menu.getInt("role_id"));
 				if(roleMenu != null){
 					Menu menu2 = Menu.dao.queryById(roleMenu.getInt("role_id"));
@@ -175,6 +182,8 @@ public class RoleController extends Controller {
 		Role role = new Role();
 		role.set("role_id", roleId);
 		role.set("role_name", roleName);
+		role.set("create_time", DateUtil.getNowTimestamp());
+		role.set("update_time", DateUtil.getNowTimestamp());
 		boolean save = Role.dao.updateInfo(role);
 		if(save){
 			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "新增角色:"+roleName);
@@ -260,6 +269,8 @@ public class RoleController extends Controller {
 		role.set("role_name", name);
 		int max = StringUtil.toInteger(Role.dao.queryMaxCode());
 		role.set("role_code", max+1);
+		role.set("create_time", DateUtil.getNowTimestamp());
+		role.set("update_time", DateUtil.getNowTimestamp());
 		boolean save = Role.dao.saveInfo(role);
 		if(save){
 			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "新增角色:"+name);

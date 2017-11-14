@@ -52,6 +52,7 @@ public class WithDrawInfoController extends Controller {
 				model.setName(member.getStr("name"));
 				model.setMoneys(StringUtil.toString(record.getBigDecimal("moneys")));
 				model.setMobile(member.getStr("mobile"));
+				model.setBalance(StringUtil.toString(member.getBigDecimal("moneys")));
 			}
 			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 			model.setStatus(status==null?"":status.getStr("name"));
@@ -89,6 +90,7 @@ public class WithDrawInfoController extends Controller {
 				model.setName(member.getStr("name"));
 				model.setMoneys(StringUtil.toString(record.getBigDecimal("moneys")));
 				model.setMobile(member.getStr("mobile"));
+				model.setBalance(StringUtil.toString(member.getBigDecimal("moneys")));
 			}
 			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 			model.setStatus(status==null?"":status.getStr("name"));
@@ -134,6 +136,7 @@ public class WithDrawInfoController extends Controller {
 					model.setName(member.getStr("name"));
 					model.setMoneys(StringUtil.toString(record.getBigDecimal("moneys")));
 					model.setMobile(member.getStr("mobile"));
+					model.setBalance(StringUtil.toString(member.getBigDecimal("moneys")));
 				}
 				CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 				model.setStatus(status==null?"":status.getStr("name"));

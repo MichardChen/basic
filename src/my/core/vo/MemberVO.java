@@ -12,9 +12,37 @@ public class MemberVO implements Serializable{
 	private String sex;
 	private String userName;
 	private String store;
+	private String applingMoneys;
+	private String applyedMoneys;
+	private String rechargeMoneys;
+	private String remark;
 	
 	
 	
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	public String getRechargeMoneys() {
+		return rechargeMoneys;
+	}
+	public void setRechargeMoneys(String rechargeMoneys) {
+		this.rechargeMoneys = rechargeMoneys;
+	}
+	public String getApplingMoneys() {
+		return applingMoneys;
+	}
+	public String getApplyedMoneys() {
+		return applyedMoneys;
+	}
+	public void setApplingMoneys(String applingMoneys) {
+		this.applingMoneys = applingMoneys;
+	}
+	public void setApplyedMoneys(String applyedMoneys) {
+		this.applyedMoneys = applyedMoneys;
+	}
 	public String getStore() {
 		return store;
 	}

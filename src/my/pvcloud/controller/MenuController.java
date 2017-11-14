@@ -44,6 +44,8 @@ public class MenuController extends Controller {
 			model.setId(menu.getInt("menu_id"));
 			model.setName(menu.getStr("menu_name"));
 			model.setPath(menu.getStr("url"));
+			model.setCreateTime(StringUtil.toString(menu.getTimestamp("create_time")));
+			model.setUpdateTime(StringUtil.toString(menu.getTimestamp("update_time")));
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -69,6 +71,8 @@ public class MenuController extends Controller {
 			model.setId(menu.getInt("menu_id"));
 			model.setName(menu.getStr("menu_name"));
 			model.setPath(menu.getStr("url"));
+			model.setCreateTime(StringUtil.toString(menu.getTimestamp("create_time")));
+			model.setUpdateTime(StringUtil.toString(menu.getTimestamp("update_time")));
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -99,6 +103,8 @@ public class MenuController extends Controller {
 				model.setId(menu.getInt("menu_id"));
 				model.setName(menu.getStr("menu_name"));
 				model.setPath(menu.getStr("url"));
+				model.setCreateTime(StringUtil.toString(menu.getTimestamp("create_time")));
+				model.setUpdateTime(StringUtil.toString(menu.getTimestamp("update_time")));
 				models.add(model);
 			}
 			setAttr("list", list);

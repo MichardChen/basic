@@ -188,7 +188,7 @@ td{
 			    						<c:if test="${s.topFlg ==0}">
 			    							<input type="button" value="置顶" class="ys3" onclick="if(confirm('确认要置顶?')){window.location='${CONTEXT_PATH}/newsInfo/saveTop?top=1&newsId=${s.id}';}"/>
 			    						</c:if>
-			    						<c:if test="${s.topFlg ==1}">
+			    						<c:if test="${s.topFlg !=1}">
 			    							<input type="button" value="取消置顶" class="ys3" onclick="if(confirm('确认要取消置顶?')){window.location='${CONTEXT_PATH}/newsInfo/saveTop?top=0&newsId=${s.id}';}"/>
 			    						</c:if>
 		    						</c:if>
