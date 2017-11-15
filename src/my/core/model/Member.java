@@ -4,17 +4,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shiro.ldap.UnsupportedAuthenticationMechanismException;
+import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.StringUtil;
+
 import org.huadalink.plugin.tablebind.TableBind;
 
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
-
-import my.core.constants.Constants;
-import my.pvcloud.model.CustInfo;
-import my.pvcloud.util.DateUtil;
-import my.pvcloud.util.StringUtil;
 
 @TableBind(table = "t_member", pk = "id")
 public class Member extends Model<Member> {
@@ -195,6 +192,12 @@ public class Member extends Model<Member> {
 	
 	public int bindStore(int userId,int storeId){
 		return Db.update("update t_member set store_id="+storeId+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
+	}
+	
+	public Page<Member> queryStoreMemberList(int pageNum,int pageSize,int storeId){
+		String sql=" from t_member where store_id="+storeId+" order by update_time desc";
+		String select="select * ";
+		return Member.dao.paginate(pageNum, pageSize, select, sql);
 	}
 }
 

@@ -181,6 +181,7 @@ td{
 		    							<input type="button" value="审核通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=110003&id=${s.id}';}"/>
 		    							<input type="button" value="下载二维码" class="ys3" style="width: 100px;" onclick="downloadImg(${s.id})"/>
 										<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+										<input type="button" value="查看会员" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeInfo/queryMemberList?flg=1&storeId=${s.id}';"/>
 								</td>
 		    				</tr>
 		    			</c:forEach>

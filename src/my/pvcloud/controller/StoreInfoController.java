@@ -28,9 +28,11 @@ import com.jfinal.upload.UploadFile;
 
 import my.app.service.FileService;
 import my.core.constants.Constants;
+import my.core.model.BankCardRecord;
 import my.core.model.CodeMst;
 import my.core.model.Log;
 import my.core.model.Member;
+import my.core.model.PayRecord;
 import my.core.model.ReturnData;
 import my.core.model.Store;
 import my.core.model.StoreImage;
@@ -38,6 +40,7 @@ import my.core.model.Tea;
 import my.core.model.TeaPrice;
 import my.core.model.WarehouseTeaMember;
 import my.core.model.WarehouseTeaMemberItem;
+import my.core.vo.MemberVO;
 import my.pvcloud.model.StoreModel;
 import my.pvcloud.model.TeaModel;
 import my.pvcloud.service.StoreService;
@@ -90,6 +93,93 @@ public class StoreInfoController extends Controller {
 		setAttr("list", list);
 		setAttr("sList", models);
 		render("store.jsp");
+	}
+	
+	//查询门店会员
+	public void queryMemberList(){
+		int storeId = StringUtil.toInteger(getPara("storeId"));
+		int flg = StringUtil.toInteger(getPara("flg"));
+		if(flg != 1){
+			storeId = (Integer)getSessionAttr("queryStoreId");
+		}else{
+			removeSessionAttr("queryStoreId");
+			setSessionAttr("queryStoreId", storeId);
+		}
+		Page<Member> list = service.queryStoreMemberList(page, size,storeId);
+		ArrayList<MemberVO> models = new ArrayList<>();
+		MemberVO model = null;
+		for(Member member : list.getList()){
+			model = new MemberVO();
+			model.setKeyCode(member.getStr("id_code"));
+			model.setId(member.getInt("id"));
+			model.setMobile(member.getStr("mobile"));
+			model.setName(member.getStr("nick_name"));
+			model.setUserName(member.getStr("name"));
+			model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
+			//查询用户已提现金额和提现中的金额
+			BigDecimal applying = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
+			model.setApplingMoneys(StringUtil.toString(applying));
+			BigDecimal applySuccess = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.SUCCESS);
+			model.setApplyedMoneys(StringUtil.toString(applySuccess));
+			BigDecimal paySuccess = PayRecord.dao.sumPay(model.getId(), Constants.PAY_TYPE_CD.ALI_PAY, Constants.PAY_STATUS.TRADE_SUCCESS);
+			model.setRechargeMoneys(StringUtil.toString(paySuccess));
+			
+			
+			model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
+			model.setSex(member.getInt("sex")==1?"男":"女");
+			Store store = Store.dao.queryById(member.getInt("store_id"));
+			if(store != null){
+				model.setStore(store.getStr("store_name"));
+			}else{
+				model.setStore("");
+			}
+			models.add(model);
+		}
+		setAttr("list", list);
+		setAttr("sList", models);
+		render("storemember.jsp");
+	}
+	
+	public void queryMemberListByPage(){
+		int storeId=(Integer)getSessionAttr("queryStoreId");
+		this.setSessionAttr("storeId",storeId);
+		Integer page = getParaToInt(1);
+        if (page==null || page==0) {
+            page = 1;
+        }
+        Page<Member> list = service.queryStoreMemberList(page, size,storeId);
+		ArrayList<MemberVO> models = new ArrayList<>();
+		MemberVO model = null;
+		for(Member member : list.getList()){
+			model = new MemberVO();
+			model.setKeyCode(member.getStr("id_code"));
+			model.setId(member.getInt("id"));
+			model.setMobile(member.getStr("mobile"));
+			model.setName(member.getStr("nick_name"));
+			model.setUserName(member.getStr("name"));
+			model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
+			//查询用户已提现金额和提现中的金额
+			BigDecimal applying = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
+			model.setApplingMoneys(StringUtil.toString(applying));
+			BigDecimal applySuccess = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.SUCCESS);
+			model.setApplyedMoneys(StringUtil.toString(applySuccess));
+			BigDecimal paySuccess = PayRecord.dao.sumPay(model.getId(), Constants.PAY_TYPE_CD.ALI_PAY, Constants.PAY_STATUS.TRADE_SUCCESS);
+			model.setRechargeMoneys(StringUtil.toString(paySuccess));
+			
+			
+			model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
+			model.setSex(member.getInt("sex")==1?"男":"女");
+			Store store = Store.dao.queryById(member.getInt("store_id"));
+			if(store != null){
+				model.setStore(store.getStr("store_name"));
+			}else{
+				model.setStore("");
+			}
+			models.add(model);
+		}
+		setAttr("list", list);
+		setAttr("sList", models);
+		render("storemember.jsp");
 	}
 	
 	/**

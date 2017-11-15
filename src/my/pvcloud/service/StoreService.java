@@ -1,7 +1,10 @@
 package my.pvcloud.service;
 
+import java.util.List;
+
 import com.jfinal.plugin.activerecord.Page;
 
+import my.core.model.Member;
 import my.core.model.Store;
 
 public class StoreService {
@@ -28,5 +31,9 @@ public class StoreService {
 	
 	public int updateFlg(int id,String status){
 		return Store.dao.updateStoreStatus(id, status);
+	}
+	
+	public Page<Member> queryStoreMemberList(int page,int size,int storeId){
+		return Member.dao.queryStoreMemberList(page, size, storeId);
 	}
 }
