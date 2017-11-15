@@ -1256,7 +1256,10 @@ public class LoginService {
 					}
 				}
 			}
-			model.setMoneys("售价："+saleOrder.getBigDecimal("price")+unitStr);
+			int quality = saleOrder.getInt("quality") == null ? 0 : saleOrder.getInt("quality");
+			BigDecimal  price = saleOrder.getBigDecimal("price") == null ? new BigDecimal("0") : saleOrder.getBigDecimal("price");
+			String sum = StringUtil.toString(price.multiply(new BigDecimal(quality)));
+			model.setMoneys("售价："+saleOrder.getBigDecimal("price")+"元/"+unitStr+" 总价：￥"+sum);
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -1394,7 +1397,12 @@ public class LoginService {
 			model = new RecordListModel();
 			model.setType(type);
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
-			model.setMoneys("+"+StringUtil.toString(record.getBigDecimal("moneys")));
+			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
+			String st = "";
+			if(status != null){
+				st = status.getStr("name");
+			}
+			model.setMoneys("￥"+StringUtil.toString(record.getBigDecimal("moneys"))+" "+st);
 			model.setContent("账号提现："+StringUtil.toString(record.getBigDecimal("moneys")));
 			models.add(model);
 		}
@@ -2145,22 +2153,22 @@ public class LoginService {
 		ReferencePriceModel pieceModel = new ReferencePriceModel();
 		if(teaPrice != null){
 			
-			BigDecimal itemFromPrice = teaPrice.getBigDecimal("from_price") == null ? new BigDecimal("0") : teaPrice.getBigDecimal("from_price");
-			BigDecimal itemToPrice = teaPrice.getBigDecimal("to_price") == null ? new BigDecimal("0") : teaPrice.getBigDecimal("to_price");
+			BigDecimal pieceFromPrice = teaPrice.getBigDecimal("from_price") == null ? new BigDecimal("0") : teaPrice.getBigDecimal("from_price");
+			BigDecimal pieceToPrice = teaPrice.getBigDecimal("to_price") == null ? new BigDecimal("0") : teaPrice.getBigDecimal("to_price");
 			
-			itemModel.setPriceStr(itemFromPrice+"元/件-"+itemToPrice+"元/件");
-			itemModel.setSizeTypeCd(Constants.TEA_UNIT.ITEM);
-			
-			BigDecimal pieceFromPrice = new BigDecimal("0");
-			BigDecimal pieceToPrice = new BigDecimal("0");
-			if(itemFromPrice.compareTo(new BigDecimal("0"))==1){
-				pieceFromPrice = itemFromPrice.divide(new BigDecimal(tea.getInt("size")));
-			}
-			if(itemToPrice.compareTo(new BigDecimal("0"))==1){
-				pieceToPrice = itemToPrice.divide(new BigDecimal(tea.getInt("size")));
-			}
 			pieceModel.setPriceStr(pieceFromPrice+"元/片-"+pieceToPrice+"元/片");
 			pieceModel.setSizeTypeCd(Constants.TEA_UNIT.PIECE);
+			
+			BigDecimal itemFromPrice = new BigDecimal("0");
+			BigDecimal itemToPrice = new BigDecimal("0");
+			if(pieceFromPrice.compareTo(new BigDecimal("0"))==1){
+				itemFromPrice = pieceFromPrice.multiply(new BigDecimal(tea.getInt("size")));
+			}
+			if(pieceToPrice.compareTo(new BigDecimal("0"))==1){
+				itemToPrice = pieceToPrice.multiply(new BigDecimal(tea.getInt("size")));
+			}
+			itemModel.setPriceStr(itemFromPrice+"元/件-"+itemToPrice+"元/件");
+			itemModel.setSizeTypeCd(Constants.TEA_UNIT.ITEM);
 		}else{
 			pieceModel.setPriceStr("暂无参考价");
 			pieceModel.setSizeTypeCd(Constants.TEA_UNIT.PIECE);
@@ -2256,8 +2264,8 @@ public class LoginService {
 			//判断出售价格要在参考价范围内
 			TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(tea.getInt("id"));
 			if(teaPrice != null){
-				BigDecimal pieceFromPrice = teaPrice.getBigDecimal("from_price").divide(new BigDecimal(tea.getInt("size")));
-				BigDecimal pieceToPrice = teaPrice.getBigDecimal("to_price").divide(new BigDecimal(tea.getInt("size")));
+				BigDecimal pieceFromPrice = teaPrice.getBigDecimal("from_price");
+				BigDecimal pieceToPrice = teaPrice.getBigDecimal("to_price");
 				System.out.println(pieceFromPrice+","+pieceToPrice+",售价"+salePrice);
 				if((salePrice.compareTo(pieceFromPrice)==-1)||(salePrice.compareTo(pieceToPrice))==1){
 					data.setCode(Constants.STATUS_CODE.FAIL);
@@ -2279,8 +2287,8 @@ public class LoginService {
 			//判断出售价格必须在参考价范围内
 			TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(tea.getInt("id"));
 			if(teaPrice != null){
-				BigDecimal itemFromPrice = teaPrice.getBigDecimal("from_price");
-				BigDecimal itemToPrice = teaPrice.getBigDecimal("to_price");
+				BigDecimal itemFromPrice = teaPrice.getBigDecimal("from_price").multiply(new BigDecimal(tea.getInt("size")));
+				BigDecimal itemToPrice = teaPrice.getBigDecimal("to_price").multiply(new BigDecimal(tea.getInt("size")));
 				System.out.println(itemFromPrice+","+itemToPrice+",售价"+salePrice);
 				if((salePrice.compareTo(itemFromPrice)==-1)||(salePrice.compareTo(itemToPrice))==1){
 					data.setCode(Constants.STATUS_CODE.FAIL);
@@ -2774,7 +2782,7 @@ public class LoginService {
 					cash.set("act_pay_amount", moneys);
 					cash.set("opening_balance", openingMoneys);
 					cash.set("closing_balance", closingMoneys);
-					cash.set("remarks", "申请提现"+moneys);
+					cash.set("remarks", "申请提现："+money);
 					cash.set("create_time", DateUtil.getNowTimestamp());
 					cash.set("update_time", DateUtil.getNowTimestamp());
 					CashJournal.dao.saveInfo(cash);

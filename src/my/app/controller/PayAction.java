@@ -232,7 +232,7 @@ public class PayAction extends Controller{
 				if(trade_status.equals("TRADE_FINISHED")){
 					int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
 					if(updateFlg != 0){
-						CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_FAIL);
+						CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_FAIL,trade_no);
 						PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_FINISHED, trade_no);
 						renderText("success");
 					}else{
@@ -241,7 +241,7 @@ public class PayAction extends Controller{
 				}else if(trade_status.equals("TRADE_SUCCESS")){
 					int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
 					if(updateFlg != 0){
-						CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_SUCCESS);
+						CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_SUCCESS,trade_no);
 						PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_SUCCESS, trade_no);
 						renderText("success");
 					}else{
@@ -249,7 +249,7 @@ public class PayAction extends Controller{
 					}
 					System.out.println("支付宝支付成功");
 				}else if(trade_status.equals("WAIT_BUYER_PAY")){
-					CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_FAIL);
+					CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_FAIL,trade_no);
 					int updateFlg = PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.WAIT_BUYER_PAY, trade_no);
 					if(updateFlg != 0){
 						renderText("success");
@@ -258,7 +258,7 @@ public class PayAction extends Controller{
 					}
 					System.out.println("交易创建，等待买家付款");
 				}else if(trade_status.equals("TRADE_CLOSED")){
-					CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_FAIL);
+					CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_FAIL,trade_no);
 					int updateFlg = PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_CLOSED, trade_no);
 					if(updateFlg != 0){
 						renderText("success");

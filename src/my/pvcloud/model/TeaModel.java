@@ -23,7 +23,14 @@ public class TeaModel implements Serializable{
 	private BigDecimal fromPrice;
 	private BigDecimal toPrice;
 	private String expireDate;
+	private String keyCode;
 	
+	public String getKeyCode() {
+		return keyCode;
+	}
+	public void setKeyCode(String keyCode) {
+		this.keyCode = keyCode;
+	}
 	public BigDecimal getFromPrice() {
 		return fromPrice;
 	}

@@ -71,6 +71,7 @@ public class StoreInfoController extends Controller {
 		for(Store store : list.getList()){
 			model = new StoreModel();
 			model.setId(store.getInt("id"));
+			model.setKeyCode(store.getStr("key_code"));
 			model.setTitle(store.getStr("store_name"));
 			model.setFlg(store.getInt("flg"));
 			model.setStatusCd(store.getStr("status"));
@@ -113,6 +114,7 @@ public class StoreInfoController extends Controller {
 		for(Store store : list.getList()){
 			model = new StoreModel();
 			model.setId(store.getInt("id"));
+			model.setKeyCode(store.getStr("key_code"));
 			model.setTitle(store.getStr("store_name"));
 			model.setFlg(store.getInt("flg"));
 			model.setStatusCd(store.getStr("status"));
@@ -160,6 +162,7 @@ public class StoreInfoController extends Controller {
 			StoreModel model = null;
 			for(Store store : list.getList()){
 				model = new StoreModel();
+				model.setKeyCode(store.getStr("key_code"));
 				model.setId(store.getInt("id"));
 				model.setTitle(store.getStr("store_name"));
 				model.setFlg(store.getInt("flg"));

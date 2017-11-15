@@ -175,6 +175,7 @@ td{
     			<tr>
     				<th>序列号</th>
     				<th>茶名称</th>
+    				<th>茶编码</th>
     				<th>茶类型</th>
     				<th>茶价格</th>
     				<th>茶叶发行状态</th>
@@ -201,6 +202,7 @@ td{
 		    				<tr class="bOrder">
 		    					<td>${teaList.pageSize*(teaList.pageNumber-1)+status.index+1}</td>
 		    					<td>${s.name }</td>
+		    					<td>${s.keyCode}</td>
 		    					<td>${s.type}</td>
 		    					<td>${s.price }</td>
 		    					<td>${s.status}</td>
@@ -220,13 +222,13 @@ td{
 		    							</c:if>
 		    							<!-- 停售 -->
 		    							<c:if test="${s.statusCd == '090001' }">
-		    									<input type="button" value="发行" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090002';}"/>
-		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
+		    									<input type="button" value="发行" class="ys3" onclick="if(confirm('确认要发行?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090002';}"/>
+		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要结束?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
 		    							</c:if>
 		    							<!-- 发行 -->
 		    							<c:if test="${s.statusCd == '090002' }">
-		    									<input type="button" value="停售" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090001';}"/>
-		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
+		    									<input type="button" value="停售" class="ys3" onclick="if(confirm('确认要停售?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090001';}"/>
+		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要结束?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
 		    							</c:if>
 		    		      		 <a href="${s.url}" target="_blank"><input type="button" value="查看编辑内容" style="width: 100px;" class="ys3"/></a>
 		    		      		 <input type="button" value="设置参考价" style="width: 100px;" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="addTeaPrice(${s.id})"/>

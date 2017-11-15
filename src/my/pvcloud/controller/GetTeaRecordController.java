@@ -1,5 +1,6 @@
 package my.pvcloud.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import my.core.constants.Constants;
@@ -14,6 +15,7 @@ import my.core.model.Province;
 import my.core.model.ReceiveAddress;
 import my.core.model.Store;
 import my.core.model.Tea;
+import my.core.model.WarehouseTeaMember;
 import my.pvcloud.model.BankRecordModel;
 import my.pvcloud.model.GetTeaRecordListModel;
 import my.pvcloud.model.StoreModel;
@@ -72,7 +74,12 @@ public class GetTeaRecordController extends Controller {
 				model.setMobile(member.getStr("mobile"));
 				model.setUserName(member.getStr("name"));
 			}
-			model.setQuality(StringUtil.toString(record.getInt("quality")));
+			CodeMst sizeType = CodeMst.dao.queryCodestByCode(record.getStr("size_type_cd"));
+			String size = "";
+			if(sizeType != null){
+				size = sizeType.getStr("name");
+			}
+			model.setQuality(StringUtil.toString(record.getInt("quality"))+size);
 			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
 			if(tea != null){
 				model.setTea(tea.getStr("tea_title"));
@@ -98,6 +105,11 @@ public class GetTeaRecordController extends Controller {
 				model.setAddress(detail+address.getStr("address"));
 				model.setLinkMan(receiveMan);
 				model.setLinkTel(m);
+				//当前库存
+				BigDecimal currentStock = WarehouseTeaMember.dao.queryTeaStock(record.getInt("member_id")
+																	 		  ,record.getInt("tea_id")
+																	 		  ,Constants.USER_TYPE.USER_TYPE_CLIENT);
+				model.setCurrentStock(StringUtil.toString(currentStock)+"片");
 			}
 			models.add(model);
 		}
@@ -171,6 +183,11 @@ public class GetTeaRecordController extends Controller {
 				model.setAddress(detail+address.getStr("address"));
 				model.setLinkMan(receiveMan);
 				model.setLinkTel(m);
+				//当前库存
+				BigDecimal currentStock = WarehouseTeaMember.dao.queryTeaStock(record.getInt("member_id")
+																	 		  ,record.getInt("tea_id")
+																	 		  ,Constants.USER_TYPE.USER_TYPE_CLIENT);
+				model.setCurrentStock(StringUtil.toString(currentStock)+"片");
 			}
 			models.add(model);
 		}
@@ -251,6 +268,11 @@ public class GetTeaRecordController extends Controller {
 					model.setAddress(detail+address.getStr("address"));
 					model.setLinkMan(receiveMan);
 					model.setLinkTel(m);
+					//当前库存
+					BigDecimal currentStock = WarehouseTeaMember.dao.queryTeaStock(record.getInt("member_id")
+																		 		  ,record.getInt("tea_id")
+																		 		  ,Constants.USER_TYPE.USER_TYPE_CLIENT);
+					model.setCurrentStock(StringUtil.toString(currentStock)+"片");
 				}
 				models.add(model);
 			}

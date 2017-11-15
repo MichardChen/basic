@@ -16,9 +16,14 @@ public class MemberVO implements Serializable{
 	private String applyedMoneys;
 	private String rechargeMoneys;
 	private String remark;
+	private String keyCode;
 	
-	
-	
+	public String getKeyCode() {
+		return keyCode;
+	}
+	public void setKeyCode(String keyCode) {
+		this.keyCode = keyCode;
+	}
 	public String getRemark() {
 		return remark;
 	}

@@ -54,6 +54,9 @@ public class CashJournalController extends Controller {
 			if(piType != null){
 				model.setPiType(piType.getStr("name"));
 			}
+			model.setRemark(record.getStr("remarks"));
+			model.setOrderNo(record.getStr("cash_journal_no"));
+			model.setTradeNo(record.getStr("trade_no"));
 			model.setOpeningBalance(StringUtil.toString(record.getBigDecimal("opening_balance")));
 			models.add(model);
 		}
@@ -85,6 +88,8 @@ public class CashJournalController extends Controller {
 			model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
 			model.setOccurDate(DateUtil.format(record.getDate("occur_date")));
 			Member member = Member.dao.queryById(record.getInt("member_id"));
+			model.setOrderNo(record.getStr("cash_journal_no"));
+			model.setTradeNo(record.getStr("trade_no"));
 			if(member != null){
 				model.setCreateBy(record.getStr("name"));
 				model.setMemberName(member.getStr("name"));
@@ -97,6 +102,7 @@ public class CashJournalController extends Controller {
 			if(piType != null){
 				model.setPiType(piType.getStr("name"));
 			}
+			model.setRemark(record.getStr("remarks"));
 			model.setOpeningBalance(StringUtil.toString(record.getBigDecimal("opening_balance")));
 			models.add(model);
 		}
@@ -129,7 +135,7 @@ public class CashJournalController extends Controller {
 	            page = 1;
 	        }
 	        
-	        Page<CashJournal> list = service.queryByPageParams(page, size,status,type,time);
+	        Page<CashJournal> list = service.queryByPageParams(page, size,type,status,time);
 			ArrayList<CashListModel> models = new ArrayList<>();
 			CashListModel model = null;
 			for(CashJournal record : list.getList()){
@@ -138,6 +144,9 @@ public class CashJournalController extends Controller {
 				model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
 				model.setOccurDate(DateUtil.format(record.getDate("occur_date")));
 				Member member = Member.dao.queryById(record.getInt("member_id"));
+				model.setOrderNo(record.getStr("cash_journal_no"));
+				model.setRemark(record.getStr("remarks"));
+				model.setTradeNo(record.getStr("trade_no"));
 				if(member != null){
 					model.setCreateBy(record.getStr("name"));
 					model.setMemberName(member.getStr("name"));

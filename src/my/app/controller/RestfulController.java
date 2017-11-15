@@ -143,7 +143,6 @@ public class RestfulController extends Controller{
 	}
 	
 	//上传头像
-	@Before(RequestInterceptor.class)
 	public void uploadIcon() throws Exception{
 		UploadFile uploadFile = getFile("icon");
 		
@@ -283,7 +282,6 @@ public class RestfulController extends Controller{
 	}
 	
 	//绑定门店
-	@Before(RequestInterceptor.class)
 	public void bindStore(){
 		
 		//上传头像
@@ -333,6 +331,7 @@ public class RestfulController extends Controller{
 		store.set("update_time", DateUtil.getNowTimestamp());
 		store.set("status", Constants.VERTIFY_STATUS.STAY_CERTIFICATE);
 		store.set("city_district", dto.getCityDistrict());
+		store.set("key_code", StringUtil.getStoreKeyCode());
 		
 		int s = Store.dao.saveInfos(store);
 		System.out.println("==========storeId====="+s);
@@ -665,7 +664,6 @@ public class RestfulController extends Controller{
 	}
 	
 	//更新绑定门店
-	@Before(RequestInterceptor.class)
 	public void updateBindStore(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		//上传头像
@@ -1146,7 +1144,6 @@ public class RestfulController extends Controller{
 	}
 	
 	//绑定银行卡
-	@Before(RequestInterceptor.class)
 	public void bindBankCard(){
 		
 		UploadFile uploadFile = getFile("cardImg");

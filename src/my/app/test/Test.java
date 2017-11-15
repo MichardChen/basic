@@ -10,6 +10,7 @@ import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.GDMapUtil;
 import my.pvcloud.util.GeoUtil;
 import my.pvcloud.util.LngLat;
+import my.pvcloud.util.StringUtil;
 
 public class Test {
 
@@ -41,5 +42,8 @@ public class Test {
 		  //getCurrencyInstance()返回当前缺省语言环境的通用格式
 		  myString = NumberFormat.getCurrencyInstance().format(myNumber); 
 		  System.out.println(myString);
+		  
+		  String s = StringUtil.getIdCode();
+		  System.out.println(s);
 	}
 }

@@ -12,7 +12,14 @@ public class StoreModel implements Serializable{
 	private String statusCd;
 	private String userName;
 	private String mobile;
+	private String keyCode;
 	
+	public String getKeyCode() {
+		return keyCode;
+	}
+	public void setKeyCode(String keyCode) {
+		this.keyCode = keyCode;
+	}
 	public String getUserName() {
 		return userName;
 	}

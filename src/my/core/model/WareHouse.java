@@ -1,5 +1,6 @@
 package my.core.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.huadalink.plugin.tablebind.TableBind;
@@ -9,6 +10,7 @@ import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
 import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.StringUtil;
 
 @TableBind(table = "t_warehouse", pk = "id")
 public class WareHouse extends Model<WareHouse> {
@@ -19,6 +21,20 @@ public class WareHouse extends Model<WareHouse> {
 	public Page<WareHouse> queryByPage(int page,int size){
 			
 		String sql=" from t_warehouse where 1=1 order by create_time desc";
+		String select="select * ";
+		return WareHouse.dao.paginate(page, size, select, sql);
+	}
+	
+	public Page<WareHouse> queryByPageParams(int page,int size,String title){
+		
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer strBuf=new StringBuffer();
+		if(StringUtil.isNoneBlank(title)){
+			strBuf.append(" and warehouse_name like '%"+title+"%'");
+			param.add(title);
+		}
+		
+		String sql=" from t_warehouse where 1=1 "+strBuf+" order by create_time desc";
 		String select="select * ";
 		return WareHouse.dao.paginate(page, size, select, sql);
 	}

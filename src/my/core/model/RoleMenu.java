@@ -15,6 +15,10 @@ public class RoleMenu extends Model<RoleMenu> {
 		return RoleMenu.dao.findFirst("select * from s_role_menu where role_id = ?",roleId);
 	}
 	
+	public RoleMenu queryByKeyId(int id){
+		return RoleMenu.dao.findFirst("select * from s_role_menu where role_menu_id = ?",id);
+	}
+	
 	public RoleMenu queryByRoleMenuId(int roleId,int menuId){
 		return RoleMenu.dao.findFirst("select * from s_role_menu where role_id = ? and menu_id=?",roleId,menuId);
 	}

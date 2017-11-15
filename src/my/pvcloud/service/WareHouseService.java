@@ -13,6 +13,10 @@ public class WareHouseService {
 		return WareHouse.dao.queryByPage(page, size);
 	}
 	
+	public Page<WareHouse> queryByPageParams(int page,int size,String title){
+		return WareHouse.dao.queryByPageParams(page, size,title);
+	}
+	
 	public WareHouse queryById(int dataId){
 		return WareHouse.dao.queryById(dataId);
 	}

@@ -123,9 +123,33 @@ public class StringUtil extends StringUtils {
 		Long long1 = DateUtil.getNowTimestamp().getTime();
 		String date1 = StringUtil.toString(long1);
 		int size = date1.length();
-		String str = date1.substring(size-8, size);
+		String str = date1.substring(size-12, size);
 	    //年月日
 		return "TJ"+str;
+	}
+	
+	public static String getStoreKeyCode(){
+		long l = System.currentTimeMillis();
+		//new日期对象
+		Date date = new Date(l);
+		Long long1 = DateUtil.getNowTimestamp().getTime();
+		String date1 = StringUtil.toString(long1);
+		int size = date1.length();
+		String str = date1.substring(size-12, size);
+	    //年月日
+		return "ST"+str;
+	}
+	
+	public static String getTeaKeyCode(){
+		long l = System.currentTimeMillis();
+		//new日期对象
+		Date date = new Date(l);
+		Long long1 = DateUtil.getNowTimestamp().getTime();
+		String date1 = StringUtil.toString(long1);
+		int size = date1.length();
+		String str = date1.substring(size-12, size);
+	    //年月日
+		return "T"+str;
 	}
 	
 	public static String toString(BigDecimal num){

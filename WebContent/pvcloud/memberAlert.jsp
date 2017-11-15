@@ -92,14 +92,15 @@ if(str!=''){
 			<td>开户支行</td>
 			<td>${bankCard.open_bank_name}</td>
 		</tr>
-		<tr>
-			<td>审核结果</td>
-			<td>
-				<c:if test="${bankCard.status=='240001'}">审核中</c:if>
-				<c:if test="${bankCard.status=='240002'}">审核成功</c:if>
-				<c:if test="${bankCard.status=='240003'}">审核失败</c:if>
-			</td>
-		</tr>
+			<tr>
+				<td>审核结果</td>
+				<td>
+					<c:if test="${bankCard.status=='240001'}">审核中</c:if>
+					<c:if test="${bankCard.status=='240002'}">审核成功</c:if>
+					<c:if test="${bankCard.status=='240003'}">审核失败</c:if>
+				</td>
+			</tr>
+		<c:if test="${!empty bankCard}">
 		<tr>
 			<td>银行卡审核操作</td>
 			<td>
@@ -107,6 +108,7 @@ if(str!=''){
 				<input type="button" value="审核不通过" class="ys3" style="width:100px;" onclick="if(confirm('确认要审核失败?')){window.location='${CONTEXT_PATH}/memberInfo/updateStatus?id=${bankCard.id}&status=240003';}"/>
 			</td>
 		</tr>
+		</c:if>
 		<input type="hidden" name="id" value="${model.id}"/>
 	</table>
 </div>

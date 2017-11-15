@@ -124,7 +124,7 @@ td{
 	    				<select name="type" style="height: 30px;">
 	    					<option></option>
 	    					<option value="290001" <c:if test="${type=='290001'}">selected="selected"</c:if>>下单</option>
-	    					<option value="290002" <c:if test="${type=='290002'}">selected="selected"</c:if>>取款</option>
+	    					<option value="290002" <c:if test="${type=='290002'}">selected="selected"</c:if>>提现</option>
 	    					<option value="290003" <c:if test="${type=='290003'}">selected="selected"</c:if>>充值</option>
 	    				</select>	
     				</div>
@@ -151,12 +151,13 @@ td{
     				<th>序列号</th>
     				<th>用户</th>
     				<th>订单号</th>
+    				<th>商户订单号</th>
     				<th>类型</th>
     				<th>状态</th>
     				<th>时间</th>
     				<th>期初金额</th>
     				<th>期末金额</th>
-    				<th>操作</th>
+    				<th>备注</th>
     			</tr>
     		</thead>
     		<tbody>
@@ -170,14 +171,15 @@ td{
 		    				<tr class="bOrder">
 		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
 		    					<td>${s.memberName}</td>
+		    					<td>${s.tradeNo}</td>
 		    					<td>${s.orderNo}</td>
-		    					<td>${s.feeStatus}</td>
 		    					<td>${s.piType}</td>
+		    					<td>${s.feeStatus}</td>
 		    					<td>${s.occurDate}</td>
 		    					<td>${s.openingBalance}</td>
 		    					<td>${s.closingBalance}</td>
 		    					<td>
-		    							
+		    							${s.remark}
 		    					</td>
 		    				</tr>
 		    			</c:forEach>

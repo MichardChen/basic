@@ -47,6 +47,7 @@ public class MemberController extends Controller {
 		MemberVO model = null;
 		for(Member member : list.getList()){
 			model = new MemberVO();
+			model.setKeyCode(member.getStr("id_code"));
 			model.setId(member.getInt("id"));
 			model.setMobile(member.getStr("mobile"));
 			model.setName(member.getStr("nick_name"));
@@ -108,6 +109,7 @@ public class MemberController extends Controller {
 			for(Member member : list.getList()){
 				model = new MemberVO();
 				model.setId(member.getInt("id"));
+				model.setKeyCode(member.getStr("id_code"));
 				model.setMobile(member.getStr("mobile"));
 				model.setName(member.getStr("nick_name"));
 				model.setUserName(member.getStr("name"));
@@ -162,6 +164,7 @@ public class MemberController extends Controller {
 				model = new MemberVO();
 				model.setId(member.getInt("id"));
 				model.setMobile(member.getStr("mobile"));
+				model.setKeyCode(member.getStr("id_code"));
 				model.setName(member.getStr("nick_name"));
 				model.setUserName(member.getStr("name"));
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));

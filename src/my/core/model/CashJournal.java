@@ -25,8 +25,8 @@ public class CashJournal extends Model<CashJournal> {
 		return new CashJournal().setAttrs(data).save();
 	}
 	
-	public int updateStatus(String outTradeNo,String status){
-		return Db.update("update t_cash_journal set fee_status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where cash_journal_no='"+outTradeNo+"'");
+	public int updateStatus(String outTradeNo,String status,String tradeNo){
+		return Db.update("update t_cash_journal set fee_status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"',trade_no='"+tradeNo+"' where cash_journal_no='"+outTradeNo+"'");
 	}
 	
 	public Page<CashJournal> queryByPage(int page,int size){

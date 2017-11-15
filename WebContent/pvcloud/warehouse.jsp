@@ -130,7 +130,20 @@ td{
 	   		<div style="font-size: 30px;color: white;font-weight: bold;">仓库信息</div>
 	   </div>
     	<hr/>	
-    			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(0)"/></div>
+    	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
+   		<div class="" style="margin-top:15px;margin-bottom:15px;">
+    		<form method="post" action="${CONTEXT_PATH}/warehouseInfo/queryByPage" class="form-horizontal">
+    			<div style="" class="form-group">
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">仓库名称</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="title" value="${title}"/>
+    				</div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+       			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(0)"/></div>
+			   </div>
+    		</form>
+   		</div>
+	</div>
 	</div>		
     <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:690px;position:relative;color:black;margin-left:0px;">
     	<div class="row">

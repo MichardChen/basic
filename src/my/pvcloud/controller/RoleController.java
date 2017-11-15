@@ -198,7 +198,7 @@ public class RoleController extends Controller {
 	@Transient
 	public void deleteRole(){
 		int roleId = StringUtil.toInteger(getPara("id"));
-		RoleMenu rMenu = RoleMenu.dao.queryById(roleId);
+		RoleMenu rMenu = RoleMenu.dao.queryByKeyId(roleId);
 		int rId = rMenu.getInt("role_id");
 		int mId = rMenu.getInt("menu_id");
 		boolean deleteFlg = RoleMenu.dao.deleteById(roleId);
@@ -206,12 +206,9 @@ public class RoleController extends Controller {
 		if(deleteFlg){
 			//删除用户菜单
 			int ret = UserMenu.dao.deleteUserMenuByMenuId(mId);
-			if(ret != 0){
-				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除角色:"+role.getStr("role_name"));
-				setAttr("message","删除成功");
-			}else{
-				setAttr("message","删除失败");
-			}
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除角色:"+role.getStr("role_name"));
+			setAttr("message","删除成功");
+			
 		}else{
 			setAttr("message","删除失败");
 		}

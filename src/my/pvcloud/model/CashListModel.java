@@ -12,6 +12,21 @@ public class CashListModel {
 	private String createBy;
 	private String updateBy;
 	private String createTime;
+	private String remark;
+	private String tradeNo;
+	
+	public String getTradeNo() {
+		return tradeNo;
+	}
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 	public String getOrderNo() {
 		return orderNo;
 	}

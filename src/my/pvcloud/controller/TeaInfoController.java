@@ -65,6 +65,7 @@ public class TeaInfoController extends Controller {
 		TeaModel model = null;
 		for(Tea tea : list.getList()){
 			model = new TeaModel();
+			model.setKeyCode(tea.getStr("key_code"));
 			model.setId(tea.getInt("id"));
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 			model.setName(tea.getStr("tea_title"));
@@ -119,6 +120,7 @@ public class TeaInfoController extends Controller {
 		TeaModel model = null;
 		for(Tea tea : list.getList()){
 			model = new TeaModel();
+			model.setKeyCode(tea.getStr("key_code"));
 			model.setId(tea.getInt("id"));
 			model.setName(tea.getStr("tea_title"));
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
@@ -178,6 +180,7 @@ public class TeaInfoController extends Controller {
 			for(Tea tea : list.getList()){
 				model = new TeaModel();
 				model.setId(tea.getInt("id"));
+				model.setKeyCode(tea.getStr("key_code"));
 				model.setName(tea.getStr("tea_title"));
 				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 				if(wtm != null){
@@ -388,6 +391,7 @@ public class TeaInfoController extends Controller {
         tea.set("cover_img", logo);
         tea.set("flg", 1);
         tea.set("status",getPara("status"));
+        tea.set("key_code", StringUtil.getTeaKeyCode());
         int houseId = getParaToInt("houses");
        
 		int teaId = Tea.dao.saveInfos(tea);

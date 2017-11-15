@@ -16,8 +16,14 @@ public class GetTeaRecordListModel implements Serializable{
 	private String mark;
 	private String linkTel;
 	private String linkMan;
+	private String currentStock;
 	
-	
+	public String getCurrentStock() {
+		return currentStock;
+	}
+	public void setCurrentStock(String currentStock) {
+		this.currentStock = currentStock;
+	}
 	public String getLinkTel() {
 		return linkTel;
 	}

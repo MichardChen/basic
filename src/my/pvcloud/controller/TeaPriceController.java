@@ -46,9 +46,9 @@ public class TeaPriceController extends Controller {
 			}
 			model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
 			model.setExpireTime(StringUtil.toString(record.getTimestamp("expire_time")));
-			model.setFromPrice(StringUtil.toString(record.getBigDecimal("from_price"))+"元/件");
-			model.setToPrice(StringUtil.toString(record.getBigDecimal("to_price"))+"元/件");
-			model.setReferencePrice(StringUtil.toString(record.getBigDecimal("reference_price"))+"元/件");
+			model.setFromPrice(StringUtil.toString(record.getBigDecimal("from_price"))+"元/片");
+			model.setToPrice(StringUtil.toString(record.getBigDecimal("to_price"))+"元/片");
+			model.setReferencePrice(StringUtil.toString(record.getBigDecimal("reference_price"))+"元/片");
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -78,9 +78,9 @@ public class TeaPriceController extends Controller {
 			}
 			model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
 			model.setExpireTime(StringUtil.toString(record.getTimestamp("expire_time")));
-			model.setFromPrice(StringUtil.toString(record.getBigDecimal("from_price"))+"元/件");
-			model.setToPrice(StringUtil.toString(record.getBigDecimal("to_price"))+"元/件");
-			model.setReferencePrice(StringUtil.toString(record.getBigDecimal("reference_price"))+"元/件");
+			model.setFromPrice(StringUtil.toString(record.getBigDecimal("from_price"))+"元/片");
+			model.setToPrice(StringUtil.toString(record.getBigDecimal("to_price"))+"元/片");
+			model.setReferencePrice(StringUtil.toString(record.getBigDecimal("reference_price"))+"元/片");
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -114,9 +114,9 @@ public class TeaPriceController extends Controller {
 				}
 				model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
 				model.setExpireTime(StringUtil.toString(record.getTimestamp("expire_time")));
-				model.setFromPrice(StringUtil.toString(record.getBigDecimal("from_price"))+"元/件");
-				model.setToPrice(StringUtil.toString(record.getBigDecimal("to_price"))+"元/件");
-				model.setReferencePrice(StringUtil.toString(record.getBigDecimal("reference_price"))+"元/件");
+				model.setFromPrice(StringUtil.toString(record.getBigDecimal("from_price"))+"元/片");
+				model.setToPrice(StringUtil.toString(record.getBigDecimal("to_price"))+"元/片");
+				model.setReferencePrice(StringUtil.toString(record.getBigDecimal("reference_price"))+"元/片");
 				models.add(model);
 			}
 			setAttr("list", list);

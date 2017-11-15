@@ -15,13 +15,17 @@ import com.jfinal.upload.UploadFile;
 
 import my.app.service.FileService;
 import my.core.constants.Constants;
+import my.core.model.BankCardRecord;
 import my.core.model.Carousel;
+import my.core.model.CodeMst;
 import my.core.model.Log;
+import my.core.model.Member;
 import my.core.model.Tea;
 import my.core.model.User;
 import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
 import my.core.vo.WareHouseVO;
+import my.pvcloud.model.BankRecordModel;
 import my.pvcloud.service.WareHouseService;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.ImageTools;
@@ -80,11 +84,63 @@ public class WareHouseController extends Controller {
 		render("warehouse.jsp");
 	}
 	
+	public void queryByPage(){
+		String title = getSessionAttr("title");
+		String ptitle = getPara("title");
+		title = ptitle;
+		this.setSessionAttr("title", title);
+		
+		Integer page = getParaToInt(1);
+        if (page==null || page==0) {
+            page = 1;
+        }
+        Page<WareHouse> list = service.queryByPageParams(page, size,title);
+		ArrayList<WareHouseVO> models = new ArrayList<>();
+		WareHouseVO model = null;
+		for(WareHouse house : list.getList()){
+			model = new WareHouseVO();
+			model.setId(house.getInt("id"));
+			model.setMark(house.getStr("mark"));
+			model.setCreateTime(StringUtil.toString(house.getTimestamp("create_time")));
+			model.setName(house.getStr("warehouse_name"));
+			model.setFlg(house.getInt("flg"));
+			model.setUpdateTime(StringUtil.toString(house.getTimestamp("update_time")));
+			int updateUserId = house.getInt("update_user_id") == null ? 0 : house.getInt("update_user_id");
+			int createUserId = house.getInt("create_user_id") == null ? 0 : house.getInt("create_user_id");
+			User updateUser = User.dao.queryById(updateUserId);
+			User createUser = User.dao.queryById(createUserId);
+			if(createUser != null){
+				model.setCreateUser(createUser.getStr("username"));
+			}else{
+				model.setCreateUser("");
+			}
+			if(updateUser != null){
+				model.setUpdateUser(updateUser.getStr("username"));
+			}else{
+				model.setUpdateUser("");
+			}
+			
+			Long stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
+			if(stock != null){
+				model.setStock(stock.intValue());
+			}else{
+				model.setStock(0);
+			}
+			models.add(model);
+		}
+		setAttr("list", list);
+		setAttr("sList", models);
+		render("warehouse.jsp");
+	}
+	
 	/**
 	 * 模糊查询分页
 	 */
 	public void queryByConditionByPage(){
 			
+		
+		String title=getSessionAttr("title");
+		this.setSessionAttr("title",title);
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;

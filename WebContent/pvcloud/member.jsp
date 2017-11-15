@@ -149,6 +149,7 @@ td{
     			<tr>
     				<th>序列号</th>
     				<th>用户名</th>
+    				<th>用户编码</th>
     				<th>昵称</th>
     				<th>注册号码</th>
     				<th>绑定门店</th>
@@ -173,6 +174,9 @@ td{
 		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
 		    					<td>
 		    						${s.userName}
+		    					</td>
+		    					<td>
+		    						${s.keyCode}
 		    					</td>
 		    					<td>
 		    						${s.name}
