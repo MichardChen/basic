@@ -46,7 +46,7 @@ public class News extends Model<News> {
 	}
 	
 	public Page<News> queryByPage(int page,int size){
-		String sql=" from t_news where flg=1 order by top_flg desc,flg desc,create_time desc";
+		String sql=" from t_news where flg=1 order by flg desc,top_flg desc,create_time desc";
 		String select="select * ";
 		return News.dao.paginate(page, size, select, sql);
 	}
