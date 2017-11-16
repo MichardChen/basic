@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>订单管理</title>
+<title>卖茶记录</title>
 <%@include file="../common/header.jsp"%>
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">

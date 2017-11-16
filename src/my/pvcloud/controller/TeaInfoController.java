@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -360,12 +362,15 @@ public class TeaInfoController extends Controller {
 		try {
 			String uuid = UUID.randomUUID().toString();
 			htmlUrl = Constants.HOST.FILE+uuid;
-			StringBuilder sb = new StringBuilder();
+			/*StringBuilder sb = new StringBuilder();
 			FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.FILE+uuid+".html");
 			PrintStream printStream = new PrintStream(fos);
 			sb.append(content);
-			printStream.print(sb);
-		} catch (FileNotFoundException e) {
+			printStream.print(sb);*/
+			PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(Constants.FILE_HOST.FILE+uuid+".html"),"utf-8"),true);
+			pw.println(content);
+			pw.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
         String contentUrl = htmlUrl+".html";
@@ -539,12 +544,15 @@ public class TeaInfoController extends Controller {
 			try {
 				String uuid = UUID.randomUUID().toString();
 				contentUrl = Constants.HOST.FILE+uuid;
-				StringBuilder sb = new StringBuilder();
+				/*StringBuilder sb = new StringBuilder();
 				FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.FILE+uuid+".html");
 				PrintStream printStream = new PrintStream(fos);
 				sb.append(content);
-				printStream.print(sb);
-			} catch (FileNotFoundException e) {
+				printStream.print(sb);*/
+				PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(Constants.FILE_HOST.FILE+uuid+".html"),"utf-8"),true);
+				pw.println(content);
+				pw.close();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

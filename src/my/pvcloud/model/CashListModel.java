@@ -14,7 +14,14 @@ public class CashListModel {
 	private String createTime;
 	private String remark;
 	private String tradeNo;
+	private String mobile;
 	
+	public String getMobile() {
+		return mobile;
+	}
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
 	public String getTradeNo() {
 		return tradeNo;
 	}

@@ -134,10 +134,10 @@ td{
     				<th>序列号</th>
     				<th>茶叶名称</th>
     				<th>参考价</th>
-    				<th>FromPrice</th>
-    				<th>ToPrice</th>
+    				<th>参考最低价</th>
+    				<th>参考最高价</th>
     				<th>有效截止日期</th>
-    					<th>创建时间</th>
+    				<th>创建时间</th>
     			</tr>
     		</thead>
     		<tbody>

@@ -194,8 +194,16 @@ public class Member extends Model<Member> {
 		return Db.update("update t_member set store_id="+storeId+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
 	}
 	
-	public Page<Member> queryStoreMemberList(int pageNum,int pageSize,int storeId){
-		String sql=" from t_member where store_id="+storeId+" order by update_time desc";
+	public Page<Member> queryStoreMemberList(int pageNum,int pageSize,int storeId,String name,String mobile){
+		String whereStr = "";
+		if(StringUtil.isNoneBlank(name)){
+			whereStr = " and name like '%"+name+"%'";
+		}
+		if(StringUtil.isNoneBlank(mobile)){
+			whereStr = " and mobile like '%"+mobile+"%'";
+		}
+		
+		String sql=" from t_member where store_id="+storeId+whereStr+" order by update_time desc";
 		String select="select * ";
 		return Member.dao.paginate(pageNum, pageSize, select, sql);
 	}

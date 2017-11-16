@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>用户管理</title>
+<title>资讯管理</title>
 <%@include file="../common/header.jsp"%>
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
@@ -110,7 +110,7 @@ td{
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">资讯类型</label>
 	    			<div class="col-sm-1 col-xs-1 col-md-1">	
-	    				<select name="type" style="height: 30px;">
+	    				<select name="type" style="height: 30px;width: 100px;">
 		    					<option></option>
 		    					<option value="030001" <c:if test="${type=='030001'}">selected="selected"</c:if>>平台通知</option>
 		    					<option value="030002" <c:if test="${type=='030002'}">selected="selected"</c:if>>茶品资讯</option>
@@ -154,6 +154,7 @@ td{
     				<th>创建者</th>
     				<th>最近一次更新者</th>
     				<th>是否热门</th>
+    				<th>是否置顶</th>
     				<th>状态</th>
     				<th>创建时间</th>
     				<th>更新时间</th>
@@ -178,6 +179,10 @@ td{
 		    						<c:if test="${s.hotFlg==1 }">是</c:if>
 		    						<c:if test="${s.hotFlg==0 }">否</c:if>
 		    					</td>
+		    						<td>
+		    						<c:if test="${s.topFlg!=0 }">是</c:if>
+		    						<c:if test="${s.topFlg==0 }">否</c:if>
+		    					</td>
 		    					<td>${s.status }</td>
 		    					<td>${s.createTime}</td>
 		    						<td>${s.updateTime}</td>
@@ -188,7 +193,7 @@ td{
 			    						<c:if test="${s.topFlg ==0}">
 			    							<input type="button" value="置顶" class="ys3" onclick="if(confirm('确认要置顶?')){window.location='${CONTEXT_PATH}/newsInfo/saveTop?top=1&newsId=${s.id}';}"/>
 			    						</c:if>
-			    						<c:if test="${s.topFlg !=1}">
+			    						<c:if test="${s.topFlg !=0}">
 			    							<input type="button" value="取消置顶" class="ys3" onclick="if(confirm('确认要取消置顶?')){window.location='${CONTEXT_PATH}/newsInfo/saveTop?top=0&newsId=${s.id}';}"/>
 			    						</c:if>
 		    						</c:if>

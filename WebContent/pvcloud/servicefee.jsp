@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>在售茶叶</title>
+<title>服务费记录</title>
 <%@include file="../common/header.jsp"%>
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
@@ -26,25 +26,34 @@ function loadProject(data){
 		$(".modal-title").html("修改");
 	}
 	$.ajax({
-		url : "${CONTEXT_PATH}/documentInfo/addDocument",
+		url : "${CONTEXT_PATH}/warehouseInfo/alter",
 		data : {},
 		dataType : "html",
 		success : function(result){
-			$('.modal-body').html(result);
+			$('#model').html(result);
+		}
+	});
+}
+function edit(data){
+	$(".modal-title").html("修改");
+	$.ajax({
+		url : "${CONTEXT_PATH}/warehouseInfo/edit",
+		data : {id:data},
+		dataType : "html",
+		success : function(result){
+			$('#model1').html(result);
 		}
 	});
 }
 
-function edit(data){
-	$(".modal-title").html("修改");
-	$.ajax({
-		url : "${CONTEXT_PATH}/orderInfo/editOrder",
-		data : {id:data},
-		dataType : "html",
-		success : function(result){
-			$('.modal-body').html(result);
-		}
-	});
+function check(){
+	var warehouseName = $("#warehouseName").val();
+	var mark = $("#mark").val();
+	if(warehouseName == ""){
+		alert("请输入仓库名称");
+		return false;
+	}
+	return true;
 }
 </script>
 <style>
@@ -119,34 +128,28 @@ td{
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
     	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">在售茶叶</div>
+	   		<div style="font-size: 30px;color: white;font-weight: bold;">服务费信息</div>
 	   </div>
     	<hr/>	
-	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
+    	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
    		<div class="" style="margin-top:15px;margin-bottom:15px;">
-    		<form method="post" action="${CONTEXT_PATH}/saleorderInfo/queryByConditionByPage" class="form-horizontal">
+    		<form method="post" action="${CONTEXT_PATH}/servicefeeInfo/queryByPage" class="form-horizontal">
     			<div style="" class="form-group">
-    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">上架时间</label>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">注册电话</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
     				</div>
-    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">卖家注册电话</label>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">销售时间</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="saleMobile" value="${saleMobile}"/>
-    				</div>
-    					<label class="col-sm-1 col-xs-1 col-md-1 control-label">卖家类型</label>
-	    			<div class="col-sm- col-xs-1 col-md-1">	
-	    				<select name="saleUserTypeCd" style="height: 30px;width: 120px;">
-		    					<option></option>
-		    					<option value="010001" <c:if test="${saleUserTypeCd=='010001'}">selected="selected"</c:if>>普通卖家</option>
-		    					<option value="010002" <c:if test="${saleUserTypeCd=='010002'}">selected="selected"</c:if>>平台卖家</option>
-		    			</select>	
+	    				<input type="text" class="form-control" name="time" placeholder="请选择销售时间" value="${time}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+       			<div style="display:inline-block;float:right;margin-right:5%;"></div>
 			   </div>
     		</form>
    		</div>
 	</div>
+	</div>		
     <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:690px;position:relative;color:black;margin-left:0px;">
     	<div class="row">
     		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table-responsive" style="padding-left:0px;padding-right:0px;font-size:14px;height:705px;">
@@ -154,15 +157,14 @@ td{
     		<thead>
     			<tr>
     				<th>序列号</th>
-    				<th>产品名称</th>
-    				<th>类型</th>
-    				<th>仓库</th>
-    				<th>店铺</th>
-    				<th>卖家</th>
-    				<th>数量</th>
-    				<th>销售价</th>
-    				<th>更新时间</th>
-    				<th>状态</th>
+    				<th>销售茶叶名称</th>
+    				<th>销售数量</th>
+    				<th>销售价格</th>
+    				<th>注册电话</th>
+    				<th>用户名称</th>
+    				<th>服务费</th>
+    				<th>备注</th>
+    				<th>销售时间</th>
     			</tr>
     		</thead>
     		<tbody>
@@ -174,16 +176,15 @@ td{
 		    		<c:if test="${list.totalRow>0 }">
 		    			<c:forEach var="s" items="${sList}" varStatus="status">	
 		    				<tr class="bOrder">
-		    				  <td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
-		    					<td>${s.name}</td>
-		    					<td>${s.type}</td>
-		    					<td>${s.wareHouse}</td>
-		    					<td>${s.store}</td>
-		    					<td>${s.saleUser}</td>
-		    					<td>${s.stock}</td>
+		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
+		    					<td>${s.tea}</td>
+		    					<td>${s.quanlity}</td>
 		    					<td>${s.price}</td>
+		    					<td>${s.mobile}</td>
+		    					<td>${s.userName}</td>
+		    					<td>${s.fee}</td>
+		    					<td>${s.mark}</td>
 		    					<td>${s.createTime}</td>
-		    					<td>${s.status}</td>
 		    				</tr>
 		    			</c:forEach>
 					</c:if>
@@ -196,32 +197,13 @@ td{
 		            <c:set var="pageSize" scope="request" value="${list.pageSize}" />
 		            <c:set var="totalPage" scope="request" value="${list.totalPage}" />
 		            <c:set var="totalRow" scope="request" value="${list.totalRow}" />
-					<c:set var="pageUrl" scope="request" value="${CONTEXT_PATH}/saleorderInfo/queryByPage/-" />    	
+					<c:set var="pageUrl" scope="request" value="${CONTEXT_PATH}/servicefeeInfo/queryByConditionByPage/-" />    	
 			    	<%@include file="../common/page.jsp"%>
 				</div>
     	</div>
     </div>
 		</div>
 	</div>
-</div>
 <%@include file="../common/layout.jsp"%>
-<div class="modal fade bs-example-modal-lg" id="myModal" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content" style="width: 120%;margin-left:-10%;">
-			<div class="modal-header">
-				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">修改</h4>
-			</div>
-			<form action="${CONTEXT_PATH}/orderInfo/saveOrder" method="post">
-				<div class="modal-body">
-				</div>
-				<div class="modal-footer" style="margin-top:20px;">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
 </body>
 </html>

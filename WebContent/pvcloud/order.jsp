@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>订单管理</title>
+<title>买茶记录</title>
 <%@include file="../common/header.jsp"%>
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
@@ -150,7 +150,7 @@ td{
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">卖家类型</label>
 	    			<div class="col-sm- col-xs-1 col-md-1">	
-	    				<select name="saleUserTypeCd" style="height: 30px;">
+	    				<select name="saleUserTypeCd" style="height: 30px;width: 120px;">
 		    					<option></option>
 		    					<option value="010001" <c:if test="${saleUserTypeCd=='010001'}">selected="selected"</c:if>>普通卖家</option>
 		    					<option value="010002" <c:if test="${saleUserTypeCd=='010002'}">selected="selected"</c:if>>平台卖家</option>
@@ -158,7 +158,7 @@ td{
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
 	    			<div class="col-sm- col-xs-1 col-md-1">	
-	    				<select name="status" style="height: 30px;">
+	    				<select name="status" style="height: 30px;width: 120px;">
 		    					<option></option>
 		    					<option value="140003" <c:if test="${status=='140003'}">selected="selected"</c:if>>下单成功</option>
 		    					<option value="140004" <c:if test="${status=='140004'}">selected="selected"</c:if>>下单失败</option>

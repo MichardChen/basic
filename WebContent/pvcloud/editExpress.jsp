@@ -64,7 +64,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<tr>
 			<td>状态</td>
 			<td class="td_class">
-						<select name="status" style="height: 30px;">
+						<select name="status" style="height: 30px;width: 150px;">
 	    					<option></option>
 	    					<option value="280001" <c:if test="${data.status=='280001'}">selected="selected"</c:if>>申请中</option>
 	    					<option value="280002" <c:if test="${data.status=='280002'}">selected="selected"</c:if>>申请失败</option>

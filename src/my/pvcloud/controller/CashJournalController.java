@@ -44,6 +44,7 @@ public class CashJournalController extends Controller {
 			if(member != null){
 				model.setCreateBy(record.getStr("name"));
 				model.setMemberName(member.getStr("name"));
+				model.setMobile(member.getStr("mobile"));
 			}
 			CodeMst feeStatus = CodeMst.dao.queryCodestByCode(record.getStr("fee_status"));
 			if(feeStatus != null){
@@ -93,6 +94,7 @@ public class CashJournalController extends Controller {
 			if(member != null){
 				model.setCreateBy(record.getStr("name"));
 				model.setMemberName(member.getStr("name"));
+				model.setMobile(member.getStr("mobile"));
 			}
 			CodeMst feeStatus = CodeMst.dao.queryCodestByCode(record.getStr("fee_status"));
 			if(feeStatus != null){
@@ -150,6 +152,7 @@ public class CashJournalController extends Controller {
 				if(member != null){
 					model.setCreateBy(record.getStr("name"));
 					model.setMemberName(member.getStr("name"));
+					model.setMobile(member.getStr("mobile"));
 				}
 				CodeMst feeStatus = CodeMst.dao.queryCodestByCode(record.getStr("fee_status"));
 				if(feeStatus != null){
@@ -167,11 +170,9 @@ public class CashJournalController extends Controller {
 			render("cash.jsp");
 	}
 	
-	
 	/**
 	 * 更新
 	 */
 	public void update(){
-		
 	}
 }

@@ -105,7 +105,7 @@ public class StoreInfoController extends Controller {
 			removeSessionAttr("queryStoreId");
 			setSessionAttr("queryStoreId", storeId);
 		}
-		Page<Member> list = service.queryStoreMemberList(page, size,storeId);
+		Page<Member> list = service.queryStoreMemberList(page, size,storeId,"","");
 		ArrayList<MemberVO> models = new ArrayList<>();
 		MemberVO model = null;
 		for(Member member : list.getList()){
@@ -140,14 +140,77 @@ public class StoreInfoController extends Controller {
 		render("storemember.jsp");
 	}
 	
-	public void queryMemberListByPage(){
+	//搜索查询
+	public void queryMemberByConditionByPage(){
+		
+		String cmobile = getSessionAttr("cmobile");
+		String cname = getSessionAttr("cname");
+		
+		String mobile = getPara("cmobile");
+		cmobile = mobile;
+		this.setSessionAttr("cmobile",cmobile);
+		
+		String name = getPara("cname");
+		cname = name;
+		this.setSessionAttr("cname",cname);
+		
 		int storeId=(Integer)getSessionAttr("queryStoreId");
 		this.setSessionAttr("storeId",storeId);
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
         }
-        Page<Member> list = service.queryStoreMemberList(page, size,storeId);
+        Page<Member> list = service.queryStoreMemberList(page, size,storeId,name,mobile);
+		ArrayList<MemberVO> models = new ArrayList<>();
+		MemberVO model = null;
+		for(Member member : list.getList()){
+			model = new MemberVO();
+			model.setKeyCode(member.getStr("id_code"));
+			model.setId(member.getInt("id"));
+			model.setMobile(member.getStr("mobile"));
+			model.setName(member.getStr("nick_name"));
+			model.setUserName(member.getStr("name"));
+			model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
+			//查询用户已提现金额和提现中的金额
+			BigDecimal applying = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
+			model.setApplingMoneys(StringUtil.toString(applying));
+			BigDecimal applySuccess = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.SUCCESS);
+			model.setApplyedMoneys(StringUtil.toString(applySuccess));
+			BigDecimal paySuccess = PayRecord.dao.sumPay(model.getId(), Constants.PAY_TYPE_CD.ALI_PAY, Constants.PAY_STATUS.TRADE_SUCCESS);
+			model.setRechargeMoneys(StringUtil.toString(paySuccess));
+			
+			
+			model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
+			model.setSex(member.getInt("sex")==1?"男":"女");
+			Store store = Store.dao.queryById(member.getInt("store_id"));
+			if(store != null){
+				model.setStore(store.getStr("store_name"));
+			}else{
+				model.setStore("");
+			}
+			models.add(model);
+		}
+		setAttr("list", list);
+		setAttr("sList", models);
+		render("storemember.jsp");
+	}
+	
+	//门店会员分页
+	public void queryMemberListByPage(){
+		
+		String cmobile=getSessionAttr("cmobile");
+		this.setSessionAttr("cmobile",cmobile);
+		
+		String cname=getSessionAttr("cname");
+		this.setSessionAttr("cname",cname);
+		
+		int storeId=(Integer)getSessionAttr("queryStoreId");
+		this.setSessionAttr("storeId",storeId);
+		Integer page = getParaToInt(1);
+        if (page==null || page==0) {
+            page = 1;
+        }
+        Page<Member> list = service.queryStoreMemberList(page, size,storeId,cname,cmobile);
 		ArrayList<MemberVO> models = new ArrayList<>();
 		MemberVO model = null;
 		for(Member member : list.getList()){

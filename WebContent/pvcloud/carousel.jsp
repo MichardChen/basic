@@ -1,10 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+0<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title>系统设置</title>
+<title>轮播图设置</title>
 <%@include file="../common/header.jsp"%>
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
 <link href="${CONTEXT_PATH}/assets/css/starCore.css" rel="stylesheet">

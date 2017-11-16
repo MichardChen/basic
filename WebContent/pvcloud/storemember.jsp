@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>用户管理</title>
+<title>门店会员管理</title>
 <%@include file="../common/header.jsp"%>
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
@@ -120,27 +120,23 @@ td{
 	   		<div style="font-size: 30px;color: white;font-weight: bold;">门店会员信息</div>
 	   </div>
     	<hr/>	
-    <%-- <div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
+     <div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
    		<div class="" style="margin-top:15px;margin-bottom:15px;">
-    		<form method="post" action="${CONTEXT_PATH}/memberInfo/queryByConditionByPage" class="form-horizontal">
+    		<form method="post" action="${CONTEXT_PATH}/storeInfo/queryMemberByConditionByPage" class="form-horizontal">
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="mobile" value="${cmobile}"/>
+	    				<input type="text" class="form-control" name="cmobile" value="${cmobile}"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">用户名</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="cname" value="${cname}"/>
     				</div>
-    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">门店</label>
-	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="storeName" value="${storeName}"/>
-    				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
 			   </div>
     		</form>
    		</div>
-	</div> --%>
+	</div>
     <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:690px;position:relative;color:black;margin-left:0px;">
     	<div class="row">
     		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table-responsive" style="padding-left:0px;padding-right:0px;font-size:14px;height:705px;">

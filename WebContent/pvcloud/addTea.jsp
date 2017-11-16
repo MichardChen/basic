@@ -230,20 +230,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<tr>
 			<td>发行单价</td>
 			<td>
-				<input type="number" name="price" id="price" maxlength="30" style="width: 100px;"/>&nbsp;(元/件)
+				<input type="number" name="price" id="price" maxlength="30" style="width: 100px;" step="0.01"/>&nbsp;(元/件)
 			</td>
 		</tr>
 		<tr>
 			<td>参考价</td>
 			<td>
-				<input type="number" name="referencePrice" id="referencePrice" maxlength="30" style="width: 100px;"/>&nbsp;(元/片)
+				<input type="number" name="referencePrice" id="referencePrice" maxlength="30" style="width: 100px;" step="0.01"/>&nbsp;(元/片)
 			</td>
 		</tr>
 		<tr>
 			<td>参考单价区间</td>
 			<td>
-				<input type="number" name="fromPrice" id="fromPrice" maxlength="30" style="width: 100px;"/>&nbsp;-
-				<input type="number" name="toPrice" id="toPrice" maxlength="30" style="width: 100px;"/>&nbsp;(元/片)
+				<input type="number" name="fromPrice" id="fromPrice" maxlength="30" style="width: 100px;" step="0.01"/>&nbsp;-
+				<input type="number" name="toPrice" id="toPrice" maxlength="30" style="width: 100px;" step="0.01"/>&nbsp;(元/片)
 			</td>
 		</tr>
 		<tr>
@@ -258,7 +258,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>库存</td>
-			<td><input type="number" name="warehouse" id="warehouse" maxlength="30" style="width: 100px;"/>&nbsp;(件)</td>
+			<td><input type="number"  name="warehouse" id="warehouse" maxlength="30" style="width: 100px;"/>&nbsp;(件)</td>
 		</tr>
 		<tr>
 			<td>茶叶图片1&nbsp;（规格1080*615px）</td>

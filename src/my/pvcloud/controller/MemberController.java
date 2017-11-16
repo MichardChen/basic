@@ -85,7 +85,6 @@ public class MemberController extends Controller {
 		String cmobile = getSessionAttr("cmobile");
 		String cname = getSessionAttr("cname");
 		String storeName = getSessionAttr("storeName");
-		Page<Member> custInfoList = new Page<Member>(null, 0, 0, 0, 0);
 		
 		String mobile = getPara("mobile");
 		cmobile = mobile;

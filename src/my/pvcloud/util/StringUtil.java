@@ -260,7 +260,8 @@ public class StringUtil extends StringUtils {
 		String html = "<!DOCTYPE html>"+
 		"<html>"+
 		"<head>"+
-		"<meta charset=\"GBK\">"+
+		"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/> "+
+		"<meta charset=\"utf-8\">"+
 		"<title>"+title+"</title>"+
 		"</head>"+
 		"<body>"+

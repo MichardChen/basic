@@ -33,7 +33,7 @@ public class StoreService {
 		return Store.dao.updateStoreStatus(id, status);
 	}
 	
-	public Page<Member> queryStoreMemberList(int page,int size,int storeId){
-		return Member.dao.queryStoreMemberList(page, size, storeId);
+	public Page<Member> queryStoreMemberList(int page,int size,int storeId,String name,String mobile){
+		return Member.dao.queryStoreMemberList(page, size, storeId, name, mobile);
 	}
 }

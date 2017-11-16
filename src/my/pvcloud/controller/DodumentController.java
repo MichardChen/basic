@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -204,11 +206,17 @@ public class DodumentController extends Controller {
 		//生成html文件
 		try {
 			StringBuilder sb = new StringBuilder();
-			FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.DOCUMENT+uuid+".html");
-			PrintStream printStream = new PrintStream(fos);
+			//FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.DOCUMENT+uuid+".html");
+			//PrintStream printStream = new PrintStream(fos);
+			
+			PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(Constants.FILE_HOST.DOCUMENT+uuid+".html"),"utf-8"),true);
+			pw.println(content);
+			pw.close();
+			/*byte[] bs = content.getBytes("utf-8");
+			content = new String(bs,"utf-8");
 			sb.append(content);
-			printStream.print(sb);
-		} catch (FileNotFoundException e) {
+			printStream.print(sb);*/
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		    String contentUrl = Constants.HOST.DOCUMENT+uuid+".html";
@@ -279,12 +287,15 @@ public class DodumentController extends Controller {
 			String uuid = UUID.randomUUID().toString();
 			//生成html文件
 			try {
-				StringBuilder sb = new StringBuilder();
+				/*StringBuilder sb = new StringBuilder();
 				FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.DOCUMENT+uuid+".html");
 				PrintStream printStream = new PrintStream(fos);
 				sb.append(content);
-				printStream.print(sb);
-			} catch (FileNotFoundException e) {
+				printStream.print(sb);*/
+				PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(Constants.FILE_HOST.DOCUMENT+uuid+".html"),"utf-8"),true);
+				pw.println(content);
+				pw.close();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 				String contentUrl = Constants.HOST.DOCUMENT+uuid+".html";
@@ -315,12 +326,15 @@ public class DodumentController extends Controller {
 			String uuid = UUID.randomUUID().toString();
 			//生成html文件
 			try {
-				StringBuilder sb = new StringBuilder();
+				/*StringBuilder sb = new StringBuilder();
 				FileOutputStream fos = new FileOutputStream(Constants.FILE_HOST.DOCUMENT+uuid+".html");
 				PrintStream printStream = new PrintStream(fos);
 				sb.append(content);
-				printStream.print(sb);
-			} catch (FileNotFoundException e) {
+				printStream.print(sb);*/
+				PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(Constants.FILE_HOST.DOCUMENT+uuid+".html"),"utf-8"),true);
+				pw.println(content);
+				pw.close();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 				String contentUrl = Constants.HOST.DOCUMENT+uuid+".html";

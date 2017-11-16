@@ -121,7 +121,7 @@ td{
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">类型</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
-	    				<select name="type" style="height: 30px;">
+	    				<select name="type" style="height: 30px;width: 80px;">
 	    					<option></option>
 	    					<option value="290001" <c:if test="${type=='290001'}">selected="selected"</c:if>>下单</option>
 	    					<option value="290002" <c:if test="${type=='290002'}">selected="selected"</c:if>>提现</option>
@@ -130,7 +130,7 @@ td{
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
-	    				<select name="status" style="height: 30px;">
+	    				<select name="status" style="height: 30px;width: 120px;">
 	    					<option></option>
 	    					<option value="300001" <c:if test="${status=='300001'}">selected="selected"</c:if>>申请中</option>
 	    					<option value="300002" <c:if test="${status=='300002'}">selected="selected"</c:if>>交易成功</option>
@@ -150,6 +150,7 @@ td{
     			<tr>
     				<th>序列号</th>
     				<th>用户</th>
+    				<th>注册手机号码</th>
     				<th>订单号</th>
     				<th>商户订单号</th>
     				<th>类型</th>
@@ -171,6 +172,7 @@ td{
 		    				<tr class="bOrder">
 		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
 		    					<td>${s.memberName}</td>
+		    					<td>${s.mobile}</td>
 		    					<td>${s.tradeNo}</td>
 		    					<td>${s.orderNo}</td>
 		    					<td>${s.piType}</td>

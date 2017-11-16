@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>系统设置</title>
+<title>更新设置</title>
 <%@include file="../common/header.jsp"%>
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">

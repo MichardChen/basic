@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>用户管理</title>
+<title>提现申请</title>
 <%@include file="../common/header.jsp"%>
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
@@ -125,7 +125,7 @@ td{
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
-	    				<select name="status" style="height: 30px;">
+	    				<select name="status" style="height: 30px;width: 150px;">
 	    					<option></option>
 	    					<option value="190001" <c:if test="${status=='190001'}">selected="selected"</c:if>>审核中</option>
 	    					<option value="190002" <c:if test="${status=='190002'}">selected="selected"</c:if>>审核通过并转账</option>
