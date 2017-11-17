@@ -162,7 +162,7 @@ td{
 	    				<input type="text" class="form-control" name="title" value="${title}"/>
     				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
-       			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" onclick="loadProject(0)"/></div>
+       			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新茶发行" class="ys3" onclick="loadProject(0)"/></div>
 			   </div>
     		</form>
    		</div>
@@ -230,7 +230,7 @@ td{
 		    									<input type="button" value="停售" class="ys3" onclick="if(confirm('确认要停售?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090001';}"/>
 		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要结束?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
 		    							</c:if>
-		    		      		<%--  <a href="${s.url}" target="_blank"><input type="button" value="查看编辑内容" style="width: 100px;" class="ys3"/></a> --%>
+		    		      		 <%-- <a href="${s.url}" target="_blank"><input type="button" value="查看编辑内容" style="width: 100px;" class="ys3"/></a>  --%>
 		    		      		 <input type="button" value="设置参考价" style="width: 100px;" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="addTeaPrice(${s.id})"/>
 		    					</td>
 		    				</tr>

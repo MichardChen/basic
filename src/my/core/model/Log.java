@@ -30,14 +30,16 @@ public class Log extends Model<Log> {
 		new Log().setAttrs(log).save();
 	}
 	
-	public Page<Log> queryLogByPage(int page,int size,String date){
+	public Page<Log> queryLogByPage(int page,int size,String date,String operation){
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
 		String sql="";
 		String select="select *";
 		if(StringUtil.isNoneBlank(date)){
-			strBuf.append("and create_time>=?");
-			param.add(DateUtil.formatStringForTimestamp(date+" 00:00:00"));
+			strBuf.append("and create_time like '%"+date+"%'");
+		}
+		if(StringUtil.isNoneBlank(operation)){
+			strBuf.append("and mark like '%"+operation+"%'");
 		}
 		
 		sql=" from t_log where 1=1 "+strBuf.toString()+" order by create_time desc";

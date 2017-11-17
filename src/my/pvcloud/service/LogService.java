@@ -10,8 +10,8 @@ public class LogService {
 		return Log.dao.queryByPage(page, size);
 	}
 	
-	public Page<Log> queryByPageParams(int page,int size,String date){
-		return Log.dao.queryLogByPage(page, size,date);
+	public Page<Log> queryByPageParams(int page,int size,String date,String operation){
+		return Log.dao.queryLogByPage(page, size,date,operation);
 	}
 	
 	public boolean saveInfo(Log data){

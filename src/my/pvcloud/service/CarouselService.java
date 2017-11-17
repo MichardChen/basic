@@ -22,7 +22,7 @@ public class CarouselService {
 		return Carousel.dao.saveInfo(tea);
 	}
 	
-	public int updateFlg(int id,int flg){
-		return Carousel.dao.updateCarouselStatus(id, flg);
+	public int updateFlg(int id,int flg,int updateUser){
+		return Carousel.dao.updateCarouselStatus(id, flg,updateUser);
 	}
 }

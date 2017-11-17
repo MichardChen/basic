@@ -208,10 +208,10 @@ public class LoginService {
 			map.put("accessToken", token);
 			VertifyCode.dao.updateVertifyCodeExpire(mobile, now,Constants.SHORT_MESSAGE_TYPE.REGISTER);
 			//保存token
-			AcceessToken at = AcceessToken.dao.queryToken(id, Constants.USER_TYPE.USER_TYPE_CLIENT);
+			AcceessToken at = AcceessToken.dao.queryToken(id, Constants.USER_TYPE.USER_TYPE_CLIENT,dto.getPlatForm());
 			boolean tokensave = false;
 			if(at == null){
-				tokensave = AcceessToken.dao.saveToken(id, Constants.USER_TYPE.USER_TYPE_CLIENT, token);
+				tokensave = AcceessToken.dao.saveToken(id, Constants.USER_TYPE.USER_TYPE_CLIENT, token,StringUtil.checkCode(dto.getPlatForm()));
 				if(tokensave){
 					data.setCode(Constants.STATUS_CODE.SUCCESS);
 					data.setMessage("注册成功");
@@ -223,7 +223,7 @@ public class LoginService {
 					return data;
 				}
 			}else{
-				AcceessToken.dao.updateToken(id, token);
+				AcceessToken.dao.updateToken(id, token,dto.getPlatForm());
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("注册成功");
 				data.setData(map);
@@ -257,11 +257,18 @@ public class LoginService {
 		
 		//保存token
 		int userId = member.getInt("id");
-		AcceessToken at = AcceessToken.dao.queryToken(userId, userType);
+		AcceessToken at = AcceessToken.dao.queryToken(userId, userType,platForm);
 		boolean tokensave = false;
 		String token = TextUtil.generateUUID();
+		//更新token
+		if(StringUtil.equals(platForm, Constants.PLATFORM.ANDROID)){
+			AcceessToken.dao.updateToken(userId, "", Constants.PLATFORM.IOS);
+		}
+		if(StringUtil.equals(platForm, Constants.PLATFORM.IOS)){
+			AcceessToken.dao.updateToken(userId, "", Constants.PLATFORM.ANDROID);
+		}
 		if(at == null){
-			tokensave = AcceessToken.dao.saveToken(userId, userType, token);
+			tokensave = AcceessToken.dao.saveToken(userId, userType, token,platForm);
 			if(tokensave){
 				data.setCode(Constants.STATUS_CODE.SUCCESS);
 				data.setMessage("登录成功");
@@ -270,7 +277,7 @@ public class LoginService {
 				data.setMessage("登录失败");
 			}
 		}else{
-			at.updateToken(userId,token);
+			at.updateToken(userId,token,platForm);
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
 			data.setMessage("登录成功");
 		}
@@ -290,7 +297,7 @@ public class LoginService {
 			data.setMessage("对不起，用户不存在");
 			return data;
 		}
-		AcceessToken token = AcceessToken.dao.queryById(member.getInt("id"));
+		AcceessToken token = AcceessToken.dao.queryById(member.getInt("id"),dto.getPlatForm());
 		if(token == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，您还没有登录");
@@ -303,7 +310,7 @@ public class LoginService {
 			return data;
 		}
 		
-		AcceessToken.dao.updateToken(member.getInt("id"), "");
+		AcceessToken.dao.updateToken(member.getInt("id"), "",dto.getPlatForm());
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("退出成功");
 		return data;
@@ -1184,7 +1191,12 @@ public class LoginService {
 				if(wtm != null){
 					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
 					if(tea != null){
-						model.setContent(tea.getStr("tea_title")+"x"+item.getInt("quality")+"片");
+						String size = "";
+						CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
+						if(sizeType != null){
+							size = sizeType.getStr("name");
+						}
+						model.setContent(tea.getStr("tea_title")+"x"+item.getInt("quality")+size);
 						model.setTea(tea.getStr("tea_title"));
 						String imgs = tea.getStr("cover_img");
 						if(StringUtil.isNoneBlank(imgs)){
@@ -1196,7 +1208,6 @@ public class LoginService {
 							model.setTeaType(teaType.getStr("name"));
 						}
 						model.setQuality(item.getInt("quality"));
-						CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
 						if(sizeType != null){
 							model.setUnit(sizeType.getStr("name"));
 						}
@@ -3269,6 +3280,11 @@ public class LoginService {
 			return data;
 		}
 		Member buyUserMember = Member.dao.queryById(dto.getUserId());
+		if(!StringUtil.equals(StringUtil.checkCode(dto.getPayPwd()), buyUserMember.getStr("paypwd"))){
+			data.setCode(Constants.STATUS_CODE.ACCOUNT_MONEY_NOT_ENOUGH);
+			data.setMessage("对不起，支付密码错误");
+			return data;
+		}
 		//判断账号金额够不够
 		BigDecimal all = item.getBigDecimal("price").multiply(new BigDecimal(quality));
 		if(all.compareTo(buyUserMember.getBigDecimal("moneys"))==1){
@@ -3537,6 +3553,11 @@ public class LoginService {
 		}
 		
 		Member buyUserMember = Member.dao.queryById(dto.getUserId());
+		if(!StringUtil.equals(StringUtil.checkCode(dto.getPayPwd()), buyUserMember.getStr("paypwd"))){
+			data.setCode(Constants.STATUS_CODE.ACCOUNT_MONEY_NOT_ENOUGH);
+			data.setMessage("对不起，支付密码错误");
+			return data;
+		}
 		if(amount.compareTo(buyUserMember.getBigDecimal("moneys"))==1){
 			//余额不够
 			data.setCode(Constants.STATUS_CODE.ACCOUNT_MONEY_NOT_ENOUGH);

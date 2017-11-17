@@ -23,6 +23,7 @@ import my.core.model.Carousel;
 import my.core.model.Log;
 import my.core.model.News;
 import my.core.model.SystemVersionControl;
+import my.core.model.User;
 import my.core.model.WareHouse;
 import my.core.vo.CarouselVO;
 import my.pvcloud.model.CustInfo;
@@ -56,6 +57,21 @@ public class CarouselController extends Controller {
 			model.setImgUrl(carousel.getStr("img_url"));
 			model.setCreateTime(StringUtil.toString(carousel.getTimestamp("create_time")));
 			model.setUpdateTime(StringUtil.toString(carousel.getTimestamp("update_time")));
+			
+			Integer createBy = carousel.getInt("create_by") == null ? 0 : carousel.getInt("create_by");
+			Integer updateBy = carousel.getInt("update_by") == null ? 0 : carousel.getInt("update_by");
+			User createUser = User.dao.queryById(createBy);
+			User updateUser = User.dao.queryById(updateBy);
+			if(createBy != null){
+				if(createUser != null){
+					model.setCreateUser(createUser.getStr("username"));
+				}
+			}
+			if(updateBy != null){
+				if(updateUser != null){
+					model.setUpdateUser(updateUser.getStr("username"));
+				}
+			}
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -83,6 +99,23 @@ public class CarouselController extends Controller {
 				model.setImgUrl(carousel.getStr("img_url"));
 				model.setCreateTime(StringUtil.toString(carousel.getTimestamp("create_time")));
 				model.setUpdateTime(StringUtil.toString(carousel.getTimestamp("update_time")));
+				
+				Integer createBy = carousel.getInt("create_by") == null ? 0 : carousel.getInt("create_by");
+				Integer updateBy = carousel.getInt("update_by") == null ? 0 : carousel.getInt("update_by");
+				User createUser = User.dao.queryById(createBy);
+				User updateUser = User.dao.queryById(updateBy);
+				if(createBy != null){
+					if(createUser != null){
+						model.setCreateUser(createUser.getStr("username"));
+					}
+				}
+				if(updateBy != null){
+					if(updateUser != null){
+						model.setUpdateUser(updateUser.getStr("username"));
+					}
+				}
+				
+				
 				models.add(model);
 			}
 			setAttr("list", list);
@@ -137,6 +170,9 @@ public class CarouselController extends Controller {
 			c.set("create_time", DateUtil.getNowTimestamp());
 			c.set("update_time", DateUtil.getNowTimestamp());
 			c.set("flg", 1);
+			int operateUserId=(Integer)getSessionAttr("agentId");
+			c.set("create_by", operateUserId);
+			c.set("update_by", operateUserId);
 			//保存
 			boolean ret = Carousel.dao.saveInfo(c);
 			if(ret){
@@ -155,7 +191,8 @@ public class CarouselController extends Controller {
 	public void del(){
 		try{
 			int id = getParaToInt("id");
-			int ret = service.updateFlg(id, 0);
+			int operateUserId=(Integer)getSessionAttr("agentId");
+			int ret = service.updateFlg(id, 0,operateUserId);
 			if(ret==0){
 				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除轮播图");
 				setAttr("message", "删除成功");
@@ -180,6 +217,8 @@ public class CarouselController extends Controller {
 		carousel.set("real_url", StringUtil.checkCode(getPara("realUrl")));
 		carousel.set("update_time", DateUtil.getNowTimestamp());
 		carousel.set("id", StringUtil.toInteger(getPara("id")));
+		int operateUserId=(Integer)getSessionAttr("agentId");
+		carousel.set("update_by", operateUserId);
 		//保存
 		boolean ret = Carousel.dao.updateInfo(carousel);
 		if(ret){

@@ -68,8 +68,8 @@ public class Document extends Model<Document> {
 		return Document.dao.deleteById(id);
 	}
 	
-	public int updateDocumentStatus(int id,int flg){
-		Db.update("update t_document set flg="+flg+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	public int updateDocumentStatus(int id,int flg,int updateUser){
+		Db.update("update t_document set flg="+flg+",update_time='"+DateUtil.getNowTimestamp()+"',update_by="+updateUser+" where id="+id);
 		Document tea = Document.dao.findFirst("select * from t_document where id = ?",id);
 		if(tea != null){
 			return tea.getInt("flg");

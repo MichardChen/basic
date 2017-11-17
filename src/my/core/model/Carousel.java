@@ -44,8 +44,8 @@ public class Carousel extends Model<Carousel> {
 		return Carousel.dao.deleteById(id);
 	}
 	
-	public int updateCarouselStatus(int id,int flg){
-		Db.update("update t_carousel set flg="+flg+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	public int updateCarouselStatus(int id,int flg,int updateUser){
+		Db.update("update t_carousel set flg="+flg+",update_time='"+DateUtil.getNowTimestamp()+"',update_by="+updateUser+" where id="+id);
 		Carousel carousel = Carousel.dao.findFirst("select * from t_carousel where id = ?",id);
 		if(carousel != null){
 			return carousel.getInt("flg");

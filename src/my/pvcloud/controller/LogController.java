@@ -36,6 +36,7 @@ public class LogController extends Controller {
 	public void index(){
 		
 		removeSessionAttr("title");
+		removeSessionAttr("operation");
 		Page<Log> list = service.queryByPage(page, size);
 		ArrayList<LogListVO> models = new ArrayList<>();
 		LogListVO model = null;
@@ -68,11 +69,13 @@ public class LogController extends Controller {
 	public void queryByPage(){
 		String title=getSessionAttr("title");
 		this.setSessionAttr("title",title);
+		String operation=getSessionAttr("operation");
+		this.setSessionAttr("operation",operation);
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
         }
-        Page<Log> list = service.queryByPageParams(page, size,title);
+        Page<Log> list = service.queryByPageParams(page, size,title,operation);
 		ArrayList<LogListVO> models = new ArrayList<>();
 		LogListVO model = null;
 		for(Log log : list.getList()){
@@ -106,16 +109,20 @@ public class LogController extends Controller {
 		String ptitle = getPara("title");
 		title = ptitle;
 		
-		this.setSessionAttr("title",title);
+		String operation = getSessionAttr("operation");
+		String poperation = getPara("operation");
+		operation = poperation;
 		
+		this.setSessionAttr("title",title);
+		this.setSessionAttr("operation",operation);
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
 	        
-	        Page<Log> list = service.queryByPageParams(page, size,title);
+	        Page<Log> list = service.queryByPageParams(page, size,title,operation);
 			ArrayList<LogListVO> models = new ArrayList<>();
-			LogListVO model = null;
+			LogListVO model = null; 
 			for(Log log : list.getList()){
 				model = new LogListVO();
 				model.setCreateTime(StringUtil.toString(log.getTimestamp("create_time")));

@@ -182,7 +182,6 @@ td{
     				<th>序列号</th>
     				<th>用户名</th>
     				<th>注册号码</th>
-    				<th>余额</th>
     				<th>创建时间</th>
     				<th>备注</th>
     				<th>操作</th>
@@ -204,7 +203,6 @@ td{
 		    					<td>
 		    						${s.mobile}
 		    					</td>
-		    					<td>${s.moneys}</td>
 		    					<td>
 		    							${s.createTime}
 		    					</td>

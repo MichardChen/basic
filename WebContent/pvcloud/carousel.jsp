@@ -131,7 +131,9 @@ td{
     				<th>图片</th>
     				<th>跳转地址</th>
     				<th>状态</th>
+    				<th>创建者</th>
     				<th>添加时间</th>
+    				<th>更新者</th>
     				<th>最近一次修改时间</th>
     				<th>操作</th>
     			</tr>
@@ -158,7 +160,9 @@ td{
 		    								删除
 		    							</c:if>
 		    					</td>
+		    					<td>${s.createUser}</td>
 		    					<td>${s.createTime}</td>
+		    					<td>${s.updateUser}</td>
 		    					<td>${s.updateTime}</td>
 		    					<td>
 		    							<c:if test="${s.flg==1}">

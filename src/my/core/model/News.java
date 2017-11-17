@@ -41,18 +41,18 @@ public class News extends Model<News> {
 			strBuf.append("and create_time<='"+toDate+" 23:59:59'");
 		}
 		
-		sql=" from t_news where 1=1 "+strBuf.toString()+" order by update_time desc,top_flg desc,flg desc,create_time desc";
+		sql=" from t_news where 1=1 "+strBuf.toString()+" order by flg desc,top_flg desc,update_time desc";
 		return News.dao.paginate(page, size, select, sql,param.toArray());
 	}
 	
 	public Page<News> queryByPage(int page,int size){
-		String sql=" from t_news where flg=1 order by top_flg desc,hot_flg desc,flg desc,create_time desc,update_time desc";
+		String sql=" from t_news where flg=1 order by top_flg desc,update_time desc";
 		String select="select * ";
 		return News.dao.paginate(page, size, select, sql);
 	}
 	
 	public Page<News> queryByAdminPage(int page,int size){
-		String sql=" from t_news order by update_time desc,top_flg desc,flg desc,create_time desc,update_time desc";
+		String sql=" from t_news order by flg desc,top_flg desc,update_time desc";
 		String select="select * ";
 		return News.dao.paginate(page, size, select, sql);
 	}

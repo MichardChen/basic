@@ -30,7 +30,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     $(function () {
             $('.summernote').summernote({
-                height: 200,
+                height: 400,
                 tabsize: 2,
                 lang: 'zh-CN',
                 codemirror: {
@@ -129,7 +129,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	}
         	var expireDate = $("#expireDate").val();
         	if(expireDate == ""){
-        		alert("请输入有效截止日期");
+        		alert("请输入参考价失效日");
         		return false;
         	}
         	//////
@@ -183,7 +183,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>出厂总量</td>
-			<td><input type="number" name="amount" id="amount" maxlength="30" style="width: 100px;"/>&nbsp;(饼)</td>
+			<td><input type="number" name="amount" id="amount" maxlength="30" style="width: 100px;"/>&nbsp;(片)</td>
+		</tr>
+		<tr>
+			<td>库存</td>
+			<td><input type="number"  name="warehouse" id="warehouse" maxlength="30" style="width: 100px;"/>&nbsp;(件)</td>
 		</tr>
 		<tr>
 			<td>茶叶类型</td>
@@ -247,7 +251,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</td>
 		</tr>
 		<tr>
-			<td>有效截止日期</td>
+			<td>参考价失效日</td>
 			<td><input type="text" name="expireDate" id="expireDate" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/></td>
 		</tr>
 		<tr>
@@ -257,13 +261,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</td>
 		</tr>
 		<tr>
-			<td>库存</td>
-			<td><input type="number"  name="warehouse" id="warehouse" maxlength="30" style="width: 100px;"/>&nbsp;(件)</td>
-		</tr>
-		<tr>
 			<td>茶叶图片1&nbsp;（规格1080*615px）</td>
 			<td>
-					<input type="file" name="coverImg1"/>
+					<input type="file" name="coverImg1"/>（封面）
 			</td>
 		</tr>
 		<tr>

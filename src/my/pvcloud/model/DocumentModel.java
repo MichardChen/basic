@@ -13,7 +13,21 @@ public class DocumentModel implements Serializable{
 	private String url;
 	private String createTime;
 	private String updateTime;
+	private String createUser;
+	private String updateUser;
 	
+	public String getCreateUser() {
+		return createUser;
+	}
+	public String getUpdateUser() {
+		return updateUser;
+	}
+	public void setCreateUser(String createUser) {
+		this.createUser = createUser;
+	}
+	public void setUpdateUser(String updateUser) {
+		this.updateUser = updateUser;
+	}
 	public String getCreateTime() {
 		return createTime;
 	}

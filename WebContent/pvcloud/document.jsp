@@ -25,6 +25,9 @@ function loadProject(data){
 function edit(data){
 	window.open("${CONTEXT_PATH}/documentInfo/editDocument?id="+data);
 }
+function show(data){
+	window.open("${CONTEXT_PATH}/documentInfo/showDocument?id="+data);
+}
 </script>
 <style>
 .ys1{
@@ -125,7 +128,9 @@ td{
     				<th>文档名称</th>
     				<th>文档类型</th>
     				<th>状态</th>
+    				<th>创建者</th>
     				<th>创建时间</th>
+    				<th>更新者</th>
     				<th>更新时间</th>
     				<th>操作</th>
     			</tr>
@@ -143,14 +148,16 @@ td{
 		    					<td>${s.title }</td>
 		    					<td>${s.type}</td>
 		    					<td>${s.status}</td>
+		    					<td>${s.createUser}</td>
 		    					<td>${s.createTime}</td>
+		    					<td>${s.updateUser}</td>
 		    					<td>${s.updateTime}</td>
 		    					<td>
 		    							<c:if test="${s.flg==1}">
 		    									<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/documentInfo/del?id=${s.id}';}"/>
 		    									<input type="button" value="编辑" class="ys3" onclick="edit(${s.id})"/>
 		    							</c:if>
-		    						<a href="${s.url}" target="_blank"><input type="button" value="查看" class="ys3"/></a>
+		    							<input type="button" value="查看" class="ys3" onclick="show(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>

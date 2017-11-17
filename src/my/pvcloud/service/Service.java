@@ -26,7 +26,7 @@ public class Service{
 		return Document.dao.saveInfo(data);
 	}
 	
-	public int updateFlg(int id,int flg){
-		return Document.dao.updateDocumentStatus(id, flg);
+	public int updateFlg(int id,int flg,int updateUser){
+		return Document.dao.updateDocumentStatus(id, flg,updateUser);
 	}
 }

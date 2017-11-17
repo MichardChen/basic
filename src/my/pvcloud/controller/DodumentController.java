@@ -70,6 +70,21 @@ public class DodumentController extends Controller {
 			model.setCreateTime(StringUtil.toString(document.getTimestamp("create_time")));
 			model.setUpdateTime(StringUtil.toString(document.getTimestamp("update_time")));
 			CodeMst type = CodeMst.dao.queryCodestByCode(document.getStr("type_cd"));
+			Integer createBy = document.getInt("create_by") == null ? 0 : document.getInt("create_by");
+			Integer updateBy = document.getInt("update_by") == null ? 0 : document.getInt("update_by");
+			User createUser = User.dao.queryById(createBy);
+			User updateUser = User.dao.queryById(updateBy);
+			if(createBy != null){
+				if(createUser != null){
+					model.setCreateUser(createUser.getStr("username"));
+				}
+			}
+			if(updateBy != null){
+				if(updateUser != null){
+					model.setUpdateUser(updateUser.getStr("username"));
+				}
+			}
+			
 			if(type != null){
 				model.setType(type.getStr("name"));
 			}
@@ -119,6 +134,20 @@ public class DodumentController extends Controller {
 			}else{
 				model.setStatus("未通过");
 			}
+			Integer createBy = document.getInt("create_by") == null ? 0 : document.getInt("create_by");
+			Integer updateBy = document.getInt("update_by") == null ? 0 : document.getInt("update_by");
+			User createUser = User.dao.queryById(createBy);
+			User updateUser = User.dao.queryById(updateBy);
+			if(createBy != null){
+				if(createUser != null){
+					model.setCreateUser(createUser.getStr("username"));
+				}
+			}
+			if(updateBy != null){
+				if(updateUser != null){
+					model.setUpdateUser(updateUser.getStr("username"));
+				}
+			}
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -163,6 +192,20 @@ public class DodumentController extends Controller {
 				model.setStatus("通过");
 			}else{
 				model.setStatus("未通过");
+			}
+			Integer createBy = document.getInt("create_by") == null ? 0 : document.getInt("create_by");
+			Integer updateBy = document.getInt("update_by") == null ? 0 : document.getInt("update_by");
+			User createUser = User.dao.queryById(createBy);
+			User updateUser = User.dao.queryById(updateBy);
+			if(createBy != null){
+				if(createUser != null){
+					model.setCreateUser(createUser.getStr("username"));
+				}
+			}
+			if(updateBy != null){
+				if(updateUser != null){
+					model.setUpdateUser(updateUser.getStr("username"));
+				}
 			}
 			models.add(model);
 		}
@@ -228,6 +271,9 @@ public class DodumentController extends Controller {
 		    document.set("update_time", DateUtil.getNowTimestamp());
 		    document.set("content", content);
 		    document.set("desc_url", contentUrl);
+		    int operateUserId=(Integer)getSessionAttr("agentId");
+		    document.set("create_by", operateUserId);
+		    document.set("update_by", operateUserId);
 		    document.set("flg", 1);
 		boolean ret = Document.dao.saveInfo(document);
 		if(ret){
@@ -308,6 +354,8 @@ public class DodumentController extends Controller {
 			document.set("content", content);
 			document.set("desc_url", contentUrl);
 			document.set("flg", 1);
+			int operateUserId=(Integer)getSessionAttr("agentId");
+			document.set("update_by", operateUserId);
 			boolean ret = Document.dao.updateInfo(document);
 			if(ret){
 				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新文档");
@@ -363,7 +411,9 @@ public class DodumentController extends Controller {
 	public void del(){
 		try{
 			int teaId = getParaToInt("id");
-			int ret = service.updateFlg(teaId, 0);
+			int updateUser = (Integer)getSessionAttr("agentId");
+			int ret = service.updateFlg(teaId, 0,updateUser);
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除文档");
 			if(ret==0){
 				setAttr("message", "删除成功");
 			}else{
@@ -380,6 +430,12 @@ public class DodumentController extends Controller {
 		Document document = service.queryById(getParaToInt("id"));
 		setAttr("document", document);
 		render("editDocument.jsp");
+	}
+	//查看文档
+	public void showDocument(){
+		Document document = service.queryById(getParaToInt("id"));
+		setAttr("document", document);
+		render("showDocument.jsp");
 	}
 	
 	public void showHtml(){
