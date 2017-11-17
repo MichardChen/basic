@@ -1,12 +1,5 @@
 package my.core.constants;
 
-import org.apache.commons.io.monitor.FileAlterationListener;
-import org.eclipse.jdt.internal.compiler.classfmt.FieldInfoWithAnnotation;
-
-import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
-
-import sun.net.www.content.text.plain;
-
 /**
  * 系统常量
  * @author Chen Dang
@@ -107,7 +100,7 @@ public interface Constants {
 	
 	
 	/**
-	 * 本地*/
+	 * 本地
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.7:82/newsimages/";
 		public static final String TEA = "http://192.168.1.7:82/tea/";
@@ -126,7 +119,7 @@ public interface Constants {
 		public static final String ICON = "F:\\upload\\icon\\";
 		public static final String IMG = "F:\\upload\\img\\";
 		public static final String STORE = "F:\\upload\\store\\";
-	}
+	}*/
 
 	
 	/**139服务器
@@ -150,7 +143,7 @@ public interface Constants {
 		public static final String STORE = "D:\\upload\\store\\";
 	}*/
 	
-	/**centos服务器
+	/**centos服务器*/
 	public static interface HOST{
 		public static final String LOCALHOST = "http://app.tongjichaye.com:88/tea/";
 		public static final String TEA = "http://app.tongjichaye.com:88/tea/";
@@ -169,7 +162,7 @@ public interface Constants {
 		public static final String ICON = "/home/data/images/icon/";
 		public static final String IMG = "/home/data/images/img/";
 		public static final String STORE = "/home/data/images/store/";
-	}*/
+	}
 	
 	public static interface MEMBER_STATUS{
 		public static final String CERTIFICATED = "040001";
