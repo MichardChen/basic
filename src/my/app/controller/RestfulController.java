@@ -117,7 +117,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//退出
-	@Before(RequestInterceptor.class)
+	//@Before(RequestInterceptor.class)
 	public void logout() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.logout(dto));
