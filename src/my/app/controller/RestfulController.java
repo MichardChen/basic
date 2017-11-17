@@ -1130,7 +1130,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//我要喝茶列表
-	@Before(RequestInterceptor.class)
+	//@Before(RequestInterceptor.class)
 	public void queryTeaStoreList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaStoreList(dto));
