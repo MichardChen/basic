@@ -1,0 +1,36 @@
+[main]
+#realm
+shiroDbRealm = org.huadalink.core.security.ShiroDbRealm
+securityManager.realm = $shiroDbRealm
+
+#session
+sessionDAO = org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO
+sessionManager = org.apache.shiro.web.session.mgt.DefaultWebSessionManager
+sessionManager.sessionDAO = $sessionDAO
+sessionManager.globalSessionTimeout = 1800000
+sessionManager.sessionValidationSchedulerEnabled = true
+securityManager.sessionManager = $sessionManager
+
+#cache
+cacheManager=org.apache.shiro.cache.MemoryConstrainedCacheManager
+securityManager.cacheManager=$cacheManager
+
+authc.loginUrl = /login
+
+[urls]
+
+/ = anon
+/login/** = anon
+/reg/** = anon
+/**/captcha = anon
+/assets/** = anon
+/userInfo/** = anon
+/equipment/** = anon
+/smart/** = anon
+/salesHistory/** = anon
+/area/** = anon
+/equipSideslip/** = anon
+/myupload/** = anon
+/** = authc
+
+
