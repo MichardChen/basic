@@ -123,6 +123,12 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
     				</div>
+    				</div>
+    				<div style="" class="form-group">
+    					<label class="col-sm-1 col-xs-1 col-md-1 control-label">用户名</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="name" value="${name}"/>
+    				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">类型</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
 	    				<select name="type" style="height: 30px;width: 80px;">

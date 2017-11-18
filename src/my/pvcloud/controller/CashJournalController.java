@@ -33,6 +33,7 @@ public class CashJournalController extends Controller {
 		removeSessionAttr("type");
 		removeSessionAttr("time");
 		removeSessionAttr("mobile");
+		removeSessionAttr("name");
 		Page<CashJournal> list = service.queryByPage(page, size);
 		ArrayList<CashListModel> models = new ArrayList<>();
 		CashListModel model = null;
@@ -79,11 +80,13 @@ public class CashJournalController extends Controller {
 		this.setSessionAttr("time",time);
 		String mobile=getSessionAttr("mobile");
 		this.setSessionAttr("mobile",mobile);
+		String name=getSessionAttr("name");
+		this.setSessionAttr("name",name);
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
         }
-        Page<CashJournal> list = service.queryByPageParams(page, size,type,s,time,mobile);
+        Page<CashJournal> list = service.queryByPageParams(page, size,type,s,time,mobile,name);
 		ArrayList<CashListModel> models = new ArrayList<>();
 		CashListModel model = null;
 		for(CashJournal record : list.getList()){
@@ -135,6 +138,11 @@ public class CashJournalController extends Controller {
 		mobile = pmobile;
 		this.setSessionAttr("mobile",mobile);
 		
+		String name = getSessionAttr("name");
+		String pname = getPara("name");
+		name = pname;
+		this.setSessionAttr("name",name);
+		
 		String time = getSessionAttr("time");
 		String ptime = getPara("time");
 		time = ptime;
@@ -145,7 +153,7 @@ public class CashJournalController extends Controller {
 	            page = 1;
 	        }
 	        
-	        Page<CashJournal> list = service.queryByPageParams(page, size,type,status,time,mobile);
+	        Page<CashJournal> list = service.queryByPageParams(page, size,type,status,time,mobile,name);
 			ArrayList<CashListModel> models = new ArrayList<>();
 			CashListModel model = null;
 			for(CashJournal record : list.getList()){
