@@ -30,6 +30,7 @@ import my.core.model.CodeMst;
 import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.ReturnData;
+import my.core.model.SaleOrder;
 import my.core.model.Store;
 import my.core.model.Tea;
 import my.core.model.TeaPrice;
@@ -72,15 +73,26 @@ public class TeaInfoController extends Controller {
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 			model.setName(tea.getStr("tea_title"));
 			if(wtm != null){
-				model.setPrice(wtm.getBigDecimal("price"));
 				model.setStock(StringUtil.toString(wtm.getInt("stock")));
 				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
 				if(wtmItem != null){
+					String size = "";
+					CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
+					if(sizeType != null){
+						size = "元/"+sizeType.getStr("name");
+					}
+					model.setPrice(StringUtil.toString(wtmItem.getBigDecimal("price"))+size);
 					CodeMst s = CodeMst.dao.queryCodestByCode(wtmItem.getStr("status"));
 					if(s != null){
 						model.setSaleStatus(s.getStr("name"));
 					}
 				}
+			}
+			
+			//参考价
+			TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(model.getId());
+			if(teaPrice != null){
+				model.setReferencePrice(StringUtil.toString(teaPrice.getBigDecimal("reference_price"))+"元/件");
 			}
 			model.setUrl(tea.getStr("desc_url"));
 			model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
@@ -127,10 +139,15 @@ public class TeaInfoController extends Controller {
 			model.setName(tea.getStr("tea_title"));
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 			if(wtm != null){
-				model.setPrice(wtm.getBigDecimal("price"));
 				model.setStock(StringUtil.toString(wtm.getInt("stock")));
 				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
 				if(wtmItem != null){
+					String size = "";
+					CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
+					if(sizeType != null){
+						size = "元/"+sizeType.getStr("name");
+					}
+					model.setPrice(StringUtil.toString(wtmItem.getBigDecimal("price"))+size);
 					CodeMst s = CodeMst.dao.queryCodestByCode(wtmItem.getStr("status"));
 					if(s != null){
 						model.setSaleStatus(s.getStr("name"));
@@ -186,10 +203,15 @@ public class TeaInfoController extends Controller {
 				model.setName(tea.getStr("tea_title"));
 				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 				if(wtm != null){
-					model.setPrice(wtm.getBigDecimal("price"));
 					model.setStock(StringUtil.toString(wtm.getInt("stock")));
 					WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
 					if(wtmItem != null){
+						String size = "";
+						CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
+						if(sizeType != null){
+							size = "元/"+sizeType.getStr("name");
+						}
+						model.setPrice(StringUtil.toString(wtmItem.getBigDecimal("price"))+size);
 						CodeMst s = CodeMst.dao.queryCodestByCode(wtmItem.getStr("status"));
 						if(s != null){
 							model.setSaleStatus(s.getStr("name"));
@@ -276,6 +298,7 @@ public class TeaInfoController extends Controller {
 	
 	//后台保存茶叶
 	public void saveTea(){
+		setAttr("closeFlg",1);
 		//表单中有提交图片，要先获取图片
 		UploadFile uploadFile1 = getFile("coverImg1");
 		UploadFile uploadFile2 = getFile("coverImg2");
@@ -425,8 +448,21 @@ public class TeaInfoController extends Controller {
 		    	item.set("update_time", DateUtil.getNowTimestamp());
 		    	item.set("size_type_cd", Constants.TEA_UNIT.ITEM);
 		    	item.set("origin_stock", StringUtil.toInteger(getPara("warehouse")));
-		    	boolean save = WarehouseTeaMemberItem.dao.saveInfo(item);
-		    	if(save){
+		    	int save = WarehouseTeaMemberItem.dao.saveItemInfo(item);
+		    	if(save != 0){
+		    		//卖茶记录
+		    		SaleOrder order = new SaleOrder();
+					order.set("warehouse_tea_member_id", retId);
+					order.set("wtm_item_id", retId);
+					order.set("quality", StringUtil.toInteger(getPara("warehouse")));
+					order.set("price", price);
+					order.set("size_type_cd", Constants.TEA_UNIT.ITEM);
+					order.set("create_time", DateUtil.getNowTimestamp());
+					order.set("update_time", DateUtil.getNowTimestamp());
+					order.set("status", statusStr);
+					order.set("order_no", StringUtil.getOrderNo());
+					SaleOrder.dao.saveInfo(order);
+					
 		    		TeaPrice teaPrice = new TeaPrice();
 		    		teaPrice.set("tea_id", teaId);
 		    		teaPrice.set("reference_price", StringUtil.toBigDecimal(StringUtil.checkCode(getPara("referencePrice"))));
@@ -455,6 +491,7 @@ public class TeaInfoController extends Controller {
 	}
 	
 	public void updateTea(){
+		setAttr("closeFlg",1);
 		//表单中有提交图片，要先获取图片
 		UploadFile uploadFile1 = getFile("coverImg1");
 		UploadFile uploadFile2 = getFile("coverImg2");

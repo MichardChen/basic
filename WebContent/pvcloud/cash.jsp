@@ -119,6 +119,10 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="time" value="${time}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
+    					<label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机号码</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
+    				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">类型</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
 	    				<select name="type" style="height: 30px;width: 80px;">
@@ -152,7 +156,7 @@ td{
     				<th>用户</th>
     				<th>注册手机号码</th>
     				<th>订单号</th>
-    				<th>商户订单号</th>
+    				<th>流水账单号</th>
     				<th>类型</th>
     				<th>状态</th>
     				<th>时间</th>

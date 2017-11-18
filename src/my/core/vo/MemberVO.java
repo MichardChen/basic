@@ -17,7 +17,14 @@ public class MemberVO implements Serializable{
 	private String rechargeMoneys;
 	private String remark;
 	private String keyCode;
+	private String bankStatus;
 	
+	public String getBankStatus() {
+		return bankStatus;
+	}
+	public void setBankStatus(String bankStatus) {
+		this.bankStatus = bankStatus;
+	}
 	public String getKeyCode() {
 		return keyCode;
 	}

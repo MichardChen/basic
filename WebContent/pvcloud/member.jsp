@@ -148,7 +148,7 @@ td{
     		<thead>
     			<tr>
     				<th>序列号</th>
-    				<th>用户名</th>
+    			 	<th>用户名</th> 
     				<th>用户编码</th>
     				<th>昵称</th>
     				<th>注册号码</th>
@@ -157,6 +157,7 @@ td{
     				<th>已提现金额</th>
     				<th>申请提现中金额</th>
     				<th>支付宝充值金额</th>
+    				<th>银行卡审核状态</th>
     				<!-- <th>性别</th> -->
     				<th>注册时间</th>
     				<th>操作</th>
@@ -172,7 +173,7 @@ td{
 		    			<c:forEach var="s" items="${sList}" varStatus="status">	
 		    				<tr class="bOrder">
 		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
-		    					<td>
+		    					 <td>
 		    						${s.userName}
 		    					</td>
 		    					<td>
@@ -191,6 +192,7 @@ td{
 		    					<td>${s.applyedMoneys}</td>
 		    					<td>${s.applingMoneys}</td>
 		    					<td>${s.rechargeMoneys}</td>
+		    					<td>${s.bankStatus}</td>
 		    					<%-- <td>
 		    							${s.sex}
 		    					</td> --%>

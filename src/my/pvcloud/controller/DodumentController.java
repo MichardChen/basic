@@ -235,7 +235,7 @@ public class DodumentController extends Controller {
 	
 	//新增保存
 	public void saveDocument(){
-
+		setAttr("closeFlg",1);
 		//新增
 		//表单中有提交图片，要先获取图片
 		String title = StringUtil.checkCode(getPara("title"));
@@ -321,6 +321,7 @@ public class DodumentController extends Controller {
 	 * 修改（保存）
 	 */
 	public void updateDocument(){
+		setAttr("closeFlg",1);
 		int id = StringUtil.toInteger(getPara("id"));
 		if(id!=0){
 			//表单中有提交图片，要先获取图片

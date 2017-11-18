@@ -15,10 +15,10 @@ if(str!=''){
 </script>
 <div class="control-group">
 	<table class="table table-responsive">
-		<tr>
+		<%-- <tr>
 			<td>用户名</td>
 			<td>${model.name}</td>
-		</tr>
+		</tr> --%>
 		<tr>
 			<td>用户昵称</td>
 			<td>${model.nick_name}</td>
@@ -64,7 +64,7 @@ if(str!=''){
 			<td>绑定门店</td>
 			<td>${store}</td>
 		</tr>
-		<tr>
+		<tr  style="border-top: 1px solid grey;">
 			<td><label style="color:red;">银行卡信息</label></td>
 			<td></td>
 		</tr>
@@ -85,8 +85,16 @@ if(str!=''){
 			<td>${bankCard.stay_mobile}</td>
 		</tr>
 		<tr>
+			<td>身份证号码</td>
+			<td>${bankCard.id_card_no}</td>
+		</tr>
+		<tr>
 			<td>开户名</td>
 			<td>${bankCard.owner_name}</td>
+		</tr>
+		<tr>
+			<td>开户行</td>
+			<td>${bankCard.bank_name_cd}</td>
 		</tr>
 		<tr>
 			<td>开户支行</td>
@@ -101,7 +109,11 @@ if(str!=''){
 			</td>
 		</tr>
 		<tr>
-			<td>绑定门店</td>
+			<td>加盟店名称</td>
+			<td>${openStore}</td>
+		</tr>
+		<tr>
+			<td>绑定会员门店</td>
 			<td>${store}</td>
 		</tr>
 		<input type="hidden" name="id" value="${model.id}"/>

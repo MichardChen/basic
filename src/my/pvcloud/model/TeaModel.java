@@ -7,7 +7,7 @@ public class TeaModel implements Serializable{
 
 	private String name;
 	private int id;
-	private BigDecimal price;
+	private String price;
 	private String type;
 	private String createTime;
 	private String url;
@@ -24,7 +24,16 @@ public class TeaModel implements Serializable{
 	private BigDecimal toPrice;
 	private String expireDate;
 	private String keyCode;
+	private String referencePrice;
 	
+	
+	
+	public String getReferencePrice() {
+		return referencePrice;
+	}
+	public void setReferencePrice(String referencePrice) {
+		this.referencePrice = referencePrice;
+	}
 	public String getKeyCode() {
 		return keyCode;
 	}
@@ -109,7 +118,8 @@ public class TeaModel implements Serializable{
 	public int getId() {
 		return id;
 	}
-	public BigDecimal getPrice() {
+	
+	public String getPrice() {
 		return price;
 	}
 	public String getType() {
@@ -127,7 +137,7 @@ public class TeaModel implements Serializable{
 	public void setId(int id) {
 		this.id = id;
 	}
-	public void setPrice(BigDecimal price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
 	public void setType(String type) {

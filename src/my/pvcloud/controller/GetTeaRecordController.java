@@ -2,33 +2,28 @@ package my.pvcloud.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-
-import my.core.constants.Constants;
-import my.core.model.BankCardRecord;
-import my.core.model.City;
-import my.core.model.CodeMst;
-import my.core.model.District;
-import my.core.model.GetTeaRecord;
-import my.core.model.Log;
-import my.core.model.Member;
-import my.core.model.Province;
-import my.core.model.ReceiveAddress;
-import my.core.model.Store;
-import my.core.model.Tea;
-import my.core.model.WarehouseTeaMember;
-import my.pvcloud.model.BankRecordModel;
-import my.pvcloud.model.GetTeaRecordListModel;
-import my.pvcloud.model.StoreModel;
-import my.pvcloud.service.GetTeaRecordService;
-import my.pvcloud.service.WithDrawService;
-import my.pvcloud.util.DateUtil;
-import my.pvcloud.util.StringUtil;
+import java.util.List;
 
 import org.huadalink.route.ControllerBind;
 
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
+
+import my.core.constants.Constants;
+import my.core.model.City;
+import my.core.model.CodeMst;
+import my.core.model.District;
+import my.core.model.GetTeaRecord;
+import my.core.model.Member;
+import my.core.model.Province;
+import my.core.model.ReceiveAddress;
+import my.core.model.Tea;
+import my.core.model.WarehouseTeaMember;
+import my.pvcloud.model.GetTeaRecordListModel;
+import my.pvcloud.model.GetTeaRecordModel;
+import my.pvcloud.service.GetTeaRecordService;
+import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/getTeaRecordInfo", path = "/pvcloud")
 public class GetTeaRecordController extends Controller {
@@ -307,13 +302,30 @@ public class GetTeaRecordController extends Controller {
 	public void editInt(){
 		int id = StringUtil.toInteger(getPara("id"));
 		GetTeaRecord record = GetTeaRecord.dao.queryById(id);
+		GetTeaRecordModel model = new GetTeaRecordModel();
 		if(record != null){
 			Member member = Member.dao.queryById(record.getInt("member_id"));
-			setAttr("member", "注册电话："+member.getStr("mobile")+",用户名："+member.getStr("name"));
 			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
-			setAttr("tea", tea);
+			model.setId(record.getInt("id"));
+			model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
+			model.setExpress(record.getStr("express_company"));
+			model.setExpressNo(record.getStr("express_no"));
+			model.setMark(record.getStr("mark"));
+			model.setName("注册电话："+member.getStr("mobile")+",用户名："+member.getStr("name"));
+			String size = "";
+			CodeMst sizeType = CodeMst.dao.queryCodestByCode(record.getStr("size_type_cd"));
+			if(sizeType != null){
+				size = sizeType.getStr("name");
+			}
+			model.setQuality(StringUtil.toString(record.getInt("quality"))+size);
+			model.setStatus(record.getStr("status"));
+			if(tea != null){
+				model.setTeaName(tea.getStr("tea_title"));
+			}
 		}
-		setAttr("data", record);
+		setAttr("model", model);
+		List<CodeMst> express = CodeMst.dao.queryCodestByPcode(Constants.EXPRESS.EXPRESS);
+		setAttr("express", express);
 		render("editExpress.jsp");
 	}
 }

@@ -13,6 +13,7 @@ import com.jfinal.plugin.activerecord.Page;
 
 import my.core.constants.Constants;
 import my.core.model.BankCardRecord;
+import my.core.model.CodeMst;
 import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
@@ -60,7 +61,16 @@ public class MemberController extends Controller {
 			model.setApplyedMoneys(StringUtil.toString(applySuccess));
 			BigDecimal paySuccess = PayRecord.dao.sumPay(model.getId(), Constants.PAY_TYPE_CD.ALI_PAY, Constants.PAY_STATUS.TRADE_SUCCESS);
 			model.setRechargeMoneys(StringUtil.toString(paySuccess));
-			
+			MemberBankcard memberBankcard = MemberBankcard.dao.queryByMemberId(model.getId());
+			if(memberBankcard == null){
+				model.setBankStatus("暂未绑定银行卡");
+			}else{
+				String bankStatus = memberBankcard.getStr("status");
+				CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(bankStatus);
+				if(sCodeMst != null){
+					model.setBankStatus(sCodeMst.getStr("name"));
+				}
+			}
 			
 			model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 			model.setSex(member.getInt("sex")==1?"男":"女");
@@ -123,6 +133,17 @@ public class MemberController extends Controller {
 				BigDecimal paySuccess = PayRecord.dao.sumPay(model.getId(), Constants.PAY_TYPE_CD.ALI_PAY, Constants.PAY_STATUS.TRADE_SUCCESS);
 				model.setRechargeMoneys(StringUtil.toString(paySuccess));
 				
+				MemberBankcard memberBankcard = MemberBankcard.dao.queryByMemberId(model.getId());
+				if(memberBankcard == null){
+					model.setBankStatus("暂未绑定银行卡");
+				}else{
+					String bankStatus = memberBankcard.getStr("status");
+					CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(bankStatus);
+					if(sCodeMst != null){
+						model.setBankStatus(sCodeMst.getStr("name"));
+					}
+				}
+				
 				Store store = Store.dao.queryById(member.getInt("store_id"));
 				if(store != null){
 					model.setStore(store.getStr("store_name"));
@@ -177,6 +198,17 @@ public class MemberController extends Controller {
 				BigDecimal paySuccess = PayRecord.dao.sumPay(model.getId(), Constants.PAY_TYPE_CD.ALI_PAY, Constants.PAY_STATUS.TRADE_SUCCESS);
 				model.setRechargeMoneys(StringUtil.toString(paySuccess));
 				
+				MemberBankcard memberBankcard = MemberBankcard.dao.queryByMemberId(model.getId());
+				if(memberBankcard == null){
+					model.setBankStatus("暂未绑定银行卡");
+				}else{
+					String bankStatus = memberBankcard.getStr("status");
+					CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(bankStatus);
+					if(sCodeMst != null){
+						model.setBankStatus(sCodeMst.getStr("name"));
+					}
+				}
+				
 				Store store = Store.dao.queryById(member.getInt("store_id"));
 				if(store != null){
 					model.setStore(store.getStr("store_name"));
@@ -205,12 +237,26 @@ public class MemberController extends Controller {
 		if((bankCard != null)&&(StringUtil.isBlank(bankCard.getStr("card_img")))){
 			bankCard.set("card_img", "#");
 		}
-		setAttr("bankCard", bankCard);
+		if(bankCard != null){
+			String bankCd = bankCard.getStr("bank_name_cd");
+			CodeMst bank = CodeMst.dao.queryCodestByCode(bankCd);
+			if(bank != null){
+				bankCard.set("bank_name_cd", bank.getStr("name"));
+			}
+			setAttr("bankCard", bankCard);
+		}
+		
 		Store store = Store.dao.queryById(model.getInt("store_id"));
 		if(store != null){
 			setAttr("store", store.getStr("store_name"));
 		}else{
 			setAttr("store", "");
+		}
+		Store openStore = Store.dao.queryMemberStore(id);
+		if(openStore != null){
+			setAttr("openStore", openStore.getStr("store_name"));
+		}else{
+			setAttr("openStore", "");
 		}
 		render("memberAlert.jsp");
 	}
@@ -224,12 +270,26 @@ public class MemberController extends Controller {
 		if((bankCard !=null)&&(StringUtil.isBlank(bankCard.getStr("card_img")))){
 			bankCard.set("card_img", "#");
 		}
-		setAttr("bankCard", bankCard);
+		if(bankCard != null){
+			String bankCd = bankCard.getStr("bank_name_cd");
+			CodeMst bank = CodeMst.dao.queryCodestByCode(bankCd);
+			if(bank != null){
+				bankCard.set("bank_name_cd", bank.getStr("name"));
+			}
+			setAttr("bankCard", bankCard);
+		}
+		
 		Store store = Store.dao.queryById(model.getInt("store_id"));
 		if(store != null){
 			setAttr("store", store.getStr("store_name"));
 		}else{
 			setAttr("store", "");
+		}
+		Store openStore = Store.dao.queryMemberStore(id);
+		if(openStore != null){
+			setAttr("openStore", openStore.getStr("store_name"));
+		}else{
+			setAttr("openStore", "");
 		}
 		render("memberseeAlert.jsp");
 	}

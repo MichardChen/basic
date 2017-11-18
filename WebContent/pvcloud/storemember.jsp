@@ -194,7 +194,7 @@ td{
 		    							${s.createTime}
 		    					</td>
 		    					<td>
-		    						<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+		    					<%-- 	<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/> --%>
 		    						<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
 		    					</td>
 		    				</tr>

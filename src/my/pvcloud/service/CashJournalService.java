@@ -18,7 +18,7 @@ public class CashJournalService {
 		return CashJournal.dao.queryByPage(page, size);
 	}
 	
-	public Page<CashJournal> queryByPageParams(int page,int size,String piType,String status,String time){
-		return CashJournal.dao.queryByPageParams(page, size,piType,status,time);
+	public Page<CashJournal> queryByPageParams(int page,int size,String piType,String status,String time,String mobile){
+		return CashJournal.dao.queryByPageParams(page, size,piType,status,time,mobile);
 	}
 }

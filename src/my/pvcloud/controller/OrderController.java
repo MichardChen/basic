@@ -53,7 +53,7 @@ public class OrderController extends Controller {
 		for(OrderItem order : list.getList()){
 			model = new OrderListVO();
 			model.setAmount(StringUtil.toString(order.getBigDecimal("item_amount")));
-			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(order.getInt("wtm_item_id"));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(order.getInt("wtm_item_id"));
 			if(wtmItem != null){
 				int wtmId = wtmItem.getInt("warehouse_tea_member_id");
 				model.setPrice(wtmItem.getBigDecimal("price"));
@@ -110,7 +110,7 @@ public class OrderController extends Controller {
 						if(StringUtil.equals(saleUserType, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 							Member member = Member.dao.queryById(saleId);
 							if(member != null){
-								model.setSaleUser(member.getStr("name"));
+								model.setSaleUser(member.getStr("mobile"));
 							}
 						}else{
 							User user = User.dao.queryById(saleId);
@@ -121,7 +121,7 @@ public class OrderController extends Controller {
 						int buyId = order2.getInt("member_id");
 						Member m = Member.dao.queryById(buyId);
 						if(m != null){
-							model.setBuyUser(m.getStr("name"));
+							model.setBuyUser(m.getStr("mobile"));
 						}
 					}else{
 						continue;
@@ -201,7 +201,7 @@ public class OrderController extends Controller {
 		for(OrderItem order : list.getList()){
 			model = new OrderListVO();
 			model.setAmount(StringUtil.toString(order.getBigDecimal("item_amount")));
-			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(order.getInt("wtm_item_id"));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(order.getInt("wtm_item_id"));
 			if(wtmItem != null){
 				int wtmId = wtmItem.getInt("warehouse_tea_member_id");
 				String sizeTypeCd = wtmItem.getStr("size_type_cd");
@@ -258,7 +258,7 @@ public class OrderController extends Controller {
 						if(StringUtil.equals(saleUserType, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 							Member member = Member.dao.queryById(saleId);
 							if(member != null){
-								model.setSaleUser(member.getStr("name"));
+								model.setSaleUser(member.getStr("mobile"));
 							}
 						}else{
 							User user = User.dao.queryById(saleId);
@@ -269,7 +269,7 @@ public class OrderController extends Controller {
 						int buyId = order2.getInt("member_id");
 						Member m = Member.dao.queryById(buyId);
 						if(m != null){
-							model.setBuyUser(m.getStr("name"));
+							model.setBuyUser(m.getStr("mobile"));
 						}
 					}else{
 						continue;
@@ -351,7 +351,7 @@ public class OrderController extends Controller {
 		for(OrderItem order : list.getList()){
 			model = new OrderListVO();
 			model.setAmount(StringUtil.toString(order.getBigDecimal("item_amount")));
-			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(order.getInt("wtm_item_id"));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(order.getInt("wtm_item_id"));
 			if(wtmItem != null){
 				int wtmId = wtmItem.getInt("warehouse_tea_member_id");
 				String sizeTypeCd = wtmItem.getStr("size_type_cd");
@@ -408,7 +408,7 @@ public class OrderController extends Controller {
 						if(StringUtil.equals(saleUserType, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 							Member member = Member.dao.queryById(saleId);
 							if(member != null){
-								model.setSaleUser(member.getStr("name"));
+								model.setSaleUser(member.getStr("mobile"));
 							}
 						}else{
 							User user = User.dao.queryById(saleId);
@@ -419,7 +419,7 @@ public class OrderController extends Controller {
 						int buyId = order2.getInt("member_id");
 						Member m = Member.dao.queryById(buyId);
 						if(m != null){
-							model.setBuyUser(m.getStr("name"));
+							model.setBuyUser(m.getStr("mobile"));
 						}
 					}else{
 						continue;

@@ -258,6 +258,7 @@ public class NewInfoController extends Controller {
 	
 	//保存资讯
 	public void saveNews(){
+		setAttr("closeFlg",1);
 		//表单中有提交图片，要先获取图片
 		UploadFile uploadFile = getFile("newImg");
 		int hot = StringUtil.toInteger(getPara("hot"));
@@ -360,6 +361,7 @@ public class NewInfoController extends Controller {
 	 * 修改（保存）
 	 */
 	public void update(){
+		setAttr("closeFlg",1);
 		String id = getPara("custId");
 		int integral = getParaToInt("integral");
 		String phoneNum = StringUtil.checkCode(getPara("phoneNum"));

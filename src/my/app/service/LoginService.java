@@ -1186,6 +1186,7 @@ public class LoginService {
 			model.setId(item.getInt("id"));
 			model.setDate(DateUtil.formatTimestampForDate(item.getTimestamp("create_time")));
 			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(item.getInt("wtm_item_id"));
+			String status = "";
 			if(wtmItem != null){
 				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
 				if(wtm != null){
@@ -1218,8 +1219,12 @@ public class LoginService {
 						}
 					}
 				}
+				CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(wtmItem.getStr("status"));
+				if(sCodeMst != null){
+					status = sCodeMst.getStr("name");
+				}
 			}
-			model.setMoneys("-"+StringUtil.toString(item.getBigDecimal("item_amount")));
+			model.setMoneys("-"+StringUtil.toString(item.getBigDecimal("item_amount"))+" "+"买茶成功");
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -1270,7 +1275,12 @@ public class LoginService {
 			int quality = saleOrder.getInt("quality") == null ? 0 : saleOrder.getInt("quality");
 			BigDecimal  price = saleOrder.getBigDecimal("price") == null ? new BigDecimal("0") : saleOrder.getBigDecimal("price");
 			String sum = StringUtil.toString(price.multiply(new BigDecimal(quality)));
-			model.setMoneys("售价："+saleOrder.getBigDecimal("price")+"元/"+unitStr+" 总价：￥"+sum);
+			String status = "";
+			CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(saleOrder.getStr("status"));
+			if(sCodeMst != null){
+				status = sCodeMst.getStr("name");
+			}
+			model.setMoneys("总价：￥"+sum+" "+"卖茶成功");
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -1300,8 +1310,33 @@ public class LoginService {
 			model.setType(type);
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
 			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
+			String size = "";
+			CodeMst sizeType = CodeMst.dao.queryCodestByCode(record.getStr("size_type_cd"));
+			if(sizeType != null){
+				size = sizeType.getStr("name");
+			}
+			String status = "";
+			CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(record.getStr("status"));
+			if(sCodeMst != null){
+				status = sCodeMst.getStr("name");
+			}
 			if(tea != null){
-				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+"片");
+				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+size+" "+status);
+			}
+			
+			ReceiveAddress receiveAddress = ReceiveAddress.dao.queryByKeyId(record.getInt("address_id"));
+			if(receiveAddress != null){
+				String address = "";
+				City city = City.dao.queryCity(receiveAddress.getInt("city_id"));
+				if(city != null){
+					address = city.getStr("name");
+				}
+				District district = District.dao.queryDistrict(receiveAddress.getInt("district_id"));
+				if(district != null){
+					address = address + district.getStr("name");
+				}
+				address = address + receiveAddress.getStr("address");
+				model.setMoneys(address);
 			}
 			//model.setMoneys(StringUtil.toString(record.getBigDecimal("warehouse_fee")));
 			models.add(model);
@@ -2672,7 +2707,7 @@ public class LoginService {
 			bankcard.set("open_bank_name", dto.getOpenBankName());
 			boolean ret = MemberBankcard.dao.updateInfo(bankcard);
 			if(ret){
-				int retValue = Member.dao.updateIdCardInfo(dto.getUserId(), dto.getIdCardNo(), dto.getIdCardImg());
+				int retValue = Member.dao.updateIdCardInfo(dto.getUserId(), dto.getIdCardNo(), dto.getIdCardImg(),dto.getName());
 				if(retValue != 0){
 					data.setCode(Constants.STATUS_CODE.SUCCESS);
 					data.setMessage("绑定成功，待平台审核");
@@ -2699,7 +2734,7 @@ public class LoginService {
 			bankcard.set("open_bank_name", dto.getOpenBankName());
 			boolean ret = MemberBankcard.dao.saveInfo(bankcard);
 			if(ret){
-				int retValue = Member.dao.updateIdCardInfo(dto.getUserId(), dto.getIdCardNo(), dto.getIdCardImg());
+				int retValue = Member.dao.updateIdCardInfo(dto.getUserId(), dto.getIdCardNo(), dto.getIdCardImg(),dto.getName());
 				if(retValue != 0){
 					data.setCode(Constants.STATUS_CODE.SUCCESS);
 					data.setMessage("绑定成功，待平台审核");
@@ -2762,6 +2797,11 @@ public class LoginService {
 		}
 		String cardNo = bankcard.getStr("card_no");
 		if(moneys.compareTo(money)>=0){
+			Member member2 = new Member();
+			member2.set("id", dto.getUserId());
+			BigDecimal openingMoneys = moneys;
+			BigDecimal closingMoneys = moneys.subtract(money);
+			
 			BankCardRecord record = new BankCardRecord();
 			record.set("member_id", dto.getUserId());
 			record.set("moneys", money);
@@ -2770,13 +2810,9 @@ public class LoginService {
 			record.set("status", Constants.WITHDRAW_STATUS.APPLYING);
 			record.set("create_time", DateUtil.getNowTimestamp());
 			record.set("update_time", DateUtil.getNowTimestamp());
-			
+			record.set("balance", closingMoneys);
 			boolean ret = BankCardRecord.dao.saveInfo(record);
 			if(ret){
-				Member member2 = new Member();
-				member2.set("id", dto.getUserId());
-				BigDecimal openingMoneys = moneys;
-				BigDecimal closingMoneys = moneys.subtract(money);
 				member2.set("moneys", closingMoneys);
 				boolean ret1 = Member.dao.updateInfo(member2);
 				if(ret1){

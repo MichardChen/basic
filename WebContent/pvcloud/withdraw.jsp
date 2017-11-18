@@ -18,7 +18,17 @@ var str='${message}';
 if(str!=''){
   alert(str);
 }
-
+function loadProject1(data){
+	$(".modal-title").html("查看");
+	$.ajax({
+		url : "${CONTEXT_PATH}/memberInfo/see",
+		data : {id:data},
+		dataType : "html",
+		success : function(result){
+			$('.modal-body').html(result);
+		}
+	});
+}
 function loadProject(data){
 	if(data==0){
 		$(".modal-title").html("新增");
@@ -171,9 +181,10 @@ td{
 		    					<td>${s.status}</td>
 		    					<td>
 		    							<c:if test="${s.statusCd=='190001'}">
-		    									<input type="button" value="审核成功" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190003&id=${s.id}';}"/>
-		    									<input type="button" value="审核失败" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190002&id=${s.id}';}"/>
+		    									<input type="button" value="审核成功" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190002&id=${s.id}';}"/>
+		    									<input type="button" value="审核失败" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190003&id=${s.id}';}"/>
 		    							</c:if>
+		    							<input type="button" value="查看用户" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.memberId})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -211,6 +222,20 @@ td{
 					<input type="submit" class="btn btn-success" value="保存"/>
 				</div>
 			</form> --%>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myModal1" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="width: 120%;margin-left:-10%;">
+			<div class="modal-header">
+				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">查看</h4>
+			</div>
+			<form action="${CONTEXT_PATH}/memberInfo/updateMember" method="post">
+				<div class="modal-body">
+				</div>
+			</form>
 		</div>
 	</div>
 </div>

@@ -1,5 +1,7 @@
 package my.core.constants;
 
+import org.slf4j.impl.StaticMDCBinder;
+
 /**
  * 系统常量
  * @author Chen Dang
@@ -352,5 +354,9 @@ public interface Constants {
 		public static final String APPLING = "300001";
 		public static final String APPLY_SUCCESS = "300002";
 		public static final String APPLY_FAIL = "300003";
+	}
+	
+	public static interface EXPRESS{
+		public static final String EXPRESS = "310000";
 	}
 }

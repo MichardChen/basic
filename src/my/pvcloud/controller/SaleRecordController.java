@@ -92,7 +92,7 @@ public class SaleRecordController extends Controller {
 					if(StringUtil.equals(memberTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 						Member member = Member.dao.queryById(wtm.getInt("member_id"));
 						if(member != null){
-							model.setSaleUser(member.getStr("name"));
+							model.setSaleUser(member.getStr("mobile"));
 						}else{
 							continue;
 						}
@@ -191,7 +191,7 @@ public class SaleRecordController extends Controller {
 					if(StringUtil.equals(memberTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 						Member member = Member.dao.queryById(wtm.getInt("member_id"));
 						if(member != null){
-							model.setSaleUser(member.getStr("name"));
+							model.setSaleUser(member.getStr("mobile"));
 						}else{
 							continue;
 						}
@@ -293,7 +293,7 @@ public class SaleRecordController extends Controller {
 					if(StringUtil.equals(memberTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
 						Member member = Member.dao.queryById(wtm.getInt("member_id"));
 						if(member != null){
-							model.setSaleUser(member.getStr("name"));
+							model.setSaleUser(member.getStr("mobile"));
 						}else{
 							continue;
 						}

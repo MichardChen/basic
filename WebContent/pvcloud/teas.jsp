@@ -17,7 +17,11 @@ var str='${message}';
 if(str!=''){
   alert(str);
 }
-
+var closeFlg='${closeFlg}';
+if(closeFlg=1){
+	window.close();
+	window.opener.location.reload(); 
+}
 function loadProject(){
 	window.open("${CONTEXT_PATH}/teaInfo/addTea");
 }
@@ -178,6 +182,7 @@ td{
     				<th>茶编码</th>
     				<th>茶类型</th>
     				<th>茶价格</th>
+    				<th>参考价</th>
     				<th>茶叶发行状态</th>
     				<!-- 新增 -->
     				<th>品牌</th>
@@ -205,6 +210,7 @@ td{
 		    					<td>${s.keyCode}</td>
 		    					<td>${s.type}</td>
 		    					<td>${s.price }</td>
+		    					<td>${s.referencePrice}</td>
 		    					<td>${s.status}</td>
 		    					<!-- 新增 -->
 		    					<td>${s.brand}</td>

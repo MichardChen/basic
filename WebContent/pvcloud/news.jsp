@@ -18,7 +18,11 @@ var str='${message}';
 if(str!=''){
   alert(str);
 }
-
+var closeFlg='${closeFlg}';
+if(closeFlg=1){
+	window.close();
+	window.opener.location.reload(); 
+}
 function loadProject(data){
 	window.open("${CONTEXT_PATH}/newsInfo/addNews");
 }

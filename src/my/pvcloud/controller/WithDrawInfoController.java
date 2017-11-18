@@ -10,6 +10,7 @@ import my.core.model.CashJournal;
 import my.core.model.CodeMst;
 import my.core.model.Log;
 import my.core.model.Member;
+import my.core.model.MemberBankcard;
 import my.core.model.Store;
 import my.core.model.User;
 import my.pvcloud.model.BankRecordModel;
@@ -49,11 +50,15 @@ public class WithDrawInfoController extends Controller {
 			model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
 			Member member = Member.dao.queryById(record.getInt("member_id"));
 			if(member != null){
-				model.setName(member.getStr("name"));
+				model.setMemberId(member.getInt("id"));
+				MemberBankcard memberBankcard = MemberBankcard.dao.queryByMemberId(member.getInt("id"));
+				if(memberBankcard != null){
+					model.setName(memberBankcard.getStr("owner_name"));
+				}
 				model.setMoneys(StringUtil.toString(record.getBigDecimal("moneys")));
 				model.setMobile(member.getStr("mobile"));
-				model.setBalance(StringUtil.toString(member.getBigDecimal("moneys")));
 			}
+			model.setBalance(StringUtil.toString(record.getBigDecimal("balance")));
 			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 			model.setStatus(status==null?"":status.getStr("name"));
 			model.setStatusCd(record.getStr("status"));
@@ -87,11 +92,16 @@ public class WithDrawInfoController extends Controller {
 			model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
 			Member member = Member.dao.queryById(record.getInt("member_id"));
 			if(member != null){
-				model.setName(member.getStr("name"));
+				model.setMemberId(member.getInt("id"));
+				model.setName(member.getStr("mobile"));
 				model.setMoneys(StringUtil.toString(record.getBigDecimal("moneys")));
 				model.setMobile(member.getStr("mobile"));
-				model.setBalance(StringUtil.toString(member.getBigDecimal("moneys")));
+				MemberBankcard memberBankcard = MemberBankcard.dao.queryByMemberId(member.getInt("id"));
+				if(memberBankcard != null){
+					model.setName(memberBankcard.getStr("owner_name"));
+				}
 			}
+			model.setBalance(StringUtil.toString(record.getBigDecimal("balance")));
 			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 			model.setStatus(status==null?"":status.getStr("name"));
 			model.setStatusCd(record.getStr("status"));
@@ -133,11 +143,16 @@ public class WithDrawInfoController extends Controller {
 				model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
 				Member member = Member.dao.queryById(record.getInt("member_id"));
 				if(member != null){
-					model.setName(member.getStr("name"));
+					model.setMemberId(member.getInt("id"));
+					model.setName(member.getStr("mobile"));
 					model.setMoneys(StringUtil.toString(record.getBigDecimal("moneys")));
 					model.setMobile(member.getStr("mobile"));
-					model.setBalance(StringUtil.toString(member.getBigDecimal("moneys")));
+					MemberBankcard memberBankcard = MemberBankcard.dao.queryByMemberId(member.getInt("id"));
+					if(memberBankcard != null){
+						model.setName(memberBankcard.getStr("owner_name"));
+					}
 				}
+				model.setBalance(StringUtil.toString(record.getBigDecimal("balance")));
 				CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 				model.setStatus(status==null?"":status.getStr("name"));
 				model.setStatusCd(record.getStr("status"));
