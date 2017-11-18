@@ -1,13 +1,19 @@
 package my.app.controller;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 import ch.qos.logback.core.status.Status;
+import my.pvcloud.model.TestModel;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -15,33 +21,43 @@ public class Test {
 
 	public static void main(String[] args) {
 		
-		 System.out.println(getMonthFullDay(2017,2,1));
-		 JSONObject jsonObject = JSONObject.fromObject("{id:1}");
+		List<TestModel> list = new ArrayList<TestModel>();
+		List<BigDecimal> key = new ArrayList<BigDecimal>();
+		 TestModel t1 = new TestModel();
+		 t1.setId(1);
+		 t1.setName("11");
+		 t1.setDist(new BigDecimal("99.28"));
 		 
-		 System.out.println(jsonObject.getString("id"));
+		 TestModel t2 = new TestModel();
+		 t2.setId(2);
+		 t2.setName("199");
+		 t2.setDist(new BigDecimal("199.28"));
+		 
+		 TestModel t3 = new TestModel();
+		 t3.setId(3);
+		 t3.setName("299");
+		 t3.setDist(new BigDecimal("299.28"));
+		 
+		 list.add(t1);
+		 list.add(t2);
+		 list.add(t3);
+		 
+		 key.add(new BigDecimal("199.28"));
+		 key.add(new BigDecimal("99.28"));
+		 key.add(new BigDecimal("299.28"));
+		 
+		 Map<BigDecimal, TestModel> map = new HashMap<BigDecimal, TestModel>();
+		 map.put(new BigDecimal("199.28"), t2);
+		 map.put(new BigDecimal("99.28"), t1);
+		 map.put(new BigDecimal("299.28"), t3);
+		 
+		 Collections.sort(key);
+		 for(BigDecimal k  : key){
+			 System.out.println(k+"-"+map.get(k).getDist());
+		 }
 
 	}
 
-	/*public static int getDayOfMonth(){
-		   Calendar aCalendar = Calendar.getInstance(Locale.CHINA);
-		   int day=aCalendar.getActualMaximum(Calendar.DATE);
-		   return day;
-		}
-
-		//java获取当前月每天的日期
-		public static List getDayListOfMonth() {
-		    List<String> list = new ArrayList();
-		    Calendar aCalendar = Calendar.getInstance(Locale.CHINA);
-		    int year = aCalendar.get(Calendar.YEAR);//年份
-		    int month = aCalendar.get(Calendar.MONTH);//月份
-		    int day = aCalendar.getActualMaximum(Calendar.DATE);
-		    for (int i = 1; i <= day; i++) {
-		        String aDate = String.valueOf(year)+"/"+month+i;
-		        list.add(aDate);
-		    }
-		    return list;
-		}*/
-	
 	/**
      * 某一年某个月的每一天
      */
