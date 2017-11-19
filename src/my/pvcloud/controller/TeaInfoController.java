@@ -74,7 +74,7 @@ public class TeaInfoController extends Controller {
 			model.setName(tea.getStr("tea_title"));
 			if(wtm != null){
 				model.setStock(StringUtil.toString(wtm.getInt("stock")));
-				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
+				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtm.getInt("id"));
 				if(wtmItem != null){
 					String size = "";
 					CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
@@ -140,7 +140,7 @@ public class TeaInfoController extends Controller {
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 			if(wtm != null){
 				model.setStock(StringUtil.toString(wtm.getInt("stock")));
-				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
+				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtm.getInt("id"));
 				if(wtmItem != null){
 					String size = "";
 					CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
@@ -204,7 +204,7 @@ public class TeaInfoController extends Controller {
 				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 				if(wtm != null){
 					model.setStock(StringUtil.toString(wtm.getInt("stock")));
-					WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
+					WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtm.getInt("id"));
 					if(wtmItem != null){
 						String size = "";
 						CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
