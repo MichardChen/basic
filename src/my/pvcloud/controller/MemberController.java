@@ -74,6 +74,17 @@ public class MemberController extends Controller {
 			
 			model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 			model.setSex(member.getInt("sex")==1?"男":"女");
+			
+			Store store1 = Store.dao.queryMemberStore(member.getInt("id"));
+			if(store1 != null){
+				model.setStoreId(store1.getInt("id"));
+				model.setOpenStore(1);
+			}else{
+				model.setOpenStore(0);
+			}
+			
+			
+			
 			Store store = Store.dao.queryById(member.getInt("store_id"));
 			if(store != null){
 				model.setStore(store.getStr("store_name"));
@@ -144,6 +155,15 @@ public class MemberController extends Controller {
 					}
 				}
 				
+				Store store1 = Store.dao.queryMemberStore(member.getInt("id"));
+				if(store1 != null){
+					model.setStoreId(store1.getInt("id"));
+					model.setOpenStore(1);
+				}else{
+					model.setOpenStore(0);
+				}
+				
+				
 				Store store = Store.dao.queryById(member.getInt("store_id"));
 				if(store != null){
 					model.setStore(store.getStr("store_name"));
@@ -207,6 +227,14 @@ public class MemberController extends Controller {
 					if(sCodeMst != null){
 						model.setBankStatus(sCodeMst.getStr("name"));
 					}
+				}
+				
+				Store store1 = Store.dao.queryMemberStore(member.getInt("id"));
+				if(store1 != null){
+					model.setStoreId(store1.getInt("id"));
+					model.setOpenStore(1);
+				}else{
+					model.setOpenStore(0);
 				}
 				
 				Store store = Store.dao.queryById(member.getInt("store_id"));

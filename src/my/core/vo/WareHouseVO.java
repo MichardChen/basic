@@ -12,13 +12,13 @@ public class WareHouseVO implements Serializable{
 	private String updateTime;
 	private String createUser;
 	private String updateUser;
-	private int stock;
+	private String stock;
 	
 	
-	public int getStock() {
+	public String getStock() {
 		return stock;
 	}
-	public void setStock(int stock) {
+	public void setStock(String stock) {
 		this.stock = stock;
 	}
 	public String getUpdateTime() {

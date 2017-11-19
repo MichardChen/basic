@@ -167,7 +167,95 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		return WarehouseTeaMember.dao.find("select * from t_warehouse_tea_member where member_id = ? and member_type_cd=? order by create_time desc limit ?,?",userId,memberTypeCd,fromRow,pageSize);
 	}
 	
-	public Long queryWarehouseTeaMemberListCount(int wareHouseId){
-		return Db.queryLong("select count(1) from t_warehouse_tea_member where warehouse_id="+wareHouseId+" and stock is not null and stock != 0");
+	public BigDecimal queryWarehouseTeaMemberListCount(int wareHouseId){
+		return Db.queryBigDecimal("select sum(stock) from t_warehouse_tea_member where warehouse_id="+wareHouseId);
+	}
+	
+	public Page<WarehouseTeaMember> queryByPageParams(int page
+											,int size
+											,String date
+											,String mobile
+											,String saleUserTypeCd
+											,String tea){
+	
+		StringBuffer strBuf=new StringBuffer();
+		if(StringUtil.isBlank(tea)){
+			
+			if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
+				//用户
+				if(StringUtil.isNoneBlank(date)){
+					strBuf.append(" and a.create_time like '%"+date+"%'");
+				}
+				
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append(" and b.mobile like '%"+mobile+"%'");
+				}
+				strBuf.append(" and a.member_type_cd like '%"+Constants.USER_TYPE.USER_TYPE_CLIENT+"%'");
+				String sql=" from t_warehouse_tea_member a inner join t_member b on a.member_id=b.id where 1=1 "+strBuf+" order by a.create_time desc";
+				String select="select a.* ";
+				return WarehouseTeaMember.dao.paginate(page, size, select, sql);
+			}else if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.PLATFORM_USER)){
+				//平台
+				if(StringUtil.isNoneBlank(date)){
+					strBuf.append(" and a.create_time like '%"+date+"%'");
+				}
+				
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append(" and b.mobile like '%"+mobile+"%'");
+				}
+				strBuf.append(" and a.member_type_cd like '%"+Constants.USER_TYPE.PLATFORM_USER+"%'");
+				String sql=" from t_warehouse_tea_member a inner join s_user b on a.member_id=b.user_id where 1=1 "+strBuf+" order by a.create_time desc";
+				String select="select a.* ";
+				return WarehouseTeaMember.dao.paginate(page, size, select, sql);
+			}else{
+				if(StringUtil.isNoneBlank(date)){
+					strBuf.append(" and a.create_time like '%"+date+"%'");
+				}
+				
+				String sql=" from t_warehouse_tea_member a where 1=1 "+strBuf+" order by a.create_time desc";
+				String select="select a.* ";
+				return WarehouseTeaMember.dao.paginate(page, size, select, sql);
+			}
+		}else{
+			
+			//茶叶不为空
+			if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.USER_TYPE_CLIENT)){
+				//用户
+				if(StringUtil.isNoneBlank(date)){
+					strBuf.append(" and a.create_time like '%"+date+"%'");
+				}
+				
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append(" and b.mobile like '%"+mobile+"%'");
+				}
+				strBuf.append(" and c.tea_title like '%"+tea+"%'");
+				strBuf.append(" and a.member_type_cd like '%"+Constants.USER_TYPE.USER_TYPE_CLIENT+"%'");
+				String sql=" from t_warehouse_tea_member a inner join t_member b on a.member_id=b.id inner join t_tea c on a.tea_id=c.id where 1=1 "+strBuf+" order by a.create_time desc";
+				String select="select a.* ";
+				return WarehouseTeaMember.dao.paginate(page, size, select, sql);
+			}else if(StringUtil.equals(saleUserTypeCd, Constants.USER_TYPE.PLATFORM_USER)){
+				//平台
+				if(StringUtil.isNoneBlank(date)){
+					strBuf.append(" and a.create_time like '%"+date+"%'");
+				}
+				
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append(" and b.mobile like '%"+mobile+"%'");
+				}
+				strBuf.append(" and c.tea_title like '%"+tea+"%'");
+				strBuf.append(" and a.member_type_cd like '%"+Constants.USER_TYPE.PLATFORM_USER+"%'");
+				String sql=" from t_warehouse_tea_member a inner join s_user b on a.member_id=b.user_id inner join t_tea c on a.tea_id=c.id where 1=1 "+strBuf+" order by a.create_time desc";
+				String select="select a.* ";
+				return WarehouseTeaMember.dao.paginate(page, size, select, sql);
+			}else{
+				if(StringUtil.isNoneBlank(date)){
+					strBuf.append(" and a.create_time like '%"+date+"%'");
+				}
+				strBuf.append(" and c.tea_title like '%"+tea+"%'");
+				String sql=" from t_warehouse_tea_member a inner join t_tea c on a.tea_id=c.id where 1=1 "+strBuf+" order by a.create_time desc";
+				String select="select a.* ";
+				return WarehouseTeaMember.dao.paginate(page, size, select, sql);
+			}
+		}
 	}
 }

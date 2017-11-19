@@ -28,7 +28,7 @@ public class StoreImage extends Model<StoreImage> {
 	}
 
 	public List<StoreImage> queryStoreImages(int storeId){
-		return StoreImage.dao.find("select * from t_store_image where store_id=? and flg=1 order by create_time desc,seq asc",storeId);
+		return StoreImage.dao.find("select * from t_store_image where store_id=? and flg=1 order by seq asc,create_time asc",storeId);
 	}
 	
 	public StoreImage queryStoreFirstImages(int storeId){

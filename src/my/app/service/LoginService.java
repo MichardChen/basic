@@ -298,13 +298,7 @@ public class LoginService {
 			return data;
 		}
 		AcceessToken token = AcceessToken.dao.queryById(member.getInt("id"),dto.getPlatForm());
-		if(token == null){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("对不起，您还没有登录");
-			return data;
-		}
-		
-		if(!StringUtil.equals(token.getStr("token"), dto.getAccessToken())){
+		if((token == null)  ||(!StringUtil.equals(token.getStr("token"), dto.getAccessToken()))){
 			data.setCode("5701");
 			data.setMessage("对不起，您的账号在另一处登录");
 			return data;
@@ -2202,7 +2196,8 @@ public class LoginService {
 			BigDecimal pieceFromPrice = teaPrice.getBigDecimal("from_price") == null ? new BigDecimal("0") : teaPrice.getBigDecimal("from_price");
 			BigDecimal pieceToPrice = teaPrice.getBigDecimal("to_price") == null ? new BigDecimal("0") : teaPrice.getBigDecimal("to_price");
 			
-			pieceModel.setPriceStr(pieceFromPrice+"元/片-"+pieceToPrice+"元/片");
+			//pieceModel.setPriceStr(pieceFromPrice+"元/片-"+pieceToPrice+"元/片");
+			pieceModel.setPriceStr(pieceFromPrice+"元/片 "+teaPrice.getStr("mark"));
 			pieceModel.setSizeTypeCd(Constants.TEA_UNIT.PIECE);
 			
 			BigDecimal itemFromPrice = new BigDecimal("0");
@@ -2213,7 +2208,8 @@ public class LoginService {
 			if(pieceToPrice.compareTo(new BigDecimal("0"))==1){
 				itemToPrice = pieceToPrice.multiply(new BigDecimal(tea.getInt("size")));
 			}
-			itemModel.setPriceStr(itemFromPrice+"元/件-"+itemToPrice+"元/件");
+			//itemModel.setPriceStr(itemFromPrice+"元/件-"+itemToPrice+"元/件");
+			itemModel.setPriceStr(itemFromPrice+"元/件 "+teaPrice.getStr("mark"));
 			itemModel.setSizeTypeCd(Constants.TEA_UNIT.ITEM);
 		}else{
 			pieceModel.setPriceStr("暂无参考价");
@@ -2269,13 +2265,13 @@ public class LoginService {
 		}
 		BigDecimal userAmount = member.getBigDecimal("moneys");
 		BigDecimal onePoint = new BigDecimal("0.01");
-		BigDecimal serviceFee = onePoint.multiply(salePrice.multiply(new BigDecimal(saleNum)));
+		/*BigDecimal serviceFee = onePoint.multiply(salePrice.multiply(new BigDecimal(saleNum)));
 		if(userAmount.compareTo(serviceFee)==-1){
 			//余额不足
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("您的账号余额不足，不足以支付1%服务费，请先充值");
 			return data;
-		}
+		}*/
 		
 		if(warehouseMemberTeaId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -2313,9 +2309,10 @@ public class LoginService {
 				BigDecimal pieceFromPrice = teaPrice.getBigDecimal("from_price");
 				BigDecimal pieceToPrice = teaPrice.getBigDecimal("to_price");
 				System.out.println(pieceFromPrice+","+pieceToPrice+",售价"+salePrice);
-				if((salePrice.compareTo(pieceFromPrice)==-1)||(salePrice.compareTo(pieceToPrice))==1){
+				//if((salePrice.compareTo(pieceFromPrice)==-1)||(salePrice.compareTo(pieceToPrice))==1){
+				if(salePrice.compareTo(pieceFromPrice)==-1){
 					data.setCode(Constants.STATUS_CODE.FAIL);
-					data.setMessage("对不起，出售单价须在参考价范围内");
+					data.setMessage("对不起，出售单价不能低于参考价");
 					return data;
 				}
 			}
@@ -2336,9 +2333,10 @@ public class LoginService {
 				BigDecimal itemFromPrice = teaPrice.getBigDecimal("from_price").multiply(new BigDecimal(tea.getInt("size")));
 				BigDecimal itemToPrice = teaPrice.getBigDecimal("to_price").multiply(new BigDecimal(tea.getInt("size")));
 				System.out.println(itemFromPrice+","+itemToPrice+",售价"+salePrice);
-				if((salePrice.compareTo(itemFromPrice)==-1)||(salePrice.compareTo(itemToPrice))==1){
+				//if((salePrice.compareTo(itemFromPrice)==-1)||(salePrice.compareTo(itemToPrice))==1){
+				if(salePrice.compareTo(itemFromPrice)==-1){
 					data.setCode(Constants.STATUS_CODE.FAIL);
-					data.setMessage("对不起，出售单价须在参考价范围内");
+					data.setMessage("对不起，出售单价不能低于参考价");
 					return data;
 				}
 			}
@@ -2371,7 +2369,7 @@ public class LoginService {
 					boolean save = SaleOrder.dao.saveInfo(order);
 					if(save){
 						//扣1%服务费
-						int rets = Member.dao.updateMoneys(userId, userAmount.subtract(serviceFee));
+						/*int rets = Member.dao.updateMoneys(userId, userAmount.subtract(serviceFee));
 						if(rets != 0){
 							//保存记录
 							ServiceFee fee = new ServiceFee();
@@ -2391,10 +2389,13 @@ public class LoginService {
 								data.setCode(Constants.STATUS_CODE.FAIL);
 								data.setMessage("卖茶失败");
 							}
+							
 						}else{
 							data.setCode(Constants.STATUS_CODE.FAIL);
 							data.setMessage("卖茶失败");
-						}
+						}*/
+						data.setCode(Constants.STATUS_CODE.SUCCESS);
+						data.setMessage("卖茶成功");
 					}else{
 						data.setCode(Constants.STATUS_CODE.FAIL);
 						data.setMessage("卖茶失败");

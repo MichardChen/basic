@@ -1,6 +1,7 @@
 package my.pvcloud.controller;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.huadalink.route.ControllerBind;
@@ -31,7 +32,7 @@ public class WareHouseController extends Controller {
 	 * 仓库列表
 	 */
 	public void index(){
-		
+		removeSessionAttr("title");
 		Page<WareHouse> list = service.queryByPage(page, size);
 		ArrayList<WareHouseVO> models = new ArrayList<>();
 		WareHouseVO model = null;
@@ -58,11 +59,11 @@ public class WareHouseController extends Controller {
 				model.setUpdateUser("");
 			}
 			
-			Long stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
+			BigDecimal stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
 			if(stock != null){
-				model.setStock(stock.intValue());
+				model.setStock(StringUtil.toString(stock));
 			}else{
-				model.setStock(0);
+				model.setStock("0");
 			}
 			models.add(model);
 		}
@@ -107,11 +108,11 @@ public class WareHouseController extends Controller {
 				model.setUpdateUser("");
 			}
 			
-			Long stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
+			BigDecimal stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
 			if(stock != null){
-				model.setStock(stock.intValue());
+				model.setStock(StringUtil.toString(stock));
 			}else{
-				model.setStock(0);
+				model.setStock("0");
 			}
 			models.add(model);
 		}
@@ -156,11 +157,11 @@ public class WareHouseController extends Controller {
 				}else{
 					model.setUpdateUser("");
 				}
-				Long stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
+				BigDecimal stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
 				if(stock != null){
-					model.setStock(stock.intValue());
+					model.setStock(StringUtil.toString(stock));
 				}else{
-					model.setStock(0);
+					model.setStock("0");
 				}
 				models.add(model);
 			}
@@ -230,7 +231,7 @@ public class WareHouseController extends Controller {
 	public void del(){
 		try{
 			int id = getParaToInt("id");
-			Long wtmCounts = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(id);
+			BigDecimal wtmCounts = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(id);
 			if((wtmCounts != null)&&(wtmCounts.intValue() != 0)){
 				setAttr("message", "删除失败，此仓库还有在库茶叶，不能删除");
 			}else{

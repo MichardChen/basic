@@ -18,6 +18,79 @@ if(str!=''){
   alert(str);
 }
 
+function check(){
+	
+	//门店名称
+	var storeName = $("#storeName").val();
+	if(storeName == ""){
+		 alert("请输入门店名称");
+		 return false;
+	}
+	//所属地区
+	/* var province = $("#province").val();
+	var city = $("#city").val();
+	var district = $("#district").val();
+	if(province == "" || province == 0 || city == "" || city == 0 || district == "" || district == 0){
+		 alert("请选择所属地区");
+		 return false;
+	} */
+	var cityDistrict = $("#cityDistrict").val();
+	if(cityDistrict == ""){
+		 alert("请输入所属地区");
+		 return false;
+	}
+	//门店地址
+	var address = $("#address").val();
+	if(address == ""){
+		 alert("请输入门店地址");
+		 return false;
+	}
+	//经纬度
+	var longtitude = $("#longtitude").val();
+	var latitude = $("#latitude").val();
+	if(longtitude == "" || latitude == ""){
+		 alert("请输入经纬度");
+		 return false;
+	}
+	//主营茶叶
+	var bussineeTea = $("#bussineeTea").val();
+	if(bussineeTea == ""){
+		 alert("请输入主营茶叶");
+		 return false;
+	}
+	//营业时间
+	var bussineeFromTime = $("#fromTime").val();
+	var bussineeToTime = $("#toTime").val();
+	if(bussineeFromTime == "" || bussineeToTime == ""){
+		 alert("请输入营业时间");
+		 return false;
+	}
+	//联系电话
+	var mobile = $("#mobile").val();
+	if(mobile == ""){
+		 alert("请输入联系电话");
+		 return false;
+	}
+	//门店详情
+	/* var storeDetail = $("#storeDetail").val();
+	if(storeDetail == ""){
+		 alert("请输入门店详情");
+		 return false;
+	} */
+	//至少输入一张图片	
+	var img1 = $("#img1").val();
+	var img2 = $("#img2").val();
+	var img3 = $("#img3").val();
+	var img4 = $("#img4").val();
+	var img5 = $("#img5").val();
+	var img6 = $("#img6").val();
+	if((img1 == "") && (img2 == "")  && (img3 == "") && (img4 == "") && (img5 == "") && (img6 == "")){
+		 alert("请至少输入一张图片");
+		 return false;
+	}
+	return true;
+}
+
 function loadProject(data){
 	if(data==0){
 		$(".modal-title").html("新增");
@@ -25,11 +98,23 @@ function loadProject(data){
 		$(".modal-title").html("修改");
 	}
 	$.ajax({
-		url : "${CONTEXT_PATH}/storeInfo/alter",
+		url : "${CONTEXT_PATH}/storeInfo/edit",
 		data : {'id':data},
 		dataType : "html",
 		success : function(result){
 			$('#model').html(result);
+		}
+	});
+}
+
+function loadProject1(data){
+	$(".modal-title").html("查看");
+	$.ajax({
+		url : "${CONTEXT_PATH}/storeInfo/alter",
+		data : {'id':data},
+		dataType : "html",
+		success : function(result){
+			$('#model1').html(result);
 		}
 	});
 }
@@ -180,7 +265,8 @@ td{
 		    							<input type="button" value="审核未通过" class="ys3" style="width: 100px;" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=110004&id=${s.id}';}"/>
 		    							<input type="button" value="审核通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=110003&id=${s.id}';}"/>
 		    							<input type="button" value="下载二维码" class="ys3" style="width: 100px;" onclick="downloadImg(${s.id})"/>
-										<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+										<input type="button" value="修改门店" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+										<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
 										<input type="button" value="查看会员" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeInfo/queryMemberList?flg=1&storeId=${s.id}';"/>
 								</td>
 		    				</tr>
@@ -210,7 +296,7 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">修改</h4>
 			</div>
-			<form action="${CONTEXT_PATH}/storeInfo/updateStoreImages" method="post" enctype="multipart/form-data">
+			<form action="${CONTEXT_PATH}/storeInfo/updateStoreImages" method="post" enctype="multipart/form-data" onsubmit="return check();">
 				<div class="modal-body" id="model">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
@@ -218,6 +304,18 @@ td{
 					<input type="submit" class="btn btn-success" value="保存"/>
 				</div>
 			</form>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myModal1" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="width: 120%;margin-left:-10%;">
+			<div class="modal-header">
+				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">查看</h4>
+			</div>
+				<div class="modal-body" id="model1">
+				</div>
 		</div>
 	</div>
 </div>

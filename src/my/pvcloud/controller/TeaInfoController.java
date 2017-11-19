@@ -799,6 +799,7 @@ public class TeaInfoController extends Controller {
 		teaPrice.set("expire_time", Timestamp.valueOf(StringUtil.checkCode(getPara("expireDate"))+" 23:59:59"));
 		teaPrice.set("update_time", DateUtil.getNowTimestamp());
 		teaPrice.set("create_time", DateUtil.getNowTimestamp());
+		teaPrice.set("mark", StringUtil.checkCode(getPara("mark")));
 		boolean saveTeaPrice = TeaPrice.dao.saveInfo(teaPrice);
 		if(saveTeaPrice){
 			setAttr("message","新增成功");

@@ -18,7 +18,23 @@ public class MemberVO implements Serializable{
 	private String remark;
 	private String keyCode;
 	private String bankStatus;
+	private int openStore;
+	private int storeId;
 	
+	
+	
+	public int getStoreId() {
+		return storeId;
+	}
+	public void setStoreId(int storeId) {
+		this.storeId = storeId;
+	}
+	public int getOpenStore() {
+		return openStore;
+	}
+	public void setOpenStore(int openStore) {
+		this.openStore = openStore;
+	}
 	public String getBankStatus() {
 		return bankStatus;
 	}

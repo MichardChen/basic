@@ -63,6 +63,15 @@ if(str!=''){
 				</td>
 			</tr>
 		</c:forEach>
+		<%-- <c:forEach var="i" begin="1" end="${imgSize}" step="1" varStatus="status">
+			<tr>
+				<td>
+				</td>
+				<td>
+						<input type="file" name="img${status.index+1}"/>
+				</td>
+			</tr>
+		</c:forEach> --%>
 	</table>
 	<input type="hidden" name="storeId" id="storeId" value="${model.id}"/>
 </div>

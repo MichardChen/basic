@@ -129,10 +129,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>文档类型</td>
 			<td>
 						<select style="height:30px;width:120px;" name="typeCd" id="typeCd"  disabled="disabled">
-							<option value="060001" <c:if test="${document.type_cd == '060001'}"> selected="selected"</c:if>>发售说明</option>
+							<option value="060001" <c:if test="${document.type_cd == '060001'}"> selected="selected"</c:if>>发行说明</option>
 							<option value="060002" <c:if test="${document.type_cd == '060002'}"> selected="selected"</c:if>>使用帮助</option>
 							<option value="060003" <c:if test="${document.type_cd == '060003'}"> selected="selected"</c:if>>协议合同</option>
-							<option value="060004" <c:if test="${document.type_cd == '060004'}"> selected="selected"</c:if>>新茶发售备注</option>
+							<option value="060004" <c:if test="${document.type_cd == '060004'}"> selected="selected"</c:if>>新茶发行通知</option>
 							<option value="060005" <c:if test="${document.type_cd == '060005'}"> selected="selected"</c:if>>认证提示</option>
 							<option value="060006" <c:if test="${document.type_cd == '060006'}"> selected="selected"</c:if>>存储规则和仓库介绍</option>
 							<option value="060007" <c:if test="${document.type_cd == '060007'}"> selected="selected"</c:if>>茶叶包装及收费标准</option>

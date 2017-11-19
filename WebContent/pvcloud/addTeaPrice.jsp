@@ -43,6 +43,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>有效截止日期</td>
 			<td><input type="text" name="expireDate" id="expireDate" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/></td>
 		</tr>
+		<tr>
+			<td>备注</td>
+			<td><input type="text" name="mark" id="mark" style="width: 200px;"/></td>
+		</tr>
 	</table> 
 	<input type="hidden" id="teaId" name="teaId" value="${teaId}"/>
 </div>

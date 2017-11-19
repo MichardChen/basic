@@ -41,8 +41,10 @@ import my.core.model.TeaPrice;
 import my.core.model.WarehouseTeaMember;
 import my.core.model.WarehouseTeaMemberItem;
 import my.core.vo.MemberVO;
+import my.pvcloud.model.CityModel;
 import my.pvcloud.model.StoreModel;
 import my.pvcloud.model.TeaModel;
+import my.pvcloud.service.Service;
 import my.pvcloud.service.StoreService;
 import my.pvcloud.service.TeaService;
 import my.pvcloud.util.DateUtil;
@@ -56,6 +58,7 @@ import my.pvcloud.util.StringUtil;
 public class StoreInfoController extends Controller {
 
 	StoreService service = Enhancer.enhance(StoreService.class);
+	Service commonService = Enhancer.enhance(Service.class);
 	
 	int page=1;
 	int size=10;
@@ -349,9 +352,24 @@ public class StoreInfoController extends Controller {
 		for(StoreImage imgImage : imgs){
 			url.add(imgImage.getStr("img"));
 		}
+		setAttr("imgSize", 6-imgs.size());
 		setAttr("model", store);
 		setAttr("imgs", url);
 		render("storeInfoAlter.jsp");
+	}
+	
+	public void edit(){
+		int id = StringUtil.toInteger(getPara("id"));
+		Store store = service.queryById(id);
+		List<StoreImage> imgs = StoreImage.dao.queryStoreImages(id);
+		List<String> url = new ArrayList<>();
+		for(StoreImage imgImage : imgs){
+			url.add(imgImage.getStr("img"));
+		}
+		setAttr("imgSize", imgs.size());
+		setAttr("model", store);
+		setAttr("imgs", url);
+		render("editStore.jsp");
 	}
 	
 	/**
@@ -436,6 +454,34 @@ public class StoreInfoController extends Controller {
 		boolean ret5 = true;
 		boolean ret6 = true;
 		
+		String storeName = StringUtil.checkCode(getPara("storeName"));
+		String cityDistrict = StringUtil.checkCode(getPara("cityDistrict"));
+		String address = StringUtil.checkCode(getPara("address"));
+		Float longtitude = StringUtil.toFloat(StringUtil.checkCode(getPara("longtitude")));
+		Float latitude = StringUtil.toFloat(StringUtil.checkCode(getPara("latitude")));
+		String bussineeTea = StringUtil.checkCode(getPara("bussineeTea"));
+		String mobile = StringUtil.checkCode(getPara("mobile"));
+		String fromTime = StringUtil.checkCode(getPara("fromTime"));
+		String toTime = StringUtil.checkCode(getPara("toTime"));
+		String storeDetail = StringUtil.checkCode(getPara("storeDetail"));
+		String status = StringUtil.checkCode(getPara("status"));
+		
+		Store store2 = new Store();
+		store2.set("id",storeId);
+		store2.set("store_address", address);
+		store2.set("longitude", longtitude);
+		store2.set("latitude", latitude);
+		store2.set("store_name", storeName);
+		store2.set("link_phone", mobile);
+		store2.set("business_tea", bussineeTea);
+		store2.set("business_fromtime", fromTime);
+		store2.set("business_totime", toTime);
+		store2.set("store_desc", storeDetail);
+		store2.set("update_time", DateUtil.getNowTimestamp());
+		store2.set("status", status);
+		store2.set("city_district", cityDistrict);
+
+		boolean updateFlg = Store.dao.updateInfo(store2);
 		//上传文件
 		if(uploadFile1 != null){
 			String uuid = UUID.randomUUID().toString();
@@ -454,6 +500,16 @@ public class StoreInfoController extends Controller {
 		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		    ret1 = StoreImage.dao.updateInfo(logo1, storeId, 1);
+		    if(!ret1){
+		    	StoreImage storeImage = new StoreImage();
+				storeImage.set("store_id", storeId);
+				storeImage.set("img", logo1);
+				storeImage.set("flg", 1);
+				storeImage.set("seq", 1);
+				storeImage.set("create_time", DateUtil.getNowTimestamp());
+				storeImage.set("update_time", DateUtil.getNowTimestamp());
+				ret1 = StoreImage.dao.saveInfo(storeImage);
+		    }
 		}
 		if(uploadFile2 != null){
 			String uuid = UUID.randomUUID().toString();
@@ -472,6 +528,16 @@ public class StoreInfoController extends Controller {
 		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		    ret2 = StoreImage.dao.updateInfo(logo2, storeId, 2);
+		    if(!ret2){
+		    	StoreImage storeImage = new StoreImage();
+				storeImage.set("store_id", storeId);
+				storeImage.set("img", logo2);
+				storeImage.set("flg", 1);
+				storeImage.set("seq", 2);
+				storeImage.set("create_time", DateUtil.getNowTimestamp());
+				storeImage.set("update_time", DateUtil.getNowTimestamp());
+				ret2 = StoreImage.dao.saveInfo(storeImage);
+		    }
 		}
 		if(uploadFile3 != null){
 			String uuid = UUID.randomUUID().toString();
@@ -490,6 +556,16 @@ public class StoreInfoController extends Controller {
 		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		    ret3 = StoreImage.dao.updateInfo(logo3, storeId, 3);
+		    if(!ret3){
+		    	StoreImage storeImage = new StoreImage();
+				storeImage.set("store_id", storeId);
+				storeImage.set("img", logo3);
+				storeImage.set("flg", 1);
+				storeImage.set("seq", 3);
+				storeImage.set("create_time", DateUtil.getNowTimestamp());
+				storeImage.set("update_time", DateUtil.getNowTimestamp());
+				ret3 = StoreImage.dao.saveInfo(storeImage);
+		    }
 		}
 		if(uploadFile4 != null){
 			String uuid = UUID.randomUUID().toString();
@@ -508,6 +584,16 @@ public class StoreInfoController extends Controller {
 		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		    ret4 = StoreImage.dao.updateInfo(logo4, storeId, 4);
+		    if(!ret4){
+		    	StoreImage storeImage = new StoreImage();
+				storeImage.set("store_id", storeId);
+				storeImage.set("img", logo4);
+				storeImage.set("flg", 1);
+				storeImage.set("seq", 4);
+				storeImage.set("create_time", DateUtil.getNowTimestamp());
+				storeImage.set("update_time", DateUtil.getNowTimestamp());
+				ret4 = StoreImage.dao.saveInfo(storeImage);
+		    }
 		}
 		if(uploadFile5 != null){
 			String uuid = UUID.randomUUID().toString();
@@ -526,6 +612,16 @@ public class StoreInfoController extends Controller {
 		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		    ret5 = StoreImage.dao.updateInfo(logo5, storeId, 5);
+		    if(!ret5){
+		    	StoreImage storeImage = new StoreImage();
+				storeImage.set("store_id", storeId);
+				storeImage.set("img", logo5);
+				storeImage.set("flg", 1);
+				storeImage.set("seq", 5);
+				storeImage.set("create_time", DateUtil.getNowTimestamp());
+				storeImage.set("update_time", DateUtil.getNowTimestamp());
+				ret5 = StoreImage.dao.saveInfo(storeImage);
+		    }
 		}
 		if(uploadFile6 != null){
 			String uuid = UUID.randomUUID().toString();
@@ -544,13 +640,276 @@ public class StoreInfoController extends Controller {
 		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		    ret6 = StoreImage.dao.updateInfo(logo6, storeId, 6);
+		    if(!ret6){
+		    	StoreImage storeImage = new StoreImage();
+				storeImage.set("store_id", storeId);
+				storeImage.set("img", logo6);
+				storeImage.set("flg", 1);
+				storeImage.set("seq", 6);
+				storeImage.set("create_time", DateUtil.getNowTimestamp());
+				storeImage.set("update_time", DateUtil.getNowTimestamp());
+				ret6 = StoreImage.dao.saveInfo(storeImage);
+		    }
 		}
-		if(ret1 && ret2 && ret3 && ret4 && ret5 && ret6){
+		if(updateFlg && ret1 && ret2 && ret3 && ret4 && ret5 && ret6){
 			setAttr("message", "更新成功");
 		}else{
 			setAttr("message", "更新失败");
 		}
-		Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "修改门店图片，门店id："+storeId);
+		Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "修改门店信息，门店id："+storeId);
 		index();
+	}
+	
+	//新增门店初始化
+	public void addStoreInit(){
+		int id = StringUtil.toInteger(getPara("id"));
+		Store store = service.queryById(id);
+		if(store != null){
+			setAttr("message", "对不起，该用户已经有开通的门店，暂时不能开第二家");
+		}
+		//获取省市区的数据
+		List<CityModel> provinces = commonService.queryCity(0, 0);
+		setAttr("provinces", provinces);
+		setAttr("memberId", id);
+		render("addStore.jsp");
+	}
+	
+	//新增门店
+	public void saveStore(){
+		
+		UploadFile uploadFile = getFile("img1");
+		UploadFile uploadFile1 = getFile("img2");
+		UploadFile uploadFile2 = getFile("img3");
+		UploadFile uploadFile3 = getFile("img4");
+		UploadFile uploadFile4 = getFile("img5");
+		UploadFile uploadFile5 = getFile("img6");
+		
+		//判断是否开店
+		int memberId = StringUtil.toInteger(getPara("memberId"));
+		Store store = service.queryById(memberId);
+		if(store != null){
+			setAttr("message", "对不起，该用户已经有开通的门店，暂时不能开第二家");
+			index();
+		}else{
+			String storeName = StringUtil.checkCode(getPara("storeName"));
+			String cityDistrict = StringUtil.checkCode(getPara("cityDistrict"));
+			String address = StringUtil.checkCode(getPara("address"));
+			Float longtitude = StringUtil.toFloat(StringUtil.checkCode(getPara("longtitude")));
+			Float latitude = StringUtil.toFloat(StringUtil.checkCode(getPara("latitude")));
+			String bussineeTea = StringUtil.checkCode(getPara("bussineeTea"));
+			String mobile = StringUtil.checkCode(getPara("mobile"));
+			String fromTime = StringUtil.checkCode(getPara("fromTime"));
+			String toTime = StringUtil.checkCode(getPara("toTime"));
+			String storeDetail = StringUtil.checkCode(getPara("storeDetail"));
+			String status = StringUtil.checkCode(getPara("status"));
+			
+			Store store2 = new Store();
+			store2.set("province_id", 0);
+			store2.set("city_id", 0);
+			store2.set("district_id", 0);
+			
+			store2.set("store_address", address);
+			store2.set("longitude", longtitude);
+			store2.set("latitude", latitude);
+			store2.set("store_name", storeName);
+			store2.set("link_phone", mobile);
+			store2.set("business_tea", bussineeTea);
+			store2.set("business_fromtime", fromTime);
+			store2.set("business_totime", toTime);
+			store2.set("store_desc", storeDetail);
+			store2.set("member_id", memberId);
+			store2.set("create_time", DateUtil.getNowTimestamp());
+			store2.set("update_time", DateUtil.getNowTimestamp());
+			store2.set("status", status);
+			store2.set("city_district", cityDistrict);
+			store2.set("key_code", StringUtil.getStoreKeyCode());
+			
+			int id = Store.dao.saveInfos(store2);
+			FileService fs=new FileService();
+			
+			String logo1 = "";
+			String logo2 = "";
+			String logo3 = "";
+			String logo4 = "";
+			String logo5 = "";
+			String logo6 = "";
+			boolean ret1 = true;
+			boolean ret2 = true;
+			boolean ret3 = true;
+			boolean ret4 = true;
+			boolean ret5 = true;
+			boolean ret6 = true;
+			
+			//上传文件
+			//第一张图
+			String uuid1 = UUID.randomUUID().toString();
+			if(uploadFile != null){
+				String fileName = uploadFile.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid1+"."+names[1]);
+			    logo1 = Constants.HOST.STORE+uuid1+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage = new StoreImage();
+				storeImage.set("store_id", id);
+				storeImage.set("img", logo1);
+				storeImage.set("flg", 1);
+				storeImage.set("seq", 1);
+				storeImage.set("create_time", DateUtil.getNowTimestamp());
+				storeImage.set("update_time", DateUtil.getNowTimestamp());
+				ret1 = StoreImage.dao.saveInfo(storeImage);
+			}
+			//第二张图
+			String uuid2 = UUID.randomUUID().toString();
+			if(uploadFile1 != null){
+				String fileName = uploadFile1.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile1.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid2+"."+names[1]);
+			    logo2 = Constants.HOST.STORE+uuid2+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage1 = new StoreImage();
+				storeImage1.set("store_id", id);
+				storeImage1.set("img", logo2);
+				storeImage1.set("flg", 1);
+				storeImage1.set("seq", 2);
+				storeImage1.set("create_time", DateUtil.getNowTimestamp());
+				storeImage1.set("update_time", DateUtil.getNowTimestamp());
+				ret2 = StoreImage.dao.saveInfo(storeImage1);
+			}
+			//第三张图
+			String uuid3 = UUID.randomUUID().toString();
+			if(uploadFile2 != null){
+				String fileName = uploadFile2.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile2.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid3+"."+names[1]);
+			    logo3 = Constants.HOST.STORE+uuid3+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage2 = new StoreImage();
+				storeImage2.set("store_id", id);
+				storeImage2.set("img", logo3);
+				storeImage2.set("flg", 1);
+				storeImage2.set("seq", 3);
+				storeImage2.set("create_time", DateUtil.getNowTimestamp());
+				storeImage2.set("update_time", DateUtil.getNowTimestamp());
+				ret3 = StoreImage.dao.saveInfo(storeImage2);
+			}
+			//第四张图
+			String uuid4 = UUID.randomUUID().toString();
+			if(uploadFile3 != null){
+				String fileName = uploadFile3.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile3.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid4+"."+names[1]);
+			    logo4 = Constants.HOST.STORE+uuid4+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage2 = new StoreImage();
+				storeImage2.set("store_id", id);
+				storeImage2.set("img", logo4);
+				storeImage2.set("flg", 1);
+				storeImage2.set("seq", 4);
+				storeImage2.set("create_time", DateUtil.getNowTimestamp());
+				storeImage2.set("update_time", DateUtil.getNowTimestamp());
+				ret4 = StoreImage.dao.saveInfo(storeImage2);
+			}
+			//第五张图
+			String uuid5 = UUID.randomUUID().toString();
+			if(uploadFile4 != null){
+				String fileName = uploadFile4.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile4.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid5+"."+names[1]);
+			    logo5 = Constants.HOST.STORE+uuid5+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage2 = new StoreImage();
+				storeImage2.set("store_id", id);
+				storeImage2.set("img", logo5);
+				storeImage2.set("flg", 1);
+				storeImage2.set("seq", 5);
+				storeImage2.set("create_time", DateUtil.getNowTimestamp());
+				storeImage2.set("update_time", DateUtil.getNowTimestamp());
+				ret5 = StoreImage.dao.saveInfo(storeImage2);
+			}
+			//第六张图
+			String uuid6 = UUID.randomUUID().toString();
+			if(uploadFile5 != null){
+				String fileName = uploadFile5.getOriginalFileName();
+				String[] names = fileName.split("\\.");
+			    File file=uploadFile5.getFile();
+			    File t=new File(Constants.FILE_HOST.STORE+uuid6+"."+names[1]);
+			    logo6 = Constants.HOST.STORE+uuid6+"."+names[1];
+			    try{
+			        t.createNewFile();
+			    }catch(IOException e){
+			        e.printStackTrace();
+			    }
+			    
+			    fs.fileChannelCopy(file, t);
+			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    file.delete();
+			    
+			    StoreImage storeImage2 = new StoreImage();
+				storeImage2.set("store_id", id);
+				storeImage2.set("img", logo6);
+				storeImage2.set("flg", 1);
+				storeImage2.set("seq", 6);
+				storeImage2.set("create_time", DateUtil.getNowTimestamp());
+				storeImage2.set("update_time", DateUtil.getNowTimestamp());
+				ret6 = StoreImage.dao.saveInfo(storeImage2);
+			}
+			if(ret1 && ret2 && ret3 && ret4 && ret5 && ret6){
+				setAttr("message", "新增成功");
+			}else{
+				setAttr("message", "新增失败");
+			}
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "新开门店，门店id："+id);
+			index();
+		}
 	}
 }

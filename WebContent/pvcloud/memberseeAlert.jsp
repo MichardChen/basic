@@ -81,6 +81,14 @@ if(str!=''){
 			</td>
 		</tr>
 		<tr>
+			<td>身份证</td>
+			<td>
+			<c:if test="${model != null}">
+			<a href="${model.id_card_img}" target="blank"><img src="${model.id_card_img}" width="100px;" height="50px;"/></a>
+			</c:if>
+			</td>
+		</tr>
+		<tr>
 			<td>开户预留手机</td>
 			<td>${bankCard.stay_mobile}</td>
 		</tr>

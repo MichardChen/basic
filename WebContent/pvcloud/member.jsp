@@ -44,6 +44,106 @@ function loadProject1(data){
 		}
 	});
 }
+
+function openStore1(data){
+	$(".modal-title").html("新增");
+	$.ajax({
+		url : "${CONTEXT_PATH}/storeInfo/addStoreInit",
+		data : {id:data},
+		dataType : "html",
+		success : function(result){
+			$('#model3').html(result);
+		}
+	});
+}
+
+function openStore2(data){
+	if(data==0){
+		$(".modal-title").html("新增");
+	}else{
+		$(".modal-title").html("修改");
+	}
+	$.ajax({
+		url : "${CONTEXT_PATH}/storeInfo/alter",
+		data : {'id':data},
+		dataType : "html",
+		success : function(result){
+			$('#model4').html(result);
+		}
+	});
+}
+function check(){
+	
+	//门店名称
+	var storeName = $("#storeName").val();
+	if(storeName == ""){
+		 alert("请输入门店名称");
+		 return false;
+	}
+	//所属地区
+	/* var province = $("#province").val();
+	var city = $("#city").val();
+	var district = $("#district").val();
+	if(province == "" || province == 0 || city == "" || city == 0 || district == "" || district == 0){
+		 alert("请选择所属地区");
+		 return false;
+	} */
+	var cityDistrict = $("#cityDistrict").val();
+	if(cityDistrict == ""){
+		 alert("请输入所属地区");
+		 return false;
+	}
+	//门店地址
+	var address = $("#address").val();
+	if(address == ""){
+		 alert("请输入门店地址");
+		 return false;
+	}
+	//经纬度
+	var longtitude = $("#longtitude").val();
+	var latitude = $("#latitude").val();
+	if(longtitude == "" || latitude == ""){
+		 alert("请输入经纬度");
+		 return false;
+	}
+	//主营茶叶
+	var bussineeTea = $("#bussineeTea").val();
+	if(bussineeTea == ""){
+		 alert("请输入主营茶叶");
+		 return false;
+	}
+	//营业时间
+	var bussineeFromTime = $("#fromTime").val();
+	var bussineeToTime = $("#toTime").val();
+	if(bussineeFromTime == "" || bussineeToTime == ""){
+		 alert("请输入营业时间");
+		 return false;
+	}
+	//联系电话
+	var mobile = $("#mobile").val();
+	if(mobile == ""){
+		 alert("请输入联系电话");
+		 return false;
+	}
+	//门店详情
+	/* var storeDetail = $("#storeDetail").val();
+	if(storeDetail == ""){
+		 alert("请输入门店详情");
+		 return false;
+	} */
+	//至少输入一张图片	
+	var img1 = $("#img1").val();
+	var img2 = $("#img2").val();
+	var img3 = $("#img3").val();
+	var img4 = $("#img4").val();
+	var img5 = $("#img5").val();
+	var img6 = $("#img6").val();
+	if((img1 == "") && (img2 == "")  && (img3 == "") && (img4 == "") && (img5 == "") && (img6 == "")){
+		 alert("请至少输入一张图片");
+		 return false;
+	}
+	return true;
+}
 </script>
 <style>
 .ys1{
@@ -202,6 +302,12 @@ td{
 		    					<td>
 		    						<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
 		    						<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
+		    						<c:if test="${s.openStore == 0 }">
+		    							<input type="button" value="增加门店" class="ys3" data-toggle="modal" data-target="#myModal3" onclick="openStore1(${s.id})"/>
+		    						</c:if>
+		    						<c:if test="${s.openStore == 1 }">
+		    							<input type="button" value="查看门店" class="ys3" data-toggle="modal" data-target="#myModal4" onclick="openStore2(${s.storeId})"/>
+		    						</c:if>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -239,6 +345,36 @@ td{
 					<input type="submit" class="btn btn-success" value="保存"/>
 				</div>
 			</form>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myModal3" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="width: 120%;margin-left:-10%;">
+			<div class="modal-header">
+				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">新增</h4>
+			</div>
+			<form action="${CONTEXT_PATH}/storeInfo/saveStore" method="post" enctype="multipart/form-data" onsubmit="return check();">
+				<div class="modal-body" id="model3">
+				</div>
+				<div class="modal-footer" style="margin-top:20px;">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<input type="submit" class="btn btn-success" value="保存"/>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myModal4" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="width: 120%;margin-left:-10%;">
+			<div class="modal-header">
+				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">查看</h4>
+			</div>
+				<div class="modal-body" id="model4">
+				</div>
 		</div>
 	</div>
 </div>

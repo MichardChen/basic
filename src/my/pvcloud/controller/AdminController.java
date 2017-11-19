@@ -23,8 +23,10 @@ import my.core.model.User;
 import my.core.model.UserMenu;
 import my.core.model.UserRole;
 import my.core.vo.MemberVO;
+import my.pvcloud.model.CityModel;
 import my.pvcloud.model.RoleModel;
 import my.pvcloud.service.AdminService;
+import my.pvcloud.service.Service;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.MD5Util;
 import my.pvcloud.util.StringUtil;
@@ -34,6 +36,7 @@ import my.pvcloud.vo.MenuDetailVO;
 public class AdminController extends Controller {
 
 	AdminService service = Enhancer.enhance(AdminService.class);
+	Service commonService = Enhancer.enhance(Service.class);
 	
 	int page=1;
 	int size=10;
@@ -339,5 +342,12 @@ public class AdminController extends Controller {
 		}
 		setAttr("message", "保存成功");
 		index();
+	}
+	
+	public void queryCity(){
+		int type = StringUtil.toInteger(StringUtil.checkCode(getPara("type")));
+		int parentId = StringUtil.toInteger(StringUtil.checkCode(getPara("parentId")));
+		List<CityModel> models = commonService.queryCity(type, parentId);
+		renderJson(models);
 	}
 }

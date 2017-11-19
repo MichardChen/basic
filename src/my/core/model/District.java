@@ -1,5 +1,7 @@
 package my.core.model;
 
+import java.util.List;
+
 import org.huadalink.plugin.tablebind.TableBind;
 
 import com.jfinal.plugin.activerecord.Model;
@@ -14,5 +16,9 @@ public class District extends Model<District> {
 				return null;
 			}
 			return District.dao.findFirst("select * from location_district where id=?",id);
+		}
+		
+		public List<District> queryAllDistrictByPid(int pid){
+			return District.dao.find("select * from location_district where pid="+pid);
 		}
 }
