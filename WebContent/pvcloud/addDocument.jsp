@@ -109,7 +109,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="060008">掌上茶宝平台交易合同</option>
 							<option value="060009">同记服务协议</option>
 							<option value="060010">仓储管理服务协议</option>
-						</select>
+						</select>&nbsp;<label style="color:red;">(提示：新茶发行通知最大字数，不能大于70个字符)</label>
 		</tr>
 		<tr>
 					<td>文档详情</td>

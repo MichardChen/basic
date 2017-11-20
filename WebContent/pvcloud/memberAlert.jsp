@@ -124,8 +124,8 @@ if(str!=''){
 		<tr>
 			<td>银行卡审核操作</td>
 			<td>
-				<input type="button" value="银行卡审核通过" class="ys3" style="width: 120px;" onclick="if(confirm('确认要审核通过?')){window.location='${CONTEXT_PATH}/memberInfo/updateStatus?id=${bankCard.id}&status=240002';}"/>
-				<input type="button" value="银行卡审核不通过" class="ys3" style="width:130px;" onclick="if(confirm('确认要审核失败?')){window.location='${CONTEXT_PATH}/memberInfo/updateStatus?id=${bankCard.id}&status=240003';}"/>
+				<input type="button" value="通过" class="ys3" style="width: 100px;" onclick="if(confirm('确认要审核通过?')){window.location='${CONTEXT_PATH}/memberInfo/updateStatus?id=${bankCard.id}&status=240002';}"/>
+				<input type="button" value="不通过" class="ys3" style="width:100px;" onclick="if(confirm('确认要审核不通过?')){window.location='${CONTEXT_PATH}/memberInfo/updateStatus?id=${bankCard.id}&status=240003';}"/>
 			</td>
 		</tr>
 		</c:if>

@@ -1632,39 +1632,29 @@ public class LoginService {
 	public ReturnData queryTeaLists(LoginDTO dto){
 			
 		ReturnData data = new ReturnData();
-		//List<Tea> teas = Tea.dao.queryBuyTeaList(dto.getPageSize(), dto.getPageNum(),dto.getName());
-		List<WarehouseTeaMemberItem> teas = WarehouseTeaMemberItem.dao.queryBuyTeaList(dto.getPageSize(), dto.getPageNum(),dto.getName(),dto.getUserId());
-		List<BuyTeaListVO> vos = new ArrayList<>();
-		BuyTeaListVO vo = null;
-		for(WarehouseTeaMemberItem wtm : teas){
-			vo = new BuyTeaListVO();
-			Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
-			vo.setId(tea.getInt("id"));
-			vo.setImg(StringUtil.getTeaIcon(tea.getStr("cover_img")));
-			vo.setName(tea.getStr("tea_title"));
-			/*WarehouseTeaMemberItem item = WarehouseTeaMemberItem.dao.queryTeaOnPlatform(Constants.USER_TYPE.PLATFORM_USER
-																					   ,tea.getInt("id"));*/
-			vo.setPrice(StringUtil.toString(wtm.getBigDecimal("price")));
-			
-		/*	if(wtm != null){
-				vo.setPrice(wtm.getBigDecimal("piece_price"));
-			}*/
-			if(StringUtil.equals(wtm.getStr("size_type_cd"), Constants.TEA_UNIT.PIECE)){
-				vo.setSize("片");
-			}else{
-				vo.setSize("件");
-			}
-			
+		List<BuyTeaListVO> list = new ArrayList<>();
+		BuyTeaListVO teaVo = null;
+		List<Tea> teaList = Tea.dao.queryBuyTeaList(dto.getPageSize(), dto.getPageNum(),dto.getName(),Constants.NEWTEA_STATUS.END);
+		for(Tea tea : teaList){
+			teaVo = new BuyTeaListVO();
+			teaVo.setId(tea.getInt("id"));
+			teaVo.setImg(StringUtil.getTeaIcon(tea.getStr("cover_img")));
+			teaVo.setName(tea.getStr("tea_title"));
 			CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
 			if(type != null){
-				vo.setType(type.getStr("name"));
+				teaVo.setType(type.getStr("name"));
 			}
-			vos.add(vo);
+			TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(teaVo.getId());
+			if(teaPrice != null){
+				teaVo.setPrice(StringUtil.toString(teaPrice.getBigDecimal("reference_price")));
+			}
+			teaVo.setSize("件");
+			list.add(teaVo);
 		}
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		Map<String, Object> map = new HashMap<>();
-		map.put("data", vos);
+		map.put("data", list);
 		data.setData(map);
 		return data;
 	}
