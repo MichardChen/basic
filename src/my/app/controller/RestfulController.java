@@ -38,6 +38,7 @@ import my.core.interceptor.ContainFileInterceptor;
 import my.core.interceptor.RequestInterceptor;
 import my.core.model.Document;
 import my.core.model.Member;
+import my.core.model.MemberBankcard;
 import my.core.model.ReturnData;
 import my.core.model.Store;
 import my.core.model.StoreImage;

@@ -60,6 +60,7 @@ import my.core.tx.TxProxy;
 import my.core.vo.AddressDetailVO;
 import my.core.vo.AddressVO;
 import my.core.vo.BankCardDetailVO;
+import my.core.vo.BankCardVO;
 import my.core.vo.BuyCartListVO;
 import my.core.vo.BuyTeaListVO;
 import my.core.vo.CarouselVO;
@@ -2191,13 +2192,20 @@ public class LoginService {
 		TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(tea.getInt("id"));
 		ReferencePriceModel itemModel = new ReferencePriceModel();
 		ReferencePriceModel pieceModel = new ReferencePriceModel();
+		
+		String pointStr = "";
+		CodeMst referencePoint = CodeMst.dao.queryCodestByCode(Constants.SYSTEM_CONSTANTS.REFERENCE_PRICE_DISCOUNT);
+		if(referencePoint != null){
+			pointStr = referencePoint.getStr("data2");
+		}
+		
 		if(teaPrice != null){
 			
 			BigDecimal pieceFromPrice = teaPrice.getBigDecimal("from_price") == null ? new BigDecimal("0") : teaPrice.getBigDecimal("from_price");
 			BigDecimal pieceToPrice = teaPrice.getBigDecimal("to_price") == null ? new BigDecimal("0") : teaPrice.getBigDecimal("to_price");
 			
 			//pieceModel.setPriceStr(pieceFromPrice+"元/片-"+pieceToPrice+"元/片");
-			pieceModel.setPriceStr(pieceFromPrice+"元/片 "+teaPrice.getStr("mark"));
+			pieceModel.setPriceStr(pieceFromPrice+"元/片 "+",不少于参考价"+pointStr);
 			pieceModel.setSizeTypeCd(Constants.TEA_UNIT.PIECE);
 			
 			BigDecimal itemFromPrice = new BigDecimal("0");
@@ -2209,7 +2217,7 @@ public class LoginService {
 				itemToPrice = pieceToPrice.multiply(new BigDecimal(tea.getInt("size")));
 			}
 			//itemModel.setPriceStr(itemFromPrice+"元/件-"+itemToPrice+"元/件");
-			itemModel.setPriceStr(itemFromPrice+"元/件 "+teaPrice.getStr("mark"));
+			itemModel.setPriceStr(itemFromPrice+"元/件 "+",不少于参考价"+pointStr);
 			itemModel.setSizeTypeCd(Constants.TEA_UNIT.ITEM);
 		}else{
 			pieceModel.setPriceStr("暂无参考价");
@@ -2305,14 +2313,22 @@ public class LoginService {
 			
 			//判断出售价格要在参考价范围内
 			TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(tea.getInt("id"));
+			
 			if(teaPrice != null){
+				BigDecimal point = new BigDecimal("1");
+				CodeMst referencePoint = CodeMst.dao.queryCodestByCode(Constants.SYSTEM_CONSTANTS.REFERENCE_PRICE_DISCOUNT);
+				if(referencePoint != null){
+					String pointStr = referencePoint.getStr("data3");
+					point = StringUtil.toBigDecimal(pointStr);
+				}
+				
 				BigDecimal pieceFromPrice = teaPrice.getBigDecimal("from_price");
 				BigDecimal pieceToPrice = teaPrice.getBigDecimal("to_price");
 				System.out.println(pieceFromPrice+","+pieceToPrice+",售价"+salePrice);
 				//if((salePrice.compareTo(pieceFromPrice)==-1)||(salePrice.compareTo(pieceToPrice))==1){
-				if(salePrice.compareTo(pieceFromPrice)==-1){
+				if(salePrice.compareTo(pieceFromPrice.multiply(point))==-1){
 					data.setCode(Constants.STATUS_CODE.FAIL);
-					data.setMessage("对不起，出售单价不能低于参考价");
+					data.setMessage("对不起，出售单价不能低于参考价的"+referencePoint.getStr("data2"));
 					return data;
 				}
 			}
@@ -2330,13 +2346,22 @@ public class LoginService {
 			//判断出售价格必须在参考价范围内
 			TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(tea.getInt("id"));
 			if(teaPrice != null){
+				
+				BigDecimal point = new BigDecimal("1");
+				CodeMst referencePoint = CodeMst.dao.queryCodestByCode(Constants.SYSTEM_CONSTANTS.REFERENCE_PRICE_DISCOUNT);
+				if(referencePoint != null){
+					String pointStr = referencePoint.getStr("data3");
+					point = StringUtil.toBigDecimal(pointStr);
+				}
+				
+				
 				BigDecimal itemFromPrice = teaPrice.getBigDecimal("from_price").multiply(new BigDecimal(tea.getInt("size")));
 				BigDecimal itemToPrice = teaPrice.getBigDecimal("to_price").multiply(new BigDecimal(tea.getInt("size")));
 				System.out.println(itemFromPrice+","+itemToPrice+",售价"+salePrice);
 				//if((salePrice.compareTo(itemFromPrice)==-1)||(salePrice.compareTo(itemToPrice))==1){
-				if(salePrice.compareTo(itemFromPrice)==-1){
+				if(salePrice.compareTo(itemFromPrice.multiply(point))==-1){
 					data.setCode(Constants.STATUS_CODE.FAIL);
-					data.setMessage("对不起，出售单价不能低于参考价");
+					data.setMessage("对不起，出售单价不能低于参考价的"+referencePoint.getStr("data2"));
 					return data;
 				}
 			}
@@ -2756,12 +2781,15 @@ public class LoginService {
 			bankcard.set("card_no", dto.getCardNo());
 			bankcard.set("bank_name_cd", dto.getCardTypeCd());
 			bankcard.set("owner_name", dto.getName());
+			if(StringUtil.isNoneBlank(dto.getIcon())){
+				bankcard.set("card_img", dto.getIcon());
+			}
 			bankcard.set("id_card_no", dto.getIdCardNo());
 			bankcard.set("stay_mobile", dto.getMobile());
 			bankcard.set("member_id", dto.getUserId());
 			bankcard.set("create_time", DateUtil.getNowTimestamp());
 			bankcard.set("update_time", DateUtil.getNowTimestamp());
-			bankcard.set("card_img", dto.getIcon());
+			
 			bankcard.set("status",Constants.BIND_BANKCARD_STATUS.APPLING);
 			bankcard.set("open_bank_name", dto.getOpenBankName());
 			boolean ret = MemberBankcard.dao.updateInfo(bankcard);
@@ -3038,6 +3066,11 @@ public class LoginService {
 		//商家id
 		int businessId = dto.getBusinessId();
 		int userId = dto.getUserId();
+		if(businessId == userId){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，不能绑定自己的门店会员");
+			return data;
+		}
 		if(businessId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("绑定失败，您绑定门店不存在");
@@ -3296,7 +3329,28 @@ public class LoginService {
 			vo.setCardNo("**** **** **** "+cardNo.substring(size-4, size));
 		}
 		
+		//查询银行卡详情
+		MemberBankcard bankcard1 = MemberBankcard.dao.queryByMemberId(dto.getUserId());
+		BankCardVO bankCardVO = new BankCardVO();
+		Member member = Member.dao.queryById(dto.getUserId());
+		if(bankcard1 != null){
+			bankCardVO.setBankCardNo(bankcard1.getStr("card_no"));
+			bankCardVO.setBankImg(bankcard1.getStr("card_img"));
+			if(member != null){
+				bankCardVO.setIdCardNo(member.getStr("id_card_no"));
+				bankCardVO.setIdCardImg(member.getStr("id_card_img"));
+			}
+			bankCardVO.setMobile(bankcard1.getStr("stay_mobile"));
+			bankCardVO.setOpenBankCd(bankcard1.getStr("bank_name_cd"));
+			CodeMst bank = CodeMst.dao.queryCodestByCode(bankcard1.getStr("bank_name_cd"));
+			if(bank != null){
+				bankCardVO.setOpenBankName(bank.getStr("name"));
+			}
+			bankCardVO.setOpenBrunchBank(bankcard1.getStr("open_bank_name"));
+			bankCardVO.setUserName(bankcard1.getStr("owner_name"));
+		}
 		Map<String, Object> map = new HashMap<>();
+		map.put("bankCard", bankCardVO);
 		map.put("card", vo);
 		if(phone !=null){
 			map.put("phone", phone.getStr("data2"));
@@ -3313,7 +3367,7 @@ public class LoginService {
 		Store store = Store.dao.queryMemberStore(dto.getSellerId());
 		if(store == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("对不起，门店不存在");
+			data.setMessage("对不起，您扫码的商家暂未绑定门店");
 			return data;
 		}
 		StoreDetailVO vo = new StoreDetailVO();
@@ -3456,7 +3510,19 @@ public class LoginService {
 						
 						//减少卖家库存
 						int update = WarehouseTeaMemberItem.dao.cutTeaQuality(quality, wtmItemId);
-						if(update != 0){
+						//如果是卖家是平台,减少WarehouseTeaMem的库存
+						boolean cutFlg = true;
+						if(StringUtil.equals(wtm.getStr("member_type_cd"), Constants.USER_TYPE.PLATFORM_USER)){
+							int cutQuality = quality;
+							if(StringUtil.equals(item.getStr("size_type_cd"), Constants.TEA_UNIT.ITEM)){
+								int teaId = wtm.getInt("tea_id");
+								Tea t = Tea.dao.queryById(teaId);
+								cutQuality = quality*t.getInt("size");
+							}
+							cutFlg = WarehouseTeaMember.dao.cutStock(item.getInt("warehouse_tea_member_id"), cutQuality);
+						}
+						
+						if((update != 0)&&(cutFlg)){
 							//增加买家库存
 							//判断这件茶叶，买家是否买过
 							int teaId = wtm.getInt("tea_id");
@@ -3732,9 +3798,21 @@ public class LoginService {
 							cash.set("update_time", DateUtil.getNowTimestamp());
 							CashJournal.dao.saveInfo(cash);
 							
+							//如果是卖家是平台,减少WarehouseTeaMem的库存
+							boolean cutFlg = true;
+							if(StringUtil.equals(wtm.getStr("member_type_cd"), Constants.USER_TYPE.PLATFORM_USER)){
+								int cutQuality = quality;
+								if(StringUtil.equals(item.getStr("size_type_cd"), Constants.TEA_UNIT.ITEM)){
+									int teaId = wtm.getInt("tea_id");
+									Tea t = Tea.dao.queryById(teaId);
+									cutQuality = quality*t.getInt("size");
+								}
+								cutFlg = WarehouseTeaMember.dao.cutStock(item.getInt("warehouse_tea_member_id"), cutQuality);
+							}
+							
 							//减少卖家库存
 							int update = WarehouseTeaMemberItem.dao.cutTeaQuality(quality, wtmItemId);
-							if(update != 0){
+							if((update != 0)&&(cutFlg)){
 								//增加买家库存
 								//判断这件茶叶，买家是否买过
 								int teaId = wtm.getInt("tea_id");
@@ -3907,6 +3985,39 @@ public class LoginService {
 		}else{
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("查询失败");
+			return data;
+		}
+	}
+	
+	public ReturnData queryMemberBankCard(LoginDTO dto) throws Exception{
+		ReturnData data = new ReturnData();
+		MemberBankcard bankcard = MemberBankcard.dao.queryByMemberId(dto.getUserId());
+		BankCardVO bankCardVO = new BankCardVO();
+		Member member = Member.dao.queryById(dto.getUserId());
+		if(bankcard != null){
+			bankCardVO.setBankCardNo(bankcard.getStr("card_no"));
+			bankCardVO.setBankImg(bankcard.getStr("card_img"));
+			if(member != null){
+				bankCardVO.setIdCardNo(member.getStr("id_card_no"));
+				bankCardVO.setIdCardImg(member.getStr("id_card_img"));
+			}
+			bankCardVO.setMobile(bankcard.getStr("stay_mobile"));
+			bankCardVO.setOpenBankCd(bankcard.getStr("bank_name_cd"));
+			CodeMst bank = CodeMst.dao.queryCodestByCode(bankcard.getStr("bank_name_cd"));
+			if(bank != null){
+				bankCardVO.setOpenBankName(bank.getStr("name"));
+			}
+			bankCardVO.setOpenBrunchBank(bankcard.getStr("open_bank_name"));
+			bankCardVO.setUserName(bankcard.getStr("owner_name"));
+			Map<String, Object> map = new HashMap<>();
+			map.put("bankCard", bankCardVO);
+			data.setData(map);
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("查询成功");
+			return data;
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("您还没有绑定银行卡");
 			return data;
 		}
 	}

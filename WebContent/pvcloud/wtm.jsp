@@ -174,6 +174,8 @@ td{
     				<th>茶叶类型</th>
     				<th>仓库</th>
     				<th>库存</th>
+    				<th>在售</th>
+    				<th>门店名称</th>
     				<th>商家名称</th>
     				<th>商家注册号码</th>
     				<th>商家类型</th>
@@ -194,6 +196,8 @@ td{
 		    					<td>${s.type }</td>
 		    					<td>${s.warehouse}</td>
 		    						<td>${s.stock }</td>
+		    						<td>${s.onSale }</td>
+		    						<td>${s.store }</td>
 		    						<td>${s.saleUser }</td>
 		    					<td>${s.mobile}</td>
 		    					<td>${s.saleUserType}</td>

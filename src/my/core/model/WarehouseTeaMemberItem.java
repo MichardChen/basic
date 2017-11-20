@@ -158,4 +158,9 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 	public int updateStatus(int id,String status){
 		return Db.update("update t_warehouse_tea_member_item set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 	}
+	
+	public BigDecimal queryOnSaleListCount(int wtmId,String sizeType){
+		return Db.queryBigDecimal("select sum(quality) from t_warehouse_tea_member_item where warehouse_tea_member_id="+wtmId+" and size_type_cd='"+sizeType+"'");
+	}
+	
 }

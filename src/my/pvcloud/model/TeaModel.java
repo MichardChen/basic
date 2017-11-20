@@ -25,9 +25,34 @@ public class TeaModel implements Serializable{
 	private String expireDate;
 	private String keyCode;
 	private String referencePrice;
+	//四个
+	//发行件数
+	private String saleItems;
+	private String syPiece;
+	private String originStock;
 	
 	
 	
+	
+	
+	public String getSaleItems() {
+		return saleItems;
+	}
+	public String getSyPiece() {
+		return syPiece;
+	}
+	public void setSaleItems(String saleItems) {
+		this.saleItems = saleItems;
+	}
+	public void setSyPiece(String syPiece) {
+		this.syPiece = syPiece;
+	}
+	public String getOriginStock() {
+		return originStock;
+	}
+	public void setOriginStock(String originStock) {
+		this.originStock = originStock;
+	}
 	public String getReferencePrice() {
 		return referencePrice;
 	}

@@ -188,8 +188,12 @@ td{
     				<th>品牌</th>
     				<th>产地</th>
     				<th>规格</th>
-    				<th>出产总量</th>
+    				<!-- 四个值 -->
+    				<th>发行件数</th>
+    				<th>剩余件数</th>
+    				<th>发行总量</th>
     				<th>剩余库存</th>
+    				<!--  -->
     				<th>状态</th>
     				<!-- 新增完 -->
     				<th>创建时间</th>
@@ -216,10 +220,13 @@ td{
 		    					<td>${s.brand}</td>
 		    					<td>${s.productPlace}</td>
 		    					<td>${s.size}</td>
-		    					<td>${s.amount}饼</td>
-		    					<td>${s.stock}件</td>
-		    					<td>${s.saleStatus}</td>
+		    						<!-- 四个 -->
+		    					<td>${s.saleItems}件</td>
+		    					<td>${s.stock}</td>
+		    					<td>${s.amount}片</td>
+		    					<td>${s.syPiece}</td>
 		    					<!-- 新增完 -->
+		    					<td>${s.status}</td>
 		    					<td>${s.createTime}</td>
 		    					<td>
 		    							<c:if test="${s.flg==1}">

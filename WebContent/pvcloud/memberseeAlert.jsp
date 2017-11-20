@@ -61,7 +61,11 @@ if(str!=''){
 			</td>
 		</tr>
 		<tr>
-			<td>绑定门店</td>
+			<td>加盟店名称</td>
+			<td>${openStore}</td>
+		</tr>
+		<tr>
+			<td>绑定会员门店</td>
 			<td>${store}</td>
 		</tr>
 		<tr  style="border-top: 1px solid grey;">
@@ -115,14 +119,6 @@ if(str!=''){
 				<c:if test="${bankCard.status=='240002'}">审核成功</c:if>
 				<c:if test="${bankCard.status=='240003'}">审核失败</c:if>
 			</td>
-		</tr>
-		<tr>
-			<td>加盟店名称</td>
-			<td>${openStore}</td>
-		</tr>
-		<tr>
-			<td>绑定会员门店</td>
-			<td>${store}</td>
 		</tr>
 		<input type="hidden" name="id" value="${model.id}"/>
 	</table>

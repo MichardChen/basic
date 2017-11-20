@@ -75,7 +75,12 @@ public class Member extends Model<Member> {
 	}
 	
 	public int updateIdCardInfo(int userId,String idCardNo,String idCardImg,String ownerName){
-		return Db.update("update t_member set id_card_no='"+idCardNo+"',id_card_img='"+idCardImg+"',update_time='"+DateUtil.getNowTimestamp()+"',name='"+ownerName+"' where id="+userId);
+		if(StringUtil.isNoneBlank(idCardImg)){
+			return Db.update("update t_member set id_card_no='"+idCardNo+"',id_card_img='"+idCardImg+"',update_time='"+DateUtil.getNowTimestamp()+"',name='"+ownerName+"' where id="+userId);
+		}else{
+			return Db.update("update t_member set id_card_no='"+idCardNo+"',update_time='"+DateUtil.getNowTimestamp()+"',name='"+ownerName+"' where id="+userId);
+
+		}
 	}
 	
 	public Long queryMemberListCount(String memberName){

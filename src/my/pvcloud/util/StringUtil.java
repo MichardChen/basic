@@ -52,6 +52,14 @@ public class StringUtil extends StringUtils {
 		return douNum.toString();
 	}
 	
+	public static String toStringDefaultZero(Integer douNum){
+		
+		if (douNum == null){
+			return "0";
+		}
+		return douNum.toString();
+	}
+	
 	public static String toString(Timestamp time) {
 		
 		String tsStr = "";

@@ -12,6 +12,21 @@ public class WarehouseTeaMemberVO implements Serializable{
 	private String mobile;
 	private String saleUserType;
 	private String createTime;
+	private String store;
+	private String onSale;
+	
+	public String getOnSale() {
+		return onSale;
+	}
+	public void setOnSale(String onSale) {
+		this.onSale = onSale;
+	}
+	public String getStore() {
+		return store;
+	}
+	public void setStore(String store) {
+		this.store = store;
+	}
 	public String getTeaName() {
 		return teaName;
 	}

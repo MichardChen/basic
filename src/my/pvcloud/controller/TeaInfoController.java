@@ -73,7 +73,21 @@ public class TeaInfoController extends Controller {
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 			model.setName(tea.getStr("tea_title"));
 			if(wtm != null){
-				model.setStock(StringUtil.toString(wtm.getInt("stock")));
+				BigDecimal st = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("stock")));
+				BigDecimal se = new BigDecimal(StringUtil.toStringDefaultZero(tea.getInt("size")));
+				try {
+					model.setStock(StringUtil.toString(st.divide(se)));
+				} catch (Exception e) {
+					model.setStock("0");
+				}
+				BigDecimal originStock = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("origin_stock")));
+				try {
+					model.setSaleItems(StringUtil.toString(originStock.divide(se)));
+				} catch (Exception e) {
+					model.setSaleItems("0");
+				}
+				model.setSyPiece(StringUtil.toString(wtm.getInt("stock"))+"片");
+				model.setOriginStock(StringUtil.toStringDefaultZero(wtm.getInt("origin_stock"))+"片");
 				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtm.getInt("id"));
 				if(wtmItem != null){
 					String size = "";
@@ -139,7 +153,21 @@ public class TeaInfoController extends Controller {
 			model.setName(tea.getStr("tea_title"));
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 			if(wtm != null){
-				model.setStock(StringUtil.toString(wtm.getInt("stock")));
+				BigDecimal st = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("stock")));
+				BigDecimal se = new BigDecimal(StringUtil.toStringDefaultZero(tea.getInt("size")));
+				try {
+					model.setStock(StringUtil.toString(st.divide(se)));
+				} catch (Exception e) {
+					model.setStock("0");
+				}
+				model.setSyPiece(StringUtil.toString(wtm.getInt("stock"))+"片");
+				BigDecimal originStock = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("origin_stock")));
+				try {
+					model.setSaleItems(StringUtil.toString(originStock.divide(se)));
+				} catch (Exception e) {
+					model.setSaleItems("0");
+				}
+				model.setOriginStock(StringUtil.toStringDefaultZero(wtm.getInt("origin_stock"))+"片");
 				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtm.getInt("id"));
 				if(wtmItem != null){
 					String size = "";
@@ -203,7 +231,21 @@ public class TeaInfoController extends Controller {
 				model.setName(tea.getStr("tea_title"));
 				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 				if(wtm != null){
-					model.setStock(StringUtil.toString(wtm.getInt("stock")));
+					BigDecimal st = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("stock")));
+					BigDecimal se = new BigDecimal(StringUtil.toStringDefaultZero(tea.getInt("size")));
+					model.setSyPiece(StringUtil.toString(wtm.getInt("stock"))+"片");
+					try {
+						model.setStock(StringUtil.toString(st.divide(se)));
+					} catch (Exception e) {
+						model.setStock("0");
+					}
+					BigDecimal originStock = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("origin_stock")));
+					try {
+						model.setSaleItems(StringUtil.toString(originStock.divide(se)));
+					} catch (Exception e) {
+						model.setSaleItems("0");
+					}
+					model.setOriginStock(StringUtil.toStringDefaultZero(wtm.getInt("origin_stock"))+"片");
 					WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtm.getInt("id"));
 					if(wtmItem != null){
 						String size = "";
@@ -428,7 +470,8 @@ public class TeaInfoController extends Controller {
 			WarehouseTeaMember houseTea = new WarehouseTeaMember();
 		    houseTea.set("warehouse_id", houseId);
 		    houseTea.set("tea_id", teaId);
-		    houseTea.set("stock", StringUtil.toInteger(getPara("warehouse")));
+		    houseTea.set("origin_stock", StringUtil.toInteger(getPara("amount")));
+		    houseTea.set("stock", StringUtil.toInteger(getPara("warehouse"))*StringUtil.toInteger(getPara("size2")));
 		    houseTea.set("member_id", (Integer)getSessionAttr("agentId"));
 		    houseTea.set("member_type_cd", Constants.USER_TYPE.PLATFORM_USER);
 		    houseTea.set("create_time", DateUtil.getNowTimestamp());

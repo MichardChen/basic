@@ -1,10 +1,12 @@
 package my.pvcloud.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.Member;
+import my.core.model.MemberStore;
 import my.core.model.Order;
 import my.core.model.OrderItem;
 import my.core.model.Store;
@@ -64,18 +66,33 @@ public class WarehouseTeaMemberController extends Controller {
 				User user = User.dao.queryById(order.getInt("member_id"));
 				if(user != null){
 					model.setMobile(user.getStr("mobile"));
-					model.setSaleUser(user.getStr("username"));
+					model.setSaleUser("平台");
 					model.setSaleUserType("平台");
 				}
 			}
 			if(StringUtil.equals(order.getStr("member_type_cd"), Constants.USER_TYPE.USER_TYPE_CLIENT)){
 				Member user = Member.dao.queryById(order.getInt("member_id"));
 				if(user != null){
+					Store store = Store.dao.queryMemberStore(user.getInt("id"));
+					if(store != null){
+						model.setStore(store.getStr("store_name"));
+					}
 					model.setMobile(user.getStr("mobile"));
 					model.setSaleUser(user.getStr("name"));
 					model.setSaleUserType("用户");
 				}
 			}
+			
+			//查看在售茶叶
+			BigDecimal all = new BigDecimal("0");
+			BigDecimal itemOnSale = WarehouseTeaMemberItem.dao.queryOnSaleListCount(order.getInt("id"), Constants.TEA_UNIT.ITEM);
+			if(itemOnSale != null){
+				all = itemOnSale.multiply(new BigDecimal(StringUtil.toString(tea.getInt("size"))));
+			}
+			BigDecimal pieceOnSale = WarehouseTeaMemberItem.dao.queryOnSaleListCount(order.getInt("id"), Constants.TEA_UNIT.PIECE);
+			all = all.add(new BigDecimal(StringUtil.toString(pieceOnSale)));
+			model.setOnSale(StringUtil.toString(all)+"片");
+			
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -128,18 +145,32 @@ public class WarehouseTeaMemberController extends Controller {
 				User user = User.dao.queryById(order.getInt("member_id"));
 				if(user != null){
 					model.setMobile(user.getStr("mobile"));
-					model.setSaleUser(user.getStr("username"));
+					model.setSaleUser("平台");
 					model.setSaleUserType("平台");
 				}
 			}
 			if(StringUtil.equals(order.getStr("member_type_cd"), Constants.USER_TYPE.USER_TYPE_CLIENT)){
 				Member user = Member.dao.queryById(order.getInt("member_id"));
 				if(user != null){
+					Store store = Store.dao.queryMemberStore(user.getInt("id"));
+					if(store != null){
+						model.setStore(store.getStr("store_name"));
+					}
 					model.setMobile(user.getStr("mobile"));
 					model.setSaleUser(user.getStr("name"));
 					model.setSaleUserType("用户");
 				}
 			}
+			
+			//查看在售茶叶
+			BigDecimal all = new BigDecimal("0");
+			BigDecimal itemOnSale = WarehouseTeaMemberItem.dao.queryOnSaleListCount(order.getInt("id"), Constants.TEA_UNIT.ITEM);
+			if(itemOnSale != null){
+				all = itemOnSale.multiply(new BigDecimal(StringUtil.toString(tea.getInt("size"))));
+			}
+			BigDecimal pieceOnSale = WarehouseTeaMemberItem.dao.queryOnSaleListCount(order.getInt("id"), Constants.TEA_UNIT.PIECE);
+			all = all.add(new BigDecimal(StringUtil.toString(pieceOnSale)));
+			model.setOnSale(StringUtil.toString(all)+"片");
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -192,18 +223,32 @@ public class WarehouseTeaMemberController extends Controller {
 				User user = User.dao.queryById(order.getInt("member_id"));
 				if(user != null){
 					model.setMobile(user.getStr("mobile"));
-					model.setSaleUser(user.getStr("username"));
+					model.setSaleUser("平台");
 					model.setSaleUserType("平台");
 				}
 			}
 			if(StringUtil.equals(order.getStr("member_type_cd"), Constants.USER_TYPE.USER_TYPE_CLIENT)){
 				Member user = Member.dao.queryById(order.getInt("member_id"));
 				if(user != null){
+					Store store = Store.dao.queryMemberStore(user.getInt("id"));
+					if(store != null){
+						model.setStore(store.getStr("store_name"));
+					}
 					model.setMobile(user.getStr("mobile"));
 					model.setSaleUser(user.getStr("name"));
 					model.setSaleUserType("用户");
 				}
 			}
+			
+			//查看在售茶叶
+			BigDecimal all = new BigDecimal("0");
+			BigDecimal itemOnSale = WarehouseTeaMemberItem.dao.queryOnSaleListCount(order.getInt("id"), Constants.TEA_UNIT.ITEM);
+			if(itemOnSale != null){
+				all = itemOnSale.multiply(new BigDecimal(StringUtil.toString(tea.getInt("size"))));
+			}
+			BigDecimal pieceOnSale = WarehouseTeaMemberItem.dao.queryOnSaleListCount(order.getInt("id"), Constants.TEA_UNIT.PIECE);
+			all = all.add(new BigDecimal(StringUtil.toString(pieceOnSale)));
+			model.setOnSale(StringUtil.toString(all)+"片");
 			models.add(model);
 		}
 		setAttr("list", list);
