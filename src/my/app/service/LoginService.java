@@ -1131,9 +1131,10 @@ public class LoginService {
 		vo.setBrand(tea.getStr("brand"));
 		vo.setPrice("￥"+StringUtil.toString(tea.getBigDecimal("tea_price")));
 		vo.setCertificateFlg(tea.getInt("certificate_flg"));
-		Document mst = Document.dao.queryByTypeCd(Constants.DOCUMENT_TYPE.CERTIFICATE_TIP);
+		//正品提示
+		CodeMst mst = CodeMst.dao.queryCodestByCode(Constants.SYSTEM_CONSTANTS.CERTIFICATE_TIP);
 		if(mst != null){
-			vo.setComment(mst.getStr("content"));
+			vo.setComment(mst.getStr("data2"));
 		}
 		CodeMst phoneCodeMst = CodeMst.dao.queryCodestByCode(Constants.PHONE.CUSTOM);
 		if(phoneCodeMst != null){
