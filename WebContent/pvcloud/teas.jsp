@@ -165,6 +165,15 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="title" value="${title}"/>
     				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">发行状态</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">
+	    				<select name="newStatus" style="height: 30px;width: 120px;">
+		    					<option></option>
+		    					<option value="090001" <c:if test="${newStatus=='090001'}">selected="selected"</c:if>>待售</option>
+		    					<option value="090002" <c:if test="${newStatus=='090002'}">selected="selected"</c:if>>发行中</option>
+		    					<option value="090003" <c:if test="${newStatus=='090003'}">selected="selected"</c:if>>发行结束</option>
+		    			</select>	
+	    			</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
        			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新茶发行" class="ys3" onclick="loadProject(0)"/></div>
 			   </div>
@@ -194,7 +203,8 @@ td{
     				<th>发行总量</th>
     				<th>剩余库存</th>
     				<!--  -->
-    				<th>状态</th>
+    				<!-- <th>状态</th> -->
+    				<th>是否删除</th>
     				<!-- 新增完 -->
     				<th>创建时间</th>
     				<th>操作</th>
@@ -226,12 +236,19 @@ td{
 		    					<td>${s.amount}片</td>
 		    					<td>${s.syPiece}</td>
 		    					<!-- 新增完 -->
-		    					<td>${s.status}</td>
+		    					<%-- <td>${s.status}</td> --%>
+		    					<td>
+		    							<c:if test="${s.flg==1}">
+		    							否
+				    					</c:if>
+				    					<c:if test="${s.flg!=1}">
+				    					是
+				    					</c:if>
+		    					</td>
 		    					<td>${s.createTime}</td>
 		    					<td>
 		    							<c:if test="${s.flg==1}">
 		    									<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/del?id=${s.id}';}"/>
-		    									<input type="button" value="查看" class="ys3"  onclick="edit(${s.id})"/>
 		    							</c:if>
 		    							<!-- 停售 -->
 		    							<c:if test="${s.statusCd == '090001' }">
@@ -244,6 +261,7 @@ td{
 		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要结束?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
 		    							</c:if>
 		    		      		 <%-- <a href="${s.url}" target="_blank"><input type="button" value="查看编辑内容" style="width: 100px;" class="ys3"/></a>  --%>
+		    		      		 <input type="button" value="查看" class="ys3"  onclick="edit(${s.id})"/>
 		    		      		 <input type="button" value="设置参考价" style="width: 100px;" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="addTeaPrice(${s.id})"/>
 		    					</td>
 		    				</tr>

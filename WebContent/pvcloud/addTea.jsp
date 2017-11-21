@@ -31,6 +31,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     $(function () {
             $('.summernote').summernote({
                 height: 400,
+                toolbar: [
+                          ['style', ['style']],
+                          ['fontsize',['fontsize']],
+                          ['font', ['bold', 'underline', 'clear']],
+                          ['fontname', ['fontname']],
+                          ['color', ['color']],
+                          ['para', ['ul', 'ol', 'paragraph']],
+                          ['table', ['table']],
+                          ['insert', ['link', 'picture', 'video']],
+                          ['view', ['fullscreen', 'codeview', 'help']]
+                        ],
                 tabsize: 2,
                 lang: 'zh-CN',
                 codemirror: {

@@ -10,8 +10,8 @@ public class TeaService{
 		return Tea.dao.queryByPage(page, size);
 	}
 	
-	public Page<Tea> queryByPageParams(int page,int size,String title){
-		return Tea.dao.queryByPage(page, size,title);
+	public Page<Tea> queryByPageParams(int page,int size,String title,String status){
+		return Tea.dao.queryByPage(page, size,title,status);
 	}
 	
 	public Tea queryById(int teaId){

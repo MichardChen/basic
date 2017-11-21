@@ -68,7 +68,7 @@ if(str!=''){
 			<tr>
 				<td>
 					<c:if test="${status.index==0}">
-						门店图片<br><label style="color: red;">（可选择文件，保存更新图片）</label>
+						门店图片<br><label style="color: red;">（可选择文件，保存更新图片）<br/>&nbsp;&nbsp;注：图片大小不要超过1M</label>
 					</c:if>
 				</td>
 				<td>

@@ -31,6 +31,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     $(function () {
             $('.summernote').summernote({
                 height: 400,
+                toolbar: [
+                          ['style', ['style']],
+                          ['fontsize',['fontsize']],
+                          ['font', ['bold', 'underline', 'clear']],
+                          ['fontname', ['fontname']],
+                          ['color', ['color']],
+                          ['para', ['ul', 'ol', 'paragraph']],
+                          ['table', ['table']],
+                          ['insert', ['link', 'picture', 'video']],
+                          ['view', ['fullscreen', 'codeview', 'help']]
+                        ],
                 tabsize: 2,
                 lang: 'zh-CN',
                 codemirror: {
@@ -239,7 +250,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<c:forEach var="s" items="${list}">
 			<tr>
-				<td><img src="${s}" width="100px;" height="100px;"/></td>
+				<td><img src="${s}" width="50%"/></td>
 				<td>
 				</td>
 			</tr>

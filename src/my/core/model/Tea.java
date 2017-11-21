@@ -29,12 +29,16 @@ public class Tea extends Model<Tea> {
 		return Tea.dao.paginate(page, size, select, sql);
 	}
 	
-	public Page<Tea> queryByPage(int page,int size,String title){
+	public Page<Tea> queryByPage(int page,int size,String title,String status){
 		
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
 		if(StringUtil.isNoneBlank(title)){
 			strBuf.append(" and tea_title like '%"+title+"%'");
+		}
+		
+		if(StringUtil.isNoneBlank(status)){
+			strBuf.append(" and status='"+status+"'");
 		}
 			
 			

@@ -63,6 +63,7 @@ public class TeaInfoController extends Controller {
 	public void index(){
 		
 		removeSessionAttr("title");
+		removeSessionAttr("newStatus");
 		Page<Tea> list = service.queryByPage(page, size);
 		ArrayList<TeaModel> models = new ArrayList<>();
 		TeaModel model = null;
@@ -139,11 +140,13 @@ public class TeaInfoController extends Controller {
 	public void queryByPage(){
 		String stitle=getSessionAttr("title");
 		this.setSessionAttr("title",stitle);
+		String snewStatus=getSessionAttr("newStatus");
+		this.setSessionAttr("newStatus",snewStatus);
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
         }
-        Page<Tea> list = service.queryByPageParams(page, size,stitle);
+        Page<Tea> list = service.queryByPageParams(page, size,stitle,snewStatus);
 		ArrayList<TeaModel> models = new ArrayList<>();
 		TeaModel model = null;
 		for(Tea tea : list.getList()){
@@ -211,17 +214,20 @@ public class TeaInfoController extends Controller {
 	 */
 	public void queryByConditionByPage(){
 		String title = getSessionAttr("title");
-		
 		String stitle = getPara("title");
 		title = stitle;
-		
 		this.setSessionAttr("title",stitle);
+		
+		String newStatus = getSessionAttr("newStatus");
+		String snewStatus = getPara("newStatus");
+		newStatus = snewStatus;
+		this.setSessionAttr("newStatus",snewStatus);
 		
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
-	        Page<Tea> list = service.queryByPageParams(page, size,title);
+	        Page<Tea> list = service.queryByPageParams(page, size,title,newStatus);
 			ArrayList<TeaModel> models = new ArrayList<>();
 			TeaModel model = null;
 			for(Tea tea : list.getList()){
@@ -491,6 +497,7 @@ public class TeaInfoController extends Controller {
 		    	item.set("update_time", DateUtil.getNowTimestamp());
 		    	item.set("size_type_cd", Constants.TEA_UNIT.ITEM);
 		    	item.set("origin_stock", StringUtil.toInteger(getPara("warehouse")));
+		    	item.set("cancle_quality", 0);
 		    	int save = WarehouseTeaMemberItem.dao.saveItemInfo(item);
 		    	if(save != 0){
 		    		//卖茶记录

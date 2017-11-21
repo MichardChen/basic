@@ -9,6 +9,14 @@ public class MemberDataVO implements Serializable{
 	private String wxNo;
 	private String qqNo;
 	private String nickName;
+	private int storeFlg;
+	
+	public int getStoreFlg() {
+		return storeFlg;
+	}
+	public void setStoreFlg(int storeFlg) {
+		this.storeFlg = storeFlg;
+	}
 	public String getIcon() {
 		return icon;
 	}

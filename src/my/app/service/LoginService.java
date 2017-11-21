@@ -1253,30 +1253,35 @@ public class LoginService {
 				unitStr = unit.getStr("name");
 			}
 			model.setDate(DateUtil.formatTimestampForDate(saleOrder.getTimestamp("create_time")));
-			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(saleOrder.getInt("wtm_item_id") == null?0:saleOrder.getInt("wtm_item_id"));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(saleOrder.getInt("wtm_item_id"));
 			if(wtmItem != null){
 				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
+				String content = "";
 				if(wtm != null){
 					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+					int originStock = wtmItem.getInt("origin_stock") == null ? 0 :wtmItem.getInt("origin_stock");
 					if(tea != null){
-						model.setContent(tea.getStr("tea_title")+"x"+saleOrder.getInt("quality")+unitStr);
+						content = tea.getStr("tea_title")+"x"+originStock+unitStr;
 						model.setTea(tea.getStr("tea_title"));
 						WareHouse wHouse = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
 						if(wHouse != null){
 							model.setWareHouse(wHouse.getStr("warehouse_name"));
 						}
 					}
+					
+					String price = wtmItem.getBigDecimal("price")+"/"+unitStr;
+					int onSale = wtmItem.getInt("quality") ==  null ? 0 : wtmItem.getInt("quality");
+					int cancleQuality = wtmItem.getInt("cancle_quality") == null ? 0 :wtmItem.getInt("cancle_quality");
+					int haveSale = originStock-cancleQuality;
+					
+					CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(wtmItem.getStr("status"));
+					if(sCodeMst != null){
+						content = sCodeMst.getStr("name")+" "+content;
+					}
+					model.setContent(content);
+					model.setMoneys("单价:￥"+price+" 在售"+onSale+unitStr+",已售"+haveSale+unitStr);
 				}
 			}
-			int quality = saleOrder.getInt("quality") == null ? 0 : saleOrder.getInt("quality");
-			BigDecimal  price = saleOrder.getBigDecimal("price") == null ? new BigDecimal("0") : saleOrder.getBigDecimal("price");
-			String sum = StringUtil.toString(price.multiply(new BigDecimal(quality)));
-			String status = "";
-			CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(saleOrder.getStr("status"));
-			if(sCodeMst != null){
-				status = sCodeMst.getStr("name");
-			}
-			model.setMoneys("总价：￥"+sum+" "+"卖茶成功");
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
@@ -2149,9 +2154,23 @@ public class LoginService {
 		Tea tea = Tea.dao.queryById(wtmMember.getInt("tea_id"));
 		int size = 0;
 		if(tea != null){
+			if(StringUtil.equals(tea.getStr("status"), Constants.NEWTEA_STATUS.ON_SALE)){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("新茶发行中，暂停上架销售");
+				return data;
+			}
+			if(StringUtil.equals(tea.getStr("status"), Constants.NEWTEA_STATUS.STAY_SALE)){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("新茶待售中，暂无上架销售");
+				return data;
+			}
 			size = tea.getInt("size");
 			vo.setName(tea.getStr("tea_title"));
 			vo.setSize(size);
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("数据出错");
+			return data;
 		}
 		List<WarehouseTeaMember> lists = WarehouseTeaMember.dao.querysaleTeaWarehouseTea(dto.getUserId(),tea.getInt("id"),Constants.USER_TYPE.USER_TYPE_CLIENT);
 		for(WarehouseTeaMember wtm : lists){
@@ -2370,6 +2389,7 @@ public class LoginService {
 				wtmItem.set("create_time", DateUtil.getNowTimestamp());
 				wtmItem.set("update_time", DateUtil.getNowTimestamp());
 				wtmItem.set("origin_stock", saleNum);
+				wtmItem.set("cancle_quality", 0);
 				int retId = WarehouseTeaMemberItem.dao.saveItemInfo(wtmItem);
 				if(retId != 0){
 					SaleOrder order = new SaleOrder();
@@ -2490,6 +2510,11 @@ public class LoginService {
 			data.setMessage("对不起，茶叶数据出错");
 			return data;
 		}
+		if(addressId == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，邮寄地址不能为空");
+			return data;
+		}
 		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(warehouseMemberTeaId);
 		if(wtm == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -2566,33 +2591,30 @@ public class LoginService {
 	@Transient
 	public ReturnData resetOrder(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		String orderNo = dto.getOrderNo();
-		if(StringUtil.isBlank(orderNo)){
+		int wtmItemId = StringUtil.toInteger(dto.getOrderNo());
+		if(wtmItemId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，订单不存在");
 			return data;
 		}
-		SaleOrder saleOrder = SaleOrder.dao.queryByOrderNo(orderNo);
-		if(saleOrder == null){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("对不起，订单不存在");
-			return data;
-		}
-		int orderId = saleOrder.getInt("id");
-		SaleOrder order = new SaleOrder();
-		order.set("id", orderId);
-		order.set("status", Constants.ORDER_STATUS.RESET_ORDER);
-		order.set("update_time", DateUtil.getNowTimestamp());
-		boolean update = SaleOrder.dao.updateInfo(order);
-		if(update){
-			//增加库存
-			int wtmId = saleOrder.getInt("warehouse_tea_member_id");
-			int stock = saleOrder.getInt("quality");
-			boolean ret = WarehouseTeaMember.dao.updateStock(wtmId, stock);
+		//增加库存
+		WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtmItemId);
+		if(wtmItem != null){
+			int currentStock = wtmItem.getInt("quality");
+			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
+			if(StringUtil.equals(wtmItem.getStr("size_type_cd"), Constants.TEA_UNIT.ITEM)){
+				if(wtm != null){
+					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+					if(tea != null){
+						int size = tea.getInt("size") == null ? 0 : tea.getInt("size"); 
+						currentStock = currentStock*size;
+					}
+				}
+			}
+			boolean ret = WarehouseTeaMember.dao.updateStock(wtm.getInt("id"), currentStock);
 			if(ret){
 				//更新在售茶叶状态
-				int wtmItemId = saleOrder.getInt("wtm_item_id");
-				int rets = WarehouseTeaMemberItem.dao.updateStatus(wtmItemId, Constants.TEA_STATUS.STOP_SALE);
+				int rets = WarehouseTeaMemberItem.dao.updateResetOrderStatus(wtmItemId, Constants.TEA_STATUS.RESET_ORDER,currentStock);
 				if(rets != 0){
 					data.setCode(Constants.STATUS_CODE.SUCCESS);
 					data.setMessage("撤单成功");
@@ -2604,9 +2626,6 @@ public class LoginService {
 				data.setCode(Constants.STATUS_CODE.FAIL);
 				data.setMessage("撤单失败");
 			}
-		}else{
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("撤单失败");
 		}
 		return data;
 	}
@@ -2615,11 +2634,9 @@ public class LoginService {
 		
 		ReturnData data = new ReturnData();
 		
-		double localLongtitude = Double.valueOf("118.10");
-		double localLatitude = Double.valueOf("24.46");
-		/*double localLongtitude = Double.valueOf(dto.getLocalLongtitude());
+		double localLongtitude = Double.valueOf(dto.getLocalLongtitude());
 		double localLatitude = Double.valueOf(dto.getLocalLatitude());
-		CodeMst distance = CodeMst.dao.queryCodestByCode(Constants.DEFAULT_SETTING.MAP_DISTANCE);
+		/*CodeMst distance = CodeMst.dao.queryCodestByCode(Constants.DEFAULT_SETTING.MAP_DISTANCE);
 		Long dis = new Long("10000");
 		if(distance != null){
 			dis = new Long(StringUtil.toString(distance.getInt("data1")));
@@ -2932,7 +2949,37 @@ public class LoginService {
 	//在售列表
 	public ReturnData querySaleOrderList(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		List<SaleOrder> list = SaleOrder.dao.queryMemberOrders(dto.getUserId()
+		List<WarehouseTeaMemberItem> list = WarehouseTeaMemberItem.dao.queryMemberWtmItems(dto.getUserId()
+																						  ,dto.getPageSize()
+																						  ,dto.getPageNum()
+																						  ,Constants.TEA_STATUS.ON_SALE
+																						  ,Constants.USER_TYPE.USER_TYPE_CLIENT);
+		
+		List<SaleOrderListVO> vos = new ArrayList<>();
+		SaleOrderListVO vo = null;
+		for(WarehouseTeaMemberItem item : list){
+			vo = new SaleOrderListVO();
+			vo.setOrderNo(StringUtil.toString(item.getInt("id")));
+			vo.setAmount(item.getBigDecimal("price").multiply(new BigDecimal(item.getInt("origin_stock"))));
+			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(item.getInt("warehouse_tea_member_id"));
+			if(wtm!=null){
+				int teaId = wtm.getInt("tea_id");
+				Tea tea = Tea.dao.queryById(teaId);
+				if(tea != null){
+					vo.setImg(StringUtil.getTeaIcon(tea.getStr("cover_img")));
+					vo.setName(tea.getStr("tea_title"));
+				}
+			}
+			vo.setPrice(item.getBigDecimal("price"));
+			vo.setQuality(item.getInt("origin_stock"));
+			if(StringUtil.equals(item.getStr("size_type_cd"), Constants.TEA_UNIT.PIECE)){
+				vo.setSize("片");
+			}else{
+				vo.setSize("件");
+			}
+			vos.add(vo);
+			
+		/*List<SaleOrder> list = SaleOrder.dao.queryMemberOrders(dto.getUserId()
 															  ,dto.getPageSize()
 															  ,dto.getPageNum()
 															  ,Constants.ORDER_STATUS.ON_SALE);
@@ -2958,9 +3005,7 @@ public class LoginService {
 				vo.setSize("片");
 			}else{
 				vo.setSize("件");
-			}
-			
-			vos.add(vo);
+			}*/
 		}
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
@@ -3421,7 +3466,7 @@ public class LoginService {
 		}
 		Member buyUserMember = Member.dao.queryById(dto.getUserId());
 		if(!StringUtil.equals(StringUtil.checkCode(dto.getPayPwd()), buyUserMember.getStr("paypwd"))){
-			data.setCode(Constants.STATUS_CODE.ACCOUNT_MONEY_NOT_ENOUGH);
+			data.setCode(Constants.STATUS_CODE.PAYPWD_ERROR);
 			data.setMessage("对不起，支付密码错误");
 			return data;
 		}
@@ -3501,6 +3546,16 @@ public class LoginService {
 						
 						//减少卖家库存
 						int update = WarehouseTeaMemberItem.dao.cutTeaQuality(quality, wtmItemId);
+						//20171121如果库存变为0，更新卖茶成功
+						WarehouseTeaMemberItem currentWtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtmItemId);
+						if(currentWtmItem != null){
+							int currentQuality = currentWtmItem.getInt("quality")==null? 0 : currentWtmItem.getInt("quality");
+							if(currentQuality == 0){
+								//没有库存了，更新为卖茶成功
+								WarehouseTeaMemberItem.dao.updateOnlyStatus(wtmItemId, Constants.TEA_STATUS.SALE_SUCCESS);
+							}
+						}
+						 
 						//如果是卖家是平台,减少WarehouseTeaMem的库存
 						boolean cutFlg = true;
 						if(StringUtil.equals(wtm.getStr("member_type_cd"), Constants.USER_TYPE.PLATFORM_USER)){
@@ -3706,7 +3761,7 @@ public class LoginService {
 		
 		Member buyUserMember = Member.dao.queryById(dto.getUserId());
 		if(!StringUtil.equals(StringUtil.checkCode(dto.getPayPwd()), buyUserMember.getStr("paypwd"))){
-			data.setCode(Constants.STATUS_CODE.ACCOUNT_MONEY_NOT_ENOUGH);
+			data.setCode(Constants.STATUS_CODE.PAYPWD_ERROR);
 			data.setMessage("对不起，支付密码错误");
 			return data;
 		}
@@ -3803,6 +3858,16 @@ public class LoginService {
 							
 							//减少卖家库存
 							int update = WarehouseTeaMemberItem.dao.cutTeaQuality(quality, wtmItemId);
+							//20171121如果库存变为0，更新卖茶成功
+							WarehouseTeaMemberItem currentWtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtmItemId);
+							if(currentWtmItem != null){
+								int currentQuality = currentWtmItem.getInt("quality")==null? 0 : currentWtmItem.getInt("quality");
+								if(currentQuality == 0){
+									//没有库存了，更新为卖茶成功
+									WarehouseTeaMemberItem.dao.updateOnlyStatus(wtmItemId, Constants.TEA_STATUS.SALE_SUCCESS);
+								}
+							}
+							
 							if((update != 0)&&(cutFlg)){
 								//增加买家库存
 								//判断这件茶叶，买家是否买过
@@ -3967,6 +4032,12 @@ public class LoginService {
 			vo.setNickName(member.getStr("nick_name"));
 			vo.setQqNo(member.getStr("qq"));
 			vo.setWxNo(member.getStr("wx"));
+			Store store = Store.dao.queryMemberStore(dto.getUserId());
+			if(StringUtil.equals(store.getStr("status"), "110003")){
+				vo.setStoreFlg(1);
+			}else{
+				vo.setStoreFlg(0);
+			}
 			Map<String, Object> map = new HashMap<>();
 			map.put("member", vo);
 			data.setData(map);

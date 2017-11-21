@@ -155,7 +155,11 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 	}
 	
 	
-	public int updateStatus(int id,String status){
+	public int updateResetOrderStatus(int id,String status,int cancleQuality){
+		return Db.update("update t_warehouse_tea_member_item set quality=0,status='"+status+"',cancle_quality="+cancleQuality+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	}
+	
+	public int updateOnlyStatus(int id,String status){
 		return Db.update("update t_warehouse_tea_member_item set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 	}
 	
@@ -163,4 +167,8 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 		return Db.queryBigDecimal("select sum(quality) from t_warehouse_tea_member_item where warehouse_tea_member_id="+wtmId+" and size_type_cd='"+sizeType+"'");
 	}
 	
+	public List<WarehouseTeaMemberItem> queryMemberWtmItems(int memberId,int pageSize,int pageNum,String status,String memberTypeCd){
+		int fromRow = (pageNum-1)*pageSize;
+		return WarehouseTeaMemberItem.dao.find("select a.* from t_warehouse_tea_member_item a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where b.member_id = ? and a.status=? and b.member_type_cd=? order by a.create_time desc limit ?,?",memberId,status,memberTypeCd,fromRow,pageSize);
+	}
 }
