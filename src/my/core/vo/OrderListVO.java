@@ -21,7 +21,39 @@ public class OrderListVO implements Serializable{
 	private String store;
 	private String mobile;
 	private String productUrl;
+	private String onSale;
+	private String haveSale;
+	private String cancle;
+	private String originStock;
 	
+	
+	
+	
+	
+	public String getOriginStock() {
+		return originStock;
+	}
+	public void setOriginStock(String originStock) {
+		this.originStock = originStock;
+	}
+	public String getCancle() {
+		return cancle;
+	}
+	public void setCancle(String cancle) {
+		this.cancle = cancle;
+	}
+	public String getOnSale() {
+		return onSale;
+	}
+	public void setOnSale(String onSale) {
+		this.onSale = onSale;
+	}
+	public String getHaveSale() {
+		return haveSale;
+	}
+	public void setHaveSale(String haveSale) {
+		this.haveSale = haveSale;
+	}
 	public String getProductUrl() {
 		return productUrl;
 	}

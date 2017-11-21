@@ -12,6 +12,7 @@ import my.core.model.Tea;
 import my.core.model.User;
 import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
+import my.core.model.WarehouseTeaMemberItem;
 import my.core.vo.OrderListVO;
 import my.pvcloud.service.SaleRecordService;
 import my.pvcloud.util.DateUtil;
@@ -49,10 +50,22 @@ public class SaleRecordController extends Controller {
 			model.setPrice(order.getBigDecimal("price"));
 			String sizeTypeCd = order.getStr("size_type_cd");
 			CodeMst sizeCodeMst = CodeMst.dao.queryCodestByCode(sizeTypeCd);
+			String size = "";
 			if(sizeCodeMst != null){
+				size = sizeCodeMst.getStr("name");
 				model.setStock(order.getInt("quality")+sizeCodeMst.getStr("name"));
 			}else{
 				model.setStock(StringUtil.toString(order.getInt("quality")));
+			}
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(order.getInt("wtm_item_id"));
+			if(wtmItem != null){
+				int cancle = wtmItem.getInt("cancle_quality") == null ? 0 : wtmItem.getInt("cancle_quality");
+				int onSale = wtmItem.getInt("quality") == null ? 0 : wtmItem.getInt("quality");
+				int originStock = wtmItem.getInt("origin_stock") == null ? 0 : wtmItem.getInt("origin_stock");
+				model.setOnSale(StringUtil.toString(onSale)+size);
+				model.setCancle(StringUtil.toString(cancle)+size);
+				model.setHaveSale(StringUtil.toString(originStock-cancle)+size);
+				model.setOriginStock(originStock+size);
 			}
 			BigDecimal amount = order.getBigDecimal("price").multiply(new BigDecimal(order.getInt("quality")));
 			model.setAmount(StringUtil.toString(amount));
@@ -148,10 +161,22 @@ public class SaleRecordController extends Controller {
 			model.setPrice(order.getBigDecimal("price"));
 			String sizeTypeCd = order.getStr("size_type_cd");
 			CodeMst sizeCodeMst = CodeMst.dao.queryCodestByCode(sizeTypeCd);
+			String size = "";
 			if(sizeCodeMst != null){
+				size = sizeCodeMst.getStr("name");
 				model.setStock(order.getInt("quality")+sizeCodeMst.getStr("name"));
 			}else{
 				model.setStock(StringUtil.toString(order.getInt("quality")));
+			}
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(order.getInt("wtm_item_id"));
+			if(wtmItem != null){
+				int cancle = wtmItem.getInt("cancle_quality") == null ? 0 : wtmItem.getInt("cancle_quality");
+				int onSale = wtmItem.getInt("quality") == null ? 0 : wtmItem.getInt("quality");
+				int originStock = wtmItem.getInt("origin_stock") == null ? 0 : wtmItem.getInt("origin_stock");
+				model.setOnSale(StringUtil.toString(onSale)+size);
+				model.setCancle(StringUtil.toString(cancle)+size);
+				model.setHaveSale(StringUtil.toString(originStock-cancle)+size);
+				model.setOriginStock(originStock+size);
 			}
 			BigDecimal amount = order.getBigDecimal("price").multiply(new BigDecimal(order.getInt("quality")));
 			model.setAmount(StringUtil.toString(amount));
@@ -251,7 +276,9 @@ public class SaleRecordController extends Controller {
 			BigDecimal amount = order.getBigDecimal("price").multiply(new BigDecimal(order.getInt("quality")));
 			model.setAmount(StringUtil.toString(amount));
 			CodeMst sizeCodeMst = CodeMst.dao.queryCodestByCode(sizeTypeCd);
+			String size = "";
 			if(sizeCodeMst != null){
+				size = sizeCodeMst.getStr("name");
 				model.setStock(order.getInt("quality")+sizeCodeMst.getStr("name"));
 			}else{
 				model.setStock(StringUtil.toString(order.getInt("quality")));
@@ -262,7 +289,16 @@ public class SaleRecordController extends Controller {
 			}else{
 				model.setStatus("");
 			}
-			
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(order.getInt("wtm_item_id"));
+			if(wtmItem != null){
+				int cancle = wtmItem.getInt("cancle_quality") == null ? 0 : wtmItem.getInt("cancle_quality");
+				int onSale = wtmItem.getInt("quality") == null ? 0 : wtmItem.getInt("quality");
+				int originStock = wtmItem.getInt("origin_stock") == null ? 0 : wtmItem.getInt("origin_stock");
+				model.setOnSale(StringUtil.toString(onSale)+size);
+				model.setCancle(StringUtil.toString(cancle)+size);
+				model.setHaveSale(StringUtil.toString(originStock-cancle)+size);
+				model.setOriginStock(originStock+size);
+			}
 			if(wtm != null){
 					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
 					if(tea == null){

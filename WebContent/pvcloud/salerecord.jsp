@@ -148,11 +148,14 @@ td{
     				<th>序列号</th>
     				<th>订单号</th>
     				<th>产品名称</th>
+    				<th>卖家</th>
     				<th>店铺</th>
     				<th>类型</th>
     				<th>仓库</th>
-    				<th>卖家</th>
-    				<th>库存</th>
+    				<th>原始库存</th>
+    				<th>已售</th>
+    				<th>在售</th>
+    				<th>撤单</th>
     				<th>销售价</th>
     				<th>总金额</th>
     				<th>更新时间</th>
@@ -171,11 +174,14 @@ td{
 		    				    <td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
 		    				    <td>${s.orderNo}</td>
 		    					<td>${s.name}</td>
+		    					<td>${s.saleUser}</td>
 		    					<td>${s.store}</td>
 		    					<td>${s.type}</td>
 		    					<td>${s.wareHouse}</td>
-		    					<td>${s.saleUser}</td>
-		    					<td>${s.stock}</td>
+		    					<td>${s.originStock}</td>
+		    					<td>${s.haveSale}</td>
+		    					<td>${s.onSale}</td>
+		    					<td>${s.cancle}</td>
 		    					<td>${s.price}</td>
 		    					<td>${s.amount}</td>
 		    					<td>${s.createTime}</td>
