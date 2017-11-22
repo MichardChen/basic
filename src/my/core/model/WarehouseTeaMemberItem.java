@@ -86,18 +86,23 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 		return Db.update("update t_warehouse_tea_member_item set quality=quality-"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 	}
 	
-	public Page<WarehouseTeaMemberItem> queryByPage(int page,int size){
-		String sql=" from t_warehouse_tea_member_item where 1=1 order by create_time desc";
+	public Page<WarehouseTeaMemberItem> queryByPage(int page,int size,String status){
+		String andStr = " and status='"+status+"'";
+		String sql=" from t_warehouse_tea_member_item where 1=1 "+andStr+" order by create_time desc";
 		String select="select * ";
 		return WarehouseTeaMemberItem.dao.paginate(page, size, select, sql);
 	}
 	
-	public Page<WarehouseTeaMemberItem> queryByPageParams(int page,int size,String date,int saleUserId,String saleUserTypeCd){
+	public Page<WarehouseTeaMemberItem> queryByPageParams(int page,int size,String date,int saleUserId,String saleUserTypeCd,String status){
 		
 		if((StringUtil.isBlank(saleUserTypeCd))&&(saleUserId == 0)){
 			StringBuffer strBuf=new StringBuffer();
 			if(StringUtil.isNoneBlank(date)){
 				strBuf.append(" and create_time like '%"+date+"%'");
+			}
+			
+			if(StringUtil.isNoneBlank(status)){
+				strBuf.append(" and status='"+status+"'");
 			}
 				
 			String sql=" from t_warehouse_tea_member_item where 1=1 "+strBuf+" order by create_time desc";
@@ -114,6 +119,10 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 			}
 			if(saleUserId != 0){
 				strBuf.append(" and b.member_id="+saleUserId);
+			}
+			
+			if(StringUtil.isNoneBlank(status)){
+				strBuf.append(" and a.status='"+status+"'");
 			}
 				
 			String sql=" from t_warehouse_tea_member_item a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where 1=1 "+strBuf+" order by a.create_time desc";

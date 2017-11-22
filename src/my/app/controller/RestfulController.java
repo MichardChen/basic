@@ -577,7 +577,7 @@ public class RestfulController extends Controller{
 			renderJson(data);
 		}else{
 			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("对不起，您扫描的商家还未绑定门店");
+			data.setMessage("您还没有绑定门店");
 			renderJson(data);
 		}
 	}
@@ -1315,7 +1315,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//获取个人数据
-	@Before(RequestInterceptor.class)
+	//@Before(RequestInterceptor.class)
 	public void queryPersonData() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryPersonData(dto));

@@ -41,7 +41,7 @@ public class SaleOrderController extends Controller {
 			
 		}
 
-		Page<WarehouseTeaMemberItem> list = service.queryWtmItemByPage(page, size);
+		Page<WarehouseTeaMemberItem> list = service.queryWtmItemByPage(page, size,Constants.TEA_STATUS.ON_SALE);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
 		for(WarehouseTeaMemberItem order : list.getList()){
@@ -155,7 +155,7 @@ public class SaleOrderController extends Controller {
 				}
 			}
 		}
-		Page<WarehouseTeaMemberItem> list = service.queryWtmItemByParam(page, size,title,saleUserId,saleUserTypeCd);
+		Page<WarehouseTeaMemberItem> list = service.queryWtmItemByParam(page, size,title,saleUserId,saleUserTypeCd,Constants.TEA_STATUS.ON_SALE);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
 		for(WarehouseTeaMemberItem order : list.getList()){
@@ -270,7 +270,7 @@ public class SaleOrderController extends Controller {
 				}
 			}
 		}
-		Page<WarehouseTeaMemberItem> list = service.queryWtmItemByParam(page, size,ptitle,saleUserId,saleUserTypeCd);
+		Page<WarehouseTeaMemberItem> list = service.queryWtmItemByParam(page, size,ptitle,saleUserId,saleUserTypeCd,Constants.TEA_STATUS.ON_SALE);
 		ArrayList<OrderListVO> models = new ArrayList<>();
 		OrderListVO model = null;
 		for(WarehouseTeaMemberItem order : list.getList()){

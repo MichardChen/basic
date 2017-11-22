@@ -293,11 +293,11 @@ public class LoginService {
 	public ReturnData logout(LoginDTO dto) throws Exception{
 		ReturnData data = new ReturnData();
 		Member member = Member.dao.queryMember(dto.getMobile());
-		if(member == null){
+	/*	if(member == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("对不起，用户不存在");
 			return data;
-		}
+		}*/
 		AcceessToken token = AcceessToken.dao.queryById(member.getInt("id"),dto.getPlatForm());
 		if((token == null)  ||(!StringUtil.equals(token.getStr("token"), dto.getAccessToken()))){
 			data.setCode("5701");
@@ -2700,7 +2700,7 @@ public class LoginService {
 			toRow = keyList.size()-1;
 		}
 		//获取fromRow到toRow之间的key值
-		for(int i=fromRow;i<=toRow;i++){
+		for(int i=fromRow;((i<keyList.size())&&(i<=toRow));i++){
 			BigDecimal k = keyList.get(i);
 			resultList.add(vMap.get(k));
 		}
@@ -2859,6 +2859,12 @@ public class LoginService {
 			data.setMessage("提现失败，用户不存在");
 			return data;
 		}
+		if(StringUtil.isBlank(member.getStr("paypwd"))){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("提现失败，请先设置支付密码");
+			return data;
+		}
+		
 		if(!StringUtil.equals(payPassword, member.getStr("paypwd"))){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("提现失败，支付密码错误");
@@ -3439,6 +3445,14 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		int wtmItemId = dto.getTeaId();
 		int quality = dto.getQuality();
+		
+		Member buyUserMember = Member.dao.queryById(dto.getUserId());
+		if(!StringUtil.equals(StringUtil.checkCode(dto.getPayPwd()), buyUserMember.getStr("paypwd"))){
+			data.setCode(Constants.STATUS_CODE.PAYPWD_ERROR);
+			data.setMessage("对不起，支付密码错误");
+			return data;
+		}
+		
 		WarehouseTeaMemberItem item = WarehouseTeaMemberItem.dao.queryByKeyId(wtmItemId);
 		if(item == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -3464,12 +3478,7 @@ public class LoginService {
 			data.setMessage("对不起，此茶叶已停售");
 			return data;
 		}
-		Member buyUserMember = Member.dao.queryById(dto.getUserId());
-		if(!StringUtil.equals(StringUtil.checkCode(dto.getPayPwd()), buyUserMember.getStr("paypwd"))){
-			data.setCode(Constants.STATUS_CODE.PAYPWD_ERROR);
-			data.setMessage("对不起，支付密码错误");
-			return data;
-		}
+		
 		//判断账号金额够不够
 		BigDecimal all = item.getBigDecimal("price").multiply(new BigDecimal(quality));
 		if(all.compareTo(buyUserMember.getBigDecimal("moneys"))==1){
@@ -3525,6 +3534,7 @@ public class LoginService {
 				int allQuality = 0;
 				if(ret != 0){
 					//买家扣款
+					BigDecimal openBalance = buyUserMember.getBigDecimal("moneys");
 					int rt = Member.dao.updateMoneys(dto.getUserId(), buyUserMember.getBigDecimal("moneys").subtract(all));
 					if(rt != 0){
 						//下单记录
@@ -3537,8 +3547,8 @@ public class LoginService {
 						cash.set("act_rev_amount", all);
 						cash.set("act_pay_amount", all);
 						Member member = Member.dao.queryById(dto.getUserId());
-						cash.set("opening_balance", member.getBigDecimal("moneys"));
-						cash.set("closing_balance", member.getBigDecimal("moneys").subtract(all));
+						cash.set("opening_balance",openBalance);
+						cash.set("closing_balance", member.getBigDecimal("moneys"));
 						cash.set("remarks", "下单"+all);
 						cash.set("create_time", DateUtil.getNowTimestamp());
 						cash.set("update_time", DateUtil.getNowTimestamp());
@@ -3716,6 +3726,14 @@ public class LoginService {
 		ReturnData data = new ReturnData();
 		String str[] = dto.getTeas().split(",");
 		int iSize = str.length;
+		
+		Member buyUserMember = Member.dao.queryById(dto.getUserId());
+		if(!StringUtil.equals(StringUtil.checkCode(dto.getPayPwd()), buyUserMember.getStr("paypwd"))){
+			data.setCode(Constants.STATUS_CODE.PAYPWD_ERROR);
+			data.setMessage("对不起，支付密码错误");
+			return data;
+		}
+		
 		//总价
 		BigDecimal amount = new BigDecimal("0");
 		for (int i = 0; i < iSize; i++) {
@@ -3759,12 +3777,6 @@ public class LoginService {
 			amount = amount.add(item.getBigDecimal("price").multiply(new BigDecimal(quality)));
 		}
 		
-		Member buyUserMember = Member.dao.queryById(dto.getUserId());
-		if(!StringUtil.equals(StringUtil.checkCode(dto.getPayPwd()), buyUserMember.getStr("paypwd"))){
-			data.setCode(Constants.STATUS_CODE.PAYPWD_ERROR);
-			data.setMessage("对不起，支付密码错误");
-			return data;
-		}
 		if(amount.compareTo(buyUserMember.getBigDecimal("moneys"))==1){
 			//余额不够
 			data.setCode(Constants.STATUS_CODE.ACCOUNT_MONEY_NOT_ENOUGH);
@@ -3825,6 +3837,7 @@ public class LoginService {
 					
 					if(ret != 0){
 						//买家扣款
+						BigDecimal openBalance = buyUserMember.getBigDecimal("moneys");
 						int rt = Member.dao.updateMoneys(dto.getUserId(), buyUserMember.getBigDecimal("moneys").subtract(itemAmount));
 						if(rt != 0){
 							//成功充值记录
@@ -3837,8 +3850,8 @@ public class LoginService {
 							cash.set("act_rev_amount", itemAmount);
 							cash.set("act_pay_amount", itemAmount);
 							Member member = Member.dao.queryById(dto.getUserId());
-							cash.set("opening_balance", member.getBigDecimal("moneys"));
-							cash.set("closing_balance", member.getBigDecimal("moneys").subtract(itemAmount));
+							cash.set("opening_balance", openBalance);
+							cash.set("closing_balance", member.getBigDecimal("moneys"));
 							cash.set("remarks", "下单"+itemAmount);
 							cash.set("create_time", DateUtil.getNowTimestamp());
 							cash.set("update_time", DateUtil.getNowTimestamp());
@@ -4033,11 +4046,16 @@ public class LoginService {
 			vo.setQqNo(member.getStr("qq"));
 			vo.setWxNo(member.getStr("wx"));
 			Store store = Store.dao.queryMemberStore(dto.getUserId());
-			if(StringUtil.equals(store.getStr("status"), "110003")){
-				vo.setStoreFlg(1);
+			if(store != null){
+				if(StringUtil.equals(store.getStr("status"), "110003")){
+					vo.setStoreFlg(1);
+				}else{
+					vo.setStoreFlg(0);
+				}
 			}else{
 				vo.setStoreFlg(0);
 			}
+			
 			Map<String, Object> map = new HashMap<>();
 			map.put("member", vo);
 			data.setData(map);

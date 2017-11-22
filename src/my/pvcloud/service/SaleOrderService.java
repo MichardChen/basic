@@ -7,16 +7,16 @@ import com.jfinal.plugin.activerecord.Page;
 //WarehouseTeaMember
 public class SaleOrderService {
 
-	public Page<WarehouseTeaMemberItem> queryByPage(int page,int size){
-		return WarehouseTeaMemberItem.dao.queryByPage(page, size);
+	public Page<WarehouseTeaMemberItem> queryByPage(int page,int size,String status){
+		return WarehouseTeaMemberItem.dao.queryByPage(page, size,status);
 	}
 	
-	public Page<WarehouseTeaMemberItem> queryWtmItemByPage(int page,int size){
-		return WarehouseTeaMemberItem.dao.queryByPage(page, size);
+	public Page<WarehouseTeaMemberItem> queryWtmItemByPage(int page,int size,String status){
+		return WarehouseTeaMemberItem.dao.queryByPage(page, size,status);
 	}
 	
-	public Page<WarehouseTeaMemberItem> queryWtmItemByParam(int page,int size,String createDate,int saleUserId,String saleUserTypeCd){
-		return WarehouseTeaMemberItem.dao.queryByPageParams(page, size,createDate,saleUserId,saleUserTypeCd);
+	public Page<WarehouseTeaMemberItem> queryWtmItemByParam(int page,int size,String createDate,int saleUserId,String saleUserTypeCd,String status){
+		return WarehouseTeaMemberItem.dao.queryByPageParams(page, size,createDate,saleUserId,saleUserTypeCd,status);
 	}
 	
 	public WarehouseTeaMemberItem queryById(int id){
