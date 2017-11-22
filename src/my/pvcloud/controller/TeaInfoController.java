@@ -89,7 +89,7 @@ public class TeaInfoController extends Controller {
 				}
 				model.setSyPiece(StringUtil.toString(wtm.getInt("stock"))+"片");
 				model.setOriginStock(StringUtil.toStringDefaultZero(wtm.getInt("origin_stock"))+"片");
-				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtm.getInt("id"));
+				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
 				if(wtmItem != null){
 					String size = "";
 					CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
@@ -171,7 +171,7 @@ public class TeaInfoController extends Controller {
 					model.setSaleItems("0");
 				}
 				model.setOriginStock(StringUtil.toStringDefaultZero(wtm.getInt("origin_stock"))+"片");
-				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtm.getInt("id"));
+				WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
 				if(wtmItem != null){
 					String size = "";
 					CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
@@ -252,7 +252,7 @@ public class TeaInfoController extends Controller {
 						model.setSaleItems("0");
 					}
 					model.setOriginStock(StringUtil.toStringDefaultZero(wtm.getInt("origin_stock"))+"片");
-					WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(wtm.getInt("id"));
+					WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
 					if(wtmItem != null){
 						String size = "";
 						CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));

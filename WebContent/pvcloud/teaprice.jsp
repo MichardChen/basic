@@ -125,7 +125,7 @@ td{
     		</form>
    		</div>
 	</div>
-    <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:600px;position:relative;color:black;margin-left:0px;">
+    <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:700px;position:relative;color:black;margin-left:0px;">
     	<div class="row">
     		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 table-responsive" style="padding-left:0px;padding-right:0px;font-size:14px;height:550px;">
     		<table class="table table-responsive" id="myTb" >

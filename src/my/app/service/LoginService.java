@@ -3596,9 +3596,11 @@ public class LoginService {
 									if(teaInfo != null){
 										allQuality = quality*teaInfo.getInt("size");
 										wtmsMember.set("stock", allQuality);
+										wtmsMember.set("origin_stock", allQuality);
 									}
 								}else{
 									wtmsMember.set("stock", quality);
+									wtmsMember.set("origin_stock", quality);
 								}
 								wtmsMember.set("create_time", DateUtil.getNowTimestamp());
 								wtmsMember.set("update_time", DateUtil.getNowTimestamp());
@@ -3898,9 +3900,11 @@ public class LoginService {
 										Tea teaInfo = Tea.dao.queryById(teaId);
 										if(teaInfo != null){
 											wtmsMember.set("stock", quality*teaInfo.getInt("size"));
+											wtmsMember.set("origin_stock", quality*teaInfo.getInt("size"));
 										}
 									}else{
 										wtmsMember.set("stock", quality);
+										wtmsMember.set("origin_stock", quality);
 									}
 									wtmsMember.set("create_time", DateUtil.getNowTimestamp());
 									wtmsMember.set("update_time", DateUtil.getNowTimestamp());

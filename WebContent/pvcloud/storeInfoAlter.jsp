@@ -29,7 +29,7 @@ if(str!=''){
 		</tr>
 		<tr>
 			<td>经纬度</td>
-			<td>经度：${model.longitude }，纬度：${model.latitude}</td>
+			<td>经度：${model.longitude }，纬度：${model.latitude}&nbsp;&nbsp;<a target="_blank" href="http://www.gpsspg.com/maps.htm">定位查看</a></td>
 		</tr>
 		<tr>
 			<td>主营茶叶</td>

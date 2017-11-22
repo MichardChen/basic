@@ -51,7 +51,10 @@ public class SaleOrderController extends Controller {
 			model.setPrice(order.getBigDecimal("price"));
 			String sizeTypeCd = order.getStr("size_type_cd");
 			CodeMst sizeCodeMst = CodeMst.dao.queryCodestByCode(sizeTypeCd);
+			String size = "";
 			if(sizeCodeMst != null){
+				size = sizeCodeMst.getStr("name");
+				model.setSize(size);
 				model.setStock(order.getInt("quality")+sizeCodeMst.getStr("name"));
 			}else{
 				model.setStock(StringUtil.toString(order.getInt("quality")));
@@ -107,6 +110,15 @@ public class SaleOrderController extends Controller {
 							continue;
 						}
 					}
+					//查询相关库存数据
+					int onSale = order.getInt("quality") == null ? 0 : order.getInt("quality");
+					int originStock = order.getInt("origin_stock") == null ? 0 : order.getInt("origin_stock");
+					int cancleQuality = order.getInt("cancle_quality") == null ? 0 : order.getInt("cancle_quality");
+					model.setOnSale(StringUtil.toString(onSale)+size);
+					model.setCancle(StringUtil.toString(cancleQuality)+size);
+					model.setOriginStock(StringUtil.toString(originStock)+size);
+					model.setHaveSale(StringUtil.toString(originStock-cancleQuality-onSale)+size);
+					
 					models.add(model);
 				}else{
 					continue;
@@ -165,7 +177,10 @@ public class SaleOrderController extends Controller {
 			model.setPrice(order.getBigDecimal("price"));
 			String sizeTypeCd = order.getStr("size_type_cd");
 			CodeMst sizeCodeMst = CodeMst.dao.queryCodestByCode(sizeTypeCd);
+			String size = "";
 			if(sizeCodeMst != null){
+				size = sizeCodeMst.getStr("name");
+				model.setSize(size);
 				model.setStock(order.getInt("quality")+sizeCodeMst.getStr("name"));
 			}else{
 				model.setStock(StringUtil.toString(order.getInt("quality")));
@@ -221,6 +236,15 @@ public class SaleOrderController extends Controller {
 							continue;
 						}
 					}
+					//查询相关库存数据
+					int onSale = order.getInt("quality") == null ? 0 : order.getInt("quality");
+					int originStock = order.getInt("origin_stock") == null ? 0 : order.getInt("origin_stock");
+					int cancleQuality = order.getInt("cancle_quality") == null ? 0 : order.getInt("cancle_quality");
+					model.setOnSale(StringUtil.toString(onSale)+size);
+					model.setCancle(StringUtil.toString(cancleQuality)+size);
+					model.setOriginStock(StringUtil.toString(originStock)+size);
+					model.setHaveSale(StringUtil.toString(originStock-cancleQuality-onSale)+size);
+					
 					models.add(model);
 				}else{
 					continue;
@@ -279,7 +303,10 @@ public class SaleOrderController extends Controller {
 			model.setPrice(order.getBigDecimal("price"));
 			String sizeTypeCd = order.getStr("size_type_cd");
 			CodeMst sizeCodeMst = CodeMst.dao.queryCodestByCode(sizeTypeCd);
+			String size = "";
 			if(sizeCodeMst != null){
+				size = sizeCodeMst.getStr("name");
+				model.setSize(size);
 				model.setStock(order.getInt("quality")+sizeCodeMst.getStr("name"));
 			}else{
 				model.setStock(StringUtil.toString(order.getInt("quality")));
@@ -336,6 +363,15 @@ public class SaleOrderController extends Controller {
 							continue;
 						}
 					}
+					//查询相关库存数据
+					int onSale = order.getInt("quality") == null ? 0 : order.getInt("quality");
+					int originStock = order.getInt("origin_stock") == null ? 0 : order.getInt("origin_stock");
+					int cancleQuality = order.getInt("cancle_quality") == null ? 0 : order.getInt("cancle_quality");
+					model.setOnSale(StringUtil.toString(onSale)+size);
+					model.setCancle(StringUtil.toString(cancleQuality)+size);
+					model.setOriginStock(StringUtil.toString(originStock)+size);
+					model.setHaveSale(StringUtil.toString(originStock-cancleQuality-onSale)+size);
+					
 					models.add(model);
 				}else{
 					continue;

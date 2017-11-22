@@ -155,7 +155,7 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 	}
 	
 	public int addTeaQuality(int quality,int warehouseId,int teaId,int memberId){
-		return Db.update("update t_warehouse_tea_member set stock=stock+"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_id="+warehouseId+" and tea_id="+teaId+" and member_id="+memberId);
+		return Db.update("update t_warehouse_tea_member set origin_stock=origin_stock+"+quality+",stock=stock+"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_id="+warehouseId+" and tea_id="+teaId+" and member_id="+memberId);
 	}
 	
 	public int cutTeaQuality(int quality,int warehouseId,int teaId,int memberId){

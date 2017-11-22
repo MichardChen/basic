@@ -64,7 +64,7 @@ public class SaleRecordController extends Controller {
 				int originStock = wtmItem.getInt("origin_stock") == null ? 0 : wtmItem.getInt("origin_stock");
 				model.setOnSale(StringUtil.toString(onSale)+size);
 				model.setCancle(StringUtil.toString(cancle)+size);
-				model.setHaveSale(StringUtil.toString(originStock-cancle)+size);
+				model.setHaveSale(StringUtil.toString(originStock-cancle-onSale)+size);
 				model.setOriginStock(originStock+size);
 			}
 			BigDecimal amount = order.getBigDecimal("price").multiply(new BigDecimal(order.getInt("quality")));
@@ -175,7 +175,7 @@ public class SaleRecordController extends Controller {
 				int originStock = wtmItem.getInt("origin_stock") == null ? 0 : wtmItem.getInt("origin_stock");
 				model.setOnSale(StringUtil.toString(onSale)+size);
 				model.setCancle(StringUtil.toString(cancle)+size);
-				model.setHaveSale(StringUtil.toString(originStock-cancle)+size);
+				model.setHaveSale(StringUtil.toString(originStock-cancle-onSale)+size);
 				model.setOriginStock(originStock+size);
 			}
 			BigDecimal amount = order.getBigDecimal("price").multiply(new BigDecimal(order.getInt("quality")));
@@ -296,7 +296,7 @@ public class SaleRecordController extends Controller {
 				int originStock = wtmItem.getInt("origin_stock") == null ? 0 : wtmItem.getInt("origin_stock");
 				model.setOnSale(StringUtil.toString(onSale)+size);
 				model.setCancle(StringUtil.toString(cancle)+size);
-				model.setHaveSale(StringUtil.toString(originStock-cancle)+size);
+				model.setHaveSale(StringUtil.toString(originStock-cancle-onSale)+size);
 				model.setOriginStock(originStock+size);
 			}
 			if(wtm != null){

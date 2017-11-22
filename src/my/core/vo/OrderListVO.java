@@ -25,11 +25,15 @@ public class OrderListVO implements Serializable{
 	private String haveSale;
 	private String cancle;
 	private String originStock;
+	private String size;
 	
 	
-	
-	
-	
+	public String getSize() {
+		return size;
+	}
+	public void setSize(String size) {
+		this.size = size;
+	}
 	public String getOriginStock() {
 		return originStock;
 	}
