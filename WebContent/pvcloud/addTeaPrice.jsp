@@ -33,11 +33,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<table class="table table-responsive">
 		<tr>
 			<td>参考价</td>
-			<td><input type="number" step="0.01" name="referencePrice" id="referencePrice" maxlength="30" style="width: 100px;"/>(元/件)</td>
+			<td><input type="number" step="0.01" name="referencePrice" id="referencePrice" maxlength="30" style="width: 100px;"/>(元/片)</td>
 		</tr>
 		<tr>
 			<td>参考单价区间</td>
-			<td><input type="number" step="0.01" name="fromPrice" id="fromPrice" maxlength="30" style="width: 100px;"/>&nbsp;-&nbsp;<input type="number" step="0.01" name="toPrice" id="toPrice" maxlength="30" style="width: 100px;"/>(元/件)</td>
+			<td><input type="number" step="0.01" name="fromPrice" id="fromPrice" maxlength="30" style="width: 100px;"/>&nbsp;-&nbsp;<input type="number" step="0.01" name="toPrice" id="toPrice" maxlength="30" style="width: 100px;"/>(元/片)</td>
 		</tr>
 		<tr>
 			<td>有效截止日期</td>

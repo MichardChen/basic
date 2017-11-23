@@ -538,7 +538,7 @@ public class RestfulController extends Controller{
 	@Before(RequestInterceptor.class)
 	public void queryStoreDetail(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
-		int memberId = dto.getUserId();
+ 		int memberId = dto.getUserId();
 		ReturnData data = new ReturnData();
 		if(memberId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -666,7 +666,7 @@ public class RestfulController extends Controller{
 	
 	//更新绑定门店
 	public void updateBindStore(){
-		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		
 		//上传头像
 		UploadFile uploadFile = getFile("img1");
 		UploadFile uploadFile1 = getFile("img2");

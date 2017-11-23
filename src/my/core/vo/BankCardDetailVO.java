@@ -8,8 +8,14 @@ public class BankCardDetailVO implements Serializable{
 	private String bankName;
 	private String cardNo;
 	private String status;
+	private String statusName;
 	
-	
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
 	public String getStatus() {
 		return status;
 	}
