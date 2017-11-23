@@ -100,7 +100,7 @@ public class Order extends Model<Order> {
 				"LEFT JOIN t_warehouse_tea_member_item b ON a.wtm_item_id = b.id "+
 				"LEFT JOIN t_warehouse_tea_member c on b.warehouse_tea_member_id=c.id "+
 				"LEFT JOIN t_tea d ON d.id = c.tea_id "+
-				"WHERE a.create_time like '%"+date+"%' AND d.id="+teaId+" "+
+				"WHERE a.create_time like '%"+date+"%' AND d.id="+teaId+" AND c.member_type_cd='010002'"+" "+
 				"GROUP BY "+
 				"DATE_FORMAT(a.create_time, '%Y-%m-%d') "+
 				"ORDER BY "+
@@ -117,7 +117,7 @@ public class Order extends Model<Order> {
 					 "FROM t_order a LEFT JOIN t_order_item b on a.id=b.order_id "+
 					 "LEFT JOIN t_warehouse_tea_member_item d on b.wtm_item_id=d.id "+
 					 "LEFT JOIN t_warehouse_tea_member e on d.warehouse_tea_member_id=e.id "+
-					 "WHERE a.create_time LIKE '%"+date+"%' "+
+					 "WHERE a.create_time LIKE '%"+date+"%' AND e.member_type_cd='010002'"+" "+ 
 					 "AND a.order_status = '140003' "+
 					 "AND e.tea_id="+teaId;
 		

@@ -14,8 +14,17 @@ public class AddressDetailVO implements Serializable{
 	private String mobile;
 	private String city;
 	private String province;
+	private String district;
 	
 	
+	
+	
+	public String getDistrict() {
+		return district;
+	}
+	public void setDistrict(String district) {
+		this.district = district;
+	}
 	public String getCity() {
 		return city;
 	}

@@ -159,7 +159,7 @@ td{
     		<thead>
     			<tr>
     				<th>序列号</th>
-    				<th>用户</th>
+    				<th>用户名</th>
     				<th>注册手机号码</th>
     				<th>订单号</th>
     				<th>流水账单号</th>

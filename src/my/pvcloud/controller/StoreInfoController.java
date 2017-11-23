@@ -32,6 +32,8 @@ import my.core.model.BankCardRecord;
 import my.core.model.CodeMst;
 import my.core.model.Log;
 import my.core.model.Member;
+import my.core.model.MemberBankcard;
+import my.core.model.Message;
 import my.core.model.PayRecord;
 import my.core.model.ReturnData;
 import my.core.model.Store;
@@ -381,7 +383,33 @@ public class StoreInfoController extends Controller {
 			String status = StringUtil.checkCode(getPara("flg"));
 			int ret = service.updateFlg(id, status);
 			if(ret==0){
+				
 				Store store = Store.dao.queryById(id);
+				
+				//消息
+				String stStr = "";
+				if(StringUtil.equals(status, "110003")){
+					stStr = "您的门店已审核通过";
+				}
+				if(StringUtil.equals(status, "110004")){
+					stStr = "您的门店审核未通过，请重新提交";
+				}
+			
+				int userId = 0;
+				if(store != null){
+					userId = store.getInt("member_id") == null ? 0 : store.getInt("member_id");
+				}
+				
+				Message message = new Message();
+				message.set("message_type_cd", Constants.MESSAGE_TYPE.STORE_REVIEW_MSG);
+				message.set("message",stStr);
+				message.set("title","门店审核");
+				message.set("params", "{id:"+id+"}");
+				message.set("create_time", DateUtil.getNowTimestamp());
+				message.set("update_time", DateUtil.getNowTimestamp());
+				message.set("user_id", userId);
+				boolean messageSave = Message.dao.saveInfo(message);
+				
 				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新门店状态:"+store.getStr("store_name"));
 				setAttr("message", "操作成功");
 			}else{

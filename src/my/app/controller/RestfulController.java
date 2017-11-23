@@ -229,7 +229,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//查找收货地址
-	@Before(RequestInterceptor.class)
+	//@Before(RequestInterceptor.class)
 	public void queryAddressById(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryAddressById(dto));

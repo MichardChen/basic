@@ -68,15 +68,20 @@ function checkPrice(){
 }
 
 function check(){
+	var referencePrice = $("#referencePrice").val();
 	var fromPrice = $("#fromPrice").val();
 	var toPrice = $("#toPrice").val();
 	var expireDate = $("#expireDate").val();
-	if(fromPrice == ""){
-		alert("价格不能为空");
+	if(referencePrice == ""){
+		alert("参考价不能为空");
 		return false;
 	}
-	if(toPrice == ""){
-		alert("价格不能为空");
+	if(fromPrice == ""){
+		alert("最低参考价不能为空");
+		return false;
+	}
+	 if(expireDate == ""){
+		alert("有效截止日期不能为空");
 		return false;
 	}
 	return true;

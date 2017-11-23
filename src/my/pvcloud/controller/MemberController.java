@@ -18,8 +18,10 @@ import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
 import my.core.model.MemberStore;
+import my.core.model.Message;
 import my.core.model.PayRecord;
 import my.core.model.Store;
+import my.core.model.Tea;
 import my.core.vo.MemberVO;
 import my.pvcloud.model.CustInfo;
 import my.pvcloud.service.MemberService;
@@ -381,6 +383,32 @@ public class MemberController extends Controller {
 			member.set("id", id);
 			member.set("status", status);
 			member.set("update_time", DateUtil.getNowTimestamp());
+			
+			//消息
+			String stStr = "";
+			if(StringUtil.equals(status, "240002")){
+				stStr = "您的银行卡已审核通过";
+			}
+			if(StringUtil.equals(status, "240003")){
+				stStr = "您的银行卡审核未通过，请重新提交";
+			}
+		
+			int userId = 0;
+			MemberBankcard mbc = MemberBankcard.dao.queryById(id);
+			if(mbc != null){
+				userId = mbc.getInt("member_id") == null ? 0 : mbc.getInt("member_id");
+			}
+			
+			Message message = new Message();
+			message.set("message_type_cd", Constants.MESSAGE_TYPE.BANK_REVIEW_MSG);
+			message.set("message",stStr);
+			message.set("title","绑定银行卡审核");
+			message.set("params", "{id:"+id+"}");
+			message.set("create_time", DateUtil.getNowTimestamp());
+			message.set("update_time", DateUtil.getNowTimestamp());
+			message.set("user_id", userId);
+			boolean messageSave = Message.dao.saveInfo(message);
+			
 			boolean ret = MemberBankcard.dao.updateInfo(member);
 			if(ret){
 				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新用户id:"+id+"的银行卡状态");

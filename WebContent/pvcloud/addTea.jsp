@@ -130,14 +130,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	////////
         	var fromPrice = $("#fromPrice").val();
         	if(fromPrice == ""){
-        		alert("请输入参考单价");
+        		alert("请输入最低参考价");
         		return false;
         	}
-        	var toPrice = $("#toPrice").val();
+        	/* var toPrice = $("#toPrice").val();
         	if(toPrice == ""){
         		alert("请输入参考单价");
         		return false;
-        	}
+        	} */
         	var expireDate = $("#expireDate").val();
         	if(expireDate == ""){
         		alert("请输入参考价失效日");

@@ -107,7 +107,7 @@ public class TeaInfoController extends Controller {
 			//参考价
 			TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(model.getId());
 			if(teaPrice != null){
-				model.setReferencePrice(StringUtil.toString(teaPrice.getBigDecimal("reference_price"))+"元/件");
+				model.setReferencePrice(StringUtil.toString(teaPrice.getBigDecimal("reference_price"))+"元/片");
 			}
 			model.setUrl(tea.getStr("desc_url"));
 			model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
@@ -184,6 +184,12 @@ public class TeaInfoController extends Controller {
 						model.setSaleStatus(s.getStr("name"));
 					}
 				}
+			}
+			
+			//参考价
+			TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(model.getId());
+			if(teaPrice != null){
+				model.setReferencePrice(StringUtil.toString(teaPrice.getBigDecimal("reference_price"))+"元/片");
 			}
 			model.setUrl(tea.getStr("desc_url"));
 			model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));
@@ -265,6 +271,11 @@ public class TeaInfoController extends Controller {
 							model.setSaleStatus(s.getStr("name"));
 						}
 					}
+				}
+				//参考价
+				TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(model.getId());
+				if(teaPrice != null){
+					model.setReferencePrice(StringUtil.toString(teaPrice.getBigDecimal("reference_price"))+"元/片");
 				}
 				model.setUrl(tea.getStr("desc_url"));
 				model.setCreateTime(StringUtil.toString(tea.getTimestamp("create_time")));

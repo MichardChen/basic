@@ -103,7 +103,7 @@ public interface Constants {
 	
 	
 	/**
-	 * 本地*/
+	 * 本地
 	public static interface HOST{
 		public static final String LOCALHOST = "http://192.168.1.7:82/newsimages/";
 		public static final String TEA = "http://192.168.1.7:82/tea/";
@@ -122,10 +122,10 @@ public interface Constants {
 		public static final String ICON = "F:\\upload\\icon\\";
 		public static final String IMG = "F:\\upload\\img\\";
 		public static final String STORE = "F:\\upload\\store\\";
-	}
+	}*/
 
 	
-	/**139服务器
+	/**139服务器*/
 	public static interface HOST{
 		public static final String LOCALHOST = "http://www.yibuwangluo.cn:88/newsimages/";
 		public static final String TEA = "http://www.yibuwangluo.cn:88/tea/";
@@ -144,7 +144,7 @@ public interface Constants {
 		public static final String ICON = "D:\\upload\\icon\\";
 		public static final String IMG = "D:\\upload\\img\\";
 		public static final String STORE = "D:\\upload\\store\\";
-	}*/
+	}
 	
 	/**centos服务器
 	public static interface HOST{
@@ -210,6 +210,8 @@ public interface Constants {
 	public static interface MESSAGE_TYPE{
 		public static final String BUY_TEA = "080001";
 		public static final String SALE_TEA = "080002";
+		public static final String BANK_REVIEW_MSG = "080003";
+		public static final String STORE_REVIEW_MSG = "080004";
 	}
 	
 	public static interface NEWTEA_STATUS{

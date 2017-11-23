@@ -20,7 +20,7 @@ public class TeaPrice extends Model<TeaPrice> {
 	}
 	
 	public TeaPrice queryByTeaId(int teaId){
-		return TeaPrice.dao.findFirst("select * from t_tea_price where tea_id = ? order by expire_time desc",teaId);
+		return TeaPrice.dao.findFirst("select * from t_tea_price where tea_id = ? order by create_time desc",teaId);
 	}
 	
 	public boolean updateInfo(TeaPrice data){
