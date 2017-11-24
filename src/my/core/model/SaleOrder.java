@@ -2,6 +2,7 @@ package my.core.model;
 
 import java.util.List;
 
+import my.core.constants.Constants;
 import my.pvcloud.util.StringUtil;
 
 import org.huadalink.plugin.tablebind.TableBind;
@@ -78,7 +79,35 @@ public class SaleOrder extends Model<SaleOrder> {
 		return SaleOrder.dao.paginate(page, size, select, sql);
 	}
 
-	public List<Record> queryPriceTrendAvg(String date,int teaId){
+	public List<Record> queryPriceTrendAvg(String fromDate,String toDate,int teaId,String size){
+		String date1 = fromDate+" 00:00:00";
+		String date2 = toDate+" 23:59:59";
+		String sql = "SELECT SUM(a.price*a.quality) as allAmount,SUM(a.quality) as quality,DATE_FORMAT(a.create_time,'%Y-%m-%d') as createTime from t_sale_order a "
+					+"LEFT  JOIN t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id "
+					+"LEFT JOIN t_warehouse_tea_member_item e on e.warehouse_tea_member_id=b.id "
+				    +"LEFT JOIN t_tea c on b.tea_id=c.id "
+					+"WHERE a.create_time>='"+date1+"' AND a.create_time<='"+date2+"' AND c.id="+teaId+" AND b.member_type_cd!='010002' AND e.size_type_cd='"+size+"' "
+					+"GROUP BY DATE_FORMAT(a.create_time,'%Y-%m-%d') "
+					+"ORDER BY DATE_FORMAT(a.create_time, '%Y-%m-%d') DESC";
+		
+		List<Record> models = Db.find(sql);
+		return models;
+	}
+	
+	public List<Record> queryPriceTrendAvgByDate(String date,int teaId,String size){
+		String sql = "SELECT SUM(a.price*a.quality) as allAmount,SUM(a.quality) as quality,DATE_FORMAT(a.create_time,'%Y-%m-%d') as createTime from t_sale_order a "
+					+"LEFT  JOIN t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id "
+					+"LEFT JOIN t_warehouse_tea_member_item e on e.warehouse_tea_member_id=b.id "
+				    +"LEFT JOIN t_tea c on b.tea_id=c.id "
+					+"WHERE a.create_time like'%"+date+"%' AND c.id="+teaId+" AND b.member_type_cd!='010002' AND e.size_type_cd='"+size+"' "
+					+"GROUP BY DATE_FORMAT(a.create_time,'%Y-%m-%d') "
+					+"ORDER BY DATE_FORMAT(a.create_time, '%Y-%m-%d') DESC";
+		
+		List<Record> models = Db.find(sql);
+		return models;
+	}
+	
+	/*public List<Record> queryPriceTrendAvg(String date,int teaId){
 		String sql = "SELECT AVG(a.price) as price,SUM(a.quality) as quality,DATE_FORMAT(a.create_time,'%Y-%m-%d') as createTime from t_sale_order a "
 					+"LEFT  JOIN t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id "
 				    +"LEFT JOIN t_tea c on b.tea_id=c.id "
@@ -88,5 +117,5 @@ public class SaleOrder extends Model<SaleOrder> {
 		
 		List<Record> models = Db.find(sql);
 		return models;
-	}
+	}*/
 }

@@ -279,7 +279,7 @@ public class PayAction extends Controller{
 		BigDecimal moneys = dto.getMoney().setScale(2);
 		int userId = dto.getUserId();
 		
-		String orderNo = StringUtil.getOrderNo();
+		String orderNo = CashJournal.dao.queryCurrentCashNo();
 		
 		PayRecord pr = new PayRecord();
 		pr.set("member_id", userId);

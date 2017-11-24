@@ -863,6 +863,7 @@ public class TeaInfoController extends Controller {
 		teaPrice.set("mark", StringUtil.checkCode(getPara("mark")));
 		boolean saveTeaPrice = TeaPrice.dao.saveInfo(teaPrice);
 		if(saveTeaPrice){
+			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "新增茶叶参考价,茶叶id:"+teaId);
 			setAttr("message","新增成功");
 		}else{
 			setAttr("message","新增失败");

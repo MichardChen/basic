@@ -92,15 +92,34 @@ public class Order extends Model<Order> {
 		return Order.dao.find("select * from t_order where create_time like '%"+date+"%' and order_status='"+orderStatus+"'");
 	}
 	
-	//成交走势
-	public List<Record> queryBargainTrendAvg(String date,int teaId){
+	//成交走势，详细数据
+	public List<Record> queryBargainTrendAvg(String date1,String date2,int teaId,String size){
+		String d1 = date1+" 00:00:00";
+		String d2 = date2+" 23:59:59";
 		String sql = "SELECT "+
-				"AVG(b.price) as price,SUM(a.quality) as quality,a.create_time,DATE_FORMAT(a.create_time, '%Y-%m-%d') as createTime "+
+				"AVG(a.item_amount) as allAmount,SUM(a.quality) as quality,a.create_time,DATE_FORMAT(a.create_time, '%Y-%m-%d') as createTime "+
 				"FROM t_order_item a "+
 				"LEFT JOIN t_warehouse_tea_member_item b ON a.wtm_item_id = b.id "+
 				"LEFT JOIN t_warehouse_tea_member c on b.warehouse_tea_member_id=c.id "+
 				"LEFT JOIN t_tea d ON d.id = c.tea_id "+
-				"WHERE a.create_time like '%"+date+"%' AND d.id="+teaId+" AND c.member_type_cd='010002'"+" "+
+				"WHERE a.create_time>='"+d1+"' AND a.create_time<='"+d2+"' AND d.id="+teaId+" AND c.member_type_cd!='010002'"+" AND b.size_type_cd='"+size+"' "+
+				"GROUP BY "+
+				"DATE_FORMAT(a.create_time, '%Y-%m-%d') "+
+				"ORDER BY "+
+				"DATE_FORMAT(a.create_time, '%Y-%m-%d') DESC";
+		
+		List<Record> models = Db.find(sql);
+		return models;
+	}
+	
+	public List<Record> queryBargainTrendAvgByDate(String date1,int teaId,String size){
+		String sql = "SELECT "+
+				"AVG(a.item_amount) as allAmount,SUM(a.quality) as quality,a.create_time,DATE_FORMAT(a.create_time, '%Y-%m-%d') as createTime "+
+				"FROM t_order_item a "+
+				"LEFT JOIN t_warehouse_tea_member_item b ON a.wtm_item_id = b.id "+
+				"LEFT JOIN t_warehouse_tea_member c on b.warehouse_tea_member_id=c.id "+
+				"LEFT JOIN t_tea d ON d.id = c.tea_id "+
+				"WHERE a.create_time like '%"+date1+"%' AND d.id="+teaId+" AND c.member_type_cd!='010002'"+" AND b.size_type_cd='"+size+"' "+
 				"GROUP BY "+
 				"DATE_FORMAT(a.create_time, '%Y-%m-%d') "+
 				"ORDER BY "+
@@ -111,13 +130,15 @@ public class Order extends Model<Order> {
 	}
 	
 	//成交总量和成交总额
-	public List<Record> queryBargainSum(String date,int teaId){
+	public List<Record> queryBargainSum(String date1,String date2,int teaId,String size){
+		String d1 = date1+" 00:00:00";
+		String d2 = date2+" 23:59:59";
 		String sql = "SELECT "+
 					 "SUM(b.quality) as quality,SUM(a.pay_amount) as amount "+
 					 "FROM t_order a LEFT JOIN t_order_item b on a.id=b.order_id "+
 					 "LEFT JOIN t_warehouse_tea_member_item d on b.wtm_item_id=d.id "+
 					 "LEFT JOIN t_warehouse_tea_member e on d.warehouse_tea_member_id=e.id "+
-					 "WHERE a.create_time LIKE '%"+date+"%' AND e.member_type_cd='010002'"+" "+ 
+					 "WHERE a.create_time>='"+d1+"' AND a.create_time<='"+d2+"' AND e.member_type_cd!='010002'"+" AND d.size_type_cd='"+size+"' "+ 
 					 "AND a.order_status = '140003' "+
 					 "AND e.tea_id="+teaId;
 		

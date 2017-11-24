@@ -1514,19 +1514,18 @@ public class LoginService {
 			data.setMessage("对不起，茶叶数据不能为0");
 			return data;
 		}
-		cart.set("warehouse_tea_member_item_id", dto.getTeaId());
-		cart.set("quality", dto.getQuality());
-		cart.set("status", Constants.ORDER_STATUS.SHOPPING_CART);
-		cart.set("create_time", DateUtil.getNowTimestamp());
-		cart.set("update_time", DateUtil.getNowTimestamp());
-		
 		WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(dto.getTeaId());
 		if(wtmItem == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("数据不存在");
 			return data;
 		}
-		cart.set("size", wtmItem.getStr("size_type_cd"));
+		//判断库存
+		if((wtmItem.getInt("quality")!=null)&&(dto.getQuality()>wtmItem.getInt("quality"))){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("添加失败，茶叶存储不足");
+			return data;
+		}
 		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
 		if(wtm == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -1535,10 +1534,30 @@ public class LoginService {
 		}
 		int memberId = wtm.getInt("member_id");
 		String memberUserCd = wtm.getStr("member_type_cd");
+		cart.set("warehouse_tea_member_item_id", dto.getTeaId());
+		cart.set("quality", dto.getQuality());
+		cart.set("status", Constants.ORDER_STATUS.SHOPPING_CART);
+		cart.set("create_time", DateUtil.getNowTimestamp());
+		cart.set("update_time", DateUtil.getNowTimestamp());
 		cart.set("member_id", dto.getUserId());
 		cart.set("sale_id", memberId);
 		cart.set("sale_user_type", memberUserCd);
-		boolean save = BuyCart.dao.saveInfo(cart);
+		cart.set("size", wtmItem.getStr("size_type_cd"));
+		
+		//判断购物中是否有此茶叶
+		boolean save = false;
+		Long count = BuyCart.dao.queryBuycartExist(dto.getUserId(), dto.getTeaId());
+		if(count.intValue() == 0){
+			//不存在，就添加
+			save = BuyCart.dao.saveInfo(cart);
+		}else{
+			//存在
+			int ret = BuyCart.dao.updateStock(dto.getUserId(), dto.getTeaId(), dto.getQuality());
+			if(ret != 0){
+				save = true;
+			}
+		}
+		
 		if(save){
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
 			data.setMessage("添加成功");
@@ -1747,125 +1766,117 @@ public class LoginService {
 	public ReturnData queryTeaAnalysis(LoginDTO dto){
 		
 		ReturnData data = new ReturnData();
-		
-		String date = DateUtil.format(new Date(), "yyyy-MM");
-		
-		Calendar calendar = Calendar.getInstance();
 		//详细数据
 		Map<String, OrderAnalysisVO> map1 = new HashMap<>();
-		//价格走势
-		Map<String, DataListVO> map2 = new HashMap<>();
+		//价格走势,参考价
+		Map<String, DataListVO> referencePriceLists = new HashMap<>();
 		//成交走势
 		Map<String, DataListVO> map3 = new HashMap<>();
 		
-		List<String> allMonthDays = DateUtil.getMonthFullDay(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1);
+		List<String> allMonthDays = DateUtil.getMonthFullDayByNum(30);
+		String fromDate = allMonthDays.get(0);
+		String toDate = allMonthDays.get(allMonthDays.size()-1);
 		OrderAnalysisVO nullVO = null;
-		DataListVO nullDataListVo = null;
+		DataListVO ckDataListVo = null;
 		DataListVO nullItemModel = null;
+		Calendar c1 = Calendar.getInstance();
+    	c1.setTime(new Date());
+		c1.add(c1.DATE, -30);
+		String from = DateUtil.format(c1.getTime(),"yyyy-MM-dd");
+		String fromTime = from+" 00:00:00";
+		
+		Calendar c2 = Calendar.getInstance();
+    	c2.setTime(new Date());
+		c2.add(c2.DATE, 0);
+		String to = DateUtil.format(c2.getTime(),"yyyy-MM-dd");
+		String toTime = to+" 23:59:59";
+		TeaPrice firstTeaPrice = TeaPrice.dao.queryFirstByTeaId(dto.getTeaId(), fromTime);
+		BigDecimal firstPrice = new BigDecimal("0");
+		if(firstTeaPrice != null){
+			firstPrice = firstTeaPrice.getBigDecimal("reference_price") == null ? new BigDecimal("0") : firstTeaPrice.getBigDecimal("reference_price");
+		}
 		for(String str : allMonthDays){
 			nullVO = new OrderAnalysisVO();
 			nullVO.setAmount(new BigDecimal("0.00"));
 			nullVO.setDate(str);
 			nullVO.setQuality(0);
 			
-			nullDataListVo = new DataListVO();
-			nullDataListVo.setKey(str);
-			nullDataListVo.setValue(new BigDecimal("0.00"));
+			ckDataListVo = new DataListVO();
+			ckDataListVo.setKey(str);
+			//所有默认起始时间的参考价
+			ckDataListVo.setValue(firstPrice);
 			
 			nullItemModel = new DataListVO();
 			nullItemModel.setValue(new BigDecimal("0.00"));
 			nullItemModel.setKey(str);
 			
 			map1.put(str, nullVO);
-			map2.put(str, nullDataListVo);
+			referencePriceLists.put(str, ckDataListVo);
 			map3.put(str, nullItemModel);
 		}
-		//根据月份筛选出本月成交订单
-		//List<Order> orders = Order.dao.queryOrderByTime(date, Constants.ORDER_STATUS.PAY_SUCCESS);
-		//成交总额
-		//成交总量
-		//List<OrderAnalysisVO> vos = new ArrayList<>();
-		//OrderAnalysisVO vo = null;
-		/*for(Order order : orders){
-			vo = new OrderAnalysisVO();
-			Timestamp time = order.getTimestamp("create_time");
-			int month = time.getMonth()+1;
-			int day = time.getDate();
-			vo.setDate(month+"月"+day+"日");
-			int quality = OrderItem.dao.sumOrderQuality(order.getInt("id")).intValue();
-			BigDecimal payAmount = OrderItem.dao.sumOrderAmount(order.getInt("id"));
-			if(payAmount != null){
-				allAmount = allAmount.add(payAmount);
-			}
-			vo.setAmount(payAmount);
-			allQuality = allQuality + quality;
-			vo.setQuality(quality);
-			vos.add(vo);
-		}*/
-		//价格走势，卖
-		Calendar now =Calendar.getInstance();  
-		now.setTime(new Date());  
-		now.set(Calendar.DATE,now.get(Calendar.DATE)-20);
-		String n = DateUtil.format(now.getTime(),"yyyy-MM");
 		
-		List<Record> datas = SaleOrder.dao.queryPriceTrendAvg(n,dto.getTeaId());
-		List<DataListVO> list1 = new ArrayList<>();
-		
-		for(Record record : datas){
-			DataListVO vo = map2.get(record.getStr("createTime"));
-			if(vo == null){
-				vo = new DataListVO();
-				vo.setKey(record.getStr("createTime"));
-			}
-			
-			vo.setValue(record.getBigDecimal("quality") == null ? new BigDecimal("0.00") : record.getBigDecimal("quality"));
-			map2.put(record.getStr("createTime"), vo);
-		}
-		for(String k:map2.keySet()){
-			DataListVO vs = map2.get(k);
-			//System.out.println(vs.getKey()+"=="+vs.getValue());
-			list1.add(map2.get(k));
-		}
-		/*Map<String, BigDecimal> trends = new HashMap<>();
-		int size = logs.size();
-		if(size != 0){
-			TeapriceLog log = logs.get(0);
-			BigDecimal price = log.getBigDecimal("price");
-			Calendar today =Calendar.getInstance();  
-			today.setTime(new Date());  
-			
-			for(int j=1;j<=20;j++){
-				String todayStr = DateUtil.format(today.getTime());
-				trends.put(todayStr, price);
-				today.set(Calendar.DATE,today.get(Calendar.DATE)-1);
-			}
-			
-			for(TeapriceLog log2 : logs){
-				Timestamp timestamp = log2.getTimestamp("create_time");
-				String dt = DateUtil.formatTimestampForDate(timestamp);
-				BigDecimal p = log2.getBigDecimal("price");
-				
-				if(p != price){
-					for(String k:trends.keySet()){
-						 if(k.compareTo(dt) >= 0){
-							 //key小于当前时间，重置为当前值
-							 trends.put(k, p);
-						 }
-					}
+		//价格走势，就是参考价
+		Tea tea = Tea.dao.queryById(dto.getTeaId());
+		List<Record> teaPrices = TeaPrice.dao.queryForDisplay(fromTime, toTime, tea.getInt("id"));
+		for(Record record : teaPrices){
+			String createTime = record.getStr("createTime");
+			BigDecimal p = record.getBigDecimal("price");
+			for(String k:referencePriceLists.keySet()){
+				DataListVO dataListVO = referencePriceLists.get(k);
+				if((k.compareTo(createTime)>=0)){
+					dataListVO.setValue(p);
+					referencePriceLists.put(k, dataListVO);
+					break;
 				}
 			}
-		}*/
+		}
+		if(teaPrices.size()!=0){
+			//找到最后一个
+			Record last = teaPrices.get(teaPrices.size()-1);
+			String createTime = last.getStr("createTime");
+			BigDecimal p = last.getBigDecimal("price");
+			for(String k:referencePriceLists.keySet()){
+				if(k.compareTo(createTime)>0){
+					DataListVO dataListVO = referencePriceLists.get(k);
+					dataListVO.setValue(p);
+					referencePriceLists.put(k, dataListVO);
+				}
+			}
+		}
 		
-		//成交走势
-		List<Record> records = Order.dao.queryBargainTrendAvg(n,dto.getTeaId());
+		List<DataListVO> list1 = new ArrayList<>();
+		for(String k:referencePriceLists.keySet()){
+			DataListVO vs = referencePriceLists.get(k);
+			list1.add(vs);
+		}
 		
+		//成交走势,详细数据,从t_order_item拿,先算片
+		List<Record> records = Order.dao.queryBargainTrendAvg(fromDate,toDate,dto.getTeaId(),Constants.TEA_UNIT.PIECE);
 		List<OrderAnalysisVO> vos = new ArrayList<>();
 		
 		List<DataListVO> models = new ArrayList<>();
 		for(Record record : records){
 			String dateStr = record.getStr("createTime");
-			BigDecimal bprice = (record.getBigDecimal("price") == null ? new BigDecimal("0.00") : record.getBigDecimal("price"));
-			BigDecimal bquality = (record.getBigDecimal("quality") == null? new BigDecimal("0.00") : record.getBigDecimal("quality"));
+			BigDecimal allPieceAmount = (record.getBigDecimal("allAmount") == null ? new BigDecimal("0.00") : record.getBigDecimal("allAmount"));
+			BigDecimal allPiecequality = (record.getBigDecimal("quality") == null? new BigDecimal("0.00") : record.getBigDecimal("quality"));
+			//算件
+			List<Record> itemRecords = Order.dao.queryBargainTrendAvgByDate(dateStr,dto.getTeaId(),Constants.TEA_UNIT.ITEM);
+			BigDecimal allItemAmount = new BigDecimal("0");
+			BigDecimal allItemQuality = new BigDecimal("0");
+			if(itemRecords.size() != 0){
+				Record itemRecord = itemRecords.get(0);
+				allItemAmount = itemRecord.getBigDecimal("allAmount");
+				allItemQuality = new BigDecimal(tea.getInt("size")).multiply(itemRecord.getBigDecimal("quality"));
+			}
+			allPieceAmount = allPieceAmount.add(allItemAmount);
+			allPiecequality = allPiecequality.add(allItemQuality);
+			
+			BigDecimal bprice = new BigDecimal("0");
+			if(allPieceAmount != null){
+				if(allPiecequality != null){
+					bprice = allPieceAmount.divide(allPiecequality,10,BigDecimal.ROUND_HALF_DOWN);
+				}
+			}
 			
 			DataListVO iModel = map3.get(dateStr);
 			if(iModel == null){
@@ -1891,7 +1902,7 @@ public class LoginService {
 			}else{
 				vo2.setAmount(bprice);
 			}
-			vo2.setQuality(StringUtil.toInteger(StringUtil.toString(bquality)));
+			vo2.setQuality(StringUtil.toInteger(StringUtil.toString(allPiecequality)));
 			map1.put(dateStr, vo2);
 		}
 		
@@ -1902,51 +1913,6 @@ public class LoginService {
 			vos.add(map1.get(k));
 		}
 		
-		//成交走势，买
-		/*List<OrderItemModel> items = OrderItem.dao.queryPriceAnalysis(dto.getTeaId()
-														  ,DateUtil.format(now.getTime())+" 00:00:00"
-														  ,DateUtil.format(new Date())+" 23:59:59");
-		
-		
-		
-		List<OrderItemModel> models = new ArrayList<>();
-		OrderItemModel itemModel = null;
-		for(Object item : items){	
-			Object[] obj = (Object[])item;
-			itemModel = new OrderItemModel();
-			itemModel.setAmount((BigDecimal)obj[0]);
-			itemModel.setDate((String)obj[1]);
-			models.add(itemModel);
-		}
-		
-		Map<String, BigDecimal> bargainTrend = new HashMap<>();
-		int size2 = models.size();
-		if(size2 != 0){
-			OrderItemModel model = models.get(0);
-			BigDecimal price = model.getAmount();
-			Calendar today =Calendar.getInstance();  
-			today.setTime(new Date());  
-			
-			for(int j=1;j<=20;j++){
-				String todayStr = DateUtil.format(today.getTime());
-				bargainTrend.put(todayStr, price);
-				today.set(Calendar.DATE,today.get(Calendar.DATE)-1);
-			}
-			
-			for(OrderItemModel m : models){
-				String dt = m.getDate();
-				BigDecimal p = m.getAmount();
-				if(p != price){
-					for(String k:bargainTrend.keySet()){
-						 if(k.compareTo(dt) >= 0){
-							 //key小于当前时间，重置为当前值
-							 bargainTrend.put(k, p);
-						 }
-					}
-				}
-			}
-		}*/
-		
 		//详细数据
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
@@ -1954,37 +1920,34 @@ public class LoginService {
 		Collections.sort(vos);
 		map.put("data", vos);
 		
-		//查询成交总量和成交总额
-		List<Record> records2 = Order.dao.queryBargainSum(date, dto.getTeaId());
+		//查询成交总量和成交总额OK
+		//片
+		List<Record> records2 = Order.dao.queryBargainSum(fromDate,toDate, dto.getTeaId(),Constants.TEA_UNIT.PIECE);
 		if((records2 != null)&&(records2.size() != 0)){
 			Record record0 = records2.get(0);
 			map.put("allQuality", record0.getBigDecimal("quality"));
 			map.put("allAmount", record0.getBigDecimal("amount"));
 		}
 		
-		/*DataListVO v = null;
-		for(String k:trends.keySet()){
-			v = new DataListVO();
-			v.setKey(k);
-			v.setValue(trends.get(k));
-			list1.add(v);
-		}*/
+		//件
+		List<Record> records3 = Order.dao.queryBargainSum(fromDate,toDate, dto.getTeaId(),Constants.TEA_UNIT.ITEM);
+		if((records3 != null)&&(records3.size() != 0)){
+			Record record0 = records3.get(0);
+			
+			BigDecimal allQuality = (BigDecimal)map.get("allQuality");
+			if(allQuality != null){
+				map.put("allQuality", allQuality.add(record0.getBigDecimal("quality").multiply(new BigDecimal(tea.getInt("size")))));
+			}else{
+				map.put("allQuality", record0.getBigDecimal("quality").multiply(new BigDecimal(tea.getInt("size"))));
+			}
+			BigDecimal allAmount = (BigDecimal)map.get("allAmount");
+			if(allAmount != null){
+				map.put("allAmount",allAmount.add(record0.getBigDecimal("amount")));
+			}else{
+				map.put("allAmount", record0.getBigDecimal("amount"));
+			}
+		}
 		
-		/*List<DataListVO> list2 = new ArrayList<>();
-		DataListVO v2 = null;
-		for(String k:bargainTrend.keySet()){
-			v2 = new DataListVO();
-			v2.setKey(k);
-			v2.setValue(bargainTrend.get(k));
-			list2.add(v2);
-		}*/
-		
-		/*KeyValueComparator mc = new KeyValueComparator() ; 
-		Collections.sort(list1, mc) ; */
-		/*
-		KeyValueComparator mc2 = new KeyValueComparator() ; 
-		Collections.sort(list2, mc2) ; 
-		*/
 		Collections.sort(list1);
 		Collections.sort(models);
 		map.put("priceTrend",list1);
@@ -2949,7 +2912,7 @@ public class LoginService {
 					data.setMessage("提现申请成功，请等待平台打款");
 					//提现
 					CashJournal cash = new CashJournal();
-					cash.set("cash_journal_no", StringUtil.getOrderNo());
+					cash.set("cash_journal_no", CashJournal.dao.queryCurrentCashNo());
 					cash.set("member_id", userId);
 					cash.set("pi_type", Constants.PI_TYPE.GET_CASH);
 					cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLING);
@@ -3528,13 +3491,61 @@ public class LoginService {
 				int ret = 0;
 				//保存成功，买家扣款，卖家
 				if(StringUtil.equals(wtm.getStr("member_type_cd"), Constants.USER_TYPE.USER_TYPE_CLIENT)){
-					//平台卖家账号加钱
+					//用户卖家账号加钱
 					Member saleUserMember = Member.dao.queryById(saleUser);
-					ret = Member.dao.updateMoneys(saleUser, all.add(saleUserMember.getBigDecimal("moneys")));
+					BigDecimal open = new BigDecimal("0");
+					BigDecimal close = new BigDecimal("0");
+					int saleUserId = 0;
+					if(saleUserMember != null){
+						open = saleUserMember.getBigDecimal("moneys");
+						close = all.add(saleUserMember.getBigDecimal("moneys"));
+						saleUserId = saleUserMember.getInt("id");
+					}
+					
+					ret = Member.dao.updateMoneys(saleUser, close);
+					CashJournal cash = new CashJournal();
+					cash.set("cash_journal_no", CashJournal.dao.queryCurrentCashNo());
+					cash.set("member_id", saleUserId);
+					cash.set("pi_type", Constants.PI_TYPE.SALE_TEA);
+					cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLY_SUCCESS);
+					cash.set("occur_date", new Date());
+					cash.set("act_rev_amount", all);
+					cash.set("member_type_cd", Constants.USER_TYPE.USER_TYPE_CLIENT);
+					cash.set("act_pay_amount", all);
+					cash.set("opening_balance",open);
+					cash.set("closing_balance", close);
+					cash.set("remarks", "卖茶"+all);
+					cash.set("create_time", DateUtil.getNowTimestamp());
+					cash.set("update_time", DateUtil.getNowTimestamp());
+					CashJournal.dao.saveInfo(cash);
 				}else{
-					//用户卖家加钱
+					//平台卖家加钱
 					User user = User.dao.queryById(saleUser);
-					ret = User.dao.updateMoneys(saleUser, all.add(user.getBigDecimal("moneys")));
+					BigDecimal open = new BigDecimal("0");
+					BigDecimal close = new BigDecimal("0");
+					int saleUserId = 0;
+					if(user != null){
+						open = user.getBigDecimal("moneys");
+						close = all.add(user.getBigDecimal("moneys"));
+						saleUserId = user.getInt("user_id");
+					}
+					
+					ret = User.dao.updateMoneys(saleUser, close);
+					CashJournal cash = new CashJournal();
+					cash.set("cash_journal_no", CashJournal.dao.queryCurrentCashNo());
+					cash.set("member_id", saleUserId);
+					cash.set("pi_type", Constants.PI_TYPE.SALE_TEA);
+					cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLY_SUCCESS);
+					cash.set("occur_date", new Date());
+					cash.set("member_type_cd", Constants.USER_TYPE.PLATFORM_USER);
+					cash.set("act_rev_amount", all);
+					cash.set("act_pay_amount", all);
+					cash.set("opening_balance",open);
+					cash.set("closing_balance", close);
+					cash.set("remarks", "卖茶"+all);
+					cash.set("create_time", DateUtil.getNowTimestamp());
+					cash.set("update_time", DateUtil.getNowTimestamp());
+					CashJournal.dao.saveInfo(cash);
 				}
 				int allQuality = 0;
 				if(ret != 0){
@@ -3555,6 +3566,7 @@ public class LoginService {
 						cash.set("opening_balance",openBalance);
 						cash.set("closing_balance", member.getBigDecimal("moneys"));
 						cash.set("remarks", "下单"+all);
+						cash.set("member_type_cd", Constants.USER_TYPE.USER_TYPE_CLIENT);
 						cash.set("create_time", DateUtil.getNowTimestamp());
 						cash.set("update_time", DateUtil.getNowTimestamp());
 						CashJournal.dao.saveInfo(cash);
@@ -3739,8 +3751,8 @@ public class LoginService {
 		String str[] = dto.getTeas().split(",");
 		int iSize = str.length;
 		
-		Member buyUserMember = Member.dao.queryById(dto.getUserId());
-		if(!StringUtil.equals(StringUtil.checkCode(dto.getPayPwd()), buyUserMember.getStr("paypwd"))){
+		Member buyUserMembers = Member.dao.queryById(dto.getUserId());
+		if(!StringUtil.equals(StringUtil.checkCode(dto.getPayPwd()), buyUserMembers.getStr("paypwd"))){
 			data.setCode(Constants.STATUS_CODE.PAYPWD_ERROR);
 			data.setMessage("对不起，支付密码错误");
 			return data;
@@ -3749,6 +3761,7 @@ public class LoginService {
 		//总价
 		BigDecimal amount = new BigDecimal("0");
 		for (int i = 0; i < iSize; i++) {
+			
 			BuyCart cart = BuyCart.dao.queryById(StringUtil.toInteger(str[i]));
 			int wtmItemId = cart.getInt("warehouse_tea_member_item_id");
 			int quality = (int)cart.getInt("quality");
@@ -3788,7 +3801,7 @@ public class LoginService {
 			
 			amount = amount.add(item.getBigDecimal("price").multiply(new BigDecimal(quality)));
 		}
-		
+		Member buyUserMember = Member.dao.queryById(dto.getUserId());
 		if(amount.compareTo(buyUserMember.getBigDecimal("moneys"))==1){
 			//余额不够
 			data.setCode(Constants.STATUS_CODE.ACCOUNT_MONEY_NOT_ENOUGH);
@@ -3840,17 +3853,68 @@ public class LoginService {
 					if(StringUtil.equals(wtm.getStr("member_type_cd"), Constants.USER_TYPE.USER_TYPE_CLIENT)){
 						//用户卖家
 						Member saleUserMember = Member.dao.queryById(saleUser);
-						ret = Member.dao.updateMoneys(saleUser, itemAmount.add(saleUserMember.getBigDecimal("moneys")));
+						BigDecimal open = new BigDecimal("0");
+						BigDecimal close = new BigDecimal("0");
+						int saleUserId = 0;
+						if(saleUserMember != null){
+							open = saleUserMember.getBigDecimal("moneys");
+							close = itemAmount.add(saleUserMember.getBigDecimal("moneys"));
+							saleUserId = saleUserMember.getInt("id");
+						}
+						
+						ret = Member.dao.updateMoneys(saleUser, close);
+						CashJournal cash = new CashJournal();
+						cash.set("cash_journal_no", CashJournal.dao.queryCurrentCashNo());
+						cash.set("member_id", saleUserId);
+						cash.set("pi_type", Constants.PI_TYPE.SALE_TEA);
+						cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLY_SUCCESS);
+						cash.set("occur_date", new Date());
+						cash.set("act_rev_amount", itemAmount);
+						cash.set("member_type_cd", Constants.USER_TYPE.USER_TYPE_CLIENT);
+						cash.set("act_pay_amount", itemAmount);
+						cash.set("opening_balance",open);
+						cash.set("closing_balance", close);
+						cash.set("remarks", "卖茶"+itemAmount);
+						cash.set("create_time", DateUtil.getNowTimestamp());
+						cash.set("update_time", DateUtil.getNowTimestamp());
+						CashJournal.dao.saveInfo(cash);
 					}else{
 						//平台卖家
 						User user = User.dao.queryById(saleUser);
-						ret = User.dao.updateMoneys(saleUser, itemAmount.add(user.getBigDecimal("moneys")));
+						
+						BigDecimal open = new BigDecimal("0");
+						BigDecimal close = new BigDecimal("0");
+						int saleUserId = 0;
+						if(user != null){
+							open = user.getBigDecimal("moneys");
+							close = itemAmount.add(user.getBigDecimal("moneys"));
+							saleUserId = user.getInt("user_id");
+						}
+						
+						ret = User.dao.updateMoneys(saleUser, close);
+						CashJournal cash = new CashJournal();
+						cash.set("cash_journal_no", CashJournal.dao.queryCurrentCashNo());
+						cash.set("member_id", saleUserId);
+						cash.set("pi_type", Constants.PI_TYPE.SALE_TEA);
+						cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLY_SUCCESS);
+						cash.set("occur_date", new Date());
+						cash.set("member_type_cd", Constants.USER_TYPE.PLATFORM_USER);
+						cash.set("act_rev_amount", itemAmount);
+						cash.set("act_pay_amount", itemAmount);
+						cash.set("opening_balance",open);
+						cash.set("closing_balance", close);
+						cash.set("remarks", "卖茶"+itemAmount);
+						cash.set("create_time", DateUtil.getNowTimestamp());
+						cash.set("update_time", DateUtil.getNowTimestamp());
+						CashJournal.dao.saveInfo(cash);
 					}
 					
 					if(ret != 0){
 						//买家扣款
 						BigDecimal openBalance = buyUserMember.getBigDecimal("moneys");
-						int rt = Member.dao.updateMoneys(dto.getUserId(), buyUserMember.getBigDecimal("moneys").subtract(itemAmount));
+						BigDecimal cutMoney = buyUserMember.getBigDecimal("moneys");
+						BigDecimal cutMoney1 = cutMoney.subtract(itemAmount);
+						int rt = Member.dao.updateMoneys(dto.getUserId(), cutMoney1);
 						if(rt != 0){
 							//成功充值记录
 							CashJournal cash = new CashJournal();

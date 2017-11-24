@@ -29,6 +29,17 @@ public class CashJournal extends Model<CashJournal> {
 		return Db.update("update t_cash_journal set fee_status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"',trade_no='"+tradeNo+"' where cash_journal_no='"+outTradeNo+"'");
 	}
 	
+	public String queryCurrentCashNo(){
+		String date = DateUtil.getDateTimeNO();
+		String sql="select cash_journal_no from t_cash_journal where cash_journal_no like '"+date+"%' order by create_time desc limit 1";
+		String nowCahsNo = Db.queryStr(sql);
+		if(StringUtil.isNoneBlank(nowCahsNo)){
+			return StringUtil.toString(new Long(nowCahsNo)+1);
+		}else{
+			return date+"000000001";
+		}
+	}
+	
 	public Page<CashJournal> queryByPage(int page,int size){
 			
 		String sql=" from t_cash_journal where 1=1 order by create_time desc";

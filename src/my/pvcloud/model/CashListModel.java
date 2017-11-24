@@ -15,7 +15,14 @@ public class CashListModel {
 	private String remark;
 	private String tradeNo;
 	private String mobile;
+	private String moneys;
 	
+	public String getMoneys() {
+		return moneys;
+	}
+	public void setMoneys(String moneys) {
+		this.moneys = moneys;
+	}
 	public String getMobile() {
 		return mobile;
 	}

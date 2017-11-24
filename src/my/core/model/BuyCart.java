@@ -40,6 +40,10 @@ public class BuyCart extends Model<BuyCart> {
 		return Db.queryLong("select count(*) from t_buycart where member_id="+memberId+" and status='140002'");
 	}
 	
+	public Long queryBuycartExist(int memberId,int wtmItemId){
+		return Db.queryLong("select count(*) from t_buycart where member_id="+memberId+" and warehouse_tea_member_item_id="+wtmItemId+" and status='140002'");
+	}
+	
 	public boolean updateInfo(BuyCart data){
 		return new BuyCart().setAttrs(data).update();
 	}
@@ -54,5 +58,9 @@ public class BuyCart extends Model<BuyCart> {
 	
 	public int updateStatus(String ids,String status){
 		return Db.update("update t_buycart set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id in("+ids+")");
+	}
+	
+	public int updateStock(int memberId,int wtmItemId,int quality){
+		return Db.update("update t_buycart set quality=quality+"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where member_id="+memberId+" and warehouse_tea_member_item_id="+wtmItemId+" and status='140002'");
 	}
 }

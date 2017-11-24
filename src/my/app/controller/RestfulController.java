@@ -2,29 +2,14 @@ package my.app.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.el.ArrayELResolver;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.ExcessiveAttemptsException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.subject.Subject;
-import org.huadalink.plugin.shiro.CaptchaUsernamePasswordToken;
 import org.huadalink.route.ControllerBind;
-import org.json.JSONObject;
 
-import com.alibaba.druid.support.logging.Log;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
@@ -36,20 +21,16 @@ import my.app.service.RestService;
 import my.core.constants.Constants;
 import my.core.interceptor.ContainFileInterceptor;
 import my.core.interceptor.RequestInterceptor;
+import my.core.model.CashJournal;
 import my.core.model.Document;
-import my.core.model.Member;
-import my.core.model.MemberBankcard;
 import my.core.model.ReturnData;
 import my.core.model.Store;
 import my.core.model.StoreImage;
-import my.core.model.User;
 import my.core.vo.StoreDetailVO;
-import my.pvcloud.dto.IndexDTO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.ImageTools;
 import my.pvcloud.util.ImageZipUtil;
-import my.pvcloud.util.MD5Util;
 import my.pvcloud.util.StringUtil;
 import my.pvcloud.util.VertifyUtil;
 
@@ -229,7 +210,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//查找收货地址
-	//@Before(RequestInterceptor.class)
+	@Before(RequestInterceptor.class)
 	public void queryAddressById(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryAddressById(dto));
@@ -1315,7 +1296,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//获取个人数据
-	//@Before(RequestInterceptor.class)
+	@Before(RequestInterceptor.class)
 	public void queryPersonData() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryPersonData(dto));

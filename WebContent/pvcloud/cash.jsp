@@ -166,6 +166,7 @@ td{
     				<th>类型</th>
     				<th>状态</th>
     				<th>时间</th>
+    				<th>金额</th>
     				<th>期初金额</th>
     				<th>期末金额</th>
     				<th>备注</th>
@@ -188,6 +189,7 @@ td{
 		    					<td>${s.piType}</td>
 		    					<td>${s.feeStatus}</td>
 		    					<td>${s.occurDate}</td>
+		    					<td>${s.moneys}</td>
 		    					<td>${s.openingBalance}</td>
 		    					<td>${s.closingBalance}</td>
 		    					<td>

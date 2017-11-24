@@ -188,7 +188,7 @@ public class WithDrawInfoController extends Controller {
 							if(updateFlg != 0){
 								//提现失败
 								CashJournal cash = new CashJournal();
-								cash.set("cash_journal_no", StringUtil.getOrderNo());
+								cash.set("cash_journal_no", CashJournal.dao.queryCurrentCashNo());
 								cash.set("member_id", bankCardRecord.getInt("member_id"));
 								cash.set("pi_type", Constants.PI_TYPE.GET_CASH);
 								cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLY_FAIL);

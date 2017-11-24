@@ -57,6 +57,7 @@ public class CashJournalController extends Controller {
 			if(piType != null){
 				model.setPiType(piType.getStr("name"));
 			}
+			model.setMoneys(StringUtil.toString(record.getBigDecimal("act_rev_amount")));
 			model.setRemark(record.getStr("remarks"));
 			model.setOrderNo(record.getStr("cash_journal_no"));
 			model.setTradeNo(record.getStr("trade_no"));
@@ -110,6 +111,7 @@ public class CashJournalController extends Controller {
 			if(piType != null){
 				model.setPiType(piType.getStr("name"));
 			}
+			model.setMoneys(StringUtil.toString(record.getBigDecimal("act_rev_amount")));
 			model.setRemark(record.getStr("remarks"));
 			model.setOpeningBalance(StringUtil.toString(record.getBigDecimal("opening_balance")));
 			models.add(model);
@@ -178,6 +180,7 @@ public class CashJournalController extends Controller {
 				if(piType != null){
 					model.setPiType(piType.getStr("name"));
 				}
+				model.setMoneys(StringUtil.toString(record.getBigDecimal("act_rev_amount")));
 				model.setOpeningBalance(StringUtil.toString(record.getBigDecimal("opening_balance")));
 				models.add(model);
 			}

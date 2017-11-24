@@ -354,6 +354,7 @@ public interface Constants {
 		public static final String ADD_ORDER = "290001";
 		public static final String GET_CASH = "290002";
 		public static final String RECHARGE = "290003";
+		public static final String SALE_TEA = "290004";
 	}
 	
 	public static interface FEE_TYPE_STATUS{

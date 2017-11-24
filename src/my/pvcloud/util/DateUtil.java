@@ -66,6 +66,10 @@ public final class DateUtil {
 	public static final String getDateTime() {
 		return format(new Date(), "yyyy-MM-dd HH:mm:ss");
 	}
+	
+	public static final String getDateTimeNO() {
+		return format(new Date(), "yyyyMMdd");
+	}
 
 	/**
 	 * 获取日期
@@ -311,5 +315,25 @@ public final class DateUtil {
     		SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日");
     	    return formatter.format(time);
     	}
+    }
+    
+    public static String getLastDayByNum(int day){
+    	Calendar theCa = Calendar.getInstance();
+    	theCa.setTime(new Date());
+    	theCa.add(theCa.DATE, -day);
+    	return format(theCa.getTime(),"yyyy-MM-dd");
+    }
+    
+    public static List<String> getMonthFullDayByNum(int day){
+    	//今天
+    	List<String> fullDayList = new ArrayList<String>();
+    	for(int i=day;i>=0;i--){
+    		Calendar theCa = Calendar.getInstance();
+        	theCa.setTime(new Date());
+    		theCa.add(theCa.DATE, -i);
+    		String d = format(theCa.getTime(),"yyyy-MM-dd");
+    		fullDayList.add(d);
+    	}
+        return fullDayList;
     }
 }

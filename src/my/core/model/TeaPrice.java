@@ -1,12 +1,15 @@
 package my.core.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 
 import my.pvcloud.util.StringUtil;
 
@@ -23,6 +26,10 @@ public class TeaPrice extends Model<TeaPrice> {
 		return TeaPrice.dao.findFirst("select * from t_tea_price where tea_id = ? order by create_time desc",teaId);
 	}
 	
+	public TeaPrice queryFirstByTeaId(int teaId,String createTime){
+		return TeaPrice.dao.findFirst("select * from t_tea_price where tea_id="+teaId+" and create_time<='"+createTime+"' and reference_price is not null order by create_time desc");
+	}
+	
 	public boolean updateInfo(TeaPrice data){
 		return new TeaPrice().setAttrs(data).update();
 	}
@@ -32,14 +39,18 @@ public class TeaPrice extends Model<TeaPrice> {
 	}
 
 	public Page<TeaPrice> queryByPage(int page,int size){
-		
 		String sql=" from t_tea_price where 1=1 order by create_time desc";
 		String select="select * ";
 		return TeaPrice.dao.paginate(page, size, select, sql);
 	}
 	
+	public List<Record> queryForDisplay(String fromTime,String toTime,int teaId){
+		String sql="select DATE_FORMAT(create_time, '%Y-%m-%d') as createTime,reference_price as price from t_tea_price where create_time>='"+fromTime+"' and create_time<='"+toTime+"' order by create_time asc";
+		List<Record> models = Db.find(sql);
+		return models;
+	}
+	
 	public Page<TeaPrice> queryByPageParams(int page,int size,String name){
-		
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
 		if(StringUtil.isBlank(name)){
