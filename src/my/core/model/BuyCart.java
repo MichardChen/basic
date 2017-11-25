@@ -44,6 +44,10 @@ public class BuyCart extends Model<BuyCart> {
 		return Db.queryLong("select count(*) from t_buycart where member_id="+memberId+" and warehouse_tea_member_item_id="+wtmItemId+" and status='140002'");
 	}
 	
+	public BuyCart queryBuycart(int memberId,int wtmItemId){
+		return BuyCart.dao.findFirst("select * from t_buycart where member_id="+memberId+" and warehouse_tea_member_item_id="+wtmItemId+" and status='140002'");
+	}
+	
 	public boolean updateInfo(BuyCart data){
 		return new BuyCart().setAttrs(data).update();
 	}

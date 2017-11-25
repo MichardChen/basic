@@ -136,6 +136,7 @@ td{
 	    					<option value="290001" <c:if test="${type=='290001'}">selected="selected"</c:if>>下单</option>
 	    					<option value="290002" <c:if test="${type=='290002'}">selected="selected"</c:if>>提现</option>
 	    					<option value="290003" <c:if test="${type=='290003'}">selected="selected"</c:if>>充值</option>
+	    					<option value="290004" <c:if test="${type=='290004'}">selected="selected"</c:if>>卖茶</option>
 	    				</select>	
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>

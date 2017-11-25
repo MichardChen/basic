@@ -399,7 +399,7 @@ public class MemberController extends Controller {
 				userId = mbc.getInt("member_id") == null ? 0 : mbc.getInt("member_id");
 			}
 			
-			Message message = new Message();
+			/*Message message = new Message();
 			message.set("message_type_cd", Constants.MESSAGE_TYPE.BANK_REVIEW_MSG);
 			message.set("message",stStr);
 			message.set("title","绑定银行卡审核");
@@ -407,7 +407,7 @@ public class MemberController extends Controller {
 			message.set("create_time", DateUtil.getNowTimestamp());
 			message.set("update_time", DateUtil.getNowTimestamp());
 			message.set("user_id", userId);
-			boolean messageSave = Message.dao.saveInfo(message);
+			boolean messageSave = Message.dao.saveInfo(message);*/
 			
 			boolean ret = MemberBankcard.dao.updateInfo(member);
 			if(ret){

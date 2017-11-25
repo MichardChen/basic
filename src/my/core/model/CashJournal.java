@@ -31,18 +31,27 @@ public class CashJournal extends Model<CashJournal> {
 	
 	public String queryCurrentCashNo(){
 		String date = DateUtil.getDateTimeNO();
-		String sql="select cash_journal_no from t_cash_journal where cash_journal_no like '"+date+"%' order by create_time desc limit 1";
+		String sql="select cash_journal_no from t_cash_journal where occur_date='"+date+"' order by cash_journal_no desc limit 1";
 		String nowCahsNo = Db.queryStr(sql);
 		if(StringUtil.isNoneBlank(nowCahsNo)){
 			return StringUtil.toString(new Long(nowCahsNo)+1);
 		}else{
-			return date+"000000001";
+			return date+"000001";
+		}
+	}
+	
+	public List<CashJournal> queryRecords(int pageSize,int pageNum,int memberId,String date){
+		int fromRow = pageSize*(pageNum-1);
+		if(StringUtil.isNoneBlank(date)){
+			return CashJournal.dao.find("select * from t_cash_journal where member_id ="+memberId+" and create_time like '%"+date+"%' order by create_time desc limit "+fromRow+","+pageSize);
+		}else{
+			return CashJournal.dao.find("select * from t_cash_journal where member_id ="+memberId+" order by create_time desc limit "+fromRow+","+pageSize);
 		}
 	}
 	
 	public Page<CashJournal> queryByPage(int page,int size){
 			
-		String sql=" from t_cash_journal where 1=1 order by create_time desc";
+		String sql=" from t_cash_journal where 1=1 order by create_time desc,cash_journal_no desc";
 		String select="select * ";
 		return CashJournal.dao.paginate(page, size, select, sql);
 	}
@@ -62,7 +71,7 @@ public class CashJournal extends Model<CashJournal> {
 				strBuf.append(" and occur_date='"+time+"'");
 			}
 				
-			String sql=" from t_cash_journal where 1=1 "+strBuf+" order by create_time desc";
+			String sql=" from t_cash_journal where 1=1 "+strBuf+" order by create_time desc,cash_journal_no desc";
 			String select="select * ";
 			return CashJournal.dao.paginate(page, size, select, sql);
 		}else{

@@ -126,6 +126,10 @@ public class Member extends Model<Member> {
 		return Db.update("update t_member set moneys="+moneys+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
 	}
 	
+	public int cutMoneys(int userId,BigDecimal moneys){
+		return Db.update("update t_member set moneys=moneys-"+moneys+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
+	}
+	
 	public int updateCharge(int userId,BigDecimal moneys){
 		return Db.update("update t_member set moneys=moneys+"+moneys+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
 	}

@@ -400,7 +400,7 @@ public class StoreInfoController extends Controller {
 					userId = store.getInt("member_id") == null ? 0 : store.getInt("member_id");
 				}
 				
-				Message message = new Message();
+				/*Message message = new Message();
 				message.set("message_type_cd", Constants.MESSAGE_TYPE.STORE_REVIEW_MSG);
 				message.set("message",stStr);
 				message.set("title","门店审核");
@@ -408,7 +408,7 @@ public class StoreInfoController extends Controller {
 				message.set("create_time", DateUtil.getNowTimestamp());
 				message.set("update_time", DateUtil.getNowTimestamp());
 				message.set("user_id", userId);
-				boolean messageSave = Message.dao.saveInfo(message);
+				boolean messageSave = Message.dao.saveInfo(message);*/
 				
 				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新门店状态:"+store.getStr("store_name"));
 				setAttr("message", "操作成功");

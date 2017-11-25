@@ -1398,7 +1398,8 @@ public class LoginService {
 	//充值记录
 	public ReturnData queryRechargeRecords(LoginDTO dto){
 		ReturnData data = new ReturnData();
-		List<PayRecord> list = PayRecord.dao.queryRecords(dto.getPageSize(), dto.getPageNum(), dto.getUserId(), dto.getDate());
+		List<CashJournal> list=CashJournal.dao.queryRecords(dto.getPageSize(), dto.getPageNum(), dto.getUserId(), dto.getDate());
+		//List<PayRecord> list = PayRecord.dao.queryRecords(dto.getPageSize(), dto.getPageNum(), dto.getUserId(), dto.getDate());
 		/*List<BankCardRecord> list = BankCardRecord.dao.queryRecords(dto.getPageSize()
 																   ,dto.getPageNum()
 																   ,dto.getUserId()
@@ -1411,7 +1412,26 @@ public class LoginService {
 		}
 		String type = codeMst.getStr("data2");*/
 		RecordListModel model = null;
-		for(PayRecord record : list){
+		for(CashJournal record : list){
+			model = new RecordListModel();
+			CodeMst type = CodeMst.dao.queryCodestByCode(record.getStr("pi_type"));
+			if(type != null){
+				model.setType(type.getStr("name"));
+			}else{
+				model.setType("");
+			}
+			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			model.setMoneys(record.getStr("remarks"));
+			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("fee_status"));
+			String statusStr = "";
+			if(status != null){
+				statusStr = status.getStr("name");
+			}
+			model.setContent("期初:"+record.getBigDecimal("opening_balance")+",余额:"+record.getBigDecimal("closing_balance"));
+			models.add(model);
+		}
+		/*
+		 * for(PayRecord record : list){
 			model = new RecordListModel();
 			CodeMst type = CodeMst.dao.queryCodestByCode(record.getStr("pay_type_cd"));
 			if(type != null){
@@ -1429,6 +1449,7 @@ public class LoginService {
 			model.setContent(statusStr+" 金额："+StringUtil.toString(record.getBigDecimal("moneys")));
 			models.add(model);
 		}
+		 */
 		Map<String, Object> map = new HashMap<>();
 		map.put("logs", models);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
@@ -1526,6 +1547,13 @@ public class LoginService {
 			data.setMessage("添加失败，茶叶存储不足");
 			return data;
 		}
+		BuyCart buyCart = BuyCart.dao.queryBuycart(dto.getUserId(), dto.getTeaId());
+		if((buyCart!=null)&&(buyCart.getInt("quality")!=null)&&((buyCart.getInt("quality")+dto.getQuality())>wtmItem.getInt("quality"))){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("添加失败，已添加的购物车数量大于库存数");
+			return data;
+		}
+		
 		WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
 		if(wtm == null){
 			data.setCode(Constants.STATUS_CODE.FAIL);
@@ -1818,7 +1846,7 @@ public class LoginService {
 		//价格走势，就是参考价
 		Tea tea = Tea.dao.queryById(dto.getTeaId());
 		List<Record> teaPrices = TeaPrice.dao.queryForDisplay(fromTime, toTime, tea.getInt("id"));
-		for(Record record : teaPrices){
+		for(Record record : teaPrices){	
 			String createTime = record.getStr("createTime");
 			BigDecimal p = record.getBigDecimal("price");
 			for(String k:referencePriceLists.keySet()){
@@ -1826,7 +1854,6 @@ public class LoginService {
 				if((k.compareTo(createTime)>=0)){
 					dataListVO.setValue(p);
 					referencePriceLists.put(k, dataListVO);
-					break;
 				}
 			}
 		}
@@ -1886,7 +1913,7 @@ public class LoginService {
 			if(bprice == null){
 				iModel.setValue(new BigDecimal("0.00"));
 			}else{
-				iModel.setValue(bprice);
+				iModel.setValue(bprice.setScale(2,BigDecimal.ROUND_UP));
 			}
 			
 			map3.put(dateStr, iModel);
@@ -1900,7 +1927,7 @@ public class LoginService {
 			if(bprice == null){
 				vo2.setAmount(new BigDecimal("0.00"));
 			}else{
-				vo2.setAmount(bprice);
+				vo2.setAmount(bprice.setScale(2,BigDecimal.ROUND_UP));
 			}
 			vo2.setQuality(StringUtil.toInteger(StringUtil.toString(allPiecequality)));
 			map1.put(dateStr, vo2);
@@ -3555,7 +3582,7 @@ public class LoginService {
 					if(rt != 0){
 						//下单记录
 						CashJournal cash = new CashJournal();
-						cash.set("cash_journal_no", StringUtil.getOrderNo());
+						cash.set("cash_journal_no", CashJournal.dao.queryCurrentCashNo());
 						cash.set("member_id", dto.getUserId());
 						cash.set("pi_type", Constants.PI_TYPE.ADD_ORDER);
 						cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLY_SUCCESS);
@@ -3911,14 +3938,12 @@ public class LoginService {
 					
 					if(ret != 0){
 						//买家扣款
-						BigDecimal openBalance = buyUserMember.getBigDecimal("moneys");
-						BigDecimal cutMoney = buyUserMember.getBigDecimal("moneys");
-						BigDecimal cutMoney1 = cutMoney.subtract(itemAmount);
-						int rt = Member.dao.updateMoneys(dto.getUserId(), cutMoney1);
+						Member m1 = Member.dao.queryById(dto.getUserId());
+						int rt = Member.dao.cutMoneys(dto.getUserId(), itemAmount);
 						if(rt != 0){
 							//成功充值记录
 							CashJournal cash = new CashJournal();
-							cash.set("cash_journal_no", orderNo);
+							cash.set("cash_journal_no", CashJournal.dao.queryCurrentCashNo());
 							cash.set("member_id", dto.getUserId());
 							cash.set("pi_type", Constants.PI_TYPE.ADD_ORDER);
 							cash.set("fee_status", Constants.FEE_TYPE_STATUS.APPLY_SUCCESS);
@@ -3926,7 +3951,7 @@ public class LoginService {
 							cash.set("act_rev_amount", itemAmount);
 							cash.set("act_pay_amount", itemAmount);
 							Member member = Member.dao.queryById(dto.getUserId());
-							cash.set("opening_balance", openBalance);
+							cash.set("opening_balance", m1.getBigDecimal("moneys"));
 							cash.set("closing_balance", member.getBigDecimal("moneys"));
 							cash.set("remarks", "下单"+itemAmount);
 							cash.set("create_time", DateUtil.getNowTimestamp());

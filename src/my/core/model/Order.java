@@ -97,7 +97,7 @@ public class Order extends Model<Order> {
 		String d1 = date1+" 00:00:00";
 		String d2 = date2+" 23:59:59";
 		String sql = "SELECT "+
-				"AVG(a.item_amount) as allAmount,SUM(a.quality) as quality,a.create_time,DATE_FORMAT(a.create_time, '%Y-%m-%d') as createTime "+
+				"SUM(a.item_amount) as allAmount,SUM(a.quality) as quality,a.create_time,DATE_FORMAT(a.create_time, '%Y-%m-%d') as createTime "+
 				"FROM t_order_item a "+
 				"LEFT JOIN t_warehouse_tea_member_item b ON a.wtm_item_id = b.id "+
 				"LEFT JOIN t_warehouse_tea_member c on b.warehouse_tea_member_id=c.id "+
@@ -114,7 +114,7 @@ public class Order extends Model<Order> {
 	
 	public List<Record> queryBargainTrendAvgByDate(String date1,int teaId,String size){
 		String sql = "SELECT "+
-				"AVG(a.item_amount) as allAmount,SUM(a.quality) as quality,a.create_time,DATE_FORMAT(a.create_time, '%Y-%m-%d') as createTime "+
+				"SUM(a.item_amount) as allAmount,SUM(a.quality) as quality,a.create_time,DATE_FORMAT(a.create_time, '%Y-%m-%d') as createTime "+
 				"FROM t_order_item a "+
 				"LEFT JOIN t_warehouse_tea_member_item b ON a.wtm_item_id = b.id "+
 				"LEFT JOIN t_warehouse_tea_member c on b.warehouse_tea_member_id=c.id "+
