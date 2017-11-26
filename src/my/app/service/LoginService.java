@@ -1291,7 +1291,7 @@ public class LoginService {
 						content = sCodeMst.getStr("name")+" "+content;
 					}
 					model.setContent(content);
-					model.setMoneys("单价:￥"+price+" 在售"+onSale+unitStr+",已售"+haveSale+unitStr);
+					model.setMoneys("单价:￥"+price+" 已售"+haveSale+unitStr);
 				}
 			}
 			models.add(model);
@@ -1712,7 +1712,7 @@ public class LoginService {
 			if(teaPrice != null){
 				teaVo.setPrice(StringUtil.toString(teaPrice.getBigDecimal("reference_price")));
 			}
-			teaVo.setSize("件");
+			teaVo.setSize("片");
 			list.add(teaVo);
 		}
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
