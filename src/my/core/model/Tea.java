@@ -51,6 +51,10 @@ public class Tea extends Model<Tea> {
 		return Tea.dao.findFirst("select * from t_tea where id = ?",id);
 	}
 	
+	public List<Tea> queryAllTeas(){
+		return Tea.dao.find("select * from t_tea");
+	}
+	
 	public List<Tea> queryNewTeaSale(int pageSize,int pageNum){
 		int fromRow = pageSize*(pageNum-1);
 		return Tea.dao.find("select * from t_tea where flg=1 order by create_time desc limit "+fromRow+","+pageSize);

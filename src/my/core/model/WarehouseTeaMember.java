@@ -172,8 +172,8 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		return Db.queryBigDecimal("select sum(stock) from t_warehouse_tea_member where warehouse_id="+wareHouseId);
 	}
 	
-	public Integer queryWarehouseTeaMemberAllStock(int wareHouseId){
-		return Db.queryInt("select sum(origin_stock) from t_warehouse_tea_member where warehouse_id="+wareHouseId);
+	public BigDecimal queryWarehouseTeaMemberAllStock(int wareHouseId){
+		return Db.queryBigDecimal("select sum(origin_stock) from t_warehouse_tea_member where warehouse_id="+wareHouseId);
 	}
 	
 	public List<Record> queryWarehouseTeaQuality(int warehouseId){

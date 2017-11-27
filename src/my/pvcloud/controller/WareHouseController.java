@@ -3,7 +3,9 @@ package my.pvcloud.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.huadalink.route.ControllerBind;
 
@@ -40,6 +42,13 @@ public class WareHouseController extends Controller {
 		Page<WareHouse> list = service.queryByPage(page, size);
 		ArrayList<WareHouseVO> models = new ArrayList<>();
 		WareHouseVO model = null;
+		//查询出所有tea
+		List<Tea> teaList = Tea.dao.queryAllTeas();
+		Map<Integer, Integer> teaMap = new HashMap<Integer, Integer>();
+		for(Tea tea : teaList){
+			teaMap.put(tea.getInt("id"), tea.getInt("size"));
+		}
+		
 		for(WareHouse house : list.getList()){
 			model = new WareHouseVO();
 			model.setId(house.getInt("id"));
@@ -80,8 +89,7 @@ public class WareHouseController extends Controller {
 				String status = record.getStr("status");
 				int quality = record.getInt("quality");
 				if(teaId != 0){
-					Tea tea = Tea.dao.queryById(teaId);
-					int teaSize = tea.getInt("size");
+					int teaSize = teaMap.get(teaId);
 					if(StringUtil.equals(status, Constants.TEA_STATUS.ON_SALE)){
 						//在售
 						if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
@@ -102,8 +110,7 @@ public class WareHouseController extends Controller {
 				String size = record.getStr("size");
 				int quality = record.getInt("quality");
 				if(teaId != 0){
-					Tea tea = Tea.dao.queryById(teaId);
-					int teaSize = tea.getInt("size");
+					int teaSize = teaMap.get(teaId);
 					//在售
 					if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
 						onGet = onGet+teaSize*quality;
@@ -114,9 +121,8 @@ public class WareHouseController extends Controller {
 				}
 			}
 			model.setOnGet(StringUtil.toString(onGet));
-			Integer allStock = WarehouseTeaMember.dao.queryWarehouseTeaMemberAllStock(house.getInt("id"));
-			if(allStock != null){
-				model.setAllStock(StringUtil.toString(allStock+onSale));
+			if(stock != null){
+				model.setAllStock(StringUtil.toString(stock.add(StringUtil.toBigDecimal(StringUtil.toString(onSale)))));
 			}else{
 				model.setAllStock(StringUtil.toString(onSale));
 			}
@@ -140,6 +146,12 @@ public class WareHouseController extends Controller {
         Page<WareHouse> list = service.queryByPageParams(page, size,title);
 		ArrayList<WareHouseVO> models = new ArrayList<>();
 		WareHouseVO model = null;
+		//查询出所有tea
+		List<Tea> teaList = Tea.dao.queryAllTeas();
+		Map<Integer, Integer> teaMap = new HashMap<Integer, Integer>();
+		for(Tea tea : teaList){
+			teaMap.put(tea.getInt("id"), tea.getInt("size"));
+		}
 		for(WareHouse house : list.getList()){
 			model = new WareHouseVO();
 			model.setId(house.getInt("id"));
@@ -180,8 +192,7 @@ public class WareHouseController extends Controller {
 				String status = record.getStr("status");
 				int quality = record.getInt("quality");
 				if(teaId != 0){
-					Tea tea = Tea.dao.queryById(teaId);
-					int teaSize = tea.getInt("size");
+					int teaSize = teaMap.get(teaId);
 					if(StringUtil.equals(status, Constants.TEA_STATUS.ON_SALE)){
 						//在售
 						if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
@@ -202,8 +213,7 @@ public class WareHouseController extends Controller {
 				String size = record.getStr("size");
 				int quality = record.getInt("quality");
 				if(teaId != 0){
-					Tea tea = Tea.dao.queryById(teaId);
-					int teaSize = tea.getInt("size");
+					int teaSize = teaMap.get(teaId);
 					//在售
 					if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
 						onGet = onGet+teaSize*quality;
@@ -214,9 +224,8 @@ public class WareHouseController extends Controller {
 				}
 			}
 			model.setOnGet(StringUtil.toString(onGet));
-			Integer allStock = WarehouseTeaMember.dao.queryWarehouseTeaMemberAllStock(house.getInt("id"));
-			if(allStock != null){
-				model.setAllStock(StringUtil.toString(allStock+onSale));
+			if(stock != null){
+				model.setAllStock(StringUtil.toString(stock.add(StringUtil.toBigDecimal(StringUtil.toString(onSale)))));
 			}else{
 				model.setAllStock(StringUtil.toString(onSale));
 			}
@@ -243,6 +252,12 @@ public class WareHouseController extends Controller {
 			Page<WareHouse> list = service.queryByPage(page, size);
 			ArrayList<WareHouseVO> models = new ArrayList<>();
 			WareHouseVO model = null;
+			//查询出所有tea
+			List<Tea> teaList = Tea.dao.queryAllTeas();
+			Map<Integer, Integer> teaMap = new HashMap<Integer, Integer>();
+			for(Tea tea : teaList){
+				teaMap.put(tea.getInt("id"), tea.getInt("size"));
+			}
 			for(WareHouse house : list.getList()){
 				model = new WareHouseVO();
 				model.setId(house.getInt("id"));
@@ -280,8 +295,7 @@ public class WareHouseController extends Controller {
 					String status = record.getStr("status");
 					int quality = record.getInt("quality");
 					if(teaId != 0){
-						Tea tea = Tea.dao.queryById(teaId);
-						int teaSize = tea.getInt("size");
+						int teaSize = teaMap.get(teaId);
 						if(StringUtil.equals(status, Constants.TEA_STATUS.ON_SALE)){
 							//在售
 							if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
@@ -302,8 +316,7 @@ public class WareHouseController extends Controller {
 					String size = record.getStr("size");
 					int quality = record.getInt("quality");
 					if(teaId != 0){
-						Tea tea = Tea.dao.queryById(teaId);
-						int teaSize = tea.getInt("size");
+						int teaSize = teaMap.get(teaId);
 						//在售
 						if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
 							onGet = onGet+teaSize*quality;
@@ -314,9 +327,8 @@ public class WareHouseController extends Controller {
 					}
 				}
 				model.setOnGet(StringUtil.toString(onGet));
-				Integer allStock = WarehouseTeaMember.dao.queryWarehouseTeaMemberAllStock(house.getInt("id"));
-				if(allStock != null){
-					model.setAllStock(StringUtil.toString(allStock+onSale));
+				if(stock != null){
+					model.setAllStock(StringUtil.toString(stock.add(StringUtil.toBigDecimal(StringUtil.toString(onSale)))));
 				}else{
 					model.setAllStock(StringUtil.toString(onSale));
 				}
