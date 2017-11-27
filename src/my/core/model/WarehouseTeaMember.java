@@ -12,6 +12,7 @@ import org.huadalink.plugin.tablebind.TableBind;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 
 @TableBind(table = "t_warehouse_tea_member", pk = "id")
 public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
@@ -169,6 +170,18 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 	
 	public BigDecimal queryWarehouseTeaMemberListCount(int wareHouseId){
 		return Db.queryBigDecimal("select sum(stock) from t_warehouse_tea_member where warehouse_id="+wareHouseId);
+	}
+	
+	public Integer queryWarehouseTeaMemberAllStock(int wareHouseId){
+		return Db.queryInt("select sum(origin_stock) from t_warehouse_tea_member where warehouse_id="+wareHouseId);
+	}
+	
+	public List<Record> queryWarehouseTeaQuality(int warehouseId){
+		String sql = "SELECT a.tea_id as teaId,b.size_type_cd as size,b.`status` as status,b.quality as quality "+
+					 " from t_warehouse_tea_member a INNER JOIN t_warehouse_tea_member_item b "+
+					 " on a.id=b.warehouse_tea_member_id where a.warehouse_id=1 ";
+		List<Record> models = Db.find(sql);
+		return models;
 	}
 	
 	public Page<WarehouseTeaMember> queryByPageParams(int page

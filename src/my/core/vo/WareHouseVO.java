@@ -13,8 +13,28 @@ public class WareHouseVO implements Serializable{
 	private String createUser;
 	private String updateUser;
 	private String stock;
+	private String allStock;
+	private String onSaleStock;
+	private String onGet;
 	
-	
+	public String getAllStock() {
+		return allStock;
+	}
+	public String getOnSaleStock() {
+		return onSaleStock;
+	}
+	public String getOnGet() {
+		return onGet;
+	}
+	public void setAllStock(String allStock) {
+		this.allStock = allStock;
+	}
+	public void setOnSaleStock(String onSaleStock) {
+		this.onSaleStock = onSaleStock;
+	}
+	public void setOnGet(String onGet) {
+		this.onGet = onGet;
+	}
 	public String getStock() {
 		return stock;
 	}

@@ -8,6 +8,7 @@ import org.huadalink.plugin.tablebind.TableBind;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
@@ -95,5 +96,12 @@ public class GetTeaRecord extends Model<GetTeaRecord> {
 	public int updateMsg(int id,String expressName,String expressNo,String mark,String status){
 		
 		return Db.update("update t_gettea_record set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"',express_company='"+expressName+"',express_no='"+expressNo+"',mark='"+mark+"' where id="+id);
+	}
+	
+	public List<Record> queryWarehouseTeaGetNum(int warehouseId){
+		String sql = "SELECT tea_id as teaId,size_type_cd as size,quality as quality "+
+					 " from t_gettea_record where warehouse_id="+warehouseId;
+		List<Record> models = Db.find(sql);
+		return models;
 	}
 }

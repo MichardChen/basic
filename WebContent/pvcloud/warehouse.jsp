@@ -153,7 +153,10 @@ td{
     			<tr>
     				<th>序列号</th>
     				<th>仓库名称</th>
-    				<th>在库茶叶</th>
+    				<th>总库存</th>
+    				<th>在库</th>
+    				<th>在售</th>
+    				<th>提取</th>
     				<th>创建时间</th>
     				<th>备注</th>
     				<th>状态</th>
@@ -174,7 +177,16 @@ td{
 		    						${s.name}
 		    					</td>
 		    					<td>
-		    						${s.stock}片
+		    						${s.allStock}片
+		    					</td>
+		    					<td>
+		    							${s.stock}片
+		    					</td>
+		    					<td>
+		    							${s.onSaleStock}片
+		    					</td>
+		    					<td>
+		    							${s.onGet}片
 		    					</td>
 		    					<td>${s.createTime }</td>
 		    					<td>

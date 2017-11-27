@@ -36,7 +36,7 @@ if(str!=''){
 		</tr>
 		<tr>
 			<td></td>
-			<td>纬度&nbsp;<input type="number" step="0.0000001" value="${model.latitude}"  name="latitude" id="latitude" maxlength="30" style="width: 150px;"/></td>
+			<td>纬度&nbsp;<input type="number" step="0.0000001" value="${model.latitude}"  name="latitude" id="latitude" maxlength="30" style="width: 150px;"/>&nbsp;&nbsp;<a target="_blank" href="http://www.gpsspg.com/maps.htm">定位查看</a></td>
 		</tr>
 		<tr>
 			<td>主营茶叶</td>

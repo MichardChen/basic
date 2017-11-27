@@ -97,7 +97,7 @@ function selectDistrict1(){
 		</tr>
 		<tr>
 			<td>经纬度</td>
-			<td>经度&nbsp;<input type="number" step="0.0000001" name="longtitude" id="longtitude" maxlength="30" style="width: 150px;"/></td>
+			<td>经度&nbsp;<input type="number" step="0.0000001" name="longtitude" id="longtitude" maxlength="30" style="width: 150px;"/>&nbsp;&nbsp;<a target="_blank" href="http://www.gpsspg.com/maps.htm">定位查看</a></td>
 		</tr>
 		<tr>
 			<td></td>

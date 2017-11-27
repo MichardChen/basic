@@ -3,15 +3,19 @@ package my.pvcloud.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.huadalink.route.ControllerBind;
 
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 
 import my.core.constants.Constants;
+import my.core.model.GetTeaRecord;
 import my.core.model.Log;
+import my.core.model.Tea;
 import my.core.model.User;
 import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
@@ -59,11 +63,62 @@ public class WareHouseController extends Controller {
 				model.setUpdateUser("");
 			}
 			
+			//在库
 			BigDecimal stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
 			if(stock != null){
 				model.setStock(StringUtil.toString(stock));
 			}else{
 				model.setStock("0");
+			}
+			//总库存
+			//在售和撤单
+			List<Record> records = WarehouseTeaMember.dao.queryWarehouseTeaQuality(house.getInt("id"));
+			int onSale = 0;
+			for(Record record : records){
+				int teaId = record.getInt("teaId");
+				String size = record.getStr("size");
+				String status = record.getStr("status");
+				int quality = record.getInt("quality");
+				if(teaId != 0){
+					Tea tea = Tea.dao.queryById(teaId);
+					int teaSize = tea.getInt("size");
+					if(StringUtil.equals(status, Constants.TEA_STATUS.ON_SALE)){
+						//在售
+						if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
+							onSale = onSale+teaSize*quality;
+						}
+						if(StringUtil.equals(size, Constants.TEA_UNIT.PIECE)){
+							onSale = onSale+quality;
+						}
+					}
+				}
+			}
+			model.setOnSaleStock(StringUtil.toString(onSale));
+			//判断取茶
+			List<Record> getList = GetTeaRecord.dao.queryWarehouseTeaGetNum(house.getInt("id"));
+			int onGet = 0;
+			for(Record record : getList){
+				int teaId = record.getInt("teaId");
+				String size = record.getStr("size");
+				int quality = record.getInt("quality");
+				if(teaId != 0){
+					Tea tea = Tea.dao.queryById(teaId);
+					int teaSize = tea.getInt("size");
+					//在售
+					if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
+						onGet = onGet+teaSize*quality;
+					}
+					if(StringUtil.equals(size, Constants.TEA_UNIT.PIECE)){
+						onGet = onGet+quality;
+					}
+				}
+			}
+			model.setOnGet(StringUtil.toString(onGet));
+			Integer allStock = WarehouseTeaMember.dao.queryWarehouseTeaMemberAllStock(house.getInt("id"));
+			if(allStock != null){
+				model.setAllStock(StringUtil.toString(allStock+onSale));
+			}else{
+				model.setAllStock(StringUtil.toString(onSale));
 			}
 			models.add(model);
 		}
@@ -114,6 +169,58 @@ public class WareHouseController extends Controller {
 			}else{
 				model.setStock("0");
 			}
+			
+			//总库存
+			//在售和撤单
+			List<Record> records = WarehouseTeaMember.dao.queryWarehouseTeaQuality(house.getInt("id"));
+			int onSale = 0;
+			for(Record record : records){
+				int teaId = record.getInt("teaId");
+				String size = record.getStr("size");
+				String status = record.getStr("status");
+				int quality = record.getInt("quality");
+				if(teaId != 0){
+					Tea tea = Tea.dao.queryById(teaId);
+					int teaSize = tea.getInt("size");
+					if(StringUtil.equals(status, Constants.TEA_STATUS.ON_SALE)){
+						//在售
+						if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
+							onSale = onSale+teaSize*quality;
+						}
+						if(StringUtil.equals(size, Constants.TEA_UNIT.PIECE)){
+							onSale = onSale+quality;
+						}
+					}
+				}
+			}
+			model.setOnSaleStock(StringUtil.toString(onSale));
+			//判断取茶
+			List<Record> getList = GetTeaRecord.dao.queryWarehouseTeaGetNum(house.getInt("id"));
+			int onGet = 0;
+			for(Record record : getList){
+				int teaId = record.getInt("teaId");
+				String size = record.getStr("size");
+				int quality = record.getInt("quality");
+				if(teaId != 0){
+					Tea tea = Tea.dao.queryById(teaId);
+					int teaSize = tea.getInt("size");
+					//在售
+					if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
+						onGet = onGet+teaSize*quality;
+					}
+					if(StringUtil.equals(size, Constants.TEA_UNIT.PIECE)){
+						onGet = onGet+quality;
+					}
+				}
+			}
+			model.setOnGet(StringUtil.toString(onGet));
+			Integer allStock = WarehouseTeaMember.dao.queryWarehouseTeaMemberAllStock(house.getInt("id"));
+			if(allStock != null){
+				model.setAllStock(StringUtil.toString(allStock+onSale));
+			}else{
+				model.setAllStock(StringUtil.toString(onSale));
+			}
+			
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -163,6 +270,57 @@ public class WareHouseController extends Controller {
 				}else{
 					model.setStock("0");
 				}
+				
+				//在售和撤单
+				List<Record> records = WarehouseTeaMember.dao.queryWarehouseTeaQuality(house.getInt("id"));
+				int onSale = 0;
+				for(Record record : records){
+					int teaId = record.getInt("teaId");
+					String size = record.getStr("size");
+					String status = record.getStr("status");
+					int quality = record.getInt("quality");
+					if(teaId != 0){
+						Tea tea = Tea.dao.queryById(teaId);
+						int teaSize = tea.getInt("size");
+						if(StringUtil.equals(status, Constants.TEA_STATUS.ON_SALE)){
+							//在售
+							if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
+								onSale = onSale+teaSize*quality;
+							}
+							if(StringUtil.equals(size, Constants.TEA_UNIT.PIECE)){
+								onSale = onSale+quality;
+							}
+						}
+					}
+				}
+				model.setOnSaleStock(StringUtil.toString(onSale));
+				//判断取茶
+				List<Record> getList = GetTeaRecord.dao.queryWarehouseTeaGetNum(house.getInt("id"));
+				int onGet = 0;
+				for(Record record : getList){
+					int teaId = record.getInt("teaId");
+					String size = record.getStr("size");
+					int quality = record.getInt("quality");
+					if(teaId != 0){
+						Tea tea = Tea.dao.queryById(teaId);
+						int teaSize = tea.getInt("size");
+						//在售
+						if(StringUtil.equals(size, Constants.TEA_UNIT.ITEM)){
+							onGet = onGet+teaSize*quality;
+						}
+						if(StringUtil.equals(size, Constants.TEA_UNIT.PIECE)){
+							onGet = onGet+quality;
+						}
+					}
+				}
+				model.setOnGet(StringUtil.toString(onGet));
+				Integer allStock = WarehouseTeaMember.dao.queryWarehouseTeaMemberAllStock(house.getInt("id"));
+				if(allStock != null){
+					model.setAllStock(StringUtil.toString(allStock+onSale));
+				}else{
+					model.setAllStock(StringUtil.toString(onSale));
+				}
+				
 				models.add(model);
 			}
 			setAttr("list", list);
