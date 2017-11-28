@@ -69,7 +69,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
 		<tr>
 			<td>状态</td>
-			<td class="td_class">
+			<c:if test="${model.status=='280002' || model.status=='280005'}">
+				<td class="td_class">
+		    				<c:if test="${model.status=='280002'}">申请失败</c:if>
+		    				 <c:if test="${model.status=='280005'}">异常</c:if>
+				</td>
+			</c:if>
+			<c:if test="${model.status!='280002' and model.status!='280005'}">
+				<td class="td_class">
 						<select name="status" style="height: 30px;width: 150px;">
 	    					<option></option>
 	    					<option value="280001" <c:if test="${model.status=='280001'}">selected="selected"</c:if>>申请中</option>
@@ -78,7 +85,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    				 	<option value="280004" <c:if test="${model.status=='280004'}">selected="selected"</c:if>>已收货</option>
 	    					<option value="280005" <c:if test="${model.status=='280005'}">selected="selected"</c:if>>异常</option>
 	    				</select>	
-			</td>
+	    			</td>
+			</c:if>
 		</tr>
 		<tr>
 			<td>备注</td>

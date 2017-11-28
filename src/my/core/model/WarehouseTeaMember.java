@@ -156,7 +156,7 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 	}
 	
 	public int addTeaQuality(int quality,int warehouseId,int teaId,int memberId){
-		return Db.update("update t_warehouse_tea_member set origin_stock=origin_stock+"+quality+",stock=stock+"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_id="+warehouseId+" and tea_id="+teaId+" and member_id="+memberId);
+		return Db.update("update t_warehouse_tea_member set stock=stock+"+quality+",update_time='"+DateUtil.getNowTimestamp()+"' where warehouse_id="+warehouseId+" and tea_id="+teaId+" and member_id="+memberId);
 	}
 	
 	public int cutTeaQuality(int quality,int warehouseId,int teaId,int memberId){
@@ -172,6 +172,10 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 		return Db.queryBigDecimal("select sum(stock) from t_warehouse_tea_member where warehouse_id="+wareHouseId);
 	}
 	
+	public BigDecimal queryWTMListCount(int wareHouseId){
+		return Db.queryBigDecimal("select sum(stock) from t_warehouse_tea_member where warehouse_id="+wareHouseId+" and member_type_cd='010001'");
+	}
+	
 	public BigDecimal queryWarehouseTeaMemberAllStock(int wareHouseId){
 		return Db.queryBigDecimal("select sum(origin_stock) from t_warehouse_tea_member where warehouse_id="+wareHouseId);
 	}
@@ -179,7 +183,7 @@ public class WarehouseTeaMember extends Model<WarehouseTeaMember> {
 	public List<Record> queryWarehouseTeaQuality(int warehouseId){
 		String sql = "SELECT a.tea_id as teaId,b.size_type_cd as size,b.`status` as status,b.quality as quality "+
 					 " from t_warehouse_tea_member a INNER JOIN t_warehouse_tea_member_item b "+
-					 " on a.id=b.warehouse_tea_member_id where a.warehouse_id=1 ";
+					 " on a.id=b.warehouse_tea_member_id where a.warehouse_id="+warehouseId+" and b.status='160001' and a.member_type_cd='010001'";
 		List<Record> models = Db.find(sql);
 		return models;
 	}

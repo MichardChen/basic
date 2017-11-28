@@ -100,7 +100,7 @@ public class GetTeaRecord extends Model<GetTeaRecord> {
 	
 	public List<Record> queryWarehouseTeaGetNum(int warehouseId){
 		String sql = "SELECT tea_id as teaId,size_type_cd as size,quality as quality "+
-					 " from t_gettea_record where warehouse_id="+warehouseId;
+					 " from t_gettea_record where warehouse_id="+warehouseId+" and status in('280001','280003','280004')";
 		List<Record> models = Db.find(sql);
 		return models;
 	}

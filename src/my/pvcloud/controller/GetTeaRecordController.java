@@ -289,7 +289,24 @@ public class GetTeaRecordController extends Controller {
 			String mark = StringUtil.checkCode(getPara("mark"));
 			int ret = service.updateRecord(recordId, expressName, expressNo, mark, status);
 			if(ret!=0){
-				setAttr("message", "操作成功");
+				//申请失败或者异常,茶叶要返回库存
+				if(StringUtil.equals(status, "280002")||StringUtil.equals(status, "280005")){
+					GetTeaRecord record = GetTeaRecord.dao.queryById(recordId);
+					if(record != null){
+						int rets = WarehouseTeaMember.dao.addTeaQuality(record.getInt("quality")
+																	    ,record.getInt("warehouse_id")
+																	    ,record.getInt("tea_id")
+																	    ,record.getInt("member_id"));
+						if(rets != 0){
+							setAttr("message", "操作成功");
+						}else{
+							setAttr("message", "操作失败");
+						}
+					}
+					
+				}else{
+					setAttr("message", "操作成功");
+				}
 			}else{
 				setAttr("message", "操作失败");
 			}
@@ -311,7 +328,8 @@ public class GetTeaRecordController extends Controller {
 			model.setExpress(record.getStr("express_company"));
 			model.setExpressNo(record.getStr("express_no"));
 			model.setMark(record.getStr("mark"));
-			model.setName("注册电话："+member.getStr("mobile")+",用户名："+member.getStr("name"));
+			String memberName = member.getStr("name")==null ? "":member.getStr("name");
+			model.setName("注册电话："+member.getStr("mobile")+",用户名："+memberName);
 			String size = "";
 			CodeMst sizeType = CodeMst.dao.queryCodestByCode(record.getStr("size_type_cd"));
 			if(sizeType != null){

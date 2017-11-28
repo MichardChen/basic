@@ -1012,7 +1012,7 @@ public class LoginService {
 			//卖茶记录
 			Order order = Order.dao.queryById(orderId);
 			if(order != null){
-				OrderItem orderItem = OrderItem.dao.queryById(orderId);
+				OrderItem orderItem = OrderItem.dao.queryByOrderId(order.getInt("id"));
 				if(orderItem != null){
 					WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(orderItem.getInt("wtm_item_id"));
 					if(wtmItem != null){
@@ -1025,8 +1025,10 @@ public class LoginService {
 						}
 						CodeMst size = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
 						String sizeType = size == null ? "" : "/"+size.getStr("name");
+						//成交总额
 						vo.setBargainAmount("￥"+StringUtil.toString(order.getBigDecimal("pay_amount")));
 						vo.setCreateTime(StringUtil.toString(orderItem.getTimestamp("create_time")));
+						//支付总价
 						vo.setPayAmount("￥"+StringUtil.toString(order.getBigDecimal("pay_amount")));
 						vo.setPayTime(StringUtil.toString(order.getTimestamp("pay_time")));
 						vo.setPrice("￥"+StringUtil.toString(wtmItem.getBigDecimal("price"))+sizeType);

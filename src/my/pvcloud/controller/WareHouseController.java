@@ -73,7 +73,7 @@ public class WareHouseController extends Controller {
 			}
 			
 			//在库
-			BigDecimal stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
+			BigDecimal stock = WarehouseTeaMember.dao.queryWTMListCount(house.getInt("id"));
 			if(stock != null){
 				model.setStock(StringUtil.toString(stock));
 			}else{
@@ -175,7 +175,7 @@ public class WareHouseController extends Controller {
 				model.setUpdateUser("");
 			}
 			
-			BigDecimal stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
+			BigDecimal stock = WarehouseTeaMember.dao.queryWTMListCount(house.getInt("id"));
 			if(stock != null){
 				model.setStock(StringUtil.toString(stock));
 			}else{
@@ -279,7 +279,7 @@ public class WareHouseController extends Controller {
 				}else{
 					model.setUpdateUser("");
 				}
-				BigDecimal stock = WarehouseTeaMember.dao.queryWarehouseTeaMemberListCount(house.getInt("id"));
+				BigDecimal stock = WarehouseTeaMember.dao.queryWTMListCount(house.getInt("id"));
 				if(stock != null){
 					model.setStock(StringUtil.toString(stock));
 				}else{
