@@ -144,25 +144,25 @@ public class OrderController extends Controller {
 	 */
 	public void queryByPage(){
 		
-		String ptitle = getPara("title");
+		String ptitle = getSessionAttr("title");
 		this.setSessionAttr("title",ptitle);
 		
-		String porderNo = getPara("orderNo");
+		String porderNo = getSessionAttr("orderNo");
 		this.setSessionAttr("orderNo",porderNo);
 
-		String pstatus = getPara("status");
+		String pstatus = getSessionAttr("status");
 		this.setSessionAttr("status",pstatus);
 		
-		String ppayTime = getPara("payTime");
+		String ppayTime = getSessionAttr("payTime");
 		this.setSessionAttr("payTime",ppayTime);
 		
-		String saleMobile = getPara("saleMobile");
+		String saleMobile = getSessionAttr("saleMobile");
 		this.setSessionAttr("saleMobile", saleMobile);
 		
-		String saleUserTypeCd = getPara("saleUserTypeCd");
+		String saleUserTypeCd = getSessionAttr("saleUserTypeCd");
 		this.setSessionAttr("saleUserTypeCd", saleUserTypeCd);
 		
-		String buyMobile = getPara("buyMobile");
+		String buyMobile = getSessionAttr("buyMobile");
 		this.setSessionAttr("buyMobile", buyMobile);
 		
 		Integer page = getParaToInt(1);

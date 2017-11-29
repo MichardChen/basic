@@ -1010,10 +1010,11 @@ public class LoginService {
 		String messageTypeCd = message.getStr("message_type_cd");
 		if(StringUtil.equals(messageTypeCd, Constants.MESSAGE_TYPE.SALE_TEA)){
 			//卖茶记录
-			Order order = Order.dao.queryById(orderId);
-			if(order != null){
-				OrderItem orderItem = OrderItem.dao.queryByOrderId(order.getInt("id"));
-				if(orderItem != null){
+			OrderItem orderItem = OrderItem.dao.queryById(orderId);
+			if(orderItem != null){
+				//Order order = Order.dao.queryById(orderItem.getInt("order_id"));
+				/*OrderItem orderItem = OrderItem.dao.queryByOrderId(order.getInt("id"));
+				if(orderItem != null){*/
 					WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(orderItem.getInt("wtm_item_id"));
 					if(wtmItem != null){
 						WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
@@ -1026,15 +1027,15 @@ public class LoginService {
 						CodeMst size = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
 						String sizeType = size == null ? "" : "/"+size.getStr("name");
 						//成交总额
-						vo.setBargainAmount("￥"+StringUtil.toString(order.getBigDecimal("pay_amount")));
+						vo.setBargainAmount("￥"+StringUtil.toString(orderItem.getBigDecimal("item_amount")));
 						vo.setCreateTime(StringUtil.toString(orderItem.getTimestamp("create_time")));
 						//支付总价
-						vo.setPayAmount("￥"+StringUtil.toString(order.getBigDecimal("pay_amount")));
-						vo.setPayTime(StringUtil.toString(order.getTimestamp("pay_time")));
+						vo.setPayAmount("￥"+StringUtil.toString(orderItem.getBigDecimal("item_amount")));
+						vo.setPayTime(StringUtil.toString(orderItem.getTimestamp("create_time")));
 						vo.setPrice("￥"+StringUtil.toString(wtmItem.getBigDecimal("price"))+sizeType);
 						vo.setQuality(StringUtil.toString(orderItem.getInt("quality"))+size.getStr("name"));
 					}
-				}
+				//}
 				
 			}
 		}
@@ -3514,8 +3515,8 @@ public class LoginService {
 			item2.set("member_id", dto.getUserId());
 			item2.set("create_time", DateUtil.getNowTimestamp());
 			item2.set("update_time", DateUtil.getNowTimestamp());
-			boolean save = OrderItem.dao.saveInfo(item2);
-			if(save){
+			int retId = OrderItem.dao.saveInfo(item2);
+			if(retId != 0){
 				int saleUser = wtm.getInt("member_id");
 				int ret = 0;
 				//保存成功，买家扣款，卖家
@@ -3670,7 +3671,7 @@ public class LoginService {
 										unitStr = unit.getStr("name");
 									}
 									message.set("message", "出售"+teaInfo.getStr("tea_title")+"，"+quality+unitStr+"，单价："+item.getBigDecimal("price")+"元");
-									message.set("params", "{id:"+orderId+"}");
+									message.set("params", "{id:"+retId+"}");
 									message.set("title","出售茶叶");
 									message.set("create_time", DateUtil.getNowTimestamp());
 									message.set("update_time", DateUtil.getNowTimestamp());
@@ -3702,7 +3703,7 @@ public class LoginService {
 												unitStr = unit.getStr("name");
 											}
 											message.set("message", "出售"+teaInfo.getStr("tea_title")+"，"+quality+unitStr+"，单价："+item.getBigDecimal("price")+"元");
-											message.set("params", "{id:"+orderId+"}");
+											message.set("params", "{id:"+retId+"}");
 											message.set("title","出售茶叶");
 											message.set("create_time", DateUtil.getNowTimestamp());
 											message.set("update_time", DateUtil.getNowTimestamp());
@@ -3731,7 +3732,7 @@ public class LoginService {
 											unitStr = unit.getStr("name");
 										}
 										message.set("message", "出售"+teaInfo.getStr("tea_title")+"，"+quality+unitStr+"，单价："+item.getBigDecimal("price")+"元");
-										message.set("params", "{id:"+orderId+"}");
+										message.set("params", "{id:"+retId+"}");
 										message.set("title","出售茶叶");
 										message.set("create_time", DateUtil.getNowTimestamp());
 										message.set("update_time", DateUtil.getNowTimestamp());
@@ -3875,7 +3876,7 @@ public class LoginService {
 				item2.set("member_id", dto.getUserId());
 				item2.set("create_time", DateUtil.getNowTimestamp());
 				item2.set("update_time", DateUtil.getNowTimestamp());
-				OrderItem.dao.saveInfo(item2);
+				int retId = OrderItem.dao.saveInfo(item2);
 					int saleUser = wtm.getInt("member_id");
 					int ret = 0;
 					//保存成功，买家扣款，卖家
@@ -4028,7 +4029,7 @@ public class LoginService {
 										Tea tea = Tea.dao.queryById(teaId);
 										message.set("message", "出售"+tea.getStr("tea_title")+"，"+quality+unitStr+"，单价："+item.getBigDecimal("price")+"元");
 										message.set("title","出售茶叶");
-										message.set("params", "{id:"+orderId+"}");
+										message.set("params", "{id:"+retId+"}");
 										message.set("create_time", DateUtil.getNowTimestamp());
 										message.set("update_time", DateUtil.getNowTimestamp());
 										message.set("user_id", wtm.getInt("member_id"));
@@ -4058,7 +4059,7 @@ public class LoginService {
 												}
 												Tea tea = Tea.dao.queryById(teaId);
 												message.set("message", "出售"+tea.getStr("tea_title")+"，"+quality+unitStr+"，单价："+item.getBigDecimal("price")+"元");
-												message.set("params", "{id:"+orderId+"}");
+												message.set("params", "{id:"+retId+"}");
 												message.set("title","出售茶叶");
 												message.set("create_time", DateUtil.getNowTimestamp());
 												message.set("update_time", DateUtil.getNowTimestamp());
@@ -4084,7 +4085,7 @@ public class LoginService {
 											}
 											Tea tea = Tea.dao.queryById(teaId);
 											message.set("message", "出售"+tea.getStr("tea_title")+"，"+quality+unitStr+"，单价："+item.getBigDecimal("price")+"元");
-											message.set("params", "{id:"+orderId+"}");
+											message.set("params", "{id:"+retId+"}");
 											message.set("title","出售茶叶");
 											message.set("create_time", DateUtil.getNowTimestamp());
 											message.set("update_time", DateUtil.getNowTimestamp());

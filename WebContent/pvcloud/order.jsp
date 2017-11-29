@@ -46,6 +46,18 @@ function edit(data){
 		}
 	});
 }
+
+function check(){
+	var saleMobile = $("#saleMobile").val();
+	var saleUserTypeCd = $("#saleUserTypeCd").val();
+	if(saleMobile != ""){
+		if(saleUserTypeCd == ""){
+			alert("请先选择卖家类型");
+			return false;
+		}
+	}
+	return true;
+}
 </script>
 <style>
 .ys1{
@@ -124,7 +136,7 @@ td{
     	<hr/>	
 	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
    		<div class="" style="margin-top:15px;margin-bottom:15px;">
-    		<form method="post" action="${CONTEXT_PATH}/orderInfo/queryByConditionByPage" class="form-horizontal">
+    		<form method="post" action="${CONTEXT_PATH}/orderInfo/queryByConditionByPage" class="form-horizontal" onsubmit="return check();">
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">订单时间</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
@@ -150,7 +162,7 @@ td{
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">卖家类型</label>
 	    			<div class="col-sm- col-xs-1 col-md-1">	
-	    				<select name="saleUserTypeCd" style="height: 30px;width: 120px;">
+	    				<select name="saleUserTypeCd" style="height: 30px;width: 120px;" id="saleUserTypeCd">
 		    					<option></option>
 		    					<option value="010001" <c:if test="${saleUserTypeCd=='010001'}">selected="selected"</c:if>>普通卖家</option>
 		    					<option value="010002" <c:if test="${saleUserTypeCd=='010002'}">selected="selected"</c:if>>平台卖家</option>

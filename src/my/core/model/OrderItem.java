@@ -76,8 +76,10 @@ public class OrderItem extends Model<OrderItem> {
 		return new OrderItem().setAttrs(data).update();
 	}
 	
-	public boolean saveInfo(OrderItem data){
-		return new OrderItem().setAttrs(data).save();
+	public int saveInfo(OrderItem data){
+		OrderItem t = new OrderItem().setAttrs(data);
+		t.save();
+		return t.getInt("id");
 	}
 	
 	public boolean del(int id){

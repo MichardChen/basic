@@ -43,9 +43,9 @@ public class CashJournal extends Model<CashJournal> {
 	public List<CashJournal> queryRecords(int pageSize,int pageNum,int memberId,String date){
 		int fromRow = pageSize*(pageNum-1);
 		if(StringUtil.isNoneBlank(date)){
-			return CashJournal.dao.find("select * from t_cash_journal where member_id ="+memberId+" and create_time like '%"+date+"%' order by create_time desc limit "+fromRow+","+pageSize);
+			return CashJournal.dao.find("select * from t_cash_journal where member_id ="+memberId+" and create_time like '%"+date+"%' and fee_status='300002' order by create_time desc limit "+fromRow+","+pageSize);
 		}else{
-			return CashJournal.dao.find("select * from t_cash_journal where member_id ="+memberId+" order by create_time desc limit "+fromRow+","+pageSize);
+			return CashJournal.dao.find("select * from t_cash_journal where member_id ="+memberId+" and fee_status='300002' order by create_time desc limit "+fromRow+","+pageSize);
 		}
 	}
 	

@@ -62,7 +62,7 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 			sql = sql + " and b.warehouse_id="+wareHouseId;
 		}
 		
-		orderby = orderby + ",a.create_time desc";
+		orderby = orderby + ",a.create_time asc";
 		
 		sql = sql + " and b.tea_id="+teaId+" and a.quality is not null and a.quality!=0";
 		
