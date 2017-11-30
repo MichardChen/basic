@@ -129,7 +129,7 @@ public class QRCodeUtil {
             //N代表数字,A代表字符a-Z,B代表其他字符    
             qrcodeHandler.setQrcodeEncodeMode('B');    
             //版本1为21*21矩阵，版本每增1，二维码的两个边长都增4；所以版本7为45*45的矩阵；最高版本为是40，是177*177的矩阵    
-            qrcodeHandler.setQrcodeVersion(version);  
+            qrcodeHandler.setQrcodeVersion(version);
             //根据版本计算尺寸  
             int imgSize = 67 + 12 * (version - 1) ;    
             byte[] contentBytes = content.getBytes("gb2312");    
@@ -142,12 +142,12 @@ public class QRCodeUtil {
             // 设置偏移量 不设置可能导致解析出错    
             int pixoff = 2;  
             // 输出内容 > 二维码    
-            if (contentBytes.length > 0 && contentBytes.length < 130) {  
+            if (contentBytes.length > 0 && contentBytes.length < 130){  
                 boolean[][] codeOut = qrcodeHandler.calQrcode(contentBytes);  
                 for (int i = 0; i < codeOut.length; i++) {  
                     for (int j = 0; j < codeOut.length; j++) {  
                         if (codeOut[j][i]) {    
-                            gs.fillRect(j * 3 + pixoff, i * 3 + pixoff, 3, 3);  
+                            gs.fillRect(j * 3 + pixoff, i * 3 + pixoff, 3, 3);
                         }    
                     }    
                 }    
@@ -181,7 +181,7 @@ public class QRCodeUtil {
                 imgFile.createNewFile();  
             //根据生成图片获取图片  
             String imgType = imgPath.substring(imgPath.lastIndexOf(".") + 1, imgPath.length());  
-            // 生成二维码QRCode图片    
+            // 生成二维码QRCode图片   
             ImageIO.write(bufImg, imgType, imgFile);    
          } catch (Exception e) {    
              e.printStackTrace();    
