@@ -157,13 +157,16 @@ public class QRCodeUtil {
            /* 判断是否需要添加logo图片 */  
             if(logoPath != null){  
                 File icon = new File(logoPath);  
-                if(icon.exists()){  
+                if(icon.exists()){ 
+                	//图片宽度
                     int width_4 = imgSize / 4;  
                     int width_8 = width_4 / 2;  
                     int height_4 = imgSize / 4;  
                     int height_8 = height_4 / 2;  
                     Image img = ImageIO.read(icon);  
-                    gs.drawImage(img, width_4 + width_8, height_4 + height_8,width_4,height_4, null);  
+                    Image image = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); 
+                    //gs.drawImage(image, width_4 + width_8, height_4 + height_8,width_4,height_4, null);
+                    gs.drawImage(image, width_4 + width_8, height_4 + height_8,48,48, null);
                     gs.dispose();  
                     bufImg.flush();  
                 }else{  

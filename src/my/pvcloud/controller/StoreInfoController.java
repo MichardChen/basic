@@ -427,8 +427,8 @@ public class StoreInfoController extends Controller {
 		int storeId = StringUtil.toInteger(getPara("id"));
 		Store store = Store.dao.queryById(storeId);
 		int memberId = store == null ? 0 : store.getInt("member_id");
-		QRCodeUtil.QRCodeCreate(StringUtil.toString(memberId), "//home//ewcode//qrcode.jpg", 5, "//home//ewcode//icon.png");
-		//QRCodeUtil.QRCodeCreate(StringUtil.toString(memberId), "F://upload//ewcode//qrcode.jpg", 5, "F://upload//ewcode//icon.png");
+		QRCodeUtil.QRCodeCreate(StringUtil.toString(memberId), "//home//ewcode//qrcode.jpg", 8, "//home//ewcode//icon.png");
+		//QRCodeUtil.QRCodeCreate(StringUtil.toString(memberId), "F://upload//ewcode//qrcode.jpg", 8, "F://upload//ewcode//icon.png");
         HttpServletResponse response = getResponse();
 		response.setContentType("application/binary");
 	    //设置Content-Disposition

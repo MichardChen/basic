@@ -49,7 +49,7 @@ public class Document extends Model<Document> {
 	}
 	
 	public Document queryByTypeCd(String typeCd){
-		return Document.dao.findFirst("select * from t_document where type_cd = ? and flg=1",typeCd);
+		return Document.dao.findFirst("select * from t_document where type_cd = ? and flg=1 order by create_time desc",typeCd);
 	}
 	
 	public List<Document> queryDocumentListByTypeCd(String typeCd){
