@@ -80,6 +80,12 @@ public class LoginDTO extends BaseDTO{
 			dto.setLongtitude2(StringUtil.checkCode(request.getParameter("longtitude2")));
 			dto.setLatitude3(StringUtil.checkCode(request.getParameter("latitude3")));
 			dto.setMessageId(StringUtil.toInteger(StringUtil.checkCode(request.getParameter("messageId"))));
+			
+			dto.setServicePoint(StringUtil.toInteger(StringUtil.checkCode(request.getParameter("servicePoint"))));
+			dto.setTeaPoint(StringUtil.toInteger(StringUtil.checkCode(request.getParameter("teaPoint"))));
+			dto.setSenitationPoint(StringUtil.toInteger(StringUtil.checkCode(request.getParameter("senitationPoint"))));
+			dto.setMark(StringUtil.checkCode(request.getParameter("mark")));
+			
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -146,6 +152,45 @@ public class LoginDTO extends BaseDTO{
 	private String longtitude2;
 	private String latitude3;
 	
+	private int servicePoint;
+	private int teaPoint;
+	private int senitationPoint;
+	private String mark;
+	
+	
+	
+	public String getMark() {
+		return mark;
+	}
+
+	public void setMark(String mark) {
+		this.mark = mark;
+	}
+
+	public int getServicePoint() {
+		return servicePoint;
+	}
+
+	public void setServicePoint(int servicePoint) {
+		this.servicePoint = servicePoint;
+	}
+
+	public int getTeaPoint() {
+		return teaPoint;
+	}
+
+	public void setTeaPoint(int teaPoint) {
+		this.teaPoint = teaPoint;
+	}
+
+	public int getSenitationPoint() {
+		return senitationPoint;
+	}
+
+	public void setSenitationPoint(int senitationPoint) {
+		this.senitationPoint = senitationPoint;
+	}
+
 	public int getMessageId() {
 		return messageId;
 	}

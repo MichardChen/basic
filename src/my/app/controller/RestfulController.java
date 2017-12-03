@@ -1310,4 +1310,11 @@ public class RestfulController extends Controller{
 			redirect(document.getStr("desc_url"));
 		}
 	}
+	
+	//评价
+	@Before(RequestInterceptor.class)
+	public void evaluateStore() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.evaluateStore(dto));
+	}
 }

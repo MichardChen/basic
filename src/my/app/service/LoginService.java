@@ -46,6 +46,7 @@ import my.core.model.ReturnData;
 import my.core.model.SaleOrder;
 import my.core.model.ServiceFee;
 import my.core.model.Store;
+import my.core.model.StoreEvaluate;
 import my.core.model.StoreImage;
 import my.core.model.SystemVersionControl;
 import my.core.model.Tea;
@@ -4209,6 +4210,30 @@ public class LoginService {
 		}else{
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("您还没有绑定银行卡");
+			return data;
+		}
+	}
+	
+	public ReturnData evaluateStore(LoginDTO dto) throws Exception{
+		
+		ReturnData data = new ReturnData();
+		StoreEvaluate evaluate = new StoreEvaluate();
+		evaluate.set("member_id", dto.getUserId());
+		evaluate.set("store_id", dto.getStoreId());
+		evaluate.set("service_point", dto.getServicePoint());
+		evaluate.set("tea_point", dto.getTeaPoint());
+		evaluate.set("senitation_point", dto.getSenitationPoint());
+		evaluate.set("mark", dto.getMark());
+		evaluate.set("create_time", DateUtil.getNowTimestamp());
+		evaluate.set("update_time", DateUtil.getNowTimestamp());
+		int ret = StoreEvaluate.dao.saveInfos(evaluate);
+		if(ret != 0){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("提交成功，谢谢您的评价");
+			return data;
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("提交失败，请重新提交您的评价");
 			return data;
 		}
 	}
