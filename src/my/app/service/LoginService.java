@@ -2339,10 +2339,17 @@ public class LoginService {
 			
 			if(teaPrice != null){
 				BigDecimal point = new BigDecimal("1");
+				BigDecimal maxPoint = new BigDecimal("1");
 				CodeMst referencePoint = CodeMst.dao.queryCodestByCode(Constants.SYSTEM_CONSTANTS.REFERENCE_PRICE_DISCOUNT);
 				if(referencePoint != null){
 					String pointStr = referencePoint.getStr("data3");
 					point = StringUtil.toBigDecimal(pointStr);
+				}
+				
+				CodeMst referenceMaxPoint = CodeMst.dao.queryCodestByCode(Constants.SYSTEM_CONSTANTS.REFERENCE_PRICE_MAXDISCOUNT);
+				if(referenceMaxPoint != null){
+					String pointStr = referenceMaxPoint.getStr("data3");
+					maxPoint = StringUtil.toBigDecimal(pointStr);
 				}
 				
 				//BigDecimal pieceFromPrice = teaPrice.getBigDecimal("from_price");
@@ -2360,10 +2367,10 @@ public class LoginService {
 					data.setMessage("对不起，出售单价不能低于参考价的"+referencePoint.getStr("data2"));
 					return data;
 				}
-				if((referencePrice != null)&&(salePrice.compareTo(referencePrice.multiply(new BigDecimal("1").add(point)))==1)){
+				if((referencePrice != null)&&(salePrice.compareTo(referencePrice.multiply(maxPoint))==1)){
 					//最高
 					data.setCode(Constants.STATUS_CODE.FAIL);
-					data.setMessage("对不起，出售单价不能超过参考价的"+referencePoint.getStr("data2"));
+					data.setMessage("对不起，出售单价不能超过参考价的"+referenceMaxPoint.getStr("data2"));
 					return data;
 				}
 			}
@@ -2383,10 +2390,17 @@ public class LoginService {
 			if(teaPrice != null){
 				
 				BigDecimal point = new BigDecimal("1");
+				BigDecimal maxPoint = new BigDecimal("1");
 				CodeMst referencePoint = CodeMst.dao.queryCodestByCode(Constants.SYSTEM_CONSTANTS.REFERENCE_PRICE_DISCOUNT);
 				if(referencePoint != null){
 					String pointStr = referencePoint.getStr("data3");
 					point = StringUtil.toBigDecimal(pointStr);
+				}
+				
+				CodeMst referenceMaxPoint = CodeMst.dao.queryCodestByCode(Constants.SYSTEM_CONSTANTS.REFERENCE_PRICE_MAXDISCOUNT);
+				if(referenceMaxPoint != null){
+					String pointStr = referenceMaxPoint.getStr("data3");
+					maxPoint = StringUtil.toBigDecimal(pointStr);
 				}
 				
 			//	BigDecimal itemFromPrice = teaPrice.getBigDecimal("from_price").multiply(new BigDecimal(tea.getInt("size")));
@@ -2399,9 +2413,9 @@ public class LoginService {
 					data.setMessage("对不起，出售单价不能低于参考价的"+referencePoint.getStr("data2"));
 					return data;
 				}
-				if(salePrice.compareTo(itemReferencePrice.multiply(new BigDecimal("1").add(point)))==1){
+				if(salePrice.compareTo(itemReferencePrice.multiply(maxPoint))==1){
 					data.setCode(Constants.STATUS_CODE.FAIL);
-					data.setMessage("对不起，出售单价不能超过参考价的"+referencePoint.getStr("data2"));
+					data.setMessage("对不起，出售单价不能超过参考价的"+referenceMaxPoint.getStr("data2"));
 					return data;
 				}
 			}

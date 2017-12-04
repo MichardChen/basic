@@ -273,6 +273,7 @@ public interface Constants {
 		public static final String SALE_SERVICE_FEE = "170001";
 		public static final String REFERENCE_PRICE_DISCOUNT = "170002";
 		public static final String CERTIFICATE_TIP = "170003";
+		public static final String REFERENCE_PRICE_MAXDISCOUNT = "170004";
 	}
 	
 	public static interface ALIPAY_CONFIG{
