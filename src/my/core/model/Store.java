@@ -54,8 +54,16 @@ public class Store extends Model<Store> {
 		return Store.dao.findFirst("select * from t_store where id = ? order by create_time desc",id);
 	}
 	
+	public Store queryNewCode(){
+		return Store.dao.findFirst("select * from t_store order by key_code desc");
+	}
+	
 	public Store queryMemberStore(int userId){
 		return Store.dao.findFirst("select * from t_store where member_id = ?",userId);
+	}
+	
+	public Store queryStoreByInviteCode(String code){
+		return Store.dao.findFirst("select * from t_store where key_code='"+code+"'");
 	}
 	
 	public List<Store> queryStoreList(int pageSize

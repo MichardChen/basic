@@ -71,7 +71,7 @@ public class LoginDTO extends BaseDTO{
 			dto.setTeas(StringUtil.checkCode(request.getParameter("teas")));
 			dto.setCityDistrict(StringUtil.checkCode(request.getParameter("cityDistrict")));
 			dto.setSellerId(StringUtil.toInteger(request.getParameter("sellerId")));
-			dto.setInvateCode(StringUtil.checkCode(request.getParameter("invateCode")));
+			dto.setInvateCode(StringUtil.checkCode(request.getParameter("inviteCode")));
 			dto.setOpenBankName(StringUtil.checkCode(request.getParameter("openBankName")));
 			dto.setLocalLongtitude(StringUtil.checkCode(request.getParameter("localLongtitude")));
 			dto.setLocalLatitude(StringUtil.checkCode(request.getParameter("localLatitude")));

@@ -11,6 +11,8 @@ import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
 
+import my.core.model.Store;
+
 
 
 public class StringUtil extends StringUtils {
@@ -133,20 +135,23 @@ public class StringUtil extends StringUtils {
 		int size = date1.length();
 		String str = date1.substring(size-12, size);
 	    //年月日
-		return "TJ"+str;
+		return "YH"+str;
 	}
 	
-	public static String getStoreKeyCode(){
-		long l = System.currentTimeMillis();
-		//new日期对象
-		Date date = new Date(l);
-		Long long1 = DateUtil.getNowTimestamp().getTime();
-		String date1 = StringUtil.toString(long1);
-		int size = date1.length();
-		String str = date1.substring(size-12, size);
-	    //年月日
-		return "ST"+str;
-	}
+	public static String getStoreKeyCode(String keycode){
+		
+		if(StringUtil.isNoneBlank(keycode)){
+				int last = StringUtil.toInteger(keycode.substring(2, 6))+1;
+				//获取2位随机数
+				Random random = new Random();
+				int ranNum = random.nextInt(90)+10;
+				return StringUtil.toString(ranNum)+last;
+		}else{
+				Random random = new Random();
+				int ranNum = random.nextInt(90)+10;
+				return ranNum+"10001";
+			}
+		}
 	
 	public static String getTeaKeyCode(){
 		long l = System.currentTimeMillis();

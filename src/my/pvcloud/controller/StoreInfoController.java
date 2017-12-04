@@ -750,7 +750,13 @@ public class StoreInfoController extends Controller {
 			store2.set("update_time", DateUtil.getNowTimestamp());
 			store2.set("status", status);
 			store2.set("city_district", cityDistrict);
-			store2.set("key_code", StringUtil.getStoreKeyCode());
+			
+			Store store3 = Store.dao.queryNewCode();
+			String code = "";
+			if(store3!=null){
+				code = store3.getStr("key_code");
+			}
+			store2.set("key_code", StringUtil.getStoreKeyCode(code));
 			
 			int id = Store.dao.saveInfos(store2);
 			FileService fs=new FileService();

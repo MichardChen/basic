@@ -1,0 +1,9 @@
+.topMsgCss{
+	width: 20%;
+	position: fixed;
+	z-index: 999;
+	left: 40%;
+	right: 40%;
+	height: 30px;
+	line-height:30px;
+}

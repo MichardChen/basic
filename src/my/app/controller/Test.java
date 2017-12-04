@@ -14,6 +14,7 @@ import java.util.Map;
 
 import ch.qos.logback.core.status.Status;
 import my.pvcloud.model.TestModel;
+import my.pvcloud.util.StringUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -21,7 +22,7 @@ public class Test {
 
 	public static void main(String[] args) {
 		
-		List<TestModel> list = new ArrayList<TestModel>();
+		/*List<TestModel> list = new ArrayList<TestModel>();
 		List<BigDecimal> key = new ArrayList<BigDecimal>();
 		 TestModel t1 = new TestModel();
 		 t1.setId(1);
@@ -54,7 +55,8 @@ public class Test {
 		 Collections.sort(key);
 		 for(BigDecimal k  : key){
 			 System.out.println(k+"-"+map.get(k).getDist());
-		 }
+		 }*/
+		//System.out.println(StringUtil.getStoreKeyCode(""));
 
 	}
 

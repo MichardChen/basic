@@ -2,6 +2,7 @@ package my.pvcloud.controller;
 
 import java.util.ArrayList;
 
+import my.core.constants.Constants;
 import my.core.model.CashJournal;
 import my.core.model.CodeMst;
 import my.core.model.Member;
@@ -42,11 +43,17 @@ public class CashJournalController extends Controller {
 			model.setClosingBalance(StringUtil.toString(record.getBigDecimal("closing_balance")));
 			model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
 			model.setOccurDate(DateUtil.format(record.getDate("occur_date")));
-			Member member = Member.dao.queryById(record.getInt("member_id")==null?0:record.getInt("member_id"));
-			if(member != null){
+			if(StringUtil.equals(record.getStr("member_type_cd"), Constants.USER_TYPE.PLATFORM_USER)){
 				model.setCreateBy(record.getStr("name"));
-				model.setMemberName(member.getStr("name"));
-				model.setMobile(member.getStr("mobile"));
+				model.setMemberName("平台");
+				model.setMobile("4006-119-529");
+			}else{
+				Member member = Member.dao.queryById(record.getInt("member_id"));
+				if(member != null){
+					model.setCreateBy(record.getStr("name"));
+					model.setMemberName(member.getStr("name"));
+					model.setMobile(member.getStr("mobile"));
+				}
 			}
 			CodeMst feeStatus = CodeMst.dao.queryCodestByCode(record.getStr("fee_status"));
 			if(feeStatus != null){
@@ -95,13 +102,19 @@ public class CashJournalController extends Controller {
 			model.setClosingBalance(StringUtil.toString(record.getBigDecimal("closing_balance")));
 			model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
 			model.setOccurDate(DateUtil.format(record.getDate("occur_date")));
-			Member member = Member.dao.queryById(record.getInt("member_id"));
 			model.setOrderNo(record.getStr("cash_journal_no"));
 			model.setTradeNo(record.getStr("trade_no"));
-			if(member != null){
+			if(StringUtil.equals(record.getStr("member_type_cd"), Constants.USER_TYPE.PLATFORM_USER)){
 				model.setCreateBy(record.getStr("name"));
-				model.setMemberName(member.getStr("name"));
-				model.setMobile(member.getStr("mobile"));
+				model.setMemberName("平台");
+				model.setMobile("4006-119-529");
+			}else{
+				Member member = Member.dao.queryById(record.getInt("member_id"));
+				if(member != null){
+					model.setCreateBy(record.getStr("name"));
+					model.setMemberName(member.getStr("name"));
+					model.setMobile(member.getStr("mobile"));
+				}
 			}
 			CodeMst feeStatus = CodeMst.dao.queryCodestByCode(record.getStr("fee_status"));
 			if(feeStatus != null){
@@ -163,15 +176,23 @@ public class CashJournalController extends Controller {
 				model.setClosingBalance(StringUtil.toString(record.getBigDecimal("closing_balance")));
 				model.setCreateTime(StringUtil.toString(record.getTimestamp("create_time")));
 				model.setOccurDate(DateUtil.format(record.getDate("occur_date")));
-				Member member = Member.dao.queryById(record.getInt("member_id"));
+				
 				model.setOrderNo(record.getStr("cash_journal_no"));
 				model.setRemark(record.getStr("remarks"));
 				model.setTradeNo(record.getStr("trade_no"));
-				if(member != null){
+				if(StringUtil.equals(record.getStr("member_type_cd"), Constants.USER_TYPE.PLATFORM_USER)){
 					model.setCreateBy(record.getStr("name"));
-					model.setMemberName(member.getStr("name"));
-					model.setMobile(member.getStr("mobile"));
+					model.setMemberName("平台");
+					model.setMobile("4006-119-529");
+				}else{
+					Member member = Member.dao.queryById(record.getInt("member_id"));
+					if(member != null){
+						model.setCreateBy(record.getStr("name"));
+						model.setMemberName(member.getStr("name"));
+						model.setMobile(member.getStr("mobile"));
+					}
 				}
+				
 				CodeMst feeStatus = CodeMst.dao.queryCodestByCode(record.getStr("fee_status"));
 				if(feeStatus != null){
 					model.setFeeStatus(feeStatus.getStr("name"));

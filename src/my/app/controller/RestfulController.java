@@ -282,6 +282,15 @@ public class RestfulController extends Controller{
 			return;
 		}
 		
+		//判断是否绑定过门店
+		Store st = Store.dao.queryMemberStore(dto.getUserId());
+		if(st != null){
+			data1.setCode(Constants.STATUS_CODE.FAIL);
+			data1.setMessage("提交失败，您已经提交过门店信息了");
+			renderJson(data1);
+			return;
+		}
+		
 		Integer provinceId = getParaToInt("provinceId");
 		Integer cityId = getParaToInt("cityId");
 		Integer districtId = getParaToInt("districtId");
@@ -313,7 +322,13 @@ public class RestfulController extends Controller{
 		store.set("update_time", DateUtil.getNowTimestamp());
 		store.set("status", Constants.VERTIFY_STATUS.STAY_CERTIFICATE);
 		store.set("city_district", dto.getCityDistrict());
-		store.set("key_code", StringUtil.getStoreKeyCode());
+		
+		Store store3 = Store.dao.queryNewCode();
+		String code = "";
+		if(store3!=null){
+			code = store3.getStr("key_code");
+		}
+		store.set("key_code", StringUtil.getStoreKeyCode(code));
 		
 		int s = Store.dao.saveInfos(store);
 		System.out.println("==========storeId====="+s);
@@ -1112,7 +1127,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//我要喝茶列表
-	//@Before(RequestInterceptor.class)
+	@Before(RequestInterceptor.class)
 	public void queryTeaStoreList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaStoreList(dto));

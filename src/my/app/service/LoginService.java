@@ -16,7 +16,6 @@ import org.json.JSONException;
 
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import com.sun.org.apache.bcel.internal.generic.Select;
 
 import my.core.constants.Constants;
 import my.core.model.AcceessToken;
@@ -195,13 +194,11 @@ public class LoginService {
 		//保存用户
 		String invateCode = dto.getInvateCode();
 		int storeId = 0;
-		Member businessMember = Member.dao.queryMemberByInviteCode(invateCode);
-		if(businessMember != null){
-			Store store = Store.dao.queryMemberStore(businessMember.getInt("id"));
-			if(store != null){
-				storeId = store.getInt("id");
-			}
+		Store businessStore = Store.dao.queryStoreByInviteCode(invateCode);
+		if(businessStore != null){
+			storeId = businessStore.getInt("id");
 		}
+		
 		int id = Member.dao.saveMember(mobile, userPwd,sex,dto.getUserTypeCd(),Constants.MEMBER_STATUS.NOT_CERTIFICATED,storeId);
 		if(id != 0){
 			Member m = Member.dao.queryMemberById(id);
@@ -2358,8 +2355,15 @@ public class LoginService {
 				//BigDecimal pieceToPrice = teaPrice.getBigDecimal("to_price");
 				//if((salePrice.compareTo(pieceFromPrice)==-1)||(salePrice.compareTo(pieceToPrice))==1){
 				if((referencePrice != null)&&(salePrice.compareTo(referencePrice.multiply(point))==-1)){
+					//最低
 					data.setCode(Constants.STATUS_CODE.FAIL);
 					data.setMessage("对不起，出售单价不能低于参考价的"+referencePoint.getStr("data2"));
+					return data;
+				}
+				if((referencePrice != null)&&(salePrice.compareTo(referencePrice.multiply(new BigDecimal("1").add(point)))==1)){
+					//最高
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("对不起，出售单价不能超过参考价的"+referencePoint.getStr("data2"));
 					return data;
 				}
 			}
@@ -2385,7 +2389,6 @@ public class LoginService {
 					point = StringUtil.toBigDecimal(pointStr);
 				}
 				
-				
 			//	BigDecimal itemFromPrice = teaPrice.getBigDecimal("from_price").multiply(new BigDecimal(tea.getInt("size")));
 				//BigDecimal itemToPrice = teaPrice.getBigDecimal("to_price").multiply(new BigDecimal(tea.getInt("size")));
 				BigDecimal itemReferencePrice = teaPrice.getBigDecimal("reference_price") == null ? new BigDecimal("0") : teaPrice.getBigDecimal("reference_price");
@@ -2394,6 +2397,11 @@ public class LoginService {
 				if(salePrice.compareTo(itemReferencePrice.multiply(point))==-1){
 					data.setCode(Constants.STATUS_CODE.FAIL);
 					data.setMessage("对不起，出售单价不能低于参考价的"+referencePoint.getStr("data2"));
+					return data;
+				}
+				if(salePrice.compareTo(itemReferencePrice.multiply(new BigDecimal("1").add(point)))==1){
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("对不起，出售单价不能超过参考价的"+referencePoint.getStr("data2"));
 					return data;
 				}
 			}
