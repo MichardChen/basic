@@ -35,6 +35,7 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 														,int pageSize
 														,int pageNum
 														,int memberId){
+		
 		int fromRow = pageSize*(pageNum-1);
 		String orderby = " order by a.create_time asc";
 		String sql = " and a.size_type_cd ='"+size+"'";

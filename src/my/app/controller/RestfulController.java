@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.huadalink.route.ControllerBind;
 
+import com.alipay.api.domain.Video;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
@@ -1332,4 +1333,5 @@ public class RestfulController extends Controller{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.evaluateStore(dto));
 	}
+	
 }

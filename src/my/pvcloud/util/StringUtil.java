@@ -135,7 +135,7 @@ public class StringUtil extends StringUtils {
 		int size = date1.length();
 		String str = date1.substring(size-12, size);
 	    //年月日
-		return "YH"+str;
+		return "TJ"+str;
 	}
 	
 	public static String getStoreKeyCode(String keycode){
