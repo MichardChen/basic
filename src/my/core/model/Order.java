@@ -93,18 +93,18 @@ public class Order extends Model<Order> {
 	}
 	
 	//成交走势，详细数据
-	public List<Record> queryBargainTrendAvg(String date1,String date2,int teaId,String size){
+	public List<Record> queryBargainTrendAvg(String date1,String date2,int teaId){
 		String d1 = date1+" 00:00:00";
 		String d2 = date2+" 23:59:59";
 		String sql = "SELECT "+
-				"SUM(a.item_amount) as allAmount,SUM(a.quality) as quality,a.create_time,DATE_FORMAT(a.create_time, '%Y-%m-%d') as createTime "+
+				"SUM(a.item_amount) as allAmount,SUM(a.quality) as quality,a.create_time,DATE_FORMAT(a.create_time, '%Y-%m-%d') as createTime,b.size_type_cd as sizeType "+
 				"FROM t_order_item a "+
 				"LEFT JOIN t_warehouse_tea_member_item b ON a.wtm_item_id = b.id "+
 				"LEFT JOIN t_warehouse_tea_member c on b.warehouse_tea_member_id=c.id "+
 				"LEFT JOIN t_tea d ON d.id = c.tea_id "+
-				"WHERE a.create_time>='"+d1+"' AND a.create_time<='"+d2+"' AND d.id="+teaId+" AND c.member_type_cd!='010002'"+" AND b.size_type_cd='"+size+"' "+
+				"WHERE a.create_time>='"+d1+"' AND a.create_time<='"+d2+"' AND d.id="+teaId+" AND c.member_type_cd!='010002' "+
 				"GROUP BY "+
-				"DATE_FORMAT(a.create_time, '%Y-%m-%d') "+
+				"DATE_FORMAT(a.create_time, '%Y-%m-%d'),b.size_type_cd "+
 				"ORDER BY "+
 				"DATE_FORMAT(a.create_time, '%Y-%m-%d') DESC";
 		

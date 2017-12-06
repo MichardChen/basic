@@ -1711,9 +1711,9 @@ public class LoginService {
 			}
 			TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(teaVo.getId());
 			if(teaPrice != null){
-				teaVo.setPrice(StringUtil.toString(teaPrice.getBigDecimal("reference_price")));
+				teaVo.setPrice(StringUtil.toString(teaPrice.getBigDecimal("reference_price").multiply(new BigDecimal(tea.getInt("size")))));
 			}
-			teaVo.setSize("片");
+			teaVo.setSize("件");
 			list.add(teaVo);
 		}
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
@@ -1879,11 +1879,72 @@ public class LoginService {
 		}
 		
 		//成交走势,详细数据,从t_order_item拿,先算片
-		List<Record> records = Order.dao.queryBargainTrendAvg(fromDate,toDate,dto.getTeaId(),Constants.TEA_UNIT.PIECE);
+		List<Record> records = Order.dao.queryBargainTrendAvg(fromDate,toDate,dto.getTeaId());
 		List<OrderAnalysisVO> vos = new ArrayList<>();
 		
 		List<DataListVO> models = new ArrayList<>();
+		Map<String, String> initMap = new HashMap<>();
 		for(Record record : records){
+			//循环按日期筛选的数据，分组按片按件和按日期
+			String sizeTypeCd = record.getStr("sizeType");
+			BigDecimal bprice = new BigDecimal("0");
+			String dateStr = record.getStr("createTime");
+			BigDecimal allPiecequality = new BigDecimal("0");
+			if(StringUtil.equals(sizeTypeCd, Constants.TEA_UNIT.PIECE)){
+				if(initMap.containsKey(dateStr)){
+					continue;
+				}
+				//如果是片
+				BigDecimal allPieceAmount = (record.getBigDecimal("allAmount") == null ? new BigDecimal("0.00") : record.getBigDecimal("allAmount"));
+				allPiecequality = (record.getBigDecimal("quality") == null? new BigDecimal("0.00") : record.getBigDecimal("quality"));
+				//判断是否还有按件的
+				for(Record record1 : records){
+					if((StringUtil.equals(dateStr, record1.getStr("createTime")))
+							&&(StringUtil.equals(record1.getStr("sizeType"), Constants.TEA_UNIT.ITEM))){
+						//如果是件
+						BigDecimal	allItemAmount = record1.getBigDecimal("allAmount");
+						BigDecimal	allItemQuality = new BigDecimal(tea.getInt("size")).multiply(record1.getBigDecimal("quality"));
+						allPieceAmount = allPieceAmount.add(allItemAmount);
+						allPiecequality = allPiecequality.add(allItemQuality);
+						break;
+					}
+				}
+				if(allPieceAmount != null){
+					if(allPiecequality != null){
+						bprice = allPieceAmount.divide(allPiecequality,10,BigDecimal.ROUND_HALF_DOWN);
+					}
+				}
+				initMap.put(dateStr, dateStr);
+			}
+			
+			if(StringUtil.equals(sizeTypeCd, Constants.TEA_UNIT.ITEM)){
+				if(initMap.containsKey(dateStr)){
+					continue;
+				}
+				//如果是按件
+				BigDecimal allPieceAmount = (record.getBigDecimal("allAmount") == null ? new BigDecimal("0.00") : record.getBigDecimal("allAmount"));
+				allPiecequality = (record.getBigDecimal("quality") == null? new BigDecimal("0.00") : new BigDecimal(tea.getInt("size")).multiply(record.getBigDecimal("quality")));
+				//判断是否还有按片的
+				for(Record record1 : records){
+					if((StringUtil.equals(dateStr, record1.getStr("createTime")))
+							&&(StringUtil.equals(record1.getStr("sizeType"), Constants.TEA_UNIT.PIECE))){
+						//如果是件
+						BigDecimal	allItemAmount = record1.getBigDecimal("allAmount");
+						BigDecimal	allItemQuality = record1.getBigDecimal("quality");
+						allPieceAmount = allPieceAmount.add(allItemAmount);
+						allPiecequality = allPiecequality.add(allItemQuality);
+						break;
+					}
+				}
+				if(allPieceAmount != null){
+					if(allPiecequality != null){
+						bprice = allPieceAmount.divide(allPiecequality,10,BigDecimal.ROUND_HALF_DOWN);
+					}
+				}
+				initMap.put(dateStr, dateStr);
+			}
+			
+			/*
 			String dateStr = record.getStr("createTime");
 			BigDecimal allPieceAmount = (record.getBigDecimal("allAmount") == null ? new BigDecimal("0.00") : record.getBigDecimal("allAmount"));
 			BigDecimal allPiecequality = (record.getBigDecimal("quality") == null? new BigDecimal("0.00") : record.getBigDecimal("quality"));
@@ -1904,7 +1965,7 @@ public class LoginService {
 				if(allPiecequality != null){
 					bprice = allPieceAmount.divide(allPiecequality,10,BigDecimal.ROUND_HALF_DOWN);
 				}
-			}
+			}*/
 			
 			DataListVO iModel = map3.get(dateStr);
 			if(iModel == null){
