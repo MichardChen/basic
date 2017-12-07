@@ -1328,10 +1328,22 @@ public class RestfulController extends Controller{
 	}
 	
 	//评价
-	@Before(RequestInterceptor.class)
+	//@Before(RequestInterceptor.class)
 	public void evaluateStore() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.evaluateStore(dto));
 	}
 	
+	//微信二维码绑定
+	public void bindStoreByMobile() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.bindStoreByMobile(dto));
+	}
+	
+	//评价列表
+	//@Before(RequestInterceptor.class)
+	public void queryEvaluateList() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryEvaluateList(dto));
+	}
 }

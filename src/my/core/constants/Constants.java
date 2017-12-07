@@ -307,6 +307,8 @@ public interface Constants {
 	public static interface COMMON_SETTING{
 		public static final String APP_LOGO = "210001";
 		public static final String IOS_UPDATE_SHOW = "210002";
+		public static final String DEFAULT_ICON = "210004";
+		public static final String EVALUATE_NUM = "210005";
 	}
 	
 	public static interface PAY_STATUS{

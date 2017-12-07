@@ -45,7 +45,7 @@ import my.pvcloud.service.TeaService;
 import my.pvcloud.service.WareHouseService;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.ImageTools;
-import my.pvcloud.util.ImageZipUtil;
+import my.pvcloud.util.ImageCompressZipUtil;
 import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/teaInfo", path = "/pvcloud")
@@ -385,7 +385,7 @@ public class TeaInfoController extends Controller {
 		    }
 		    
 		    fs.fileChannelCopy(file, t);
-		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    ImageCompressZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		}
 		if(uploadFile2 != null){
@@ -402,7 +402,7 @@ public class TeaInfoController extends Controller {
 		    }
 		    
 		    fs.fileChannelCopy(file, t);
-		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    ImageCompressZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		}
 		if(uploadFile3 != null){
@@ -419,7 +419,7 @@ public class TeaInfoController extends Controller {
 		    }
 		    
 		    fs.fileChannelCopy(file, t);
-		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    ImageCompressZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		}
 		if(uploadFile4 != null){
@@ -436,7 +436,7 @@ public class TeaInfoController extends Controller {
 		    }
 		    
 		    fs.fileChannelCopy(file, t);
-		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    ImageCompressZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		}
 		//生成html文件
@@ -584,7 +584,7 @@ public class TeaInfoController extends Controller {
 			    }
 			    
 			    fs.fileChannelCopy(file, t);
-			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    ImageCompressZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 			    file.delete();
 			}
 			if(uploadFile2 != null){
@@ -601,7 +601,7 @@ public class TeaInfoController extends Controller {
 			    }
 			    
 			    fs.fileChannelCopy(file, t);
-			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    ImageCompressZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 			    file.delete();
 			}
 			if(uploadFile3 != null){
@@ -618,7 +618,7 @@ public class TeaInfoController extends Controller {
 			    }
 			    
 			    fs.fileChannelCopy(file, t);
-			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    ImageCompressZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 			    file.delete();
 			}
 			if(uploadFile4 != null){
@@ -635,7 +635,7 @@ public class TeaInfoController extends Controller {
 			    }
 			    
 			    fs.fileChannelCopy(file, t);
-			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    ImageCompressZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 			    file.delete();
 			}
 			//生成html文件
@@ -736,7 +736,7 @@ public class TeaInfoController extends Controller {
 		    }
 		    
 		    fs.fileChannelCopy(file, t);
-		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    ImageCompressZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 		    file.delete();
 		    ReturnData data = new ReturnData();
 		    Map<String, Object> map = new HashMap<>();

@@ -1,7 +1,13 @@
 package my.core.model;
 
+import java.math.BigDecimal;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.List;
+
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -43,5 +49,18 @@ public class StoreEvaluate extends Model<StoreEvaluate> {
 		StoreEvaluate store = new StoreEvaluate().setAttrs(data);
 		store.save();
 		return store.getInt("id");
+	}
+	
+	public List<StoreEvaluate> queryStoreEvaluateList(int pageSize,int pageNum,int storeId){
+		int fromRow = (pageNum-1)*pageSize;
+		return StoreEvaluate.dao.find("select * from t_store_evaluate where flg=1 and store_id="+storeId+" order by create_time desc limit "+fromRow+","+pageSize);
+	}
+	
+	public int sumStoreEvaluateNum(int userId,int storeId,String date1,String date2){
+		Long sum = Db.queryLong("select count(1) from t_store_evaluate where member_id="+userId+" and store_id="+storeId+" and create_time>='"+date1+"' and create_time<='"+date2+"'");
+		if(sum == null){
+			return 0;
+		}
+		return sum.intValue();
 	}
 }

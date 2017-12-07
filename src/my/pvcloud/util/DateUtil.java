@@ -9,6 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.jhlabs.composite.SaturationComposite;
+
 /**
  * 日期操作辅助类
  * 
@@ -298,6 +300,25 @@ public final class DateUtil {
     	}
     }
     
+    public static String formatMD(Timestamp time){
+    	if(time == null){
+    		return null;
+    	}else{
+    		/*String month = StringUtil.toString(time.getMonth());
+    		String day = StringUtil.toString(time.getDay());
+    		if(time.getMonth() < 10){
+    			month = "0"+month;
+    		}
+    		if(time.getDay() < 10){
+    			day = "0"+day;
+    		}
+    		return time.getYear()+"年"+month+"月"+day+"日";*/
+    		Date date = stringToDate(formatTimestampForDate(time));
+    		SimpleDateFormat formatter = new SimpleDateFormat("MM月dd日");
+    	    return formatter.format(date);
+    	}
+    }
+    
     public static String formatDateYMD(Date time){
     	
     	if(time == null){
@@ -335,5 +356,14 @@ public final class DateUtil {
     		fullDayList.add(d);
     	}
         return fullDayList;
+    }
+    
+    public static String getFirstDayByMonth(){
+    	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");  
+        // 获取前月的第一天  
+        Calendar cale = Calendar.getInstance();  
+        cale.add(Calendar.MONTH, 0);  
+        cale.set(Calendar.DAY_OF_MONTH, 1);  
+        return format.format(cale.getTime());
     }
 }

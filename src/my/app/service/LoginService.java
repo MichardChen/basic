@@ -69,6 +69,7 @@ import my.core.vo.CodeMstVO;
 import my.core.vo.DataListVO;
 import my.core.vo.DistanceModel;
 import my.core.vo.DocumentListVO;
+import my.core.vo.EvaluateListModel;
 import my.core.vo.MemberDataVO;
 import my.core.vo.MessageListDetailVO;
 import my.core.vo.MessageListVO;
@@ -4311,6 +4312,28 @@ public class LoginService {
 		evaluate.set("mark", dto.getMark());
 		evaluate.set("create_time", DateUtil.getNowTimestamp());
 		evaluate.set("update_time", DateUtil.getNowTimestamp());
+		evaluate.set("flg", 1);
+		//判断一天评价1次，一个月5次
+		CodeMst evaluateNum = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.EVALUATE_NUM);
+		if(evaluateNum != null){
+			int dayNum = StringUtil.toInteger(evaluateNum.getStr("data2"));
+			int monthNum = StringUtil.toInteger(evaluateNum.getStr("data3"));
+			
+			//当天
+			String day = DateUtil.getDate();
+			//判断月
+			int monthComment = StoreEvaluate.dao.sumStoreEvaluateNum(dto.getUserId(), dto.getStoreId(), day+" 00:00:00", DateUtil.getFirstDayByMonth()+" 23:59:59");
+			if(monthComment>=monthNum){
+				evaluate.set("flg", 0);
+			}else{
+				int dayComment = StoreEvaluate.dao.sumStoreEvaluateNum(dto.getUserId(), dto.getStoreId(), day+" 00:00:00", day+" 23:59:59");
+				//判断天
+				if(dayComment>=dayNum){
+					evaluate.set("flg", 0);
+				}
+			}
+		}
+		
 		int ret = StoreEvaluate.dao.saveInfos(evaluate);
 		if(ret != 0){
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
@@ -4321,5 +4344,116 @@ public class LoginService {
 			data.setMessage("提交失败，请重新提交您的评价");
 			return data;
 		}
+	}
+	
+	public ReturnData bindStoreByMobile(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		//商家id
+		int businessId = dto.getBusinessId();
+		Member member = Member.dao.queryMember(dto.getMobile());
+		if(member == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，您的手机还未注册");
+			return data;
+		}
+		//用户ID
+		int userId = member.getInt("id");
+		if(businessId == userId){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，不能绑定自己的门店会员");
+			return data;
+		}
+		if(businessId == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，您绑定门店不存在");
+			return data;
+		}
+		Store store = Store.dao.queryMemberStore(businessId);
+		if(store == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，您绑定门店不存在");
+			return data;
+		}
+		
+		int storeId = store.getInt("id");
+		if(userId == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，用户数据有误");
+			return data;
+		}
+		
+		if(member == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，用户数据有误");
+			return data;
+		}
+		
+		if((member.getInt("store_id")!=null)&&(member.getInt("store_id")!=0) && (member.getInt("store_id")!=storeId)){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，您已绑定过其他门店，不能重复绑定");
+			return data;
+		}
+		
+		if((member.getInt("store_id")!=null)&&(member.getInt("store_id")!=0) && (member.getInt("store_id")==storeId)){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("您已经绑定过此门店了，无需重复绑定");
+			return data;
+		}
+		
+		String status = store.getStr("status");
+		if(!StringUtil.equals(status, Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS)){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败，您绑定门店暂未通过审核");
+			return data;
+		}
+		
+		int ret = Member.dao.bindStore(member.getInt("id"), storeId);
+		if(ret != 0){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("绑定成功");
+			return data;
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("绑定失败");
+			return data;
+		}
+	}
+	
+	public ReturnData queryEvaluateList(LoginDTO dto) throws Exception{
+		
+		ReturnData data = new ReturnData();
+		List<StoreEvaluate> list = StoreEvaluate.dao.queryStoreEvaluateList(dto.getPageSize()
+																		   ,dto.getPageNum()
+																		   ,dto.getStoreId());
+		List<EvaluateListModel> models = new ArrayList<>();
+		EvaluateListModel model = null;
+		for(StoreEvaluate evaluate : list){
+			model = new EvaluateListModel();
+			model.setComment(evaluate.getStr("mark"));
+			model.setCreateDate(DateUtil.formatMD(evaluate.getTimestamp("create_time")));
+			model.setPoint(evaluate.getInt("service_point"));
+			Member member = Member.dao.queryById(evaluate.getInt("member_id"));
+			if(member != null){
+				if(StringUtil.isNoneBlank(member.getStr("nick_name"))){
+					model.setUserName(member.getStr("nick_name"));
+				}else{
+					model.setUserName(member.getStr("id_code"));
+				}
+				if(StringUtil.isNoneBlank(member.getStr("icon"))){
+					model.setIcon(member.getStr("icon"));
+				}else{
+					CodeMst defaultIcon = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.DEFAULT_ICON);
+					if(defaultIcon != null){
+						model.setIcon(defaultIcon.getStr("data2"));
+					}
+				}
+			}
+			models.add(model);
+		}
+		
+		data.setData(models);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		return data;
 	}
 }
