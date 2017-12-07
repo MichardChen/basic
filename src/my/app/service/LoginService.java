@@ -67,6 +67,7 @@ import my.core.vo.CarouselVO;
 import my.core.vo.ChooseAddressVO;
 import my.core.vo.CodeMstVO;
 import my.core.vo.DataListVO;
+import my.core.vo.DistanceModel;
 import my.core.vo.DocumentListVO;
 import my.core.vo.MemberDataVO;
 import my.core.vo.MessageListDetailVO;
@@ -2761,10 +2762,8 @@ public class LoginService {
 													 ,minLatitude);*/
 		
 		//查询出所有门店
-		List<TeaStoreListVO> allList = new ArrayList<>();
 		List<TeaStoreListVO> resultList = new ArrayList<>();
-		Map<BigDecimal, TeaStoreListVO> vMap = new HashMap<>();
-		List<BigDecimal> keyList = new ArrayList<>();
+		List<DistanceModel> sortList = new ArrayList<>();
 		TeaStoreListVO v = null;
 		List<Store> allStores = Store.dao.queryAllStoreList(Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS);
 		for(Store store : allStores){
@@ -2783,31 +2782,34 @@ public class LoginService {
 			}
 			BigDecimal decimals = new BigDecimal(dist);
 			if(decimals != null){
+				DistanceModel model = new DistanceModel();
 				BigDecimal km = decimals.divide(new BigDecimal("1000"));
 				if(km.compareTo(new BigDecimal("1")) != 1){
 					v.setDistance("1Km以内");
+					model.setDistance(new BigDecimal("1"));
 				}else{
 					v.setDistance(StringUtil.toString(km.setScale(2,BigDecimal.ROUND_HALF_DOWN))+"Km");
+					model.setDistance(km.setScale(2,BigDecimal.ROUND_HALF_DOWN));
 				}
-				vMap.put(km, v);
-				keyList.add(km);
+				model.setId(store.getInt("id"));
+				model.setVo(v);
+				sortList.add(model);
+				
 			}
-			allList.add(v);
 		}
-		
-		Collections.sort(keyList);
+		Collections.sort(sortList);
 		int fromRow = dto.getPageSize()*(dto.getPageNum()-1);
 		int toRow = fromRow+dto.getPageSize();
-		if(keyList.size() < fromRow){
-			toRow = fromRow = keyList.size();
+		if(sortList.size() < fromRow){
+			toRow = fromRow = sortList.size();
 		}
-		if(keyList.size() < toRow){
-			toRow = keyList.size()-1;
+		if(sortList.size() < toRow){
+			toRow = sortList.size()-1;
 		}
 		//获取fromRow到toRow之间的key值
-		for(int i=fromRow;((i<keyList.size())&&(i<=toRow));i++){
-			BigDecimal k = keyList.get(i);
-			resultList.add(vMap.get(k));
+		for(int i=fromRow;((i<sortList.size())&&(i<=toRow));i++){
+			DistanceModel k = sortList.get(i);
+			resultList.add(k.getVo());
 		}
 				
 		Map<String, Object> map = new HashMap<>();

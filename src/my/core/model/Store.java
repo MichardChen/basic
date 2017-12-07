@@ -55,7 +55,7 @@ public class Store extends Model<Store> {
 	}
 	
 	public Store queryNewCode(){
-		return Store.dao.findFirst("select * from t_store order by key_code desc");
+		return Store.dao.findFirst("select * from t_store order by substr(key_code,3) desc");
 	}
 	
 	public Store queryMemberStore(int userId){

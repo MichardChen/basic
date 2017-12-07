@@ -714,7 +714,7 @@ public class StoreInfoController extends Controller {
 		
 		//判断是否开店
 		int memberId = StringUtil.toInteger(getPara("memberId"));
-		Store store = service.queryById(memberId);
+		Store store = Store.dao.queryMemberStore(memberId);
 		if(store != null){
 			setAttr("message", "对不起，该用户已经有开通的门店，暂时不能开第二家");
 			index();

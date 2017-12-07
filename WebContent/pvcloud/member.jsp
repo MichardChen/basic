@@ -142,6 +142,7 @@ function check(){
 		 alert("请至少输入一张图片");
 		 return false;
 	}
+	$("#saveBtn").attr("disabled","true");
 	return true;
 }
 </script>
@@ -360,7 +361,7 @@ td{
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-success" value="保存" id="saveBtn"/>
 				</div>
 			</form>
 		</div>
