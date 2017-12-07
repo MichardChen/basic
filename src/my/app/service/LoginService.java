@@ -4463,7 +4463,22 @@ public class LoginService {
 		
 		ReturnData data = new ReturnData();
 		Invoice invoice = new Invoice();
-		
+		invoice.set("invoice_type_cd", dto.getType());
+		invoice.set("user_id", dto.getUserId());
+		invoice.set("title_type_cd", dto.getTitleTypeCd());
+		invoice.set("tax_no", dto.getTaxNo());
+		invoice.set("content", dto.getContent());
+		invoice.set("moneys", dto.getMoney());
+		invoice.set("mark", dto.getMark());
+		invoice.set("address", dto.getAddress());
+		invoice.set("mobile", dto.getMobile());
+		invoice.set("bank", dto.getBank());
+		invoice.set("account", dto.getAccount());
+		invoice.set("mail", dto.getMail());
+		invoice.set("status","");
+		invoice.set("address_id", dto.getAddressId());
+		invoice.set("create_time", DateUtil.getNowTimestamp());
+		invoice.set("update_time", DateUtil.getNowTimestamp());
 		
 		int ret = Invoice.dao.saveInfos(invoice);
 		if(ret != 0){
