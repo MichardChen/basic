@@ -15,6 +15,14 @@ public class LoginDTO extends BaseDTO{
 		LoginDTO dto = new LoginDTO();
 		try {
 			request.setCharacterEncoding("utf-8");
+			dto.setTitleTypeCd(request.getParameter("titleTypeCd"));
+			dto.setTaxNo(request.getParameter("taxNo"));
+			dto.setContent(request.getParameter("content"));
+			dto.setBank(request.getParameter("bank"));
+			dto.setAccount(request.getParameter("account"));
+			dto.setMail(request.getParameter("mail"));
+			dto.setStatus(request.getParameter("status"));
+			
 			dto.setMobile(request.getParameter("mobile"));
 			dto.setUserTypeCd(request.getParameter("userTypeCd"));
 			dto.setUserPwd(request.getParameter("userPwd"));
@@ -157,8 +165,69 @@ public class LoginDTO extends BaseDTO{
 	private int senitationPoint;
 	private String mark;
 	
+	private String titleTypeCd;
+	private String taxNo;
+	private String content;
+	private String bank;
+	private String account;
+	private String mail;
+	private String status;
 	
-	
+	public String getTitleTypeCd() {
+		return titleTypeCd;
+	}
+
+	public void setTitleTypeCd(String titleTypeCd) {
+		this.titleTypeCd = titleTypeCd;
+	}
+
+	public String getTaxNo() {
+		return taxNo;
+	}
+
+	public void setTaxNo(String taxNo) {
+		this.taxNo = taxNo;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getBank() {
+		return bank;
+	}
+
+	public void setBank(String bank) {
+		this.bank = bank;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public String getMark() {
 		return mark;
 	}

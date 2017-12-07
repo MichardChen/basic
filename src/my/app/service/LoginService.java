@@ -30,6 +30,7 @@ import my.core.model.District;
 import my.core.model.Document;
 import my.core.model.FeedBack;
 import my.core.model.GetTeaRecord;
+import my.core.model.Invoice;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
 import my.core.model.Message;
@@ -4455,5 +4456,24 @@ public class LoginService {
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		return data;
+	}
+	
+	//提交开票
+	public ReturnData saveInvoice(LoginDTO dto) throws Exception{
+		
+		ReturnData data = new ReturnData();
+		Invoice invoice = new Invoice();
+		
+		
+		int ret = Invoice.dao.saveInfos(invoice);
+		if(ret != 0){
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("提交成功，待平台处理");
+			return data;
+		}else{
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("提交失败，请重新提交您的开票申请");
+			return data;
+		}
 	}
 }
