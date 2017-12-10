@@ -2,13 +2,21 @@ package my.pvcloud.controller;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.UUID;
+
+import my.app.service.FileService;
+import my.core.constants.Constants;
+import my.core.model.Carousel;
+import my.core.model.Log;
+import my.core.model.User;
+import my.core.vo.CarouselVO;
+import my.pvcloud.service.CarouselService;
+import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.ImageCompressZipUtil;
+import my.pvcloud.util.ImageTools;
+import my.pvcloud.util.StringUtil;
 
 import org.huadalink.route.ControllerBind;
 
@@ -16,22 +24,6 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.upload.UploadFile;
-
-import my.app.service.FileService;
-import my.core.constants.Constants;
-import my.core.model.Carousel;
-import my.core.model.Log;
-import my.core.model.News;
-import my.core.model.SystemVersionControl;
-import my.core.model.User;
-import my.core.model.WareHouse;
-import my.core.vo.CarouselVO;
-import my.pvcloud.model.CustInfo;
-import my.pvcloud.service.CarouselService;
-import my.pvcloud.util.DateUtil;
-import my.pvcloud.util.ImageTools;
-import my.pvcloud.util.ImageZipUtil;
-import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/carouselInfo", path = "/pvcloud")
 public class CarouselController extends Controller {
@@ -159,7 +151,7 @@ public class CarouselController extends Controller {
 			    }
 			    
 			    fs.fileChannelCopy(file, t);
-			    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+			    ImageCompressZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
 			    file.delete();
 			}
 			

@@ -31,6 +31,7 @@ import my.core.model.Document;
 import my.core.model.FeedBack;
 import my.core.model.GetTeaRecord;
 import my.core.model.Invoice;
+import my.core.model.InvoiceGetteaRecord;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
 import my.core.model.Message;
@@ -71,6 +72,7 @@ import my.core.vo.DataListVO;
 import my.core.vo.DistanceModel;
 import my.core.vo.DocumentListVO;
 import my.core.vo.EvaluateListModel;
+import my.core.vo.InvoiceListModel;
 import my.core.vo.MemberDataVO;
 import my.core.vo.MessageListDetailVO;
 import my.core.vo.MessageListVO;
@@ -540,24 +542,21 @@ public class LoginService {
 			if(svc != null){
 				map.put("version", svc.getStr("version"));
 				map.put("url", svc.getStr("data1"));
-				map.put("shareAppUrl", svc.getStr("data2"));
 			}else{
 				map.put("version", null);
 				map.put("url", null);
-				map.put("shareAppUrl", null);
 			}
 		}else{
 			SystemVersionControl svc = SystemVersionControl.dao.querySystemVersionControl(Constants.VERSION_TYPE.IOS);
 			if(svc != null){
 				map.put("version", svc.getStr("version"));
 				map.put("url", svc.getStr("data2"));
-				map.put("shareAppUrl", svc.getStr("data2"));
 			}else{
 				map.put("version", null);
 				map.put("url", null);
-				map.put("shareAppUrl", null);
 			}
 		}
+		map.put("shareAppUrl", "http://www.yibuwangluo.cn/zznj/h5/share.jsp?businessId="+dto.getUserId());
 		
 		//获取前四条资讯
 		Page<News> news = News.dao.queryByPage(1, 4);
@@ -2654,6 +2653,7 @@ public class LoginService {
 		record.set("address_id", addressId);
 		record.set("status", Constants.TAKE_TEA_STATUS.APPLING);
 		record.set("size_type_cd", Constants.TEA_UNIT.PIECE);
+		record.set("invoice_status", Constants.INVOICE_STATUS.NOT_INVOICE);
 		boolean save = GetTeaRecord.dao.saveInfo(record);
 		if(save){
 			WarehouseTeaMember warehouseTeaMember = new WarehouseTeaMember();
@@ -2879,8 +2879,38 @@ public class LoginService {
 			imgs.add(image.getStr("img"));
 		}
 		vo.setImgs(imgs);
+		//默认评价
+		List<StoreEvaluate> list = StoreEvaluate.dao.queryStoreEvaluateList(5
+																		   ,1
+																		   ,dto.getId());
+		List<EvaluateListModel> models = new ArrayList<>();
+		EvaluateListModel model = null;
+		for(StoreEvaluate evaluate : list){
+			model = new EvaluateListModel();
+			model.setComment(evaluate.getStr("mark"));
+			model.setCreateDate(DateUtil.formatMD(evaluate.getTimestamp("create_time")));
+			model.setPoint(evaluate.getInt("service_point"));
+			Member member = Member.dao.queryById(evaluate.getInt("member_id"));
+			if(member != null){
+				if(StringUtil.isNoneBlank(member.getStr("nick_name"))){
+					model.setUserName(member.getStr("nick_name"));
+			}else{
+				model.setUserName(member.getStr("id_code"));
+			}
+			if(StringUtil.isNoneBlank(member.getStr("icon"))){
+				model.setIcon(member.getStr("icon"));
+			}else{
+				CodeMst defaultIcon = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.DEFAULT_ICON);
+				if(defaultIcon != null){
+					model.setIcon(defaultIcon.getStr("data2"));
+				}
+			}
+		}
+			models.add(model);
+		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("store", vo);
+		map.put("evaluateList", models);
 		data.setData(map);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
@@ -4465,6 +4495,7 @@ public class LoginService {
 		Invoice invoice = new Invoice();
 		invoice.set("invoice_type_cd", dto.getType());
 		invoice.set("user_id", dto.getUserId());
+		invoice.set("title", dto.getTitle());
 		invoice.set("title_type_cd", dto.getTitleTypeCd());
 		invoice.set("tax_no", dto.getTaxNo());
 		invoice.set("content", dto.getContent());
@@ -4475,13 +4506,24 @@ public class LoginService {
 		invoice.set("bank", dto.getBank());
 		invoice.set("account", dto.getAccount());
 		invoice.set("mail", dto.getMail());
-		invoice.set("status","");
+		invoice.set("status",Constants.INVOICE_STATUS.STAY_HANDLE);
 		invoice.set("address_id", dto.getAddressId());
 		invoice.set("create_time", DateUtil.getNowTimestamp());
 		invoice.set("update_time", DateUtil.getNowTimestamp());
 		
 		int ret = Invoice.dao.saveInfos(invoice);
 		if(ret != 0){
+			String[] invoiceIds = StringUtil.split(dto.getInvoiceIds(),",");
+			for(String id : invoiceIds){
+				int idInt = StringUtil.toInteger(id);
+				InvoiceGetteaRecord record = new InvoiceGetteaRecord();
+				record.set("invoice_id", ret);
+				record.set("gettea_record_id", idInt);
+				record.set("create_time", DateUtil.getNowTimestamp());
+				record.set("update_time", DateUtil.getNowTimestamp());
+				InvoiceGetteaRecord.dao.saveInfos(record);
+				GetTeaRecord.dao.updateInvoice(idInt, Constants.INVOICE_STATUS.STAY_HANDLE);
+			}
 			data.setCode(Constants.STATUS_CODE.SUCCESS);
 			data.setMessage("提交成功，待平台处理");
 			return data;
@@ -4490,5 +4532,72 @@ public class LoginService {
 			data.setMessage("提交失败，请重新提交您的开票申请");
 			return data;
 		}
+	}
+	
+	public ReturnData queryOpenInvoiceList(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		CodeMst daysCodeMst = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.INVOICE_DATE);
+		int days = 30;
+		if(daysCodeMst != null){
+			days = daysCodeMst.getInt("data1");
+		}
+		String date = DateUtil.getDate()+" 23:59:59";
+		String date2 = DateUtil.getLastDayByNum(days)+" 00:00:00";
+		List<GetTeaRecord> list = new ArrayList<>();
+		if(dto.getFlg() == 0){
+			//开票列表
+			list = GetTeaRecord.dao.queryRecordByTime(dto.getPageSize()
+													 ,dto.getPageNum()
+													 ,dto.getUserId()
+													 ,date2
+													 ,date);
+		}
+		if(dto.getFlg() == 1){
+			//开票记录
+			list = GetTeaRecord.dao.queryRecordByTime2(dto.getPageSize()
+													  ,dto.getPageNum()
+													  ,dto.getUserId()
+													  ,date2
+													  ,date);
+		}
+		List<InvoiceListModel> models = new ArrayList<>();
+		InvoiceListModel model = null;
+		for(GetTeaRecord record : list){
+			model = new InvoiceListModel();
+			model.setCreateTime(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			model.setId(record.getInt("id"));
+			
+			model.setStatus(record.getStr("invoice_status"));
+			CodeMst statusMst = CodeMst.dao.queryCodestByCode(model.getStatus());
+			if(statusMst != null){
+				model.setStatusName(statusMst.getStr("name"));
+			}
+			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
+			if(tea != null){
+				model.setTeaName(tea.getStr("tea_title"));
+				//获取茶叶发行价
+				BigDecimal teaItemPrice = tea.getBigDecimal("tea_price");
+				if(teaItemPrice != null){
+					if(StringUtil.equals(record.getStr("size_type_cd"), Constants.TEA_UNIT.ITEM)){
+						model.setContent(teaItemPrice+"元/件x"+record.getInt("quality")+"件");
+						model.setMoneys(teaItemPrice.multiply(new BigDecimal(record.getInt("quality"))));
+					}
+					if(StringUtil.equals(record.getStr("size_type_cd"), Constants.TEA_UNIT.PIECE)){
+						BigDecimal piecePrice = teaItemPrice.divide(new BigDecimal(tea.getInt("size")));
+						if(piecePrice != null){
+							model.setContent(piecePrice+"元/片x"+record.getInt("quality")+"片");
+							model.setMoneys(piecePrice.multiply(new BigDecimal(record.getInt("quality"))));
+						}
+					}
+				}
+			}
+			models.add(model);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("models", models);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		data.setData(map);
+		return data;
 	}
 }

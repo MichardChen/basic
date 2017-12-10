@@ -125,7 +125,7 @@ public interface Constants {
 	}*/
 
 	
-	/**139服务器
+	/**139服务器*/
 	public static interface HOST{
 		public static final String LOCALHOST = "http://www.yibuwangluo.cn:88/newsimages/";
 		public static final String TEA = "http://www.yibuwangluo.cn:88/tea/";
@@ -144,9 +144,9 @@ public interface Constants {
 		public static final String ICON = "D:\\upload\\icon\\";
 		public static final String IMG = "D:\\upload\\img\\";
 		public static final String STORE = "D:\\upload\\store\\";
-	}*/
+	}
 	
-	/**centos服务器*/
+	/**centos服务器
 	public static interface HOST{
 		public static final String LOCALHOST = "http://app.tongjichaye.com:88/tea/";
 		public static final String TEA = "http://app.tongjichaye.com:88/tea/";
@@ -165,7 +165,7 @@ public interface Constants {
 		public static final String ICON = "/home/data/images/icon/";
 		public static final String IMG = "/home/data/images/img/";
 		public static final String STORE = "/home/data/images/store/";
-	}
+	}*/
 	
 	public static interface MEMBER_STATUS{
 		public static final String CERTIFICATED = "040001";
@@ -309,6 +309,7 @@ public interface Constants {
 		public static final String IOS_UPDATE_SHOW = "210002";
 		public static final String DEFAULT_ICON = "210004";
 		public static final String EVALUATE_NUM = "210005";
+		public static final String INVOICE_DATE = "210006";
 	}
 	
 	public static interface PAY_STATUS{
@@ -368,5 +369,22 @@ public interface Constants {
 	
 	public static interface EXPRESS{
 		public static final String EXPRESS = "310000";
+	}
+	
+	public static interface INVOICE_TYPE{
+		public static final String EMAIL_INVOICE = "320001";
+		public static final String PAPER_INVOICE = "320002";
+	}
+	
+	public static interface INVOICE_USER_TYPE{
+		public static final String ENTERPRISE = "330001";
+		public static final String PERSON = "330002";
+	}
+	
+	public static interface INVOICE_STATUS{
+		public static final String HANDLED = "340002";
+		public static final String STAY_HANDLE = "340001";
+		public static final String NOT_INVOICE = "340003";
+		public static final String INVOICED = "340004";
 	}
 }

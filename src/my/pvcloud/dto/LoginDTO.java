@@ -93,6 +93,8 @@ public class LoginDTO extends BaseDTO{
 			dto.setTeaPoint(StringUtil.toInteger(StringUtil.checkCode(request.getParameter("teaPoint"))));
 			dto.setSenitationPoint(StringUtil.toInteger(StringUtil.checkCode(request.getParameter("senitationPoint"))));
 			dto.setMark(StringUtil.checkCode(request.getParameter("mark")));
+			dto.setTitle(StringUtil.checkCode(request.getParameter("title")));
+			dto.setInvoiceIds(request.getParameter("invoiceIds"));
 			
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -100,6 +102,7 @@ public class LoginDTO extends BaseDTO{
 		return dto;
 	}
 	
+	private String title;
 	private int messageId;
 	private String openBankName;
 	private int sellerId;
@@ -172,7 +175,26 @@ public class LoginDTO extends BaseDTO{
 	private String account;
 	private String mail;
 	private String status;
+	private String invoiceIds;
 	
+	
+	
+	public String getInvoiceIds() {
+		return invoiceIds;
+	}
+
+	public void setInvoiceIds(String invoiceIds) {
+		this.invoiceIds = invoiceIds;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	public String getTitleTypeCd() {
 		return titleTypeCd;
 	}

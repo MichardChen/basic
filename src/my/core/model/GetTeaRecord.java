@@ -81,6 +81,16 @@ public class GetTeaRecord extends Model<GetTeaRecord> {
 		}
 	}
 	
+	public List<GetTeaRecord> queryRecordByTime(int pageSize,int pageNum,int memberId,String date,String date2){
+		int fromRow = pageSize*(pageNum-1);
+		return GetTeaRecord.dao.find("select * from t_gettea_record where member_id ="+memberId+" and create_time>='"+date+"' and create_time<='"+date2+"' and invoice_status='340003' order by create_time asc limit "+fromRow+","+pageSize);
+	}
+	
+	public List<GetTeaRecord> queryRecordByTime2(int pageSize,int pageNum,int memberId,String date,String date2){
+		int fromRow = pageSize*(pageNum-1);
+		return GetTeaRecord.dao.find("select * from t_gettea_record where member_id ="+memberId+" and create_time>='"+date+"' and create_time<='"+date2+"' and invoice_status in('340001','340004') order by create_time asc limit "+fromRow+","+pageSize);
+	}
+	
 	public boolean updateInfo(GetTeaRecord tea){
 		return new GetTeaRecord().setAttrs(tea).update();
 	}
@@ -103,5 +113,9 @@ public class GetTeaRecord extends Model<GetTeaRecord> {
 					 " from t_gettea_record where warehouse_id="+warehouseId+" and status in('280001','280003','280004')";
 		List<Record> models = Db.find(sql);
 		return models;
+	}
+	
+	public int updateInvoice(int id,String invoiceStatus){
+		return Db.update("update t_gettea_record set invoice_status='"+invoiceStatus+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 	}
 }

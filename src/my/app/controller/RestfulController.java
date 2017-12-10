@@ -1348,9 +1348,15 @@ public class RestfulController extends Controller{
 	}
 	
 	//提交开票
-	@Before(RequestInterceptor.class)
+	//@Before(RequestInterceptor.class)
 	public void saveInvoice() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.saveInvoice(dto));
+	}
+	
+	//可以开票列表
+	public void queryOpenInvoiceList() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryOpenInvoiceList(dto));
 	}
 }
