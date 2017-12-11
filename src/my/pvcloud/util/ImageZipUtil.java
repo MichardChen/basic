@@ -96,12 +96,12 @@ public class ImageZipUtil  {
             // System.out.println(h);
 
             /** 宽,高设定 */
-            if(width>400){
+            /*if(width>400){
             	width = width/2;
             }
             if(height>400){
             	height = height/2;
-            }
+            }*/
             BufferedImage tag = new BufferedImage(width, height,
                     BufferedImage.TYPE_INT_RGB);
             tag.getGraphics().drawImage(srcFile, 0, 0, width, height, null);

@@ -37,12 +37,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<tr>
 			<td>真实跳转地址</td>
 			<td style="text-align: left;">
-						<input type="text" name="realUrl" maxlength="30" placeholder="标题最长30个字" style="width: 300px;"/>(无跳转地址，请填写#)
+						<input type="text" name="realUrl" maxlength="100" placeholder="地址最长100个字" style="width: 300px;"/>(无跳转地址，请填写#)
 		</tr>
 		<tr>
 			<td>备注</td>
 			<td style="text-align: left;">
-						<input type="text" name="mark" maxlength="30" placeholder="标题最长30个字" style="width: 300px;"/>
+						<input type="text" name="mark" maxlength="30" placeholder="备注最长30个字" style="width: 300px;"/>
 		</tr>
 	</table>
 </div>

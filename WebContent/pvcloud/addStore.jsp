@@ -176,7 +176,7 @@ function selectDistrict1(){
 				<td>
 				</td>
 				<td>
-						<label style="color: red;">请依次上传门店外部正面照片、内部全景照片、泡茶位置照片、展示架图片、营业执照、食品流通许可证</label>
+						<label style="color: red;">请依次上传门店外部正面照片、内部全景照片、泡茶位置照片、展示架图片、营业执照、食品流通许可证，图片规格600px*600px</label>
 				</td>
 			</tr>
 	</table>

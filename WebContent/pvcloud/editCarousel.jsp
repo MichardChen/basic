@@ -32,13 +32,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<table class="table table-responsive">
 		<tr>
 			<td>跳转链接</td>
-			<td><input type="text" name="realUrl" maxlength="30" style="width: 300px;" value="${data.real_url}"/>
+			<td><input type="text" name="realUrl" maxlength="100" placeholder="地址最长100个字" style="width: 300px;" value="${data.real_url}"/>
 			<input type="hidden" name="id" value="${data.id}"/>
 			</td>
 		</tr>
 		<tr>
 			<td>备注</td>
-			<td><input type="text" name="mark" maxlength="30" style="width: 300px;" value="${data.mark}"/>
+			<td><input type="text" name="mark" maxlength="30" placeholder="备注最长30个字" style="width: 300px;" value="${data.mark}"/>
 			</td>
 		</tr>
 	</table>
