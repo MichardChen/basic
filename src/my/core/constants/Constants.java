@@ -387,4 +387,9 @@ public interface Constants {
 		public static final String NOT_INVOICE = "340003";
 		public static final String INVOICED = "340004";
 	}
+	
+	public static interface ROLE_CD{
+		public static final String NORMAL_USER = "350001";
+		public static final String BUSINESS_USER = "350002";
+	}
 }

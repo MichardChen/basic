@@ -55,6 +55,10 @@ public class MemberController extends Controller {
 			model.setMobile(member.getStr("mobile"));
 			model.setName(member.getStr("nick_name"));
 			model.setUserName(member.getStr("name"));
+			CodeMst roleMst = CodeMst.dao.queryCodestByCode(member.getStr("role_cd"));
+			if(roleMst != null){
+				model.setRole(roleMst.getStr("name"));
+			}
 			model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 			//查询用户已提现金额和提现中的金额
 			BigDecimal applying = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
@@ -138,6 +142,10 @@ public class MemberController extends Controller {
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 				model.setSex(member.getInt("sex")==1?"男":"女");
+				CodeMst roleMst = CodeMst.dao.queryCodestByCode(member.getStr("role_cd"));
+				if(roleMst != null){
+					model.setRole(roleMst.getStr("name"));
+				}
 				//查询用户已提现金额和提现中的金额
 				BigDecimal applying = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
 				model.setApplingMoneys(StringUtil.toString(applying));
@@ -209,6 +217,10 @@ public class MemberController extends Controller {
 				model.setKeyCode(member.getStr("id_code"));
 				model.setName(member.getStr("nick_name"));
 				model.setUserName(member.getStr("name"));
+				CodeMst roleMst = CodeMst.dao.queryCodestByCode(member.getStr("role_cd"));
+				if(roleMst != null){
+					model.setRole(roleMst.getStr("name"));
+				}
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
 				model.setSex(member.getInt("sex")==1?"男":"女");

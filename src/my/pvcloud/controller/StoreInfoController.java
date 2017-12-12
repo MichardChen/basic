@@ -373,9 +373,29 @@ public class StoreInfoController extends Controller {
 				//消息
 				String stStr = "";
 				if(StringUtil.equals(status, "110003")){
+					//更新用户为经销商
+					if(store != null){
+						int memberId = store.getInt("member_id");
+						int rets = Member.dao.updateRole(memberId, Constants.ROLE_CD.BUSINESS_USER);
+						if(rets != 0){
+							setAttr("message", "操作成功");
+						}else{
+							setAttr("message", "操作失败");
+						}
+					}
 					stStr = "您的门店已审核通过";
 				}
 				if(StringUtil.equals(status, "110004")){
+					//更新用户为普通用户
+					if(store != null){
+						int memberId = store.getInt("member_id");
+						int rets = Member.dao.updateRole(memberId, Constants.ROLE_CD.NORMAL_USER);
+						if(rets != 0){
+							setAttr("message", "操作成功");
+						}else{
+							setAttr("message", "操作失败");
+						}
+					}
 					stStr = "您的门店审核未通过，请重新提交";
 				}
 			
@@ -395,7 +415,6 @@ public class StoreInfoController extends Controller {
 				boolean messageSave = Message.dao.saveInfo(message);*/
 				
 				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新门店状态:"+store.getStr("store_name"));
-				setAttr("message", "操作成功");
 			}else{
 				setAttr("message", "操作失败");
 			}

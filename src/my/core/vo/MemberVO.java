@@ -20,9 +20,17 @@ public class MemberVO implements Serializable{
 	private String bankStatus;
 	private int openStore;
 	private int storeId;
+	private String role;
 	
 	
 	
+	
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
 	public int getStoreId() {
 		return storeId;
 	}

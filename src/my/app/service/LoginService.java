@@ -38,21 +38,17 @@ import my.core.model.Message;
 import my.core.model.News;
 import my.core.model.Order;
 import my.core.model.OrderItem;
-import my.core.model.OrderItemModel;
-import my.core.model.PayRecord;
 import my.core.model.Province;
 import my.core.model.ReceiveAddress;
 import my.core.model.RecordListModel;
 import my.core.model.ReturnData;
 import my.core.model.SaleOrder;
-import my.core.model.ServiceFee;
 import my.core.model.Store;
 import my.core.model.StoreEvaluate;
 import my.core.model.StoreImage;
 import my.core.model.SystemVersionControl;
 import my.core.model.Tea;
 import my.core.model.TeaPrice;
-import my.core.model.TeapriceLog;
 import my.core.model.User;
 import my.core.model.VertifyCode;
 import my.core.model.WareHouse;
@@ -83,6 +79,7 @@ import my.core.vo.ReferencePriceModel;
 import my.core.vo.SaleOrderListVO;
 import my.core.vo.SelectSizeTeaListVO;
 import my.core.vo.StoreDetailListVO;
+import my.core.vo.StoreMemberListModel;
 import my.core.vo.TeaDetailModelVO;
 import my.core.vo.TeaPropertyListVO;
 import my.core.vo.TeaStoreListVO;
@@ -94,13 +91,11 @@ import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.GeoUtil;
 import my.pvcloud.util.SMSUtil;
-import my.pvcloud.util.SortUtil;
 import my.pvcloud.util.StringUtil;
 import my.pvcloud.util.TextUtil;
 import my.pvcloud.util.VertifyUtil;
 import my.pvcloud.vo.StoreDetailVO;
 import net.sf.json.JSONObject;
-import sun.org.mozilla.javascript.internal.ast.NewExpression;
 
 public class LoginService {
 
@@ -590,6 +585,12 @@ public class LoginService {
 			member.set("paypwd", "");
 		}else{
 			map.put("setPaypwdFlg", 0);
+		}
+		//设置是否是经销商用户
+		if((member != null)&&(StringUtil.equals(Constants.ROLE_CD.BUSINESS_USER, member.getStr("role_cd")))){
+			map.put("role", Constants.ROLE_CD.BUSINESS_USER);
+		}else{
+			map.put("role", Constants.ROLE_CD.NORMAL_USER);
 		}
 
 		map.put("member", member);
@@ -4481,8 +4482,9 @@ public class LoginService {
 			}
 			models.add(model);
 		}
-		
-		data.setData(models);
+		Map<String, Object> map = new HashMap<>();
+		map.put("evaluateList", models);
+		data.setData(map);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		return data;
@@ -4595,6 +4597,35 @@ public class LoginService {
 		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("models", models);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		data.setData(map);
+		return data;
+	}
+	
+	public ReturnData queryStoreMemberList(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		int userId = dto.getUserId();
+		Store store = Store.dao.queryMemberStore(userId);
+		if(store == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("您还没有提交绑定门店数据");
+			return data;
+		}
+		List<Member> members = Member.dao.queryStoreMember(store.getInt("id"),dto.getPageSize(),dto.getPageNum());
+		List<StoreMemberListModel> list = new ArrayList<>();
+		StoreMemberListModel model = null;
+		for(Member member : members){
+			model = new StoreMemberListModel();
+			model.setId(member.getInt("id"));
+			model.setCreateTime(DateUtil.format(member.getTimestamp("create_time")));
+			model.setIcon(member.getStr("icon"));
+			model.setMobile(member.getStr("mobile"));
+			model.setSex(member.getInt("sex"));
+			list.add(model);
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("memberList", list);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		data.setData(map);

@@ -253,6 +253,7 @@ td{
     				<th>用户编码</th>
     				<th>昵称</th>
     				<th>注册号码</th>
+    				<th>用户角色</th>
     				<th>绑定门店</th>
     				<th>余额</th>
     				<th>已提现金额</th>
@@ -285,6 +286,9 @@ td{
 		    					</td>
 		    					<td>
 		    						${s.mobile}
+		  						</td>
+		  						<td>
+		    						${s.role}
 		  						</td>
 		  						<td>
 		    						${s.store}

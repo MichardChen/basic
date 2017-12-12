@@ -52,6 +52,10 @@ if(str!=''){
 			<td>${model.moneys}</td>
 		</tr>
 		<tr>
+			<td>用户角色</td>
+			<td><c:if test="${model.role_cd=='350001'}">普通用户</c:if><c:if test="${model.role_cd=='350002'}">经销商</c:if></td>
+		</tr>
+		<tr>
 			<td>用户状态</td>
 			<td>
 				<select style="height:30px;width:120px;" name="status" id="status">

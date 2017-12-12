@@ -1,15 +1,11 @@
 package my.core.model;
 
-import java.math.BigDecimal;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.List;
-
 import org.huadalink.plugin.tablebind.TableBind;
 
-import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
+
+import my.pvcloud.util.StringUtil;
 
 @TableBind(table = "t_invoice", pk = "id")
 public class Invoice extends Model<Invoice> {
@@ -22,18 +18,26 @@ public class Invoice extends Model<Invoice> {
 		return Invoice.dao.paginate(page, size, select, sql);
 	}
 	
-	/*public Page<Invoice> queryByPageParams(int page,int size,int memberId){
+	public Invoice queryInvoiceById(int id){
+		return Invoice.dao.findFirst("select * from t_invoice where id=?",id);
+	}
+	
+	public Page<Invoice> queryByPageParams(int page,int size,String mobile,String date,String status){
 		
-		if(memberId != 0){
-			String sql=" from t_store_evaluate a inner join t_store b on a.store_id=b.id where b.member_id="+memberId+" order by create_time desc";
-			String select="select * ";
-			return Invoice.dao.paginate(page, size, select, sql);
-		}else{
-			String sql=" from t_store_evaluate order by create_time desc";
-			String select="select * ";
-			return Invoice.dao.paginate(page, size, select, sql);
+		String where = "";
+		if(StringUtil.isNoneBlank(date)){
+			where = " and a.create_time like '%"+date+"%'";
 		}
-	}*/
+		if(StringUtil.isNoneBlank(mobile)){
+			where = " and b.mobile like '%"+mobile+"%'";
+		}
+		if(StringUtil.isNoneBlank(status)){
+			where = " and a.status='"+status+"'";
+		}
+		String sql=" from t_invoice a inner join t_member b on a.user_id=b.id where 1=1 "+where+" order by a.create_time desc";
+		String select="select a.* ";
+		return Invoice.dao.paginate(page, size, select, sql);
+	}
 	
 	public boolean updateInfo(Invoice data){
 		return new Invoice().setAttrs(data).update();

@@ -1,8 +1,5 @@
 package my.core.model;
 
-import java.math.BigDecimal;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.huadalink.plugin.tablebind.TableBind;
@@ -10,6 +7,8 @@ import org.huadalink.plugin.tablebind.TableBind;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
+
+import my.pvcloud.util.StringUtil;
 
 @TableBind(table = "t_store_evaluate", pk = "id")
 public class StoreEvaluate extends Model<StoreEvaluate> {
@@ -22,10 +21,10 @@ public class StoreEvaluate extends Model<StoreEvaluate> {
 		return StoreEvaluate.dao.paginate(page, size, select, sql);
 	}
 	
-	public Page<StoreEvaluate> queryByPageParams(int page,int size,int memberId){
+	public Page<StoreEvaluate> queryByPageParams(int page,int size,String date){
 		
-		if(memberId != 0){
-			String sql=" from t_store_evaluate a inner join t_store b on a.store_id=b.id where b.member_id="+memberId+" order by create_time desc";
+		if(StringUtil.isNoneBlank(date)){
+			String sql=" from t_store_evaluate where create_time like '%"+date+"%' order by create_time desc";
 			String select="select * ";
 			return StoreEvaluate.dao.paginate(page, size, select, sql);
 		}else{

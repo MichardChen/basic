@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import my.core.constants.Constants;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
 
@@ -56,6 +57,11 @@ public class Member extends Model<Member> {
 		return Member.dao.findFirst("select * from t_member where mobile=?",mobile);
 	}
 	
+	public List<Member> queryStoreMember(int storeId,int pageSize,int pageNum){
+		int fromRow = pageSize*(pageNum-1);
+		return Member.dao.find("select * from t_member where store_id=? order by create_time desc limit "+fromRow+","+pageSize,storeId);
+	}
+	
 	public Member queryMemberById(int id){
 		return Member.dao.findFirst("select * from t_member where id=?",id);
 	}
@@ -65,7 +71,7 @@ public class Member extends Model<Member> {
 	}
 	
 	public int saveMember(String mobile,String userPwd,int sex,String userTypeCd,String status,int storeId){
-		Member member = new Member().set("mobile", mobile).set("userpwd", userPwd).set("member_grade_cd", userTypeCd).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex).set("status", status).set("id_code", StringUtil.getIdCode()).set("store_id", storeId);
+		Member member = new Member().set("mobile", mobile).set("userpwd", userPwd).set("member_grade_cd", userTypeCd).set("create_time", DateUtil.getNowTimestamp()).set("update_time", DateUtil.getNowTimestamp()).set("points", 0).set("moneys", 0).set("sex", sex).set("status", status).set("id_code", StringUtil.getIdCode()).set("store_id", storeId).set("role_cd", Constants.ROLE_CD.NORMAL_USER);
 		boolean isSave = member.save();
 		return member.getInt("id");
 	}
@@ -124,6 +130,10 @@ public class Member extends Model<Member> {
 	
 	public int updateMoneys(int userId,BigDecimal moneys){
 		return Db.update("update t_member set moneys="+moneys+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
+	}
+	
+	public int updateRole(int userId,String role){
+		return Db.update("update t_member set role_cd='"+role+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
 	}
 	
 	public int cutMoneys(int userId,BigDecimal moneys){
