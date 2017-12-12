@@ -123,4 +123,14 @@ public class OrderItem extends Model<OrderItem> {
 			return OrderItem.dao.find("select * from t_order_item where sale_id="+userId+" order by update_time desc limit "+fromRow+","+pageSize);
 		}
 	}
+	
+	public List<OrderItem> queryOrderItemList(int pageSize,int pageNum,int userId,String date){
+		int fromRow = (pageNum-1)*pageSize;
+		return OrderItem.dao.find("select * from t_order_item where member_id="+userId+" and create_time like '%"+date+"%' and sale_user_type='010002' order by update_time desc limit "+fromRow+","+pageSize);
+	}
+	
+	public List<OrderItem> queryAllOrderItemList(int pageSize,int pageNum,String date){
+		int fromRow = (pageNum-1)*pageSize;
+		return OrderItem.dao.find("select * from t_order_item where create_time like '%"+date+"%' and sale_user_type='010002' order by update_time desc limit "+fromRow+","+pageSize);
+	}
 }

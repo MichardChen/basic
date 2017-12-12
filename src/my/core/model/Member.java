@@ -19,7 +19,7 @@ public class Member extends Model<Member> {
 	
 	public static final Member dao = new Member();
 	
-	public Page<Member> queryMemberListByPage(int page,int size,String mobile,String name,String storeName){
+	public Page<Member> queryMemberListByPage(int page,int size,String mobile,String name,String storeName,String type){
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
 		if(StringUtil.isBlank(storeName)){
@@ -32,6 +32,11 @@ public class Member extends Model<Member> {
 			if(StringUtil.isNoneBlank(name)){
 				strBuf.append("and name=?");
 				param.add(name);
+			}
+			
+			if(StringUtil.isNoneBlank(type)){
+				strBuf.append("and role_cd=?");
+				param.add(type);
 			}
 			
 			sql=" from t_member where 1=1 "+strBuf.toString()+" order by create_time desc";
@@ -47,6 +52,11 @@ public class Member extends Model<Member> {
 				strBuf.append("and a.name=?");
 				param.add(name);
 			}
+			if(StringUtil.isNoneBlank(type)){
+				strBuf.append("and a.role_cd=?");
+				param.add(type);
+			}
+			
 			strBuf.append("and b.store_name like '%"+storeName+"%'");
 			sql=" from t_member a inner join t_store b on a.store_id=b.id where 1=1 "+strBuf.toString()+" order by a.create_time desc";
 			return Member.dao.paginate(page, size, select, sql,param.toArray());
@@ -57,9 +67,13 @@ public class Member extends Model<Member> {
 		return Member.dao.findFirst("select * from t_member where mobile=?",mobile);
 	}
 	
-	public List<Member> queryStoreMember(int storeId,int pageSize,int pageNum){
+	public List<Member> queryStoreMember(int storeId,int pageSize,int pageNum,String role){
 		int fromRow = pageSize*(pageNum-1);
-		return Member.dao.find("select * from t_member where store_id=? order by create_time desc limit "+fromRow+","+pageSize,storeId);
+		if(StringUtil.isBlank(role)){
+			return Member.dao.find("select * from t_member where store_id=? order by create_time desc limit "+fromRow+","+pageSize,storeId);
+		}else{
+			return Member.dao.find("select * from t_member where store_id=? and role_cd='"+role+"' order by create_time desc limit "+fromRow+","+pageSize,storeId);
+		}
 	}
 	
 	public Member queryMemberById(int id){

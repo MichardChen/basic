@@ -70,6 +70,7 @@ import my.core.vo.DocumentListVO;
 import my.core.vo.EvaluateListModel;
 import my.core.vo.InvoiceListModel;
 import my.core.vo.MemberDataVO;
+import my.core.vo.MemberOrderListModel;
 import my.core.vo.MessageListDetailVO;
 import my.core.vo.MessageListVO;
 import my.core.vo.NewTeaSaleListModel;
@@ -4555,7 +4556,7 @@ public class LoginService {
 													 ,date);
 		}
 		if(dto.getFlg() == 1){
-			//开票记录
+			//开票历史
 			list = GetTeaRecord.dao.queryRecordByTime2(dto.getPageSize()
 													  ,dto.getPageNum()
 													  ,dto.getUserId()
@@ -4612,7 +4613,7 @@ public class LoginService {
 			data.setMessage("您还没有提交绑定门店数据");
 			return data;
 		}
-		List<Member> members = Member.dao.queryStoreMember(store.getInt("id"),dto.getPageSize(),dto.getPageNum());
+		List<Member> members = Member.dao.queryStoreMember(store.getInt("id"),dto.getPageSize(),dto.getPageNum(),dto.getType());
 		List<StoreMemberListModel> list = new ArrayList<>();
 		StoreMemberListModel model = null;
 		for(Member member : members){
@@ -4622,10 +4623,69 @@ public class LoginService {
 			model.setIcon(member.getStr("icon"));
 			model.setMobile(member.getStr("mobile"));
 			model.setSex(member.getInt("sex"));
+			CodeMst role = CodeMst.dao.queryCodestByCode(member.getStr("role_cd"));
+			if(role != null){
+				model.setRole(role.getStr("name"));
+			}
 			list.add(model);
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("memberList", list);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		data.setData(map);
+		return data;
+	}
+	
+	public ReturnData queryMemberOrderList(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		String day = dto.getDate();
+		List<OrderItem> list = new ArrayList<>();
+		List<MemberOrderListModel> models = new ArrayList<>();
+		MemberOrderListModel model = null;
+		if(dto.getFlg()==0){
+			//查询所有会员订单
+			list = OrderItem.dao.queryAllOrderItemList(dto.getPageSize(), dto.getPageNum(), day);
+		}
+		if(dto.getFlg()==1){
+			//查询某个会员订单
+			list = OrderItem.dao.queryOrderItemList(dto.getPageSize(), dto.getPageNum(), dto.getMemberId(), day);
+		}
+		for(OrderItem item : list){
+			model = new MemberOrderListModel();
+			model.setId(item.getInt("id"));
+			model.setCreateTime(DateUtil.formatTimestampForDate(item.getTimestamp("create_time")));
+			model.setAmount(StringUtil.toString(item.getBigDecimal("item_amount")));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(item.getInt("wtm_item_id"));
+			if(wtmItem != null){
+				int wtmId = wtmItem.getInt("warehouse_tea_member_id");
+				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmId);
+				if(wtm != null){
+					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+					if(tea != null){
+						model.setTeaName(tea.getStr("tea_title"));
+					}
+				}
+				String content = "￥" + wtmItem.getBigDecimal("price")+"元";
+				CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
+				if(sizeType != null){
+					content = content +"/"+sizeType.getStr("name");
+					content = content +"x"+ item.getInt("quality")+sizeType.getStr("name");
+				}
+				model.setContent(content);
+			}
+			Member member = Member.dao.queryById(item.getInt("member_id"));
+			if(member != null){
+				if(StringUtil.isNoneBlank(member.getStr("nick_name"))){
+					model.setBuyUserName(member.getStr("nick_name"));
+				}else{
+					model.setBuyUserName(member.getStr("mobile"));
+				}
+			}
+			models.add(model);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("orders", models);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		data.setData(map);

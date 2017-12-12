@@ -102,6 +102,18 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
+    				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">
+	    				<select name="flg" style="height: 30px;width: 80px;">
+	    					<option></option>
+	    					<option value="1" <c:if test="${flg=='1'}">selected="selected"</c:if>>有效</option>
+	    					<option value="0" <c:if test="${flg=='0'}">selected="selected"</c:if>>无效</option>
+	    				</select>	
+    				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
 			   </div>
     		</form>
@@ -115,12 +127,14 @@ td{
     			<tr>
     				<th>序列号</th>
     				<th>门店</th>
-    				<th>门店手机号码</th>
+    				<th>门店注册手机号码</th>
     				<th>评论者</th>
     				<th>评论者手机号码</th>
     				<th>服务分数</th>
     				<th>评论</th>
+    				<th>状态</th>
     				<th>评论时间</th>
+    				<th>操作</th>
     			</tr>
     		</thead>
     		<tbody>
@@ -139,7 +153,15 @@ td{
 		    					<td>${s.commentUserMobile}</td>
 		    					<td>${s.point}</td>
 		    					<td>${s.comment}</td>
+		    					<td>
+		    						<c:if test="${s.flg==0}">无效</c:if>
+		    						<c:if test="${s.flg==1}">有效</c:if>
+		    					</td>
 		    					<td>${s.createTime}</td>
+		    					<td><c:if test="${s.flg==1}">
+		    							<input type="button" value="删除" class="ys3" style="width: 100px;" onclick="if(confirm('确认要删除?')){window.location='${CONTEXT_PATH}/storeEvaluateInfo/update?flg=0&id=${s.id}';}"/>
+		    						</c:if>
+		    					</td>
 		    				</tr>
 		    			</c:forEach>
 					</c:if>

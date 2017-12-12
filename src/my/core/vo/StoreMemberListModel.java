@@ -10,6 +10,14 @@ public class StoreMemberListModel implements Serializable{
 	private String nickName;
 	private String mobile;
 	private String createTime;
+	private String role;
+	
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
 	public String getIcon() {
 		return icon;
 	}

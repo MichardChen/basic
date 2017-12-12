@@ -6,8 +6,8 @@ import my.core.model.Member;
 
 public class MemberService {
 
-	public Page<Member> queryMemberListByPage(int page,int size,String mobile,String name,String storeName){
-		return Member.dao.queryMemberListByPage(page, size, mobile,name,storeName);
+	public Page<Member> queryMemberListByPage(int page,int size,String mobile,String name,String storeName,String type){
+		return Member.dao.queryMemberListByPage(page, size, mobile,name,storeName,type);
 	}
 
 	public Page<Member> queryByPage(int page,int size){

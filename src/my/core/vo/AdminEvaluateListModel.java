@@ -12,8 +12,16 @@ public class AdminEvaluateListModel implements Serializable{
 	private String commentUserMobile;
 	private String storeMobile;
 	private String comment;
+	private int flg;
 	
 	
+	
+	public int getFlg() {
+		return flg;
+	}
+	public void setFlg(int flg) {
+		this.flg = flg;
+	}
 	public String getComment() {
 		return comment;
 	}

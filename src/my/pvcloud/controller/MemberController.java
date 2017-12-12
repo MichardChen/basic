@@ -45,6 +45,7 @@ public class MemberController extends Controller {
 		removeSessionAttr("cmobile");
 		removeSessionAttr("cname");
 		removeSessionAttr("storeName");
+		removeSessionAttr("type");
 		Page<Member> list = service.queryByPage(page, size);
 		ArrayList<MemberVO> models = new ArrayList<>();
 		MemberVO model = null;
@@ -112,6 +113,7 @@ public class MemberController extends Controller {
 		String cmobile = getSessionAttr("cmobile");
 		String cname = getSessionAttr("cname");
 		String storeName = getSessionAttr("storeName");
+		String ctype = getSessionAttr("type");
 		
 		String mobile = getPara("mobile");
 		cmobile = mobile;
@@ -121,6 +123,10 @@ public class MemberController extends Controller {
 		cname = name;
 		this.setSessionAttr("cname",cname);
 		
+		String type = getPara("type");
+		ctype = type;
+		this.setSessionAttr("type",ctype);
+		
 		String storeNames = getPara("storeName");
 		storeName = storeNames;
 		this.setSessionAttr("storeName",storeName);
@@ -129,7 +135,7 @@ public class MemberController extends Controller {
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
-	        Page<Member> list = service.queryMemberListByPage(page, size,mobile,name,storeName);
+	        Page<Member> list = service.queryMemberListByPage(page, size,mobile,name,storeName,ctype);
 			ArrayList<MemberVO> models = new ArrayList<>();
 			MemberVO model = null;
 			for(Member member : list.getList()){
@@ -202,12 +208,15 @@ public class MemberController extends Controller {
 			String storeName=getSessionAttr("storeName");
 			this.setSessionAttr("storeName",storeName);
 			
+			String ctype=getSessionAttr("type");
+			this.setSessionAttr("type",ctype);
+			
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
 	        
-	        Page<Member> list = service.queryMemberListByPage(page, size,cmobile,cname,storeName);
+	        Page<Member> list = service.queryMemberListByPage(page, size,cmobile,cname,storeName,ctype);
 			ArrayList<MemberVO> models = new ArrayList<>();
 			MemberVO model = null;
 			for(Member member : list.getList()){

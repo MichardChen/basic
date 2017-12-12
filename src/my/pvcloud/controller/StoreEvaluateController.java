@@ -8,6 +8,8 @@ import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.core.constants.Constants;
+import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.Store;
 import my.core.model.StoreEvaluate;
@@ -29,6 +31,8 @@ public class StoreEvaluateController extends Controller {
 	public void index(){
 		
 		removeSessionAttr("title");
+		removeSessionAttr("mobile");
+		removeSessionAttr("flg");
 		Page<StoreEvaluate> list = service.queryByPage(page, size);
 		ArrayList<AdminEvaluateListModel> models = new ArrayList<>();
 		AdminEvaluateListModel model = null;
@@ -36,6 +40,7 @@ public class StoreEvaluateController extends Controller {
 			model = new AdminEvaluateListModel();
 			model.setCreateTime(StringUtil.toString(data.getTimestamp("create_time")));
 			model.setId(data.getInt("id"));
+			model.setFlg(data.getInt("flg"));
 			model.setPoint(StringUtil.toString(data.getInt("service_point")));
 			int memberId = data.getInt("member_id");
 			Member member = Member.dao.queryById(memberId);
@@ -68,17 +73,24 @@ public class StoreEvaluateController extends Controller {
 		String title=getSessionAttr("title");
 		this.setSessionAttr("title",title);
 		
+		String mobile=getSessionAttr("mobile");
+		this.setSessionAttr("mobile",mobile);
+		
+		String flg=getSessionAttr("flg");
+		this.setSessionAttr("flg",flg);
+		
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
         }
-        Page<StoreEvaluate> list = service.queryByPageParams(page, size,title);
+        Page<StoreEvaluate> list = service.queryByPageParams(page, size,title,mobile,flg);
 		ArrayList<AdminEvaluateListModel> models = new ArrayList<>();
 		AdminEvaluateListModel model = null;
 		for(StoreEvaluate data : list.getList()){
 			model = new AdminEvaluateListModel();
 			model.setCreateTime(StringUtil.toString(data.getTimestamp("create_time")));
 			model.setId(data.getInt("id"));
+			model.setFlg(data.getInt("flg"));
 			model.setComment(data.getStr("mark"));
 			model.setPoint(StringUtil.toString(data.getInt("service_point")));
 			int memberId = data.getInt("member_id");
@@ -113,19 +125,30 @@ public class StoreEvaluateController extends Controller {
 		String ptitle = getPara("title");
 		title = ptitle;
 		
+		String mobile = getSessionAttr("mobile");
+		String pmobile = getPara("mobile");
+		mobile = pmobile;
+		
+		String flg = getSessionAttr("flg");
+		String pflg = getPara("flg");
+		flg = pflg;
+		
 		this.setSessionAttr("title",title);
+		this.setSessionAttr("mobile",mobile);
+		this.setSessionAttr("flg",flg);
 		Integer page = getParaToInt(1);
 		if (page==null || page==0) {
 			page = 1;
 		}
 		    
-		Page<StoreEvaluate> list = service.queryByPageParams(page, size,title);
+		Page<StoreEvaluate> list = service.queryByPageParams(page, size,title,mobile,flg);
 		ArrayList<AdminEvaluateListModel> models = new ArrayList<>();
 		AdminEvaluateListModel model = null;
 		for(StoreEvaluate data : list.getList()){
 			model = new AdminEvaluateListModel();
 			model.setCreateTime(StringUtil.toString(data.getTimestamp("create_time")));
 			model.setId(data.getInt("id"));
+			model.setFlg(data.getInt("flg"));
 			model.setComment(data.getStr("mark"));
 			model.setPoint(StringUtil.toString(data.getInt("service_point")));
 			int memberId = data.getInt("member_id");
@@ -150,5 +173,22 @@ public class StoreEvaluateController extends Controller {
 		setAttr("list", list);
 		setAttr("sList", models);
 		render("evaluate.jsp");
+	}
+	
+	public void update(){
+		try{
+			int id = getParaToInt("id");
+			String status = StringUtil.checkCode(getPara("flg"));
+			int ret = StoreEvaluate.dao.updateFlg(id, StringUtil.toInteger(status));
+			if(ret==0){
+				setAttr("message", "操作成功");
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "删除评论id:"+id);
+			}else{
+				setAttr("message", "操作失败");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		index();
 	}
 }

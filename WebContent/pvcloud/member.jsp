@@ -233,6 +233,16 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="cname" value="${cname}"/>
     				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">用户类型</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">
+	    				<select name="type" style="height: 30px;width: 80px;">
+	    					<option></option>
+	    					<option value="350001" <c:if test="${type=='350001'}">selected="selected"</c:if>>普通用户</option>
+	    					<option value="350002" <c:if test="${type=='350002'}">selected="selected"</c:if>>经销商</option>
+	    				</select>	
+    				</div>
+    			</div>
+    			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">门店</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="storeName" value="${storeName}"/>
