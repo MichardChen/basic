@@ -25,6 +25,13 @@ function confrim(){
 		return false;
 	}
 }
+function exportData(){
+	if(confirm('确认要导出数据?')){
+		window.location.href="${CONTEXT_PATH}/invoiceInfo/exportData";
+	}else{
+		return false;
+	}
+}
 function edit(data){
 	$(".modal-title").html("修改");
 	$.ajax({
@@ -132,7 +139,10 @@ td{
 	    					<option value="340002" <c:if test="${status=='340002'}">selected="selected"</c:if>>已处理</option>
 	    				</select>	
     				</div>
-    				<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+    				<div style="" class="col-sm-1 col-xs-1 col-md-1">
+    							<input type="submit" class="ys2" value=""/>
+    							<button type="button" class="btn btn-default" onclick="exportData()">导出</button>
+    				</div>
 			   </div>
     		</form>
    		</div>
@@ -151,6 +161,7 @@ td{
     				<th>发票类型</th>
     				<th>税务单号</th>
     				<th>备注</th>
+    				<th>处理者</th>
     				<th>申请状态</th>
     				<th>申请时间</th>
     				<th>操作</th>
@@ -173,6 +184,7 @@ td{
 		    					<td>${s.type}</td>
 		    					<td>${s.taxNo}</td>
 		    					<td>${s.mark}</td>
+		    					<td>${s.updateBy}</td>
 		    					<td>${s.status}</td>
 		    					<td>${s.createTime}</td>
 		    					<td>${s.createTime}</td>
@@ -207,7 +219,7 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">编辑</h4>
 			</div>
-		   <form action="${CONTEXT_PATH}/invoiceInfo/updateInvoice" method="post" onsubmit="return confrim();">
+		   <form action="${CONTEXT_PATH}/invoiceInfo/updateInvoice" method="post">
 				<div class="modal-body">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">

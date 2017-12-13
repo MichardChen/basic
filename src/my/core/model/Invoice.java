@@ -1,10 +1,14 @@
 package my.core.model;
 
+import java.util.List;
+
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
+import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.StringUtil;
 
 @TableBind(table = "t_invoice", pk = "id")
@@ -39,6 +43,23 @@ public class Invoice extends Model<Invoice> {
 		return Invoice.dao.paginate(page, size, select, sql);
 	}
 	
+	public List<Invoice> queryByPageParams(String mobile,String date,String status){
+		
+		String where = "";
+		if(StringUtil.isNoneBlank(date)){
+			where = " and a.create_time like '%"+date+"%'";
+		}
+		if(StringUtil.isNoneBlank(mobile)){
+			where = " and b.mobile like '%"+mobile+"%'";
+		}
+		if(StringUtil.isNoneBlank(status)){
+			where = " and a.status='"+status+"'";
+		}
+		String sql=" from t_invoice a inner join t_member b on a.user_id=b.id where 1=1 "+where+" order by a.create_time desc";
+		String select="select a.* ";
+		return Invoice.dao.find(select+sql);
+	}
+	
 	public boolean updateInfo(Invoice data){
 		return new Invoice().setAttrs(data).update();
 	}
@@ -67,4 +88,8 @@ public class Invoice extends Model<Invoice> {
 		}
 		return sum.intValue();
 	}*/
+	
+	public int updateInvoice(int id,String invoiceStatus,String expressName,String expressNo,int updateBy){
+		return Db.update("update t_invoice set status='"+invoiceStatus+"',update_time='"+DateUtil.getNowTimestamp()+"',express_company='"+expressName+"',express_no='"+expressNo+"',update_by="+updateBy+" where id="+id);
+	}
 }

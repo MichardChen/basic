@@ -1362,15 +1362,23 @@ public class RestfulController extends Controller{
 	}
 	
 	//会员列表
-	//@Before(RequestInterceptor.class)
+	@Before(RequestInterceptor.class)
 	public void queryStoreMemberList() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryStoreMemberList(dto));
 	}
 	
 	//会员订单和所有订单列表接口
+	@Before(RequestInterceptor.class)
 	public void queryMemberOrderList() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryMemberOrderList(dto));
+	}
+	
+	//查看绑定门店
+	@Before(RequestInterceptor.class)
+	public void queryMemberStoreDetail(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryMemberStoreDetail(dto));
 	}
 }

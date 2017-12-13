@@ -532,6 +532,7 @@ public class LoginService {
 		}else{
 			map.put("phone", null);
 		}
+		
 		//版本号
 		if(StringUtil.equals(dto.getPlatForm(), Constants.PLATFORM.ANDROID)){
 			SystemVersionControl svc = SystemVersionControl.dao.querySystemVersionControl(Constants.VERSION_TYPE.ANDROID);
@@ -4575,6 +4576,12 @@ public class LoginService {
 			if(statusMst != null){
 				model.setStatusName(statusMst.getStr("name"));
 			}
+			//开票内容
+			CodeMst invoiceMst = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.INVOICE_CONTENT);
+			if(invoiceMst != null){
+				model.setInvoiceContent(invoiceMst.getStr("name"));
+			}
+			
 			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
 			if(tea != null){
 				model.setTeaName(tea.getStr("tea_title"));
@@ -4689,6 +4696,74 @@ public class LoginService {
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		data.setData(map);
+		return data;
+	}
+	
+	public ReturnData queryMemberStoreDetail(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		Member m = Member.dao.queryById(dto.getUserId());
+		if((m.getInt("store_id")==null)||(m.getInt("store_id")==0)){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，您还没有绑定门店");
+			return data;
+		}
+		Store store = Store.dao.queryById(m.getInt("store_id"));
+		if(store == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("数据出错，门店不存在");
+			return data;
+		}
+		StoreDetailListVO vo = new StoreDetailListVO();
+		vo.setAddress(store.getStr("store_address"));
+		vo.setBusinessFromTime(store.getStr("business_fromtime"));
+		vo.setBusinessToTime(store.getStr("business_totime"));
+		vo.setLatitude(store.getFloat("latitude"));
+		vo.setLongitude(store.getFloat("longitude"));
+		vo.setMobile(store.getStr("link_phone"));
+		vo.setName(store.getStr("store_name"));
+		vo.setStoreDesc(store.getStr("store_desc"));
+		List<StoreImage> images = StoreImage.dao.queryStoreImages(store.getInt("id"));
+		List<String> imgs = new ArrayList<>();
+		for(int i=0;i<images.size();i++){
+			StoreImage image = images.get(i);
+			imgs.add(image.getStr("img"));
+		}
+		vo.setImgs(imgs);
+		//默认评价
+		List<StoreEvaluate> list = StoreEvaluate.dao.queryStoreEvaluateList(5
+																		   ,1
+																		   ,dto.getId());
+		List<EvaluateListModel> models = new ArrayList<>();
+		EvaluateListModel model = null;
+		for(StoreEvaluate evaluate : list){
+			model = new EvaluateListModel();
+			model.setComment(evaluate.getStr("mark"));
+			model.setCreateDate(DateUtil.formatMD(evaluate.getTimestamp("create_time")));
+			model.setPoint(evaluate.getInt("service_point"));
+			Member member = Member.dao.queryById(evaluate.getInt("member_id"));
+			if(member != null){
+				if(StringUtil.isNoneBlank(member.getStr("nick_name"))){
+					model.setUserName(member.getStr("nick_name"));
+			}else{
+				model.setUserName(member.getStr("id_code"));
+			}
+			if(StringUtil.isNoneBlank(member.getStr("icon"))){
+				model.setIcon(member.getStr("icon"));
+			}else{
+				CodeMst defaultIcon = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.DEFAULT_ICON);
+				if(defaultIcon != null){
+					model.setIcon(defaultIcon.getStr("data2"));
+				}
+			}
+		}
+			models.add(model);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("store", vo);
+		map.put("evaluateList", models);
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
 		return data;
 	}
 }

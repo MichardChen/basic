@@ -310,6 +310,7 @@ public interface Constants {
 		public static final String DEFAULT_ICON = "210004";
 		public static final String EVALUATE_NUM = "210005";
 		public static final String INVOICE_DATE = "210006";
+		public static final String INVOICE_CONTENT = "210007";
 	}
 	
 	public static interface PAY_STATUS{

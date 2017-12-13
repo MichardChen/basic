@@ -63,9 +63,9 @@ public class Tea extends Model<Tea> {
 	public List<Tea> queryBuyTeaList(int pageSize,int pageNum,String name,String status){
 		int fromRow = pageSize*(pageNum-1);
 		if(StringUtil.isNoneBlank(name)){
-			return Tea.dao.find("select * from t_tea where tea_title like '%"+name+"%' and status='"+status+"' order by create_time desc limit "+fromRow+","+pageSize);
+			return Tea.dao.find("select * from t_tea where flg=1 and tea_title like '%"+name+"%' and status='"+status+"' order by create_time desc limit "+fromRow+","+pageSize);
 		}else{
-			return Tea.dao.find("select * from t_tea where status='"+status+"' order by create_time desc limit "+fromRow+","+pageSize);
+			return Tea.dao.find("select * from t_tea where flg=1 and status='"+status+"' order by create_time desc limit "+fromRow+","+pageSize);
 		}
 	}
 	

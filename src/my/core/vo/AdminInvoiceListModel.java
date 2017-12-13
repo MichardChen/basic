@@ -11,12 +11,18 @@ public class AdminInvoiceListModel implements Serializable{
 	private String moneys;
 	private String status;
 	private String title;
-	
+	private String updateBy;
 	private String type;
 	private String mark;
 	private String taxNo;
 	
 	
+	public String getUpdateBy() {
+		return updateBy;
+	}
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy;
+	}
 	public String getType() {
 		return type;
 	}

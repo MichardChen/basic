@@ -15,13 +15,13 @@ public class LoginDTO extends BaseDTO{
 		LoginDTO dto = new LoginDTO();
 		try {
 			request.setCharacterEncoding("utf-8");
-			dto.setTitleTypeCd(request.getParameter("titleTypeCd"));
-			dto.setTaxNo(request.getParameter("taxNo"));
-			dto.setContent(request.getParameter("content"));
-			dto.setBank(request.getParameter("bank"));
-			dto.setAccount(request.getParameter("account"));
-			dto.setMail(request.getParameter("mail"));
-			dto.setStatus(request.getParameter("status"));
+			dto.setTitleTypeCd(StringUtil.checkCode(request.getParameter("titleTypeCd")));
+			dto.setTaxNo(StringUtil.checkCode(request.getParameter("taxNo")));
+			dto.setContent(StringUtil.checkCode(request.getParameter("content")));
+			dto.setBank(StringUtil.checkCode(request.getParameter("bank")));
+			dto.setAccount(StringUtil.checkCode(request.getParameter("account")));
+			dto.setMail(StringUtil.checkCode(request.getParameter("mail")));
+			dto.setStatus(StringUtil.checkCode(request.getParameter("status")));
 			
 			dto.setMobile(request.getParameter("mobile"));
 			dto.setUserTypeCd(request.getParameter("userTypeCd"));
@@ -94,7 +94,7 @@ public class LoginDTO extends BaseDTO{
 			dto.setSenitationPoint(StringUtil.toInteger(StringUtil.checkCode(request.getParameter("senitationPoint"))));
 			dto.setMark(StringUtil.checkCode(request.getParameter("mark")));
 			dto.setTitle(StringUtil.checkCode(request.getParameter("title")));
-			dto.setInvoiceIds(request.getParameter("invoiceIds"));
+			dto.setInvoiceIds(StringUtil.checkCode(request.getParameter("invoiceIds")));
 			dto.setMemberId(StringUtil.toInteger(StringUtil.checkCode(request.getParameter("memberId"))));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();

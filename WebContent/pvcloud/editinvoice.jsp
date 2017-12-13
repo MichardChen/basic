@@ -34,16 +34,69 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
-			<td>申请人</td>
-			<td class="td_class">${model.name}</td>
+			<td>申请人电话</td>
+			<td class="td_class">${model.mobile}</td>
 		</tr>
 		<tr>
-			<td>茶叶名称</td>
-			<td class="td_class">${model.teaName}</td>
+			<td>发票类型</td>
+			<td class="td_class">
+					<select name="typeCd" style="height: 30px;width: 150px;" disabled="disabled">
+	    					<option></option>
+	    					<option value="320001" <c:if test="${model.invoice_type_cd=='320001'}">selected="selected"</c:if>>电子发票</option>
+	    					<option value="320001" <c:if test="${model.invoice_type_cd=='320002'}">selected="selected"</c:if>>纸质发票</option>
+	    				</select>	
+			</td>
 		</tr>
 		<tr>
-			<td>数量</td>
-			<td class="td_class">${model.quality}</td>
+			<td>抬头类型</td>
+			<td class="td_class">
+						<select name="titleTypeCd" style="height: 30px;width: 150px;" disabled="disabled">
+	    					<option></option>
+	    					<option value="330001" <c:if test="${model.title_type_cd=='330001'}">selected="selected"</c:if>>企业</option>
+	    					<option value="330002" <c:if test="${model.title_type_cd=='330002'}">selected="selected"</c:if>>个人/非企业单位</option>
+	    				</select>	
+			</td>
+		</tr>
+		<tr>
+			<td>发票抬头</td>
+			<td class="td_class">
+						${model.title}
+			</td>
+		</tr>
+		<tr>
+			<td>申请状态</td>
+			<td class="td_class">
+						<select name="status" style="height: 30px;width: 150px;">
+	    					<option></option>
+	    					<option value="340001" <c:if test="${model.status=='340001'}">selected="selected"</c:if>>待处理</option>
+	    					<option value="340003" <c:if test="${model.status=='340003'}">selected="selected"</c:if>>未开票</option>
+	    					<option value="340004" <c:if test="${model.status=='340004'}">selected="selected"</c:if>>已开票</option>
+	    				</select>	
+			</td>
+		</tr>
+		<tr>
+			<td>税务单号</td>
+			<td class="td_class">
+						${model.tax_no}
+			</td>
+		</tr>
+		<tr>
+			<td>发票内容</td>
+			<td class="td_class">
+						${model.content}
+			</td>
+		</tr>
+		<tr>
+			<td>发票金额</td>
+			<td class="td_class">
+						${model.moneys}
+			</td>
+		</tr>
+		<tr>
+			<td>备注</td>
+			<td class="td_class">
+						${model.mark}
+			</td>
 		</tr>
 		<%-- <tr>
 			<td>仓储费</td>
@@ -51,49 +104,45 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr> --%>
 		<tr>
 			<td>申请时间</td>
-			<td class="td_class">${model.createTime}</td>
+			<td class="td_class">${model.create_time}</td>
+		</tr>
+		<tr>
+			<td>邮寄信息</td>
+			<td class="td_class">${address}</td>
 		</tr>
 		<tr>
 			<td>快递名称</td>
 			<td class="td_class">
 					<select style="height:30px;width:120px;" name="expressName" id="expressName" >
 						<c:forEach var="s" items="${express}">
-							<option <c:if test="${s.name==model.express}">selected="selected"</c:if>>${s.name}</option>
+							<option <c:if test="${s.name==model.express_company}">selected="selected"</c:if>>${s.name}</option>
 						</c:forEach>
 					</select>
 			</td>
 		</tr>
 		<tr>
 			<td>快递单号</td>
-			<td class="td_class"><input type="text" name="expressNo" maxlength="30" id="expressNo" style="width: 300px;" value="${model.expressNo}"/></td>
+			<td class="td_class"><input type="text" name="expressNo" maxlength="30" id="expressNo" style="width: 300px;" value="${model.express_no}"/></td>
 		</tr>
 		<tr>
-			<td>状态</td>
-			<c:if test="${model.status=='280002' || model.status=='280005'}">
-				<td class="td_class">
-		    				<c:if test="${model.status=='280002'}">申请失败</c:if>
-		    				 <c:if test="${model.status=='280005'}">异常</c:if>
-				</td>
-			</c:if>
-			<c:if test="${model.status!='280002' and model.status!='280005'}">
-				<td class="td_class">
-						<select name="status" style="height: 30px;width: 150px;">
-	    					<option></option>
-	    					<option value="280001" <c:if test="${model.status=='280001'}">selected="selected"</c:if>>申请中</option>
-	    					<option value="280002" <c:if test="${model.status=='280002'}">selected="selected"</c:if>>申请失败</option>
-	    					<option value="280003" <c:if test="${model.status=='280003'}">selected="selected"</c:if>>申请成功，待发货</option>
-	    				 	<option value="280004" <c:if test="${model.status=='280004'}">selected="selected"</c:if>>已收货</option>
-	    					<option value="280005" <c:if test="${model.status=='280005'}">selected="selected"</c:if>>异常</option>
-	    				</select>	
-	    			</td>
-			</c:if>
-		</tr>
-		<tr>
-			<td>备注</td>
+			<td>开户行</td>
 			<td class="td_class">
-						<input type="text" name="mark" maxlength="30" id="mark" style="width: 300px;" value="${model.mark}"/>
-						<input type="hidden" name="id" value="${model.id}"/>
+						${model.bank}
+			</td>
+		</tr>
+		<tr>
+			<td>账户</td>
+			<td class="td_class">
+					${model.account}
+			</td>
+		</tr>
+		<tr>
+			<td>邮箱</td>
+			<td class="td_class">
+					${model.mail}
+			</td>
 		</tr>
 	</table>
+		<input type="hidden" name="id" value="${model.id}"/>
 </div>
 

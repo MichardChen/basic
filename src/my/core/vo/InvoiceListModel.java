@@ -12,6 +12,14 @@ public class InvoiceListModel implements Serializable{
 	private BigDecimal moneys;
 	private String status;
 	private String statusName;
+	private String invoiceContent;
+	
+	public String getInvoiceContent() {
+		return invoiceContent;
+	}
+	public void setInvoiceContent(String invoiceContent) {
+		this.invoiceContent = invoiceContent;
+	}
 	public int getId() {
 		return id;
 	}
