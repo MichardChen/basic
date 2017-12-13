@@ -1,9 +1,16 @@
 package my.pvcloud.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.huadalink.route.ControllerBind;
 
 import com.jfinal.aop.Enhancer;
@@ -19,10 +26,13 @@ import my.core.model.Member;
 import my.core.model.Province;
 import my.core.model.ReceiveAddress;
 import my.core.model.Tea;
+import my.core.model.TeaPrice;
 import my.core.model.WarehouseTeaMember;
+import my.core.model.WarehouseTeaMemberItem;
 import my.pvcloud.model.GetTeaRecordListModel;
 import my.pvcloud.model.GetTeaRecordModel;
 import my.pvcloud.service.GetTeaRecordService;
+import my.pvcloud.util.ExportUtil;
 import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/getTeaRecordInfo", path = "/pvcloud")
@@ -345,5 +355,161 @@ public class GetTeaRecordController extends Controller {
 		List<CodeMst> express = CodeMst.dao.queryCodestByPcode(Constants.EXPRESS.EXPRESS);
 		setAttr("express", express);
 		render("editExpress.jsp");
+	}
+	
+	public void exportData(){
+		 String path = "F:\\upload\\取茶记录.xls";
+		 try {  
+			String time1 = getPara("time1");
+			String time2 = getPara("time2");
+			String mobile = getPara("mobile");
+			String status = getPara("status");
+			FileOutputStream os = new FileOutputStream(new File(path));  
+			//创建一个workbook 对应一个excel应用文件  
+	        XSSFWorkbook workBook = new XSSFWorkbook();  
+	        //在workbook中添加一个sheet,对应Excel文件中的sheet  
+	        XSSFSheet sheet = workBook.createSheet("取茶记录");  
+	        ExportUtil exportUtil = new ExportUtil(workBook, sheet);
+	        XSSFCellStyle headStyle = exportUtil.getHeadStyle();  
+	        XSSFCellStyle bodyStyle = exportUtil.getBodyStyle(); 
+	        
+	        XSSFRow headRow = sheet.createRow(0);  
+	        XSSFCell cell = null;  
+	        String[] titles = new String[]{"申请人","注册号码","茶叶名称","取茶数量","申请时间","邮寄地址","收件人","联系电话","快递信息","状态","备注"};
+	        for (int i = 0; i < titles.length; i++){  
+	            cell = headRow.createCell(i);  
+	            cell.setCellStyle(headStyle);  
+	            cell.setCellValue(titles[i]);  
+	        }  
+	        
+	        String newStatus = getPara("newStatus");
+			String title = getPara("title");
+		    List<GetTeaRecord> list = GetTeaRecord.dao.exportData(time1, time2, mobile, status);
+		    if (list != null && list.size() > 0){  
+		    	for (int j = 0; j < list.size(); j++){  
+		    		XSSFRow bodyRow = sheet.createRow(j + 1);
+		    		
+		    		GetTeaRecord record = list.get(j);
+		    		
+		    		Member member = Member.dao.queryById(record.getInt("member_id"));
+					String express = "";
+					String expressNo = "";
+					if(StringUtil.isNoneBlank(record.getStr("express_company"))){
+						express =  record.getStr("express_company");
+					}
+					
+					if(StringUtil.isNoneBlank(record.getStr("express_no"))){
+						expressNo =  record.getStr("express_no");
+						//快递信息
+			            cell = bodyRow.createCell(8);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue("快递公司："+express+"，单号："+expressNo);
+					}else{
+						cell = bodyRow.createCell(8);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue("");
+					}
+					CodeMst s = CodeMst.dao.queryCodestByCode(record.getStr("status"));
+					if(s != null){
+						//状态
+			            cell = bodyRow.createCell(9);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue(s.getStr("name"));
+					}
+					//备注
+		            cell = bodyRow.createCell(10);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(record.getStr("mark") == null ? "" : record.getStr("mark"));
+		            
+					if(member != null){
+						//申请人
+			    		cell = bodyRow.createCell(0);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue(member.getStr("name"));
+			            
+			            //注册号码	
+			            cell = bodyRow.createCell(1);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue(member.getStr("mobile"));
+					}else{
+						//申请人
+			    		cell = bodyRow.createCell(0);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue("");
+			            
+			            //注册号码	
+			            cell = bodyRow.createCell(1);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue("");
+					}
+					
+					//取茶数量
+		    		cell = bodyRow.createCell(3);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(StringUtil.toString(record.getInt("quality"))+"片");
+		            
+					Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
+					if(tea != null){
+						//茶叶名称
+			            cell = bodyRow.createCell(2);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue(tea.getStr("tea_title"));
+					}else{
+						cell = bodyRow.createCell(2);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue("");
+					}
+					int addressId = record.getInt("address_id") == null ? 0 :record.getInt("address_id");
+					ReceiveAddress address = ReceiveAddress.dao.queryByKeyId(addressId);
+					if(address != null){
+						String detail = "";
+						Province province = Province.dao.queryProvince(address.getInt("province_id"));
+						if(province != null){
+							detail = detail + province.getStr("name");
+						}
+						City city = City.dao.queryCity(address.getInt("city_id"));
+						if(city != null){
+							detail = detail + city.getStr("name");
+						}
+						District district = District.dao.queryDistrict(address.getInt("district_id"));
+						if(district != null){
+							detail = detail + district.getStr("name");
+						}
+						String receiveMan = address.getStr("receiveman_name") == null ? "":address.getStr("receiveman_name");
+						String m = address.getStr("mobile") == null ? "":address.getStr("mobile");
+						//邮寄地址
+			            cell = bodyRow.createCell(5);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue(detail+address.getStr("address"));
+		            
+		            
+			            //申请时间
+			            cell = bodyRow.createCell(4);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue(StringUtil.toString(record.getTimestamp("create_time")));
+			            
+			            
+			            //收件人
+			    		cell = bodyRow.createCell(6);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue(receiveMan);
+			            
+			            //联系电话	
+			            cell = bodyRow.createCell(7);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue(m);
+	            }
+					}
+	        }
+	        workBook.write(os);  
+	       }catch(Exception e){  
+	        e.printStackTrace();  
+	       }  
+	      //判断路径是否存在  
+	     if(new File(path).isFile()){  
+	        renderFile(new File(path));  
+	      }else{  
+	        renderNull();  
+	      }  
 	}
 }

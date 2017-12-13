@@ -63,6 +63,48 @@ public class Member extends Model<Member> {
 		}
 	}
 	
+	public List<Member> exportData(String mobile,String name,String storeName,String type){
+		List<Object> param=new ArrayList<Object>();
+		StringBuffer strBuf=new StringBuffer();
+		if(StringUtil.isBlank(storeName)){
+			String sql="";
+			String select="select *";
+			if(StringUtil.isNoneBlank(mobile)){
+				strBuf.append(" and mobile='"+mobile+"'");
+			}
+			if(StringUtil.isNoneBlank(name)){
+				strBuf.append(" and name='"+name+"'");
+			}
+			
+			if(StringUtil.isNoneBlank(type)){
+				strBuf.append(" and role_cd='"+type+"'");
+				param.add(type);
+			}
+			
+			sql=" from t_member where 1=1 "+strBuf.toString()+" order by create_time desc";
+			return Member.dao.find(select+sql);
+		}else{
+			String sql="";
+			String select="select a.*";
+			if(StringUtil.isNoneBlank(mobile)){
+				strBuf.append(" and a.mobile='"+mobile+"'");
+				param.add(mobile);
+			}
+			if(StringUtil.isNoneBlank(name)){
+				strBuf.append(" and a.name='"+name+"'");
+				param.add(name);
+			}
+			if(StringUtil.isNoneBlank(type)){
+				strBuf.append(" and a.role_cd='"+type+"'");
+				param.add(type);
+			}
+			
+			strBuf.append("and b.store_name like '%"+storeName+"%'");
+			sql=" from t_member a inner join t_store b on a.store_id=b.id where 1=1 "+strBuf.toString()+" order by a.create_time desc";
+			return Member.dao.find(select+sql);
+		}
+	}
+	
 	public Member queryMember(String mobile){
 		return Member.dao.findFirst("select * from t_member where mobile=?",mobile);
 	}

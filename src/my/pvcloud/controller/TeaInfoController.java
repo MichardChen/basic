@@ -16,6 +16,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.io.input.Tailer;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.huadalink.route.ControllerBind;
 
 import com.jfinal.aop.Enhancer;
@@ -26,9 +31,12 @@ import com.sun.java.swing.plaf.motif.resources.motif;
 
 import my.app.service.FileService;
 import my.core.constants.Constants;
+import my.core.model.BankCardRecord;
 import my.core.model.CodeMst;
 import my.core.model.Log;
 import my.core.model.Member;
+import my.core.model.MemberBankcard;
+import my.core.model.PayRecord;
 import my.core.model.ReturnData;
 import my.core.model.SaleOrder;
 import my.core.model.Store;
@@ -38,12 +46,14 @@ import my.core.model.TeapriceLog;
 import my.core.model.WareHouse;
 import my.core.model.WarehouseTeaMember;
 import my.core.model.WarehouseTeaMemberItem;
+import my.core.vo.MemberVO;
 import my.core.vo.WareHouseVO;
 import my.pvcloud.model.TeaModel;
 import my.pvcloud.model.TeaPriceModel;
 import my.pvcloud.service.TeaService;
 import my.pvcloud.service.WareHouseService;
 import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.ExportUtil;
 import my.pvcloud.util.ImageTools;
 import my.pvcloud.util.ImageCompressZipUtil;
 import my.pvcloud.util.StringUtil;
@@ -898,5 +908,169 @@ public class TeaInfoController extends Controller {
 			e.printStackTrace();
 		}
 		index();
+	}
+	
+	public void exportData(){
+		 String path = "F:\\upload\\用户数据.xls";
+		 try {  
+			
+		 FileOutputStream os = new FileOutputStream(new File(path));  
+		// 创建一个workbook 对应一个excel应用文件  
+	        XSSFWorkbook workBook = new XSSFWorkbook();  
+	        // 在workbook中添加一个sheet,对应Excel文件中的sheet  
+	        XSSFSheet sheet = workBook.createSheet("茶叶数据");  
+	       ExportUtil exportUtil = new ExportUtil(workBook, sheet);
+	       XSSFCellStyle headStyle = exportUtil.getHeadStyle();  
+	        XSSFCellStyle bodyStyle = exportUtil.getBodyStyle(); 
+	        
+	        XSSFRow headRow = sheet.createRow(0);  
+	        XSSFCell cell = null;  
+	        String[] titles = new String[]{"茶名称","茶编码","茶类型","茶价格","参考价","茶叶发行状态","品牌","产地","规格","发行件数","剩余件数","发行总量","剩余库存","是否删除","注册时间"};
+	        for (int i = 0; i < titles.length; i++){  
+	            cell = headRow.createCell(i);  
+	            cell.setCellStyle(headStyle);  
+	            cell.setCellValue(titles[i]);  
+	        }  
+	        
+	        String newStatus = getPara("newStatus");
+			String title = getPara("title");
+		    List<Tea> list = Tea.dao.exportData(title, newStatus);
+		    if (list != null && list.size() > 0){  
+		    	for (int j = 0; j < list.size(); j++){  
+		    		XSSFRow bodyRow = sheet.createRow(j + 1);
+		    		
+		    		Tea tea = list.get(j);
+		    		//茶名称
+		    		cell = bodyRow.createCell(0);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(tea.getStr("tea_title"));
+		            
+		            //茶编码	
+		            cell = bodyRow.createCell(1);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(tea.getStr("key_code"));
+		            
+		            //茶类型
+		            cell = bodyRow.createCell(2);  
+		            cell.setCellStyle(bodyStyle); 
+		            CodeMst type = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+    				if(type != null){
+    					cell.setCellValue(type.getStr("name"));
+    				}else{
+    					cell.setCellValue("");
+    				}
+		            
+    				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
+    				if(wtm != null){
+    					BigDecimal st = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("stock")));
+    					BigDecimal se = new BigDecimal(StringUtil.toStringDefaultZero(tea.getInt("size")));
+    					
+    					cell = bodyRow.createCell(12);  
+	    		        cell.setCellStyle(bodyStyle);  
+	    		        cell.setCellValue(StringUtil.toString(wtm.getInt("stock"))+"片");
+    					
+    		            
+    					try {
+    						//剩余件数
+    						cell = bodyRow.createCell(10);  
+    	    		        cell.setCellStyle(bodyStyle);  
+    	    		        cell.setCellValue(StringUtil.toString(st.divide(se)));
+    					} catch (Exception e) {
+    						cell = bodyRow.createCell(10);  
+    	    		        cell.setCellStyle(bodyStyle);  
+    	    		        cell.setCellValue("0");
+    					}
+    					BigDecimal originStock = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("origin_stock")));
+    					try {
+    						//发行件数
+    						cell = bodyRow.createCell(9);  
+    	    		        cell.setCellStyle(bodyStyle);  
+     	    		        cell.setCellValue(StringUtil.toString(originStock.divide(se))+"件");
+    					} catch (Exception e) {
+    						cell = bodyRow.createCell(9);  
+    	    		        cell.setCellStyle(bodyStyle);  
+     	    		        cell.setCellValue("0件");
+    					}
+    					WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryById(wtm.getInt("id"));
+    					if(wtmItem != null){
+    						String size = "";
+    						CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
+    						if(sizeType != null){
+    							size = "元/"+sizeType.getStr("name");
+    						}
+    						 //茶价格
+    			            cell = bodyRow.createCell(3);  
+    			            cell.setCellStyle(bodyStyle);  
+    			            cell.setCellValue(StringUtil.toString(wtmItem.getBigDecimal("price"))+size);
+    			            
+    						CodeMst s = CodeMst.dao.queryCodestByCode(wtmItem.getStr("status"));
+    						if(s != null){
+    							//茶叶发行状态
+    				            cell = bodyRow.createCell(5);  
+    				            cell.setCellStyle(bodyStyle);
+    				            cell.setCellValue(s.getStr("name"));
+    						}else{
+    							cell = bodyRow.createCell(5);  
+    				            cell.setCellStyle(bodyStyle);
+    				            cell.setCellValue("");
+    						}
+    					}
+    				}
+    				
+		           
+		            
+		            //参考价
+		            cell = bodyRow.createCell(4);  
+		            cell.setCellStyle(bodyStyle);  
+		            TeaPrice teaPrice = TeaPrice.dao.queryByTeaId(tea.getInt("id"));
+    				if(teaPrice != null){
+    					cell.setCellValue(StringUtil.toString(teaPrice.getBigDecimal("reference_price"))+"元/片");
+    				}else{
+    					cell.setCellValue("");
+    				}
+		            
+		             
+		            //品牌
+		            cell = bodyRow.createCell(6);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(tea.getStr("brand"));
+		            
+		            //产地	
+		            cell = bodyRow.createCell(7);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(tea.getStr("product_place"));
+		            
+		            //规格	
+		            cell = bodyRow.createCell(8);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(StringUtil.toString(tea.getInt("weight"))+"克/片，"+StringUtil.toString(tea.getInt("size"))+"片/件");
+		            
+					//发行总量
+		            cell = bodyRow.createCell(11);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(StringUtil.toString(tea.getInt("total_output"))+"片");
+						
+					
+					//是否删除
+		            cell = bodyRow.createCell(13);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(tea.getInt("flg")==1?"否":"是");
+					
+		            //注册时间
+		            cell = bodyRow.createCell(14);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(StringUtil.toString(tea.getTimestamp("create_time")));
+	            }
+	        }
+	        workBook.write(os);  
+	       }catch(Exception e){  
+	        e.printStackTrace();  
+	       }  
+	      //判断路径是否存在  
+	     if(new File(path).isFile()){  
+	        renderFile(new File(path));  
+	      }else{  
+	        renderNull();  
+	      }  
 	}
 }

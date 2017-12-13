@@ -68,6 +68,44 @@ public class GetTeaRecord extends Model<GetTeaRecord> {
 		}
 	}
 	
+	public List<GetTeaRecord> exportData(String time1,String time2,String mobile,String status){
+		
+		StringBuffer strBuf=new StringBuffer();
+		if(StringUtil.isNoneBlank(mobile)){
+			if(StringUtil.isNoneBlank(time1)){
+				strBuf.append(" and a.create_time>='"+time1+" 00:00:00'");
+			}
+			if(StringUtil.isNoneBlank(time2)){
+				strBuf.append(" and a.create_time<='"+time2+" 23:59:59'");
+			}
+				
+			strBuf.append(" and b.mobile='"+mobile+"'");
+			
+			if(StringUtil.isNoneBlank(status)){
+				strBuf.append(" and a.status='"+status+"'");
+			}
+			
+			String sql=" from t_gettea_record a inner join t_member b on a.member_id=b.id where 1=1 "+strBuf+" order by a.create_time desc";
+			String select="select a.* ";
+			return GetTeaRecord.dao.find(select+sql);
+		}else{
+			if(StringUtil.isNoneBlank(time1)){
+				strBuf.append(" and a.create_time>='"+time1+" 00:00:00'");
+			}
+			if(StringUtil.isNoneBlank(time2)){
+				strBuf.append(" and a.create_time<='"+time2+" 23:59:59'");
+			}
+				
+			if(StringUtil.isNoneBlank(status)){
+				strBuf.append(" and a.status='"+status+"'");
+			}
+			
+			String sql=" from t_gettea_record a where 1=1 "+strBuf+" order by a.create_time desc";
+			String select="select a.* ";
+			return GetTeaRecord.dao.find(select+sql);
+		}
+	}
+	
 	public GetTeaRecord queryById(int id){
 		return GetTeaRecord.dao.findFirst("select * from t_gettea_record where id = ? order by create_time desc",id);
 	}

@@ -27,7 +27,11 @@ function confrim(){
 }
 function exportData(){
 	if(confirm('确认要导出数据?')){
-		window.location.href="${CONTEXT_PATH}/invoiceInfo/exportData";
+		var status = $("#status").val();
+		var mobile = $("#mobile").val();
+		var title = $("#title").val();
+		var params = "?status="+status+"&mobile="+mobile+"&title="+title;
+		window.location.href="${CONTEXT_PATH}/invoiceInfo/exportData"+params;
 	}else{
 		return false;
 	}
@@ -125,23 +129,23 @@ td{
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">申请时间</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+	    				<input type="text" class="form-control" name="title" id="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
+	    				<input type="text" class="form-control" name="mobile" id="mobile" value="${mobile}"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
-	    				<select name="status" style="height: 30px;width: 80px;">
+	    				<select name="status" id="status" style="height: 30px;width: 80px;">
 	    					<option></option>
 	    					<option value="340001" <c:if test="${status=='340001'}">selected="selected"</c:if>>待处理</option>
 	    					<option value="340002" <c:if test="${status=='340002'}">selected="selected"</c:if>>已处理</option>
 	    				</select>	
     				</div>
-    				<div style="" class="col-sm-1 col-xs-1 col-md-1">
+    				<div class="col-sm-2 col-xs-2 col-md-2">
     							<input type="submit" class="ys2" value=""/>
-    							<button type="button" class="btn btn-default" onclick="exportData()">导出</button>
+    							<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>
     				</div>
 			   </div>
     		</form>

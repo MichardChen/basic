@@ -145,6 +145,18 @@ function check(){
 	$("#saveBtn").attr("disabled","true");
 	return true;
 }
+function exportData(){
+	if(confirm('确认要导出数据?')){
+		var cname = $("#cname").val();
+		var mobile = $("#mobile").val();
+		var type = $("#type").val();
+		var storeName = $("#storeName").val();
+		var params = "?cname="+cname+"&cmobile="+mobile+"&type="+type+"&storeName="+storeName;
+		window.location.href="${CONTEXT_PATH}/memberInfo/exportData"+params;
+	}else{
+		return false;
+	}
+}
 </script>
 <style>
 .ys1{
@@ -227,15 +239,15 @@ td{
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="mobile" value="${cmobile}"/>
+	    				<input type="text" class="form-control" name="mobile" id="mobile" value="${cmobile}"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">用户名</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="cname" value="${cname}"/>
+	    				<input type="text" class="form-control" name="cname" id="cname" value="${cname}"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">用户类型</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
-	    				<select name="type" style="height: 30px;width: 80px;">
+	    				<select name="type" id="type" style="height: 30px;width: 80px;">
 	    					<option></option>
 	    					<option value="350001" <c:if test="${type=='350001'}">selected="selected"</c:if>>普通用户</option>
 	    					<option value="350002" <c:if test="${type=='350002'}">selected="selected"</c:if>>经销商</option>
@@ -245,9 +257,12 @@ td{
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">门店</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="storeName" value="${storeName}"/>
+	    				<input type="text" class="form-control" name="storeName" id="storeName" value="${storeName}"/>
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1">
+    				<input type="submit" class="ys2" value=""/>
+    				<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>
+    			</div>
 			   </div>
     		</form>
    		</div>

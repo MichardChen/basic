@@ -86,6 +86,16 @@ function check(){
 	}
 	return true;
 }
+function exportData(){
+	if(confirm('确认要导出数据?')){
+		var newStatus = $("#newStatus").val();
+		var title = $("#title").val();
+		var params = "?newStatus="+newStatus+"&title="+title;
+		window.location.href="${CONTEXT_PATH}/teaInfo/exportData"+params;
+	}else{
+		return false;
+	}
+}
 </script>
 <style>
 .ys1{
@@ -168,18 +178,20 @@ td{
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">茶叶名称</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="title" value="${title}"/>
+	    				<input type="text" class="form-control" name="title" id="title" value="${title}"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">发行状态</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
-	    				<select name="newStatus" style="height: 30px;width: 120px;">
+	    				<select name="newStatus" id="newStatus" style="height: 30px;width: 120px;">
 		    					<option></option>
 		    					<option value="090001" <c:if test="${newStatus=='090001'}">selected="selected"</c:if>>待售</option>
 		    					<option value="090002" <c:if test="${newStatus=='090002'}">selected="selected"</c:if>>发行中</option>
 		    					<option value="090003" <c:if test="${newStatus=='090003'}">selected="selected"</c:if>>发行结束</option>
 		    			</select>	
 	    			</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/>
+    				<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>
+    			</div>
        			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新茶发行" class="ys3" onclick="loadProject(0)"/></div>
 			   </div>
     		</form>

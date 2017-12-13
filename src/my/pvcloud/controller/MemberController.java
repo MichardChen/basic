@@ -1,10 +1,17 @@
 package my.pvcloud.controller;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.huadalink.route.ControllerBind;
 
 import com.jfinal.aop.Enhancer;
@@ -14,6 +21,7 @@ import com.jfinal.plugin.activerecord.Page;
 import my.core.constants.Constants;
 import my.core.model.BankCardRecord;
 import my.core.model.CodeMst;
+import my.core.model.Invoice;
 import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
@@ -22,10 +30,12 @@ import my.core.model.Message;
 import my.core.model.PayRecord;
 import my.core.model.Store;
 import my.core.model.Tea;
+import my.core.model.User;
 import my.core.vo.MemberVO;
 import my.pvcloud.model.CustInfo;
 import my.pvcloud.service.MemberService;
 import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.ExportUtil;
 import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/memberInfo", path = "/pvcloud")
@@ -439,5 +449,138 @@ public class MemberController extends Controller {
 			}
 		}
 		index();
+	}
+	
+	public void exportData(){
+		 String path = "F:\\upload\\用户数据.xls";
+		 try {  
+			
+		 FileOutputStream os = new FileOutputStream(new File(path));  
+		// 创建一个workbook 对应一个excel应用文件  
+	        XSSFWorkbook workBook = new XSSFWorkbook();  
+	        // 在workbook中添加一个sheet,对应Excel文件中的sheet  
+	        XSSFSheet sheet = workBook.createSheet("用户数据");  
+	       ExportUtil exportUtil = new ExportUtil(workBook, sheet);
+	       XSSFCellStyle headStyle = exportUtil.getHeadStyle();  
+	        XSSFCellStyle bodyStyle = exportUtil.getBodyStyle(); 
+	        
+	        XSSFRow headRow = sheet.createRow(0);  
+	        XSSFCell cell = null;  
+	        String[] titles = new String[]{"用户名","用户编码	","昵称","注册号码","用户角色","绑定门店","余额","已提现金额","申请提现中金额","支付宝充值金额","银行卡审核状态","注册时间"};
+	        for (int i = 0; i < titles.length; i++){  
+	            cell = headRow.createCell(i);  
+	            cell.setCellStyle(headStyle);  
+	            cell.setCellValue(titles[i]);  
+	        }  
+	        
+	        String mobile = getPara("cmobile");
+			String name = getPara("cname");
+			String storeName = getPara("storeName");
+			String type = getPara("type");
+			
+			
+		    List<Member> list = Member.dao.exportData(mobile, name, storeName, type);
+		    ArrayList<MemberVO> models = new ArrayList<>();
+		    if (list != null && list.size() > 0){  
+		    	for (int j = 0; j < list.size(); j++){  
+		    		XSSFRow bodyRow = sheet.createRow(j + 1);
+		    		
+		    		Member member = list.get(j);
+		    		//用户名
+		    		cell = bodyRow.createCell(0);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(member.getStr("name"));
+		            
+		            //用户编码
+		            cell = bodyRow.createCell(1);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(member.getStr("id_code"));
+		            
+		            //昵称
+		            cell = bodyRow.createCell(2);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(member.getStr("nick_name"));
+		            
+		            //注册号码
+		            cell = bodyRow.createCell(3);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(member.getStr("mobile"));
+		            
+		            //用户角色
+		            cell = bodyRow.createCell(4);  
+		            cell.setCellStyle(bodyStyle);  
+		            CodeMst roleMst = CodeMst.dao.queryCodestByCode(member.getStr("role_cd"));
+					if(roleMst != null){
+						cell.setCellValue(roleMst.getStr("name"));
+					}else{
+						cell.setCellValue("");
+					}
+		            
+		            //绑定门店
+		            cell = bodyRow.createCell(5);  
+		            cell.setCellStyle(bodyStyle);  
+		            Store store = Store.dao.queryById(member.getInt("store_id"));
+					if(store != null){
+						cell.setCellValue(store.getStr("store_name"));
+					}else{
+						cell.setCellValue("");
+					}
+		            
+		            //余额
+		            cell = bodyRow.createCell(6);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(StringUtil.toString(member.getBigDecimal("moneys")));
+		            
+		            //已提现金额	
+		            BigDecimal applying = BankCardRecord.dao.sumApplying(member.getInt("id"), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
+					BigDecimal applySuccess = BankCardRecord.dao.sumApplying(member.getInt("id"), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.SUCCESS);
+					BigDecimal paySuccess = PayRecord.dao.sumPay(member.getInt("id"), Constants.PAY_TYPE_CD.ALI_PAY, Constants.PAY_STATUS.TRADE_SUCCESS);
+					
+		            cell = bodyRow.createCell(7);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(StringUtil.toString(applySuccess));
+		            
+		            //申请提现中金额	
+		            cell = bodyRow.createCell(8);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(StringUtil.toString(applying));
+		            
+		            //支付宝充值金额	
+		            cell = bodyRow.createCell(9);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(StringUtil.toString(paySuccess));
+		            
+		            //银行卡审核状态
+		            cell = bodyRow.createCell(10);  
+		            cell.setCellStyle(bodyStyle);  
+		            MemberBankcard memberBankcard = MemberBankcard.dao.queryByMemberId(member.getInt("id"));
+					if(memberBankcard == null){
+						cell.setCellValue("暂未绑定银行卡");
+					}else{
+						String bankStatus = memberBankcard.getStr("status");
+						CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(bankStatus);
+						if(sCodeMst != null){
+							cell.setCellValue(sCodeMst.getStr("name"));
+						}else{
+							cell.setCellValue("");
+						}
+					}
+		             
+		            //注册时间
+		            cell = bodyRow.createCell(11);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(StringUtil.toString(member.getTimestamp("create_time")));
+	            }
+	        }
+	        workBook.write(os);  
+	       }catch(Exception e){  
+	        e.printStackTrace();  
+	       }  
+	      //判断路径是否存在  
+	     if(new File(path).isFile()){  
+	        renderFile(new File(path));  
+	      }else{  
+	        renderNull();  
+	      }  
 	}
 }

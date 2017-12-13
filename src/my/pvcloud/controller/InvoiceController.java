@@ -257,7 +257,7 @@ public class InvoiceController extends Controller {
 	}
 	
 	public void exportData(){
-		 String path = "F:\\upload\\data.xls";
+		 String path = "F:\\upload\\开票数据.xls";
 		 try {  
 			
 		 FileOutputStream os = new FileOutputStream(new File(path));  

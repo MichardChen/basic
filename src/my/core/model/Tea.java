@@ -45,7 +45,24 @@ public class Tea extends Model<Tea> {
 			String sql=" from t_tea where 1=1"+strBuf+" order by create_time desc";
 			String select="select * ";
 			return Tea.dao.paginate(page, size, select, sql,param.toArray());
+	}
+	
+	public List<Tea> exportData(String title,String status){
+		
+		StringBuffer strBuf=new StringBuffer();
+		if(StringUtil.isNoneBlank(title)){
+			strBuf.append(" and tea_title like '%"+title+"%'");
 		}
+		
+		if(StringUtil.isNoneBlank(status)){
+			strBuf.append(" and status='"+status+"'");
+		}
+			
+			
+		String sql=" from t_tea where 1=1"+strBuf+" order by create_time desc";
+		String select="select * ";
+		return Tea.dao.find(select+sql);
+	}
 	
 	public Tea queryById(int id){
 		return Tea.dao.findFirst("select * from t_tea where id = ?",id);
