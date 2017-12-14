@@ -130,6 +130,44 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 			return WarehouseTeaMemberItem.dao.paginate(page, size, select, sql);
 		}
 	}
+	
+	public List<WarehouseTeaMemberItem> exportData(String date,int saleUserId,String saleUserTypeCd,String status){
+		
+		if((StringUtil.isBlank(saleUserTypeCd))&&(saleUserId == 0)){
+			StringBuffer strBuf=new StringBuffer();
+			if(StringUtil.isNoneBlank(date)){
+				strBuf.append(" and create_time like '%"+date+"%'");
+			}
+			
+			if(StringUtil.isNoneBlank(status)){
+				strBuf.append(" and status='"+status+"'");
+			}
+				
+			String sql=" from t_warehouse_tea_member_item where 1=1 "+strBuf+" order by create_time desc";
+			String select="select * ";
+			return WarehouseTeaMemberItem.dao.find(select+sql);
+		}else{
+			StringBuffer strBuf=new StringBuffer();
+			if(StringUtil.isNoneBlank(date)){
+				strBuf.append(" and a.create_time like '%"+date+"%'");
+			}
+			
+			if(StringUtil.isNoneBlank(saleUserTypeCd)){
+				strBuf.append(" and b.member_type_cd='"+saleUserTypeCd+"'");
+			}
+			if(saleUserId != 0){
+				strBuf.append(" and b.member_id="+saleUserId);
+			}
+			
+			if(StringUtil.isNoneBlank(status)){
+				strBuf.append(" and a.status='"+status+"'");
+			}
+				
+			String sql=" from t_warehouse_tea_member_item a inner join t_warehouse_tea_member b on a.warehouse_tea_member_id=b.id where 1=1 "+strBuf+" order by a.create_time desc";
+			String select="select a.* ";
+			return WarehouseTeaMemberItem.dao.find(select+sql);
+		}
+	}
 		
 	public boolean updateInfo(WarehouseTeaMemberItem data){
 		return new WarehouseTeaMemberItem().setAttrs(data).update();

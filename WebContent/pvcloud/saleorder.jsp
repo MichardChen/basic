@@ -58,6 +58,24 @@ function check(){
 	}
 	return true;
 }
+
+function exportData(){
+	if(confirm('确认要导出数据?')){
+		var title = $("#title").val();
+		var saleMobile = $("#saleMobile").val();
+		var saleUserTypeCd = $("#saleUserTypeCd").val();
+		if(saleMobile != ""){
+			if(saleUserTypeCd == ""){
+				alert("请先选择商家类型");
+				return false;
+			}
+		}
+		var params = "?title="+title+"&saleMobile="+saleMobile+"&saleUserTypeCd="+saleUserTypeCd;
+		window.location.href="${CONTEXT_PATH}/saleorderInfo/exportData"+params;
+	}else{
+		return false;
+	}
+}
 </script>
 <style>
 .ys1{
@@ -140,11 +158,11 @@ td{
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">上架时间</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+	    				<input type="text" class="form-control" name="title" id="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">卖家注册电话</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="saleMobile" value="${saleMobile}"/>
+	    				<input type="text" class="form-control" name="saleMobile" id="saleMobile" value="${saleMobile}"/>
     				</div>
     					<label class="col-sm-1 col-xs-1 col-md-1 control-label">卖家类型</label>
 	    			<div class="col-sm- col-xs-1 col-md-1">	
@@ -154,7 +172,9 @@ td{
 		    					<option value="010002" <c:if test="${saleUserTypeCd=='010002'}">selected="selected"</c:if>>平台卖家</option>
 		    			</select>	
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/>
+    					<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>	
+    			</div>
 			   </div>
     		</form>
    		</div>

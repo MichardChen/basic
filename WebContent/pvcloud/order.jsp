@@ -58,6 +58,28 @@ function check(){
 	}
 	return true;
 }
+
+function exportData(){
+	if(confirm('确认要导出数据?')){
+		var title = $("#title").val();
+		var payTime = $("#payTime").val();
+		var orderNo = $("#orderNo").val();
+		var saleMobile = $("#saleMobile").val();
+		var buyMobile = $("#buyMobile").val();
+		var saleUserTypeCd = $("#saleUserTypeCd").val();
+		var status = $("#status").val();
+		if(saleMobile != ""){
+			if(saleUserTypeCd == ""){
+				alert("请先选择商家类型");
+				return false;
+			}
+		}
+		var params = "?title="+title+"&payTime="+payTime+"&saleMobile="+saleMobile+"&saleUserTypeCd="+saleUserTypeCd+"&orderNo="+orderNo+"&buyMobile="+buyMobile+"&status="+status;
+		window.location.href="${CONTEXT_PATH}/orderInfo/exportData"+params;
+	}else{
+		return false;
+	}
+}
 </script>
 <style>
 .ys1{
@@ -140,25 +162,25 @@ td{
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">订单时间</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+	    				<input type="text" class="form-control" name="title" id="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">付款时间</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="payTime" value="${payTime}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+	    				<input type="text" class="form-control" name="payTime" id="payTime" value="${payTime}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">订单号</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="orderNo" value="${orderNo}"/>
+	    				<input type="text" class="form-control" name="orderNo" id="orderNo" value="${orderNo}"/>
     				</div>
     			</div>
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">买家注册电话</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="buyMobile" value="${buyMobile}"/>
+	    				<input type="text" class="form-control" name="buyMobile" id="buyMobile" value="${buyMobile}"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">卖家注册电话</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="saleMobile" value="${saleMobile}"/>
+	    				<input type="text" class="form-control" name="saleMobile" id="saleMobile" value="${saleMobile}"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">卖家类型</label>
 	    			<div class="col-sm- col-xs-1 col-md-1">	
@@ -170,13 +192,15 @@ td{
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
 	    			<div class="col-sm- col-xs-1 col-md-1">	
-	    				<select name="status" style="height: 30px;width: 120px;">
+	    				<select name="status" id="status" style="height: 30px;width: 120px;">
 		    					<option></option>
 		    					<option value="140003" <c:if test="${status=='140003'}">selected="selected"</c:if>>下单成功</option>
 		    					<option value="140004" <c:if test="${status=='140004'}">selected="selected"</c:if>>下单失败</option>
 		    			</select>	
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/>
+    					<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>	
+    			</div>
 			   </div>
     		</form>
    		</div>

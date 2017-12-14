@@ -34,6 +34,20 @@ function loadProject(data){
 		}
 	});
 }
+function exportData(){
+	if(confirm('确认要导出数据?')){
+		var time = $("#time").val();
+		var mobile = $("#mobile").val();
+		var name = $("#name").val();
+		var type = $("#type").val();
+		var status=$("#status").val();
+		
+		var params = "?time="+time+"&mobile="+mobile+"&name="+name+"&type="+type+"&status="+status;
+		window.location.href="${CONTEXT_PATH}/cashJournalInfo/exportData"+params;
+	}else{
+		return false;
+	}
+}
 </script>
 <style>
 .ys1{
@@ -117,21 +131,21 @@ td{
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">申请时间</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="time" value="${time}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+	    				<input type="text" class="form-control" name="time" id="time" value="${time}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
     					<label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机号码</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
+	    				<input type="text" class="form-control" name="mobile" id="mobile" value="${mobile}"/>
     				</div>
     				</div>
     				<div style="" class="form-group">
     					<label class="col-sm-1 col-xs-1 col-md-1 control-label">用户名</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="name" value="${name}"/>
+	    				<input type="text" class="form-control" name="name" id="name" value="${name}"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">类型</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
-	    				<select name="type" style="height: 30px;width: 80px;">
+	    				<select name="type" id="type" style="height: 30px;width: 80px;">
 	    					<option></option>
 	    					<option value="290001" <c:if test="${type=='290001'}">selected="selected"</c:if>>下单</option>
 	    					<option value="290002" <c:if test="${type=='290002'}">selected="selected"</c:if>>提现</option>
@@ -141,14 +155,16 @@ td{
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
-	    				<select name="status" style="height: 30px;width: 120px;">
+	    				<select name="status" id="status" style="height: 30px;width: 120px;">
 	    					<option></option>
 	    					<option value="300001" <c:if test="${status=='300001'}">selected="selected"</c:if>>申请中</option>
 	    					<option value="300002" <c:if test="${status=='300002'}">selected="selected"</c:if>>交易成功</option>
 	    					<option value="300003" <c:if test="${status=='300003'}">selected="selected"</c:if>>交易失败</option>
 	    				</select>	
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/>
+    						<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>	
+    			</div>
 			   </div>
     		</form>
    		</div>

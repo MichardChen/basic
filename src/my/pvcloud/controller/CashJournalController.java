@@ -1,16 +1,27 @@
 package my.pvcloud.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import my.core.constants.Constants;
+import my.core.model.BankCardRecord;
 import my.core.model.CashJournal;
 import my.core.model.CodeMst;
 import my.core.model.Member;
+import my.core.model.MemberBankcard;
 import my.pvcloud.model.CashListModel;
 import my.pvcloud.service.CashJournalService;
 import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.ExportUtil;
 import my.pvcloud.util.StringUtil;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.huadalink.route.ControllerBind;
 
 import com.jfinal.aop.Enhancer;
@@ -214,5 +225,135 @@ public class CashJournalController extends Controller {
 	 * 更新
 	 */
 	public void update(){
+	}
+	
+	public void exportData() {
+		String path = "F:\\upload\\资金记录.xls";
+		try {
+			String pstatus = getPara("status");
+			String ptype = getPara("type");
+			String pmobile = getPara("mobile");
+			String pname = getPara("name");
+			String ptime = getPara("time");
+			
+			FileOutputStream os = new FileOutputStream(new File(path));
+			// 创建一个workbook 对应一个excel应用文件
+			XSSFWorkbook workBook = new XSSFWorkbook();
+			// 在workbook中添加一个sheet,对应Excel文件中的sheet
+			XSSFSheet sheet = workBook.createSheet("提现申请");
+			ExportUtil exportUtil = new ExportUtil(workBook, sheet);
+			XSSFCellStyle headStyle = exportUtil.getHeadStyle();
+			XSSFCellStyle bodyStyle = exportUtil.getBodyStyle();
+
+			XSSFRow headRow = sheet.createRow(0);
+			XSSFCell cell = null;
+			String[] titles = new String[] {"用户名", "注册手机号码", "订单号", "流水账单号", "类型", "状态","时间","金额","期初金额","期末金额","备注"};
+			for (int i = 0; i < titles.length; i++) {
+				cell = headRow.createCell(i);
+				cell.setCellStyle(headStyle);
+				cell.setCellValue(titles[i]);
+			}
+
+			List<CashJournal> list = CashJournal.dao.exportData(ptype,pstatus,ptime,pmobile,pname);
+			if (list != null && list.size() > 0) {
+				for (int j = 0; j < list.size(); j++) {
+					XSSFRow bodyRow = sheet.createRow(j + 1);
+
+					CashJournal record = list.get(j);
+
+					// 申请时间
+					cell = bodyRow.createCell(4);
+					cell.setCellStyle(bodyStyle);
+					cell.setCellValue(StringUtil.toString(record.getTimestamp("create_time")));
+					//期末金额
+					cell = bodyRow.createCell(9);
+					cell.setCellStyle(bodyStyle);
+					cell.setCellValue(StringUtil.toString(record.getBigDecimal("closing_balance")));
+					//时间
+					cell = bodyRow.createCell(6);
+					cell.setCellStyle(bodyStyle);
+					cell.setCellValue(DateUtil.format(record.getDate("occur_date")));
+					
+					//订单号
+					cell = bodyRow.createCell(2);
+					cell.setCellStyle(bodyStyle);
+					cell.setCellValue(record.getStr("trade_no"));
+					//流水单号
+					cell = bodyRow.createCell(3);
+					cell.setCellStyle(bodyStyle);
+					cell.setCellValue(record.getStr("cash_journal_no"));
+					//备注
+					cell = bodyRow.createCell(10);
+					cell.setCellStyle(bodyStyle);
+					cell.setCellValue(record.getStr("remarks"));
+					if(StringUtil.equals(record.getStr("member_type_cd"), Constants.USER_TYPE.PLATFORM_USER)){
+						//用户名
+						cell = bodyRow.createCell(0);
+						cell.setCellStyle(bodyStyle);
+						cell.setCellValue("平台");
+						//手机号码
+						cell = bodyRow.createCell(1);
+						cell.setCellStyle(bodyStyle);
+						cell.setCellValue("4006-119-529");
+					}else{
+						Member member = Member.dao.queryById(record.getInt("member_id"));
+						if(member != null){
+							//用户名
+							cell = bodyRow.createCell(0);
+							cell.setCellStyle(bodyStyle);
+							cell.setCellValue(member.getStr("name"));
+							//手机号码
+							cell = bodyRow.createCell(1);
+							cell.setCellStyle(bodyStyle);
+							cell.setCellValue(member.getStr("mobile"));
+						}
+					}
+					
+					CodeMst feeStatus = CodeMst.dao.queryCodestByCode(record.getStr("fee_status"));
+					if(feeStatus != null){
+						//状态
+						cell = bodyRow.createCell(5);
+						cell.setCellStyle(bodyStyle);
+						cell.setCellValue(feeStatus.getStr("name"));
+					}else{
+						cell = bodyRow.createCell(5);
+						cell.setCellStyle(bodyStyle);
+						cell.setCellValue("");
+					}
+					CodeMst piType = CodeMst.dao.queryCodestByCode(record.getStr("pi_type"));
+					if(piType != null){
+						//类型
+						cell = bodyRow.createCell(4);
+						cell.setCellStyle(bodyStyle);
+						cell.setCellValue(piType.getStr("name"));
+					}else{
+						cell = bodyRow.createCell(4);
+						cell.setCellStyle(bodyStyle);
+						cell.setCellValue("");
+					}
+					//类型
+					cell = bodyRow.createCell(4);
+					cell.setCellStyle(bodyStyle);
+					cell.setCellValue(piType.getStr("name"));
+					//金额
+					cell = bodyRow.createCell(7);
+					cell.setCellStyle(bodyStyle);
+					cell.setCellValue(StringUtil.toString(record.getBigDecimal("act_rev_amount")));
+					//期初金额
+					cell = bodyRow.createCell(8);
+					cell.setCellStyle(bodyStyle);
+					cell.setCellValue(StringUtil.toString(record.getBigDecimal("opening_balance")));
+				}
+			}
+			workBook.write(os);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// 判断路径是否存在
+		if (new File(path).isFile()) {
+			renderFile(new File(path));
+		} else {
+			renderNull();
+		}
 	}
 }

@@ -44,6 +44,17 @@ function loadProject(data){
 		}
 	});
 }
+function exportData(){
+	if(confirm('确认要导出数据?')){
+		var time = $("#time").val();
+		var mobile = $("#mobile").val();
+		var status = $("#status").val();
+		var params = "?time="+time+"&mobile="+mobile+"&status="+status;
+		window.location.href="${CONTEXT_PATH}/withdrawInfo/exportData"+params;
+	}else{
+		return false;
+	}
+}
 </script>
 <style>
 .ys1{
@@ -127,22 +138,24 @@ td{
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">申请时间</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="time" value="${time}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+	    				<input type="text" class="form-control" name="time" id="time" value="${time}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机号</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
+	    				<input type="text" class="form-control" name="mobile" id="mobile" value="${mobile}"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
-	    				<select name="status" style="height: 30px;width: 150px;">
+	    				<select name="status" id="status" style="height: 30px;width: 150px;">
 	    					<option></option>
 	    					<option value="190001" <c:if test="${status=='190001'}">selected="selected"</c:if>>审核中</option>
 	    					<option value="190002" <c:if test="${status=='190002'}">selected="selected"</c:if>>审核通过并转账</option>
 	    					<option value="190003" <c:if test="${status=='190003'}">selected="selected"</c:if>>审核失败</option>
 	    				</select>	
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/>
+    					<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>	
+    			</div>
 			   </div>
     		</form>
    		</div>

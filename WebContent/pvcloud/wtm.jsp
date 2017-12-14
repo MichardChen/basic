@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>入库茶叶信息</title>
+<title>在库茶叶信息</title>
 <%@include file="../common/header.jsp"%>
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
@@ -57,6 +57,25 @@ function check(){
 		}
 	}
 	return true;
+}
+
+function exportData(){
+	if(confirm('确认要导出数据?')){
+		var date = $("#date").val();
+		var tea = $("#tea").val();
+		var saleMobile = $("#saleMobile").val();
+		var saleUserTypeCd = $("#saleUserTypeCd").val();
+		if(saleMobile != ""){
+			if(saleUserTypeCd == ""){
+				alert("请先选择商家类型");
+				return false;
+			}
+		}
+		var params = "?date="+date+"&tea="+tea+"&saleMobile="+saleMobile+"&saleUserTypeCd="+saleUserTypeCd;
+		window.location.href="${CONTEXT_PATH}/wtmInfo/exportData"+params;
+	}else{
+		return false;
+	}
 }
 </script>
 <style>
@@ -131,7 +150,7 @@ td{
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
     	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">入库茶叶信息</div>
+	   		<div style="font-size: 30px;color: white;font-weight: bold;">在库茶叶信息</div>
 	   </div>
     	<hr/>	
 	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
@@ -140,7 +159,7 @@ td{
     			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">入库时间</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="date" value="${date}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+	    				<input type="text" class="form-control" name="date" id="date" value="${date}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">茶叶名称</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
@@ -158,7 +177,9 @@ td{
 		    					<option value="010002" <c:if test="${saleUserTypeCd=='010002'}">selected="selected"</c:if>>平台</option>
 		    			</select>	
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/>
+    						<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>	
+    			</div>
 			   </div>
     		</form>
    		</div>

@@ -98,4 +98,47 @@ public class CashJournal extends Model<CashJournal> {
 			return CashJournal.dao.paginate(page, size, select, sql);
 		}
 	}
+	
+	public List<CashJournal> exportData(String piType,String status,String time,String mobile,String name){
+		
+		if(StringUtil.isBlank(mobile)){
+			List<Object> param=new ArrayList<Object>();
+			StringBuffer strBuf=new StringBuffer();
+			if(StringUtil.isNoneBlank(piType)){
+				strBuf.append(" and pi_type='"+piType+"'");
+			}
+			if(StringUtil.isNoneBlank(status)){
+				strBuf.append(" and fee_status='"+status+"'");
+			}
+			if(StringUtil.isNoneBlank(time)){
+				strBuf.append(" and occur_date='"+time+"'");
+			}
+				
+			String sql=" from t_cash_journal where 1=1 "+strBuf+" order by create_time desc,cash_journal_no desc";
+			String select="select * ";
+			return CashJournal.dao.find(select+sql);
+		}else{
+			List<Object> param=new ArrayList<Object>();
+			StringBuffer strBuf=new StringBuffer();
+			if(StringUtil.isNoneBlank(piType)){
+				strBuf.append(" and a.pi_type='"+piType+"'");
+			}
+			if(StringUtil.isNoneBlank(status)){
+				strBuf.append(" and a.fee_status='"+status+"'");
+			}
+			if(StringUtil.isNoneBlank(time)){
+				strBuf.append(" and a.occur_date='"+time+"'");
+			}
+			if(StringUtil.isNoneBlank(mobile)){
+				strBuf.append(" and b.mobile='"+mobile+"'");	
+			}
+			if(StringUtil.isNoneBlank(name)){
+				strBuf.append(" and b.name='"+name+"'");	
+			}
+			
+			String sql=" from t_cash_journal a inner join t_member b on a.member_id=b.id where 1=1 "+strBuf+" order by a.create_time desc";
+			String select="select a.* ";
+			return CashJournal.dao.find(select+sql);
+		}
+	}
 }
