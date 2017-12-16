@@ -31,6 +31,7 @@ public class StoreEvaluateController extends Controller {
 	public void index(){
 		
 		removeSessionAttr("title");
+		removeSessionAttr("title1");
 		removeSessionAttr("mobile");
 		removeSessionAttr("flg");
 		Page<StoreEvaluate> list = service.queryByPage(page, size);
@@ -73,6 +74,9 @@ public class StoreEvaluateController extends Controller {
 		String title=getSessionAttr("title");
 		this.setSessionAttr("title",title);
 		
+		String title1=getSessionAttr("title1");
+		this.setSessionAttr("title1",title1);
+		
 		String mobile=getSessionAttr("mobile");
 		this.setSessionAttr("mobile",mobile);
 		
@@ -83,7 +87,7 @@ public class StoreEvaluateController extends Controller {
         if (page==null || page==0) {
             page = 1;
         }
-        Page<StoreEvaluate> list = service.queryByPageParams(page, size,title,mobile,flg);
+        Page<StoreEvaluate> list = service.queryByPageParams(page, size,title,mobile,flg,title1);
 		ArrayList<AdminEvaluateListModel> models = new ArrayList<>();
 		AdminEvaluateListModel model = null;
 		for(StoreEvaluate data : list.getList()){
@@ -125,6 +129,10 @@ public class StoreEvaluateController extends Controller {
 		String ptitle = getPara("title");
 		title = ptitle;
 		
+		String title1 = getSessionAttr("title1");
+		String ptitle1 = getPara("title1");
+		title1 = ptitle1;
+		
 		String mobile = getSessionAttr("mobile");
 		String pmobile = getPara("mobile");
 		mobile = pmobile;
@@ -134,6 +142,7 @@ public class StoreEvaluateController extends Controller {
 		flg = pflg;
 		
 		this.setSessionAttr("title",title);
+		this.setSessionAttr("title1",title1);
 		this.setSessionAttr("mobile",mobile);
 		this.setSessionAttr("flg",flg);
 		Integer page = getParaToInt(1);
@@ -141,7 +150,7 @@ public class StoreEvaluateController extends Controller {
 			page = 1;
 		}
 		    
-		Page<StoreEvaluate> list = service.queryByPageParams(page, size,title,mobile,flg);
+		Page<StoreEvaluate> list = service.queryByPageParams(page, size,title,mobile,flg,title1);
 		ArrayList<AdminEvaluateListModel> models = new ArrayList<>();
 		AdminEvaluateListModel model = null;
 		for(StoreEvaluate data : list.getList()){

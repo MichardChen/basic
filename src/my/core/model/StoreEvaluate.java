@@ -22,7 +22,7 @@ public class StoreEvaluate extends Model<StoreEvaluate> {
 		return StoreEvaluate.dao.paginate(page, size, select, sql);
 	}
 	
-	public Page<StoreEvaluate> queryByPageParams(int page,int size,String date,String mobile,String flg){
+	public Page<StoreEvaluate> queryByPageParams(int page,int size,String date,String mobile,String flg,String title1){
 		
 		Member member = Member.dao.queryMember(mobile);
 		int storeId = 0;
@@ -33,52 +33,26 @@ public class StoreEvaluate extends Model<StoreEvaluate> {
 			}
 		}
 		
+		String sql = " from t_store_evaluate where 1=1 ";
+		String select = "select * ";
 		if(StringUtil.isNoneBlank(flg)){
 			int flgs = StringUtil.toInteger(flg);
-			if(storeId == 0){
-				if(StringUtil.isNoneBlank(date)){
-					String sql=" from t_store_evaluate where flg="+flgs+" and create_time like '%"+date+"%' order by create_time desc,flg desc";
-					String select="select * ";
-					return StoreEvaluate.dao.paginate(page, size, select, sql);
-				}else{
-					String sql=" from t_store_evaluate where flg="+flgs+" order by create_time desc,flg desc";
-					String select="select * ";
-					return StoreEvaluate.dao.paginate(page, size, select, sql);
-				}
-			}else{
-				if(StringUtil.isNoneBlank(date)){
-					String sql=" from t_store_evaluate where store_id="+storeId+" and flg="+flgs+" and create_time like '%"+date+"%' order by create_time desc,flg desc";
-					String select="select * ";
-					return StoreEvaluate.dao.paginate(page, size, select, sql);
-				}else{
-					String sql=" from t_store_evaluate where store_id="+storeId+" and flg="+flgs+" order by create_time desc,flg desc";
-					String select="select * ";
-					return StoreEvaluate.dao.paginate(page, size, select, sql);
-				}
-			}
-		}else{
-			if(storeId == 0){
-				if(StringUtil.isNoneBlank(date)){
-					String sql=" from t_store_evaluate where create_time like '%"+date+"%' order by create_time desc,flg desc";
-					String select="select * ";
-					return StoreEvaluate.dao.paginate(page, size, select, sql);
-				}else{
-					String sql=" from t_store_evaluate order by create_time desc,flg desc";
-					String select="select * ";
-					return StoreEvaluate.dao.paginate(page, size, select, sql);
-				}
-			}else{
-				if(StringUtil.isNoneBlank(date)){
-					String sql=" from t_store_evaluate where store_id="+storeId+" and create_time like '%"+date+"%' order by create_time desc,flg desc";
-					String select="select * ";
-					return StoreEvaluate.dao.paginate(page, size, select, sql);
-				}else{
-					String sql=" from t_store_evaluate where store_id="+storeId+" order by create_time desc,flg desc";
-					String select="select * ";
-					return StoreEvaluate.dao.paginate(page, size, select, sql);
-				}
-			}
+			sql = sql + " and flg="+flgs;
 		}
+		
+		if(StringUtil.isNoneBlank(date)){
+			date = date+" 00:00:00";
+			sql = sql + " and create_time >='"+date+"' ";
+		}
+		if(StringUtil.isNoneBlank(title1)){
+			title1 = title1+" 23:59:59";
+			sql = sql + " and create_time <='"+title1+"' ";
+		}
+		if(StringUtil.isNoneBlank(mobile)){
+			sql = sql + " and store_id="+storeId;
+		}
+			
+		return StoreEvaluate.dao.paginate(page, size, select, sql);
 	}
 	
 	public boolean updateInfo(StoreEvaluate tea){

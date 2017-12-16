@@ -169,4 +169,68 @@ public class OrderItem extends Model<OrderItem> {
 		return OrderItem.dao.find("select * from t_order_item where create_time like '%" + date
 				+ "%' and sale_user_type='010002' order by update_time desc limit " + fromRow + "," + pageSize);
 	}
+	
+	public Page<OrderItem> querySellOrderItemList(int pageSize, int pageNum) {
+		String select = "select *";
+		String sql = " from t_order_item where sale_user_type='010002' order by update_time desc";
+		return OrderItem.dao.paginate(pageNum, pageSize, select, sql);
+	}
+	
+	public Page<OrderItem> querySellOrderItemListByParams(int pageSize, int pageNum,String date,String buyMobile,String sellMobile,int sellId) {
+		if(StringUtil.isNoneBlank(date)){
+			String select = "select a.* ";
+			String sql = " from t_order_item a inner join t_member b on a.member_id=b.id where a.create_time like '%" + date
+					+ "%' and a.sale_user_type='010002'";
+			if(StringUtil.isNoneBlank(buyMobile)){
+				sql = sql + " and b.mobile='"+buyMobile+"'";
+			}
+			
+			if(StringUtil.isNoneBlank(sellMobile)&&(sellId != 0)){
+				sql = sql + " and b.store_id="+sellId;
+			}
+			
+			sql = sql + " order by update_time desc";
+			return  OrderItem.dao.paginate(pageNum, pageSize, select, sql);
+		}else{
+			String select = "select a.* ";
+			String sql = " from t_order_item a inner join t_member b on a.member_id=b.id where a.sale_user_type='010002'";
+			if(StringUtil.isNoneBlank(buyMobile)){
+				sql = sql + " and b.mobile='"+buyMobile+"'";
+			}
+			if(StringUtil.isNoneBlank(sellMobile)&&(sellId != 0)){
+				sql = sql + " and b.store_id="+sellId;
+			}
+			sql = sql + " order by update_time desc";
+			return  OrderItem.dao.paginate(pageNum, pageSize, select, sql);
+		}
+	}
+	
+	public List<OrderItem> exportSellData(String date,String buyMobile,String sellMobile,int sellId) {
+		if(StringUtil.isNoneBlank(date)){
+			String select = "select a.* ";
+			String sql = " from t_order_item a inner join t_member b on a.member_id=b.id where a.create_time like '%" + date
+					+ "%' and a.sale_user_type='010002'";
+			if(StringUtil.isNoneBlank(buyMobile)){
+				sql = sql + " and b.mobile='"+buyMobile+"'";
+			}
+			
+			if(StringUtil.isNoneBlank(sellMobile)&&(sellId != 0)){
+				sql = sql + " and b.store_id="+sellId;
+			}
+			
+			sql = sql + " order by update_time desc";
+			return  OrderItem.dao.find(select+sql);
+		}else{
+			String select = "select a.* ";
+			String sql = " from t_order_item a inner join t_member b on a.member_id=b.id where a.sale_user_type='010002'";
+			if(StringUtil.isNoneBlank(buyMobile)){
+				sql = sql + " and b.mobile='"+buyMobile+"'";
+			}
+			if(StringUtil.isNoneBlank(sellMobile)&&(sellId != 0)){
+				sql = sql + " and b.store_id="+sellId;
+			}
+			sql = sql + " order by update_time desc";
+			return  OrderItem.dao.find(select+sql);
+		}
+	}
 }

@@ -26,8 +26,21 @@ public class OrderListVO implements Serializable{
 	private String cancle;
 	private String originStock;
 	private String size;
+	private String sellMobile;
+	private String sellName;
 	
-	
+	public String getSellMobile() {
+		return sellMobile;
+	}
+	public void setSellMobile(String sellMobile) {
+		this.sellMobile = sellMobile;
+	}
+	public String getSellName() {
+		return sellName;
+	}
+	public void setSellName(String sellName) {
+		this.sellName = sellName;
+	}
 	public String getSize() {
 		return size;
 	}

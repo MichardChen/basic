@@ -466,7 +466,7 @@ public class MemberController extends Controller {
 	        
 	        XSSFRow headRow = sheet.createRow(0);  
 	        XSSFCell cell = null;  
-	        String[] titles = new String[]{"用户名","用户编码	","昵称","注册号码","用户角色","绑定门店","余额","已提现金额","申请提现中金额","支付宝充值金额","银行卡审核状态","注册时间"};
+	        String[] titles = new String[]{"用户名","用户编码	","昵称","注册号码","用户角色","经销商门店","余额","已提现金额","申请提现中金额","支付宝充值金额","银行卡审核状态","注册时间"};
 	        for (int i = 0; i < titles.length; i++){  
 	            cell = headRow.createCell(i);  
 	            cell.setCellStyle(headStyle);  

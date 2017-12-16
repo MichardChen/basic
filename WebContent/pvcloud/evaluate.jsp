@@ -102,7 +102,12 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
-    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机</label>
+    				<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="title1" value="${title1}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+    				</div>
+    			</div>
+    			<div style="" class="form-group">
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">门店注册手机</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
     				</div>

@@ -10,7 +10,7 @@ public class StoreEvaluateService {
 		return StoreEvaluate.dao.queryByPage(page, size);
 	}
 	
-	public Page<StoreEvaluate> queryByPageParams(int page,int size,String date,String mobile,String flg){
-		return StoreEvaluate.dao.queryByPageParams(page, size,date,mobile,flg);
+	public Page<StoreEvaluate> queryByPageParams(int page,int size,String date,String mobile,String flg,String title1){
+		return StoreEvaluate.dao.queryByPageParams(page, size,date,mobile,flg,title1);
 	}
 }

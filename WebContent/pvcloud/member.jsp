@@ -255,7 +255,7 @@ td{
     				</div>
     			</div>
     			<div style="" class="form-group">
-    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">门店</label>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">经销商</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="storeName" id="storeName" value="${storeName}"/>
     				</div>
@@ -279,7 +279,7 @@ td{
     				<th>昵称</th>
     				<th>注册号码</th>
     				<th>用户角色</th>
-    				<th>绑定门店</th>
+    				<th>经销商门店</th>
     				<th>余额</th>
     				<th>已提现金额</th>
     				<th>申请提现中金额</th>
