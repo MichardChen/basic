@@ -153,7 +153,10 @@ td{
 	    					<option value="190003" <c:if test="${status=='190003'}">selected="selected"</c:if>>审核失败</option>
 	    				</select>	
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1">
+    					<input type="submit" class="ys2" value=""/>
+    			</div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1">
     					<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>	
     			</div>
 			   </div>

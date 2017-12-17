@@ -162,8 +162,11 @@ td{
 	    					<option value="300003" <c:if test="${status=='300003'}">selected="selected"</c:if>>交易失败</option>
 	    				</select>	
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/>
-    						<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>	
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1">
+    				<input type="submit" class="ys2" value=""/>
+    			</div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1">
+    				<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>	
     			</div>
 			   </div>
     		</form>

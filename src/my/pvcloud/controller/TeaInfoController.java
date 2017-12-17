@@ -911,7 +911,7 @@ public class TeaInfoController extends Controller {
 	}
 	
 	public void exportData(){
-		 String path = "F:\\upload\\用户数据.xls";
+		 String path = "F:\\upload\\茶叶数据.xls";
 		 try {  
 			
 		 FileOutputStream os = new FileOutputStream(new File(path));  

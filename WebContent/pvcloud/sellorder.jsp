@@ -170,8 +170,6 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="orderNo" id="orderNo" value="${orderNo}"/>
     				</div>  --%>
-    			</div>
-    			<div style="" class="form-group">
     				<%-- <label class="col-sm-1 col-xs-1 col-md-1 control-label">买家注册电话</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="buyMobile" id="buyMobile" value="${buyMobile}"/>
@@ -196,8 +194,11 @@ td{
 		    					<option value="140004" <c:if test="${status=='140004'}">selected="selected"</c:if>>下单失败</option>
 		    			</select>	
     				</div> --%>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/>
-    					 <button type="button" class="btn btn-primary" onclick="exportData()">导出</button> 
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1">
+    				<input type="submit" class="ys2" value=""/>
+    			</div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1">
+    				<button type="button" class="btn btn-primary" onclick="exportData()">导出</button> 
     			</div>
 			   </div>
     		</form>

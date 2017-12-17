@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>发票管理</title>
+<title>字典管理</title>
 <%@include file="../common/header.jsp"%>
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
@@ -17,35 +17,6 @@
 var str='${message}';
 if(str!=''){
   alert(str);
-}
-function confrim(){
-	if(confirm('确认要修改数据?')){
-		return true;
-	}else{
-		return false;
-	}
-}
-function exportData(){
-	if(confirm('确认要导出数据?')){
-		var status = $("#status").val();
-		var mobile = $("#mobile").val();
-		var title = $("#title").val();
-		var params = "?status="+status+"&mobile="+mobile+"&title="+title;
-		window.location.href="${CONTEXT_PATH}/invoiceInfo/exportData"+params;
-	}else{
-		return false;
-	}
-}
-function edit(data){
-	$(".modal-title").html("修改");
-	$.ajax({
-		url : "${CONTEXT_PATH}/invoiceInfo/editInt",
-		data : {id:data},
-		dataType : "html",
-		success : function(result){
-			$('.modal-body').html(result);
-		}
-	});
 }
 </script>
 <style>
@@ -120,35 +91,22 @@ td{
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
     	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">发票列表</div>
+	   		<div style="font-size: 30px;color: white;font-weight: bold;">字典信息</div>
 	   </div>
     	<hr/>	
     	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
    		<div class="" style="margin-top:15px;margin-bottom:15px;">
-    		<form method="post" action="${CONTEXT_PATH}/invoiceInfo/queryByConditionByPage" class="form-horizontal">
+    		<form method="post" action="${CONTEXT_PATH}/codemstInfo/queryByConditionByPage" class="form-horizontal">
     			<div style="" class="form-group">
-    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">申请时间</label>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">名称</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="title" id="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
+	    				<input type="text" class="form-control" name="name" value="${name}"/>
     				</div>
-    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">注册手机</label>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">类型码</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
-	    				<input type="text" class="form-control" name="mobile" id="mobile" value="${mobile}"/>
+	    				<input type="text" class="form-control" name="pcode" value="${pcode}"/>
     				</div>
-    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
-	    			<div class="col-sm-2 col-xs-2 col-md-2">
-	    				<select name="status" id="status" style="height: 30px;width: 80px;">
-	    					<option></option>
-	    					<option value="340001" <c:if test="${status=='340001'}">selected="selected"</c:if>>待处理</option>
-	    					<option value="340002" <c:if test="${status=='340002'}">selected="selected"</c:if>>已处理</option>
-	    				</select>	
-    				</div>
-    				<div class="col-sm-1 col-xs-1 col-md-1">
-    							<input type="submit" class="ys2" value=""/>
-    				</div>
-    				<div class="col-sm-1 col-xs-1 col-md-1">
-    							<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>
-    				</div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
 			   </div>
     		</form>
    		</div>
@@ -160,17 +118,10 @@ td{
     		<thead>
     			<tr>
     				<th>序列号</th>
-    				<th>用户名</th>
-    				<th>注册手机号码</th>
-    				<th>开票金额</th>
-    				<th>发票抬头</th>
-    				<th>发票类型</th>
-    				<th>税务单号</th>
-    				<th>备注</th>
-    				<th>处理者</th>
-    				<th>申请状态</th>
-    				<th>申请时间</th>
-    				<th>操作</th>
+    				<th>代码</th>
+    				<th>名称</th>
+    				<th>类型</th>
+    				<th>操作时间</th>
     			</tr>
     		</thead>
     		<tbody>
@@ -183,20 +134,10 @@ td{
 		    			<c:forEach var="s" items="${sList}" varStatus="status">	
 		    				<tr class="bOrder">
 		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
-		    					<td>${s.userName}</td>
-		    					<td>${s.userMobile}</td>
-		    					<td>${s.moneys}</td>
-		    					<td>${s.title}</td>
-		    					<td>${s.type}</td>
-		    					<td>${s.taxNo}</td>
-		    					<td>${s.mark}</td>
-		    					<td>${s.updateBy}</td>
-		    					<td>${s.status}</td>
+		    					<td>${s.code}</td>
+		    					<td>${s.name}</td>
+		    					<td>${s.pname}</td>
 		    					<td>${s.createTime}</td>
-		    					<td>${s.createTime}</td>
-		    					<td>
-		    							<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="edit(${s.id})"/>
-		    					</td>
 		    				</tr>
 		    			</c:forEach>
 					</c:if>
@@ -209,7 +150,7 @@ td{
 		            <c:set var="pageSize" scope="request" value="${list.pageSize}" />
 		            <c:set var="totalPage" scope="request" value="${list.totalPage}" />
 		            <c:set var="totalRow" scope="request" value="${list.totalRow}" />
-					<c:set var="pageUrl" scope="request" value="${CONTEXT_PATH}/invoiceInfo/queryByPage/-" />    	
+					<c:set var="pageUrl" scope="request" value="${CONTEXT_PATH}/codemstInfo/queryByPage/-"/>    	
 			    	<%@include file="../common/page.jsp"%>
 				</div>
     	</div>
@@ -218,23 +159,5 @@ td{
 	</div>
 </div>
 <%@include file="../common/layout.jsp"%>
-<div class="modal fade bs-example-modal-lg" id="myModal" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content" style="width: 120%;margin-left:-10%;">
-			<div class="modal-header">
-				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">编辑</h4>
-			</div>
-		   <form action="${CONTEXT_PATH}/invoiceInfo/updateInvoice" method="post">
-				<div class="modal-body">
-				</div>
-				<div class="modal-footer" style="margin-top:20px;">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
 </body>
 </html>

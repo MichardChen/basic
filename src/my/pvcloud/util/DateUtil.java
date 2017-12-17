@@ -33,6 +33,10 @@ public final class DateUtil {
 	public static final String format(Date date) {
 		return format(date, PATTERN);
 	}
+	
+	public static final String formatYM(Date date) {
+		return format(date, "yyyy-MM");
+	}
 
 	/**
 	 * 格式化日期

@@ -1,5 +1,6 @@
 package my.core.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.huadalink.plugin.tablebind.TableBind;
@@ -86,5 +87,13 @@ public class StoreEvaluate extends Model<StoreEvaluate> {
 	
 	public int updateFlg(int id,int flg){
 		return Db.update("update t_store_evaluate set flg="+flg+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
+	}
+	
+	public int sumStorePoint(int storeId,String date) {
+		BigDecimal sum = Db.queryBigDecimal("select sum(service_point) from t_store_evaluate where store_id=" + storeId+" and flg=1");
+		if(sum == null){
+			return 0;
+		}
+		return sum.intValue();
 	}
 }

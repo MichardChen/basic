@@ -236,6 +236,7 @@ td{
     				<th>序列号</th>
     				<th>名称</th>
     				<th>店铺编码</th>
+    				<th>本月有效评分</th>
     				<th>用户名</th>
     				<th>注册手机号</th>
     				<th>地址</th>
@@ -254,9 +255,10 @@ td{
 		    			<c:forEach var="s" items="${sList}" varStatus="status">	
 		    				<tr class="bOrder">
 		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
-		    					<td>${s.title }</td>
-		    					<td>${s.keyCode }</td>
-		    					<td>${s.userName }</td>
+		    					<td>${s.title}</td>
+		    					<td>${s.keyCode}</td>
+		    					<td>${s.point}</td>
+		    					<td>${s.userName}</td>
 		    					<td>${s.mobile }</td>
 		    					<td>${s.address}</td>
 		    					<td>${s.title }</td>

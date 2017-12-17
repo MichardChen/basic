@@ -2747,6 +2747,31 @@ public class LoginService {
 		
 		double localLongtitude = Double.valueOf(dto.getLocalLongtitude());
 		double localLatitude = Double.valueOf(dto.getLocalLatitude());
+		//查找省市
+		int province = dto.getProvinceId();
+		int city = dto.getCityId();
+ 		String location = "";
+		//只选择省
+		if((province != 0)&&(city == 0)){
+			Province p = Province.dao.queryProvince(province);
+			if(p != null){
+				location = StringUtil.formateLike(p.getStr("name"));
+				//查找省下面的市
+				List<City> citys = City.dao.queryAllCityByPid(p.getInt("id"));
+				for(City city2 : citys){
+					location = location +" or city_district "+StringUtil.formateLike(city2.getStr("name"));
+				}
+			}
+		}
+		//选择省市
+		if(city != 0){
+			City citys = City.dao.queryCity(city);
+			if(citys != null){
+				location = location+StringUtil.formateLike(citys.getStr("name"));
+			}
+		}
+		
+		
 		/*CodeMst distance = CodeMst.dao.queryCodestByCode(Constants.DEFAULT_SETTING.MAP_DISTANCE);
 		Long dis = new Long("10000");
 		if(distance != null){
@@ -2770,7 +2795,124 @@ public class LoginService {
 		List<TeaStoreListVO> resultList = new ArrayList<>();
 		List<DistanceModel> sortList = new ArrayList<>();
 		TeaStoreListVO v = null;
-		List<Store> allStores = Store.dao.queryAllStoreList(Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS);
+		List<Store> allStores = Store.dao.queryAllStoreList(Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS,location);
+		for(Store store : allStores){
+			//循环
+			v = new TeaStoreListVO();
+			v.setStoreId(store.getInt("id"));
+			v.setName(store.getStr("store_name"));
+			v.setAddress(store.getStr("city_district"));
+			v.setBusinessTea(store.getStr("business_tea"));
+			double lg = Double.valueOf(String.valueOf(store.getFloat("longitude")));
+			double lat = Double.valueOf(String.valueOf(store.getFloat("latitude")));
+			double dist = GeoUtil.getDistanceOfMeter(localLatitude, localLongtitude,lat, lg);
+			StoreImage storeImage = StoreImage.dao.queryStoreFirstImages(v.getStoreId());
+			if(storeImage != null){
+				v.setImg(storeImage.getStr("img"));
+			}
+			BigDecimal decimals = new BigDecimal(dist);
+			if(decimals != null){
+				DistanceModel model = new DistanceModel();
+				BigDecimal km = decimals.divide(new BigDecimal("1000"));
+				if(km.compareTo(new BigDecimal("1")) != 1){
+					v.setDistance("1Km以内");
+					model.setDistance(new BigDecimal("1"));
+				}else{
+					v.setDistance(StringUtil.toString(km.setScale(2,BigDecimal.ROUND_HALF_DOWN))+"Km");
+					model.setDistance(km.setScale(2,BigDecimal.ROUND_HALF_DOWN));
+				}
+				model.setId(store.getInt("id"));
+				model.setVo(v);
+				sortList.add(model);
+				
+			}
+		}
+		Collections.sort(sortList);
+		int fromRow = dto.getPageSize()*(dto.getPageNum()-1);
+		int toRow = fromRow+dto.getPageSize();
+		if(sortList.size() < fromRow){
+			toRow = fromRow = sortList.size();
+		}
+		if(sortList.size() < toRow){
+			toRow = sortList.size()-1;
+		}
+		//获取fromRow到toRow之间的key值
+		for(int i=fromRow;((i<sortList.size())&&(i<=toRow));i++){
+			DistanceModel k = sortList.get(i);
+			resultList.add(k.getVo());
+		}
+				
+		Map<String, Object> map = new HashMap<>();
+		map.put("storeList", resultList);
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		return data;
+		
+		/*List<TeaStoreListVO> list = new ArrayList<>();
+		TeaStoreListVO vo = null;
+		for(Store store : stores){
+			vo = new TeaStoreListVO();
+			vo.setStoreId(store.getInt("id"));
+			vo.setName(store.getStr("store_name"));
+			vo.setAddress(store.getStr("city_district"));
+			vo.setBusinessTea(store.getStr("business_tea"));
+			double lg = Double.valueOf(String.valueOf(store.getFloat("longitude")));
+			double lat = Double.valueOf(String.valueOf(store.getFloat("latitude")));
+			double dist = GeoUtil.getDistanceOfMeter(localLatitude, localLongtitude,lat, lg);
+			BigDecimal decimals = new BigDecimal(dist);
+			if(decimals != null){
+				BigDecimal km = decimals.divide(new BigDecimal("1000"));
+				if(km.compareTo(new BigDecimal("1")) != 1){
+					vo.setDistance("1Km以内");
+				}else{
+					vo.setDistance(StringUtil.toString(km.setScale(2,BigDecimal.ROUND_HALF_DOWN))+"Km");
+				}
+			}
+			StoreImage storeImage = StoreImage.dao.queryStoreFirstImages(vo.getStoreId());
+			if(storeImage != null){
+				vo.setImg(storeImage.getStr("img"));
+			}
+			list.add(vo);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("storeList", list);
+		data.setData(map);
+		data.setCode(Constants.STATUS_CODE.SUCCESS);
+		data.setMessage("查询成功");
+		return data;*/
+	}
+	
+	public ReturnData queryTeaStoreListBackUp(LoginDTO dto){
+		
+		ReturnData data = new ReturnData();
+		
+		double localLongtitude = Double.valueOf(dto.getLocalLongtitude());
+		double localLatitude = Double.valueOf(dto.getLocalLatitude());
+		/*CodeMst distance = CodeMst.dao.queryCodestByCode(Constants.DEFAULT_SETTING.MAP_DISTANCE);
+		Long dis = new Long("10000");
+		if(distance != null){
+			dis = new Long(StringUtil.toString(distance.getInt("data1")));
+		}
+		double[] location = GeoUtil.getRectangle(localLongtitude, localLatitude, dis);
+		Float maxLongtitude = new Float(location[2]);
+		Float maxLatitude = new Float(location[3]);
+		Float minLongtitude = new Float(location[0]);
+		Float minLatitude = new Float(location[1]);
+		
+		List<Store> stores = Store.dao.queryStoreList(dto.getPageSize()
+													 ,dto.getPageNum()
+													 ,Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS
+													 ,maxLongtitude
+													 ,maxLatitude
+													 ,minLongtitude
+													 ,minLatitude);*/
+		
+		//查询出所有门店
+		List<TeaStoreListVO> resultList = new ArrayList<>();
+		List<DistanceModel> sortList = new ArrayList<>();
+		TeaStoreListVO v = null;
+		List<Store> allStores = Store.dao.queryAllStoreList(Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS,"");
 		for(Store store : allStores){
 			//循环
 			v = new TeaStoreListVO();
@@ -4277,6 +4419,10 @@ public class LoginService {
 			vo.setNickName(member.getStr("nick_name"));
 			vo.setQqNo(member.getStr("qq"));
 			vo.setWxNo(member.getStr("wx"));
+			if(member.getInt("sex") != null){
+				vo.setSex(member.getInt("sex"));
+			}
+			
 			Store store = Store.dao.queryMemberStore(dto.getUserId());
 			if(store != null){
 				if(StringUtil.equals(store.getStr("status"), "110003")){
@@ -4765,5 +4911,38 @@ public class LoginService {
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");
 		return data;
+	}
+	
+	public ReturnData updateSex(int userId,int sexFlg){
+
+		ReturnData data = new ReturnData();
+		int ret = Member.dao.updateSex(userId, sexFlg);
+		if(ret == 0){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("保存失败");
+		}else{
+			data.setCode(Constants.STATUS_CODE.SUCCESS);
+			data.setMessage("保存成功");
+		}
+			return data;
+	}
+	
+	public ReturnData queryBusinessStore(LoginDTO dto){
+		ReturnData data = new ReturnData();
+		//商家id
+		int businessId = dto.getBusinessId();
+		Store store = Store.dao.queryMemberStore(businessId);
+		if(store == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			return data;
+		}else{
+			if(!StringUtil.equals(store.getStr("status"), "110003")){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				return data;
+			}else{
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				return data;
+			}
+		}
 	}
 }

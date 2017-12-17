@@ -216,6 +216,10 @@ public class Member extends Model<Member> {
 		return Db.update("update t_member set nick_name='"+nickName+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
 	}
 	
+	public int updateSex(int userId,int sex){
+		return Db.update("update t_member set sex="+sex+",update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
+	}
+	
 	public int updateCertification(int userId,String name,String status){
 		return Db.update("update t_member set name='"+name+"',status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+userId);
 	}

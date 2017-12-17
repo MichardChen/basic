@@ -6,6 +6,23 @@ public class CodeMstVO implements Serializable{
 
 	private String code;
 	private String name;
+	private String createTime;
+	private String pname;
+	
+	
+	
+	public String getPname() {
+		return pname;
+	}
+	public void setPname(String pname) {
+		this.pname = pname;
+	}
+	public String getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
 	public String getCode() {
 		return code;
 	}

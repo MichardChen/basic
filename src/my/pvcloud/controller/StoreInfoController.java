@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +28,7 @@ import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.PayRecord;
 import my.core.model.Store;
+import my.core.model.StoreEvaluate;
 import my.core.model.StoreImage;
 import my.core.vo.MemberVO;
 import my.pvcloud.model.CityModel;
@@ -67,6 +69,7 @@ public class StoreInfoController extends Controller {
 			model.setTitle(store.getStr("store_name"));
 			model.setFlg(store.getInt("flg"));
 			model.setStatusCd(store.getStr("status"));
+			model.setPoint(StoreEvaluate.dao.sumStorePoint(model.getId(), DateUtil.formatYM(new Date())));
 			model.setAddress(store.getStr("store_address"));
 			CodeMst statusCodeMst = CodeMst.dao.queryCodestByCode(model.getStatusCd());
 			if(statusCodeMst != null){
@@ -259,6 +262,7 @@ public class StoreInfoController extends Controller {
 			model.setKeyCode(store.getStr("key_code"));
 			model.setTitle(store.getStr("store_name"));
 			model.setFlg(store.getInt("flg"));
+			model.setPoint(StoreEvaluate.dao.sumStorePoint(model.getId(), DateUtil.formatYM(new Date())));
 			model.setStatusCd(store.getStr("status"));
 			model.setAddress(store.getStr("store_address"));
 			CodeMst statusCodeMst = CodeMst.dao.queryCodestByCode(model.getStatusCd());
@@ -309,6 +313,7 @@ public class StoreInfoController extends Controller {
 				model.setTitle(store.getStr("store_name"));
 				model.setFlg(store.getInt("flg"));
 				model.setStatusCd(store.getStr("status"));
+				model.setPoint(StoreEvaluate.dao.sumStorePoint(model.getId(), DateUtil.formatYM(new Date())));
 				model.setAddress(store.getStr("store_address"));
 				CodeMst statusCodeMst = CodeMst.dao.queryCodestByCode(model.getStatusCd());
 				if(statusCodeMst != null){

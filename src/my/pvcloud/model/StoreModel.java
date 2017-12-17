@@ -13,7 +13,14 @@ public class StoreModel implements Serializable{
 	private String userName;
 	private String mobile;
 	private String keyCode;
+	private int point;
 	
+	public int getPoint() {
+		return point;
+	}
+	public void setPoint(int point) {
+		this.point = point;
+	}
 	public String getKeyCode() {
 		return keyCode;
 	}

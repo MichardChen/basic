@@ -1128,7 +1128,7 @@ public class RestfulController extends Controller{
 	}
 	
 	//我要喝茶列表
-	@Before(RequestInterceptor.class)
+	//@Before(RequestInterceptor.class)
 	public void queryTeaStoreList(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryTeaStoreList(dto));
@@ -1380,5 +1380,24 @@ public class RestfulController extends Controller{
 	public void queryMemberStoreDetail(){
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		renderJson(service.queryMemberStoreDetail(dto));
+	}
+	
+	//修改性别
+	@Before(RequestInterceptor.class)
+	public void modifySex(){
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.updateSex(dto.getUserId(), dto.getSex()));
+	}
+	
+	//查询商家id是否提交门店
+	public void queryBusinessStore() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		renderJson(service.queryBusinessStore(dto));
+	}
+	
+	//账单详情
+	public void queryCheckOrderDetail() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		render("/mobile/checkorder.jsp");
 	}
 }

@@ -177,10 +177,7 @@ public class LoginDTO extends BaseDTO{
 	private String mail;
 	private String status;
 	private String invoiceIds;
-	
-	
-	
-	
+
 	public int getMemberId() {
 		return memberId;
 	}

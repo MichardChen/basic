@@ -1,5 +1,6 @@
 package my.core.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,8 +79,12 @@ public class Store extends Model<Store> {
 		//return Store.dao.find("select * from t_store where status='"+status+"' and "+minLongtitude+"<=longitude and longitude<="+maxLongtitude+" and "+minLatitude+"<=latitude and latitude<="+maxLatitude+" order by create_time desc limit "+fromRow+","+pageSize);
 	}
 	
-	public List<Store> queryAllStoreList(String status){
-		return Store.dao.find("select * from t_store where status='"+status+"' order by create_time desc");
+	public List<Store> queryAllStoreList(String status,String location){
+		if(StringUtil.isBlank(location)){
+			return Store.dao.find("select * from t_store where status='"+status+"' order by create_time desc");
+		}else{
+			return Store.dao.find("select * from t_store where status='"+status+"' and (city_district "+location+") order by create_time desc");
+		}
 	}
 	
 	public boolean updateInfo(Store tea){

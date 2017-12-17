@@ -10,7 +10,14 @@ public class MemberDataVO implements Serializable{
 	private String qqNo;
 	private String nickName;
 	private int storeFlg;
+	private int sex;
 	
+	public int getSex() {
+		return sex;
+	}
+	public void setSex(int sex) {
+		this.sex = sex;
+	}
 	public int getStoreFlg() {
 		return storeFlg;
 	}

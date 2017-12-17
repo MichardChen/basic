@@ -165,14 +165,17 @@ td{
 	    				<input type="text" class="form-control" name="saleMobile" id="saleMobile" value="${saleMobile}"/>
     				</div>
     					<label class="col-sm-1 col-xs-1 col-md-1 control-label">卖家类型</label>
-	    			<div class="col-sm- col-xs-1 col-md-1">	
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<select name="saleUserTypeCd" style="height: 30px;width: 120px;" id="saleUserTypeCd">
 		    					<option></option>
 		    					<option value="010001" <c:if test="${saleUserTypeCd=='010001'}">selected="selected"</c:if>>普通卖家</option>
 		    					<option value="010002" <c:if test="${saleUserTypeCd=='010002'}">selected="selected"</c:if>>平台卖家</option>
 		    			</select>	
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1">
+    				<input type="submit" class="ys2" value=""/>
+    			</div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1">
     					<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>	
     			</div>
 			   </div>

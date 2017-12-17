@@ -293,6 +293,13 @@ public class StringUtil extends StringUtils {
 		return strings[0];
 	}
 	
+	public static String formateLike(String likes){
+		if(StringUtil.isNoneBlank(likes)){
+			return "like '%"+likes+"%'";
+		}
+		return "";
+	}
+	
 	public static String formatMoney(BigDecimal money){
 		Double myNumber = Double.valueOf(toString(money));
 		return NumberFormat.getCurrencyInstance().format(myNumber); 

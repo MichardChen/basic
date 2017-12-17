@@ -140,6 +140,8 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="mobile" id="mobile" value="${mobile}"/>
     				</div>
+    			</div>
+    			<div style="" class="form-group">
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
 	    				<select name="status" id="status" style="height: 30px;width: 150px;">
@@ -153,6 +155,8 @@ td{
     				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1">
     				<input type="submit" class="ys2" value=""/>
+    			</div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1">
     				<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>	
     			</div>
 			   </div>
