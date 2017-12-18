@@ -242,12 +242,12 @@ public class TestWXPay {
         // dodo.test001();
         // dodo.testUnifiedOrderSpeed();
 
-        dodo.doOrderQuery();
+       /* dodo.doOrderQuery();
         dodo.doOrderReverse();
         dodo.doOrderQuery();
         dodo.doOrderReverse();
-        dodo.doOrderQuery();
-
+        dodo.doOrderQuery();*/
+        dodo.doUnifiedOrder();
 
 
         System.out.println("<---------------"); // wx2016112510573077

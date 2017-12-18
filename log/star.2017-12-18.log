@@ -1,0 +1,33 @@
+[HDLS][INFO ][2017-12-18 14:58:12][wxpay java sdk]:report worker num: 1
+[HDLS][INFO ][2017-12-18 14:58:13][wxpay java sdk]:report v0,wxpay java sdk v1.0,5579da2c06af4cf29d24c7685125f123,1513580293,1277,api.mch.weixin.qq.com,true,2000,10000,0,0,0,A624CE7716E146E1343649B801EBA6D3E88D7A4900F3067F7F6E2DAEBD88CF85
+[HDLS][INFO ][2017-12-18 14:58:13][wxpay java sdk]:get first report msg: v0,wxpay java sdk v1.0,5579da2c06af4cf29d24c7685125f123,1513580293,1277,api.mch.weixin.qq.com,true,2000,10000,0,0,0,A624CE7716E146E1343649B801EBA6D3E88D7A4900F3067F7F6E2DAEBD88CF85
+[HDLS][INFO ][2017-12-18 14:58:13][wxpay java sdk]:try get remain report msg
+[HDLS][INFO ][2017-12-18 14:58:13][wxpay java sdk]:report v0,wxpay java sdk v1.0,5711720678574e2386549fb156803ff3,1513580293,415,api.mch.weixin.qq.com,true,2000,10000,0,0,0,082F6D5643EE640FCB0C03323D07B64E3574C9D8A987D02CC0D8710839C3D308
+[HDLS][INFO ][2017-12-18 14:58:13][wxpay java sdk]:get remain report msg: v0,wxpay java sdk v1.0,5711720678574e2386549fb156803ff3,1513580293,415,api.mch.weixin.qq.com,true,2000,10000,0,0,0,082F6D5643EE640FCB0C03323D07B64E3574C9D8A987D02CC0D8710839C3D308
+[HDLS][WARN ][2017-12-18 14:58:13][wxpay java sdk]:report fail. reason: report.mch.weixin.qq.com:80 failed to respond
+[HDLS][INFO ][2017-12-18 14:58:13][wxpay java sdk]:report v0,wxpay java sdk v1.0,1010b3d7643b45cf9d683c8a4b738ba4,1513580293,265,api.mch.weixin.qq.com,true,2000,10000,0,0,0,56625A1721BDAF429B5C495F2EA7A1DA5CE4A8353FBEC36BAD68486156FE5197
+[HDLS][INFO ][2017-12-18 14:58:13][wxpay java sdk]:get first report msg: v0,wxpay java sdk v1.0,1010b3d7643b45cf9d683c8a4b738ba4,1513580293,265,api.mch.weixin.qq.com,true,2000,10000,0,0,0,56625A1721BDAF429B5C495F2EA7A1DA5CE4A8353FBEC36BAD68486156FE5197
+[HDLS][INFO ][2017-12-18 14:58:13][wxpay java sdk]:try get remain report msg
+[HDLS][INFO ][2017-12-18 14:58:14][wxpay java sdk]:report v0,wxpay java sdk v1.0,a877bc00b7f642fc8f6a580608c29912,1513580294,372,api.mch.weixin.qq.com,true,2000,10000,0,0,0,97B3A835B55A640BC32238D26C62C8DD7C8D3ADFBC97C9517D03178DE790A8A6
+[HDLS][INFO ][2017-12-18 14:58:14][wxpay java sdk]:get remain report msg: v0,wxpay java sdk v1.0,a877bc00b7f642fc8f6a580608c29912,1513580294,372,api.mch.weixin.qq.com,true,2000,10000,0,0,0,97B3A835B55A640BC32238D26C62C8DD7C8D3ADFBC97C9517D03178DE790A8A6
+[HDLS][WARN ][2017-12-18 14:58:14][wxpay java sdk]:report fail. reason: report.mch.weixin.qq.com:80 failed to respond
+[HDLS][INFO ][2017-12-18 14:58:14][wxpay java sdk]:report v0,wxpay java sdk v1.0,48db990ca8ff4687a3cefb81469ae413,1513580294,246,api.mch.weixin.qq.com,true,2000,10000,0,0,0,693ADCDA585DCF950881025BE5BE7228C79EE2158080F003080CFE5081D10C1E
+[HDLS][INFO ][2017-12-18 14:58:14][wxpay java sdk]:get first report msg: v0,wxpay java sdk v1.0,48db990ca8ff4687a3cefb81469ae413,1513580294,246,api.mch.weixin.qq.com,true,2000,10000,0,0,0,693ADCDA585DCF950881025BE5BE7228C79EE2158080F003080CFE5081D10C1E
+[HDLS][INFO ][2017-12-18 14:58:14][wxpay java sdk]:try get remain report msg
+[HDLS][WARN ][2017-12-18 15:03:44][wxpay java sdk]:connect timeout happened for domainInfo DomainInfo{domain='api.mch.weixin.qq.com', primaryDomain=true}
+[HDLS][INFO ][2017-12-18 15:03:44][wxpay java sdk]:report worker num: 1
+[HDLS][INFO ][2017-12-18 15:03:44][wxpay java sdk]:report v0,wxpay java sdk v1.0,1213uuid,1513580624,21432,api.mch.weixin.qq.com,true,10000,10000,0,1,0,2951BB267CEECF28BD860109821CD1949C020DD199821F74F599EFE3537A4136
+[HDLS][INFO ][2017-12-18 15:03:44][wxpay java sdk]:get first report msg: v0,wxpay java sdk v1.0,1213uuid,1513580624,21432,api.mch.weixin.qq.com,true,10000,10000,0,1,0,2951BB267CEECF28BD860109821CD1949C020DD199821F74F599EFE3537A4136
+[HDLS][INFO ][2017-12-18 15:03:44][wxpay java sdk]:try get remain report msg
+[HDLS][INFO ][2017-12-18 15:04:05][wxpay java sdk]:report worker num: 1
+[HDLS][INFO ][2017-12-18 15:04:05][wxpay java sdk]:report v0,wxpay java sdk v1.0,1213uuid,1513580645,1003,api.mch.weixin.qq.com,true,10000,10000,0,0,0,DF2207CE228C84F31AB4F86AEC599830DD50F16BFCCCC1443164319632F198D8
+[HDLS][INFO ][2017-12-18 15:04:05][wxpay java sdk]:get first report msg: v0,wxpay java sdk v1.0,1213uuid,1513580645,1003,api.mch.weixin.qq.com,true,10000,10000,0,0,0,DF2207CE228C84F31AB4F86AEC599830DD50F16BFCCCC1443164319632F198D8
+[HDLS][INFO ][2017-12-18 15:04:05][wxpay java sdk]:try get remain report msg
+[HDLS][INFO ][2017-12-18 15:04:18][wxpay java sdk]:report worker num: 1
+[HDLS][INFO ][2017-12-18 15:04:18][wxpay java sdk]:report v0,wxpay java sdk v1.0,1213uuid,1513580658,816,api.mch.weixin.qq.com,true,10000,10000,0,0,0,A639693ED4700BD0609B03749458DFFACBE44DCBADFA2747656EE68901E8E5C0
+[HDLS][INFO ][2017-12-18 15:04:18][wxpay java sdk]:get first report msg: v0,wxpay java sdk v1.0,1213uuid,1513580658,816,api.mch.weixin.qq.com,true,10000,10000,0,0,0,A639693ED4700BD0609B03749458DFFACBE44DCBADFA2747656EE68901E8E5C0
+[HDLS][INFO ][2017-12-18 15:04:18][wxpay java sdk]:try get remain report msg
+[HDLS][INFO ][2017-12-18 15:06:25][wxpay java sdk]:report worker num: 1
+[HDLS][INFO ][2017-12-18 15:06:25][wxpay java sdk]:report v0,wxpay java sdk v1.0,9a314793c3044eacb1538102024addf5,1513580785,687,api.mch.weixin.qq.com,true,2000,10000,0,0,0,786E310E92372F1A52EC8BF0AFAECE09E74A9BD74F01AD9D75259E0CDC9FC5F8
+[HDLS][INFO ][2017-12-18 15:06:25][wxpay java sdk]:get first report msg: v0,wxpay java sdk v1.0,9a314793c3044eacb1538102024addf5,1513580785,687,api.mch.weixin.qq.com,true,2000,10000,0,0,0,786E310E92372F1A52EC8BF0AFAECE09E74A9BD74F01AD9D75259E0CDC9FC5F8
+[HDLS][INFO ][2017-12-18 15:06:25][wxpay java sdk]:try get remain report msg

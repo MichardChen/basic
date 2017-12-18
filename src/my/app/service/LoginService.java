@@ -2745,8 +2745,8 @@ public class LoginService {
 		
 		ReturnData data = new ReturnData();
 		
-		double localLongtitude = Double.valueOf(dto.getLocalLongtitude());
-		double localLatitude = Double.valueOf(dto.getLocalLatitude());
+		double localLongtitude = Double.valueOf(StringUtil.isBlank(dto.getLocalLongtitude()) ? "116.40":dto.getLocalLongtitude());
+		double localLatitude = Double.valueOf(StringUtil.isBlank(dto.getLocalLatitude()) ? "39.90" : dto.getLocalLatitude());
 		//查找省市
 		int province = dto.getProvinceId();
 		int city = dto.getCityId();
@@ -2802,6 +2802,12 @@ public class LoginService {
 			v.setStoreId(store.getInt("id"));
 			v.setName(store.getStr("store_name"));
 			v.setAddress(store.getStr("city_district"));
+			if(store.getInt("member_id") != null){
+				v.setBusinessId(store.getInt("member_id"));
+			}else{
+				v.setBusinessId(0);
+			}
+			
 			v.setBusinessTea(store.getStr("business_tea"));
 			double lg = Double.valueOf(String.valueOf(store.getFloat("longitude")));
 			double lat = Double.valueOf(String.valueOf(store.getFloat("latitude")));
@@ -4750,6 +4756,21 @@ public class LoginService {
 			models.add(model);
 		}
 		Map<String, Object> map = new HashMap<>();
+		//查询默认邮寄地址
+		ReceiveAddress address = ReceiveAddress.dao.queryByFirstAddress(dto.getUserId()
+																			  ,Constants.COMMON_STATUS.NORMAL);
+		
+		ChooseAddressVO vo = new ChooseAddressVO();
+		if(address != null){
+			vo.setAddress(address.getStr("address"));
+			vo.setAddressId(address.getInt("id"));
+			vo.setMobile(address.getStr("mobile"));
+			vo.setReceiverMan(address.getStr("receiveman_name"));
+			map.put("defaultAddress", vo);
+		}else{
+			map.put("defaultAddress", null);
+		}
+		
 		map.put("models", models);
 		data.setCode(Constants.STATUS_CODE.SUCCESS);
 		data.setMessage("查询成功");

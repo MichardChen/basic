@@ -19,10 +19,12 @@ import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.jfinal.aop.Before;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 
 import my.core.constants.Constants;
+import my.core.interceptor.RequestInterceptor;
 import my.core.model.CashJournal;
 import my.core.model.Member;
 import my.core.model.PayRecord;
@@ -273,6 +275,7 @@ public class PayAction extends Controller{
 	}
 	
 	//生成支付宝支付信息
+	@Before(RequestInterceptor.class)
 	public void generateAliPayInfo() throws Exception{
 		
 		LoginDTO dto = LoginDTO.getInstance(getRequest());

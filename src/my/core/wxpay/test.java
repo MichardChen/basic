@@ -1,16 +1,18 @@
 package my.core.wxpay;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
-
-import my.core.model.CashJournal;
-import my.pvcloud.util.PropertiesUtil;
-import my.pvcloud.util.StringUtil;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import my.pvcloud.util.PropertiesUtil;
+import my.pvcloud.util.StringUtil;
 
 public class test {
 
@@ -24,22 +26,28 @@ public class test {
         String wx_notify_url = propertiesUtil.getProperties("wx_notify_url");
         String nonStr = WXPayUtil.generateNonceStr();
         String UTF8 = "UTF-8";
-        //String outTradeNo = CashJournal.dao.queryCurrentCashNo();
         String outTradeNo = StringUtil.getOrderNo();
+        String stringA="appid="+wx_appid
+        			  +"&body=掌上茶宝-充值"
+        			  +"&mch_id="+wx_mch_id
+        			  +"&nonce_str="+nonStr
+        			  +"&notify_url="+wx_notify_url
+        			  +"&out_trade_no="+outTradeNo
+        			  +"&spbill_create_ip=120.41.149.248"
+        			  +"&total_fee=1000"
+        			  +"&trade_type=APP";
+        String md5StringA = WXPayUtil.MD5(stringA+"&key="+wx_key);
         String reqBody = "<xml>"
-        				+"<body>掌上茶宝-充值</body>"
-        				+"<trade_type>APP</trade_type>"
-        				+"<mch_id>"+wx_mch_id+"</mch_id>"
-        				+"<sign_type>HMAC-SHA256</sign_type>"
-        				+"<nonce_str>"+nonStr+"</nonce_str>"
-        				+"<fee_type>CNY</fee_type>"
-        				+"<device_info>WEB</device_info>"
-        				+"<out_trade_no>"+outTradeNo+"</out_trade_no>"
-        				+"<total_fee>1</total_fee>"
         				+"<appid>"+wx_appid+"</appid>"
+        				+"<body>掌上茶宝-充值</body>"
+        				+"<mch_id>"+wx_mch_id+"</mch_id>"
+        				+"<nonce_str>"+nonStr+"</nonce_str>"
         				+"<notify_url>"+wx_notify_url+"</notify_url>"
-        				+"<sign>78F24E555374B988277D18633BF2D4CA23A6EAF06FEE0CF1E50EA4EADEEC41A3</sign>"
-        				+"<spbill_create_ip>123.12.12.123</spbill_create_ip>"
+        				+"<out_trade_no>"+outTradeNo+"</out_trade_no>"
+        				+"<sign>"+md5StringA+"</sign>"
+        				+"<spbill_create_ip>120.41.149.248</spbill_create_ip>"
+        				+"<total_fee>1000</total_fee>"
+        				+"<trade_type>APP</trade_type>"
         				+"</xml>";
         URL httpUrl = new URL(wx_unifiedorder);
         HttpURLConnection httpURLConnection = (HttpURLConnection) httpUrl.openConnection();
@@ -86,5 +94,14 @@ public class test {
         System.out.println(resp);
 
     }
+    
+    public static void getSign(Map<String, String> map){
+        String[] keys = map.keySet().toArray(new String[0]);
+        Arrays.sort(keys);
+        StringBuffer reqStr = new StringBuffer();
+        for(String key : keys){
+           System.out.println(key);
+        }
+     }
 
 }
