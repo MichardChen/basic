@@ -24,6 +24,7 @@ import my.core.interceptor.ContainFileInterceptor;
 import my.core.interceptor.RequestInterceptor;
 import my.core.model.CashJournal;
 import my.core.model.Document;
+import my.core.model.RecordListModel;
 import my.core.model.ReturnData;
 import my.core.model.Store;
 import my.core.model.StoreImage;
@@ -1398,6 +1399,43 @@ public class RestfulController extends Controller{
 	//账单详情
 	public void queryCheckOrderDetail() throws Exception{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		String queryType = dto.getType();
+		RecordListModel model = null;
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.BUY_TEA)){
+			//买茶记录
+			model = service.queryBuyNewTeaRecordDetail(dto);
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.SALE_TEA)){
+			//卖茶记录
+			model = service.querySaleTeaRecordDetail(dto);
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.WAREHOUSE_FEE)){
+			//仓储费记录
+			model = service.queryWareHouseRecordsDetail(dto);
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.GET_TEA)){
+			//取茶记录
+			model = service.queryGetTeaRecordsModel(dto);
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.RECHARGE)){
+			//充值记录
+			model = service.queryRechargeRecordsDetail(dto);
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.WITHDRAW)){
+			//提现记录
+			model = service.queryWithDrawRecordsDetail(dto);
+		}
+		
+		if(StringUtil.equals(queryType, Constants.LOG_TYPE_CD.REFUND)){
+			//退款记录
+			model = service.queryRefundRecordsDetail(dto);
+		}
+		setAttr("model", model);
 		render("/mobile/checkorder.jsp");
 	}
 }

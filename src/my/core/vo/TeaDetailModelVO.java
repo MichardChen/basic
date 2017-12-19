@@ -24,8 +24,16 @@ public class TeaDetailModelVO implements Serializable{
 	private int id;
 	private String status;
 	private String unit;
+	private String productBusiness;
 	
 	
+	
+	public String getProductBusiness() {
+		return productBusiness;
+	}
+	public void setProductBusiness(String productBusiness) {
+		this.productBusiness = productBusiness;
+	}
 	public String getUnit() {
 		return unit;
 	}

@@ -44,14 +44,14 @@ public class test {
         				+"<nonce_str>"+nonStr+"</nonce_str>"
         				+"<notify_url>"+wx_notify_url+"</notify_url>"
         				+"<out_trade_no>"+outTradeNo+"</out_trade_no>"
-        				+"<sign>"+md5StringA+"</sign>"
         				+"<spbill_create_ip>120.41.149.248</spbill_create_ip>"
         				+"<total_fee>1000</total_fee>"
         				+"<trade_type>APP</trade_type>"
+        				+"<sign>"+md5StringA+"</sign>"
         				+"</xml>";
         URL httpUrl = new URL(wx_unifiedorder);
         HttpURLConnection httpURLConnection = (HttpURLConnection) httpUrl.openConnection();
-        httpURLConnection.setRequestProperty("Host", "api.mch.weixin.qq.com");
+       // httpURLConnection.setRequestProperty("Host", "api.mch.weixin.qq.com");
         httpURLConnection.setDoOutput(true);
         httpURLConnection.setRequestMethod("POST");
         httpURLConnection.setConnectTimeout(10*1000);

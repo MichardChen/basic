@@ -102,6 +102,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         		alert("请输入茶叶产地");
         		return false;
         	}
+        	var productBusiness=$("#productBusiness").val();
+        	if(productBusiness == ""){
+        		alert("请选择生产商");
+        		return false;
+        	}
         	var birthday = $("#birthday").val();
         	if(birthday == ""){
         		alert("请输入生产日期");
@@ -179,6 +184,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>
 					<select style="height:30px;width:120px;" name="place" id="place">
 						<c:forEach var="s" items="${place}">
+							<option>${s.name}</option>
+						</c:forEach>
+					</select>
+		</tr>
+		<tr>
+			<td>生产商</td>
+			<td>
+					<select style="height:30px;width:120px;" name="productBusiness" id="productBusiness">
+						<c:forEach var="s" items="${productBusiness}">
 							<option>${s.name}</option>
 						</c:forEach>
 					</select>

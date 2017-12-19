@@ -508,7 +508,7 @@ public class LoginService {
 			map.put("tradeContract", "");
 		}
 		
-		//判断是否绑定门店
+		//判断是否提交绑定门店
 		Store store = Store.dao.queryMemberStore(dto.getUserId());
 		if(store != null){
 			//已绑定
@@ -1132,7 +1132,7 @@ public class LoginService {
 		if(unit != null){
 			vo.setUnit(unit.getStr("name"));
 		}
-		
+		vo.setProductBusiness(tea.getStr("product_business"));
 		String coverImgs = tea.getStr("cover_img");
 		if(StringUtil.isNoneBlank(coverImgs)){
 			String[] imgs = coverImgs.split(",");
@@ -1327,6 +1327,7 @@ public class LoginService {
 		for(GetTeaRecord record : list){
 			model = new RecordListModel();
 			model.setType(type);
+			model.setId(record.getInt("id"));
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
 			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
 			String size = "";
@@ -1385,6 +1386,7 @@ public class LoginService {
 		for(GetTeaRecord record : list){
 			model = new RecordListModel();
 			model.setType(type);
+			model.setId(record.getInt("id"));
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
 			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
 			if(tea != null){
@@ -1426,6 +1428,7 @@ public class LoginService {
 			}else{
 				model.setType("");
 			}
+			model.setId(record.getInt("id"));
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
 			model.setMoneys(record.getStr("remarks"));
 			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("fee_status"));
@@ -1482,6 +1485,7 @@ public class LoginService {
 		for(BankCardRecord record : list){
 			model = new RecordListModel();
 			model.setType(type);
+			model.setId(record.getInt("id"));
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
 			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 			String st = "";
@@ -1518,6 +1522,7 @@ public class LoginService {
 		for(BankCardRecord record : list){
 			model = new RecordListModel();
 			model.setType(type);
+			model.setId(record.getInt("id"));
 			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
 			model.setMoneys("+"+StringUtil.toString(record.getBigDecimal("moneys")));
 			model.setContent("账号退款："+StringUtil.toString(record.getBigDecimal("moneys")));
@@ -4965,5 +4970,258 @@ public class LoginService {
 				return data;
 			}
 		}
+	}
+	
+	//买茶记录账单详情
+	public RecordListModel queryBuyNewTeaRecordDetail(LoginDTO dto){
+		OrderItem item = OrderItem.dao.queryById(dto.getId());
+		RecordListModel model = null;
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		if(item != null){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setId(item.getInt("id"));
+			model.setDate(DateUtil.formatTimestampForDate(item.getTimestamp("create_time")));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(item.getInt("wtm_item_id"));
+			String status = "";
+			if(wtmItem != null){
+				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
+				if(wtm != null){
+					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+					if(tea != null){
+						String size = "";
+						CodeMst sizeType = CodeMst.dao.queryCodestByCode(wtmItem.getStr("size_type_cd"));
+						if(sizeType != null){
+							size = sizeType.getStr("name");
+						}
+						model.setContent(tea.getStr("tea_title")+"x"+item.getInt("quality")+size);
+						model.setTea(tea.getStr("tea_title"));
+						String imgs = tea.getStr("cover_img");
+						if(StringUtil.isNoneBlank(imgs)){
+							String[] sp = imgs.split(",");
+							model.setImg(sp[0]);
+						}
+						CodeMst teaType = CodeMst.dao.queryCodestByCode(tea.getStr("type_cd"));
+						if(teaType != null){
+							model.setTeaType(teaType.getStr("name"));
+						}
+						model.setQuality(item.getInt("quality"));
+						if(sizeType != null){
+							model.setUnit(sizeType.getStr("name"));
+						}
+						
+						WareHouse wHouse = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+						if(wHouse != null){
+							model.setWareHouse(wHouse.getStr("warehouse_name"));
+						}
+					}
+				}
+				CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(wtmItem.getStr("status"));
+				if(sCodeMst != null){
+					status = sCodeMst.getStr("name");
+				}
+			}
+			model.setMoneys("-"+StringUtil.toString(item.getBigDecimal("item_amount"))+" "+"买茶成功");
+		}
+		return model;
+	}
+	
+	//卖茶记录账单详情
+	public RecordListModel querySaleTeaRecordDetail(LoginDTO dto){
+		SaleOrder saleOrder = SaleOrder.dao.queryById(dto.getId());
+		RecordListModel model = null;
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		if(saleOrder != null){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setId(saleOrder.getInt("id"));
+			CodeMst unit = CodeMst.dao.queryCodestByCode(saleOrder.getStr("size_type_cd"));
+			String unitStr = "";
+			if(unit != null){
+				unitStr = unit.getStr("name");
+			}
+			model.setDate(DateUtil.formatTimestampForDate(saleOrder.getTimestamp("create_time")));
+			WarehouseTeaMemberItem wtmItem = WarehouseTeaMemberItem.dao.queryByKeyId(saleOrder.getInt("wtm_item_id"));
+			if(wtmItem != null){
+				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryById(wtmItem.getInt("warehouse_tea_member_id"));
+				String content = "";
+				if(wtm != null){
+					Tea tea = Tea.dao.queryById(wtm.getInt("tea_id"));
+					int originStock = wtmItem.getInt("origin_stock") == null ? 0 :wtmItem.getInt("origin_stock");
+					if(tea != null){
+						content = tea.getStr("tea_title")+"x"+originStock+unitStr;
+						model.setTea(tea.getStr("tea_title"));
+						WareHouse wHouse = WareHouse.dao.queryById(wtm.getInt("warehouse_id"));
+						if(wHouse != null){
+							model.setWareHouse(wHouse.getStr("warehouse_name"));
+						}
+					}
+					
+					String price = wtmItem.getBigDecimal("price")+"/"+unitStr;
+					int onSale = wtmItem.getInt("quality") ==  null ? 0 : wtmItem.getInt("quality");
+					int cancleQuality = wtmItem.getInt("cancle_quality") == null ? 0 :wtmItem.getInt("cancle_quality");
+					int haveSale = originStock-cancleQuality;
+					
+					CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(wtmItem.getStr("status"));
+					if(sCodeMst != null){
+						content = sCodeMst.getStr("name")+" "+content;
+					}
+					model.setContent(content);
+					model.setMoneys("单价:￥"+price+" 已售"+haveSale+unitStr);
+				}
+			}
+		}
+		return model;
+	}
+	
+	//仓储费记录账单详情
+	public RecordListModel queryWareHouseRecordsDetail(LoginDTO dto){
+		GetTeaRecord record = GetTeaRecord.dao.queryById(dto.getId());
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		RecordListModel model = null;
+		if(record != null){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setId(record.getInt("id"));
+			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
+			if(tea != null){
+				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+"片");
+			}
+			model.setMoneys(StringUtil.toString(record.getBigDecimal("warehouse_fee")));
+		}
+		return model;
+	}
+	
+	//取茶记录账单详情
+	public RecordListModel queryGetTeaRecordsModel(LoginDTO dto){
+		
+		GetTeaRecord record = GetTeaRecord.dao.queryById(dto.getId());
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		RecordListModel model = null;
+		if(record != null){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setId(record.getInt("id"));
+			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
+			String size = "";
+			CodeMst sizeType = CodeMst.dao.queryCodestByCode(record.getStr("size_type_cd"));
+			if(sizeType != null){
+				size = sizeType.getStr("name");
+			}
+			String status = "";
+			CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(record.getStr("status"));
+			if(sCodeMst != null){
+				status = sCodeMst.getStr("name");
+			}
+			if(tea != null){
+				model.setContent(tea.getStr("tea_title")+"x"+record.getInt("quality")+size+" "+status);
+			}
+			
+			ReceiveAddress receiveAddress = ReceiveAddress.dao.queryByKeyId(record.getInt("address_id"));
+			if(receiveAddress != null){
+				String address = "";
+				City city = City.dao.queryCity(receiveAddress.getInt("city_id"));
+				if(city != null){
+					address = city.getStr("name");
+				}
+				District district = District.dao.queryDistrict(receiveAddress.getInt("district_id"));
+				if(district != null){
+					address = address + district.getStr("name");
+				}
+				address = address + receiveAddress.getStr("address");
+				model.setMoneys(address);
+			}
+		}
+		return model;
+	}
+	
+	//充值记录账单详情
+	public RecordListModel queryRechargeRecordsDetail(LoginDTO dto){
+		CashJournal record = CashJournal.dao.queryById(dto.getId());
+		RecordListModel model = null;
+		if(record != null){
+			model = new RecordListModel();
+			CodeMst type = CodeMst.dao.queryCodestByCode(record.getStr("pi_type"));
+			if(type != null){
+				model.setType(type.getStr("name"));
+			}else{
+				model.setType("");
+			}
+			model.setId(record.getInt("id"));
+			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			model.setMoneys(record.getStr("remarks"));
+			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("fee_status"));
+			String statusStr = "";
+			if(status != null){
+				statusStr = status.getStr("name");
+			}
+			model.setContent("期初:"+record.getBigDecimal("opening_balance")+",余额:"+record.getBigDecimal("closing_balance"));
+		}
+		return model;
+	}
+	
+	//提现记录账单详情
+	public RecordListModel queryWithDrawRecordsDetail(LoginDTO dto){
+		
+		BankCardRecord record = BankCardRecord.dao.queryById(dto.getId());
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		RecordListModel model = null;
+		if(record != null){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setId(record.getInt("id"));
+			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
+			String st = "";
+			if(status != null){
+				st = status.getStr("name");
+			}
+			model.setMoneys("￥"+StringUtil.toString(record.getBigDecimal("moneys"))+" "+st);
+			model.setContent("账号提现："+StringUtil.toString(record.getBigDecimal("moneys")));
+		}
+		return model;
+	}
+
+	//退款记录账单详情
+	public RecordListModel queryRefundRecordsDetail(LoginDTO dto){
+		
+		BankCardRecord record = BankCardRecord.dao.queryById(dto.getId());
+		CodeMst codeMst = CodeMst.dao.queryCodestByCode(dto.getType());
+		if(codeMst == null){
+			return null;
+		}
+		String type = codeMst.getStr("data2");
+		RecordListModel model = null;
+		if(record != null){
+			model = new RecordListModel();
+			model.setType(type);
+			model.setId(record.getInt("id"));
+			model.setDate(DateUtil.formatTimestampForDate(record.getTimestamp("create_time")));
+			model.setMoneys("+"+StringUtil.toString(record.getBigDecimal("moneys")));
+			model.setContent("账号退款："+StringUtil.toString(record.getBigDecimal("moneys")));
+		}
+		return model;
 	}
 }

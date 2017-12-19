@@ -13,11 +13,14 @@
 	    margin-left: 0px;
 	    }
 	.row-height{
-		height: 50px;
-		border: 1px solid red;
-		line-height: 50px;
+		height: 40px;
 	}
-	
+	.content{
+		color: #FF5400;
+	}
+	.title{
+		color: #333333;
+	}
 	.word{
 		word-wrap:break-word;
 	}
@@ -25,37 +28,37 @@
     <title>账单详情</title>
 </head>
 <body style="margin: 0px 0px;">
-	<div class="container">
-	   <div class="row row-height">
-	      <div class="col-xs-3 col-sm-3 row-height">
+	<div class="container" style="background-color: white;">
+	   <div class="row row-height" style="margin-top: 20px;">
+	      <div class="col-xs-3 col-sm-3 row-height color">
 	         	账单类型
 	      </div>
-	      <div class="col-xs-9 col-sm-3 word row-height">
-	         	买茶
+	      <div class="col-xs-9 col-sm-3 word row-height content">
+	         	${model.type}
 	      </div>
 	   </div>
 	   <div class="row row-height">
-		 	<div class="col-xs-3 col-sm-3 row-height">
+		 	<div class="col-xs-3 col-sm-3 row-height color">
 		        	账单详情
 		      </div>
-		      <div class="col-xs-9 col-sm-3 word row-height">
-		         	单价：￥1500.00/件 已售2件
+		      <div class="col-xs-9 col-sm-3 word row-height content">
+		         	${model.moneys}
 		      </div>
 		</div>
 		<div class="row row-height">
-			<div class="col-xs-3 col-sm-3 row-height">
+			<div class="col-xs-3 col-sm-3 row-height color">
 			         账单日期
 			</div>
-			<div class="col-xs-9 col-sm-3 word row-height">
-			         2017-12-07
+			<div class="col-xs-9 col-sm-3 word row-height content">
+			       ${model.date}
 			</div>
 		</div>
 		<div class="row row-height">
-			<div class="col-xs-3 col-sm-3 row-height">
+			<div class="col-xs-3 col-sm-3 row-height color">
 			         备注
 			</div>
-			<div class="col-xs-9 col-sm-3 word row-height">
-			         卖茶成功 金鸡报晓普洱茶x2件福建省龙卷风抗裂砂浆斐林试剂风口浪尖
+			<div class="col-xs-9 col-sm-3 word row-height content">
+			        ${model.content}
 			</div>
 		</div>
 	</div>

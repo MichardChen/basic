@@ -17,6 +17,11 @@ public class CashJournal extends Model<CashJournal> {
 	
 	public static final CashJournal dao = new CashJournal();
 
+	
+	public CashJournal queryById(int id) {
+		return CashJournal.dao.findFirst("select * from t_cash_journal where id = ?", id);
+	}
+	
 	public boolean updateInfo(CashJournal data){
 		return new CashJournal().setAttrs(data).update();
 	}

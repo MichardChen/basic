@@ -362,6 +362,8 @@ public class TeaInfoController extends Controller {
 		setAttr("brandType", brandType);
 		List<CodeMst> place = CodeMst.dao.queryCodestByPcode(Constants.PRODUCT_PLACE.PRODUCT_PLACE_CD);
 		setAttr("place", place);
+		List<CodeMst> productBusiness = CodeMst.dao.queryCodestByPcode("360000");
+		setAttr("productBusiness", productBusiness);
 		render("addTea.jsp");
 	}
 	
@@ -487,6 +489,7 @@ public class TeaInfoController extends Controller {
         tea.set("desc_url", contentUrl);
         tea.set("cover_img", logo);
         tea.set("flg", 1);
+        tea.set("product_business", StringUtil.checkCode(getPara("productBusiness")));
         tea.set("status",getPara("status"));
         tea.set("key_code", StringUtil.getTeaKeyCode());
         int houseId = getParaToInt("houses");
