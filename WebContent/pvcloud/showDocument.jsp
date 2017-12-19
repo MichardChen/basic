@@ -119,6 +119,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="060006" <c:if test="${document.type_cd == '060006'}"> selected="selected"</c:if>>存储规则和仓库介绍</option>
 							<option value="060007" <c:if test="${document.type_cd == '060007'}"> selected="selected"</c:if>>茶叶包装及收费标准</option>
 							<option value="060008" <c:if test="${document.type_cd == '060008'}"> selected="selected"</c:if>>掌上茶宝平台交易合同</option>
+							<option value="060009" <c:if test="${document.type_cd == '060009'}"> selected="selected"</c:if>>掌上茶宝服务协议</option>
+							<option value="060010" <c:if test="${document.type_cd == '060010'}"> selected="selected"</c:if>>仓储管理服务协议</option>
+							<option value="060011" <c:if test="${document.type_cd == '060011'}"> selected="selected"</c:if>>掌上茶宝新茶发行合同</option>
+							<option value="060012" <c:if test="${document.type_cd == '060012'}"> selected="selected"</c:if>>免费喝茶体验规则</option>
 						</select>
 		</tr>
 		<tr>

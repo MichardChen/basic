@@ -122,6 +122,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="060009" <c:if test="${document.type_cd == '060009'}"> selected="selected"</c:if>>掌上茶宝服务协议</option>
 							<option value="060010" <c:if test="${document.type_cd == '060010'}"> selected="selected"</c:if>>仓储管理服务协议</option>
 							<option value="060011" <c:if test="${document.type_cd == '060011'}"> selected="selected"</c:if>>掌上茶宝新茶发行合同</option>
+							<option value="060012" <c:if test="${document.type_cd == '060012'}"> selected="selected"</c:if>>免费喝茶体验规则</option>
 						</select>&nbsp;<label style="color:red;">(提示：新茶发行通知最大字数，不能大于70个字符)</label>
 		</tr>
 		<tr>

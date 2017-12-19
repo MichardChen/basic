@@ -4795,11 +4795,21 @@ public class LoginService {
 		List<Member> members = Member.dao.queryStoreMember(store.getInt("id"),dto.getPageSize(),dto.getPageNum(),dto.getType());
 		List<StoreMemberListModel> list = new ArrayList<>();
 		StoreMemberListModel model = null;
+		CodeMst defaultIconCodeMst = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.DEFAULT_ICON);
+		String defaultIcon = "";
+		if(defaultIconCodeMst == null){
+			defaultIcon = defaultIconCodeMst.getStr("data2");
+		}
 		for(Member member : members){
 			model = new StoreMemberListModel();
 			model.setId(member.getInt("id"));
 			model.setCreateTime(DateUtil.format(member.getTimestamp("create_time")));
-			model.setIcon(member.getStr("icon"));
+			if(StringUtil.isBlank(member.getStr("icon"))){
+				model.setIcon(defaultIcon);
+			}else{
+				model.setIcon(member.getStr("icon"));
+			}
+			
 			model.setMobile(member.getStr("mobile"));
 			model.setSex(member.getInt("sex"));
 			CodeMst role = CodeMst.dao.queryCodestByCode(member.getStr("role_cd"));
