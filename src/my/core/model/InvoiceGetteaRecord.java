@@ -14,4 +14,8 @@ public class InvoiceGetteaRecord extends Model<InvoiceGetteaRecord> {
 		d.save();
 		return d.getInt("id");
 	}
+	
+	public InvoiceGetteaRecord queryByInvoiceId(int id) {
+		return InvoiceGetteaRecord.dao.findFirst("select * from t_invoice_gettearecord where invoice_id = ?", id);
+	}
 }

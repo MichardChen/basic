@@ -306,7 +306,7 @@ public class PayAction extends Controller{
 			Member member = Member.dao.queryById(userId);
 			cash.set("opening_balance", member.getBigDecimal("moneys"));
 			cash.set("closing_balance", member.getBigDecimal("moneys").add(moneys));
-			cash.set("remarks", "充值"+moneys);
+			cash.set("remarks", "支付宝充值"+moneys);
 			cash.set("create_time", DateUtil.getNowTimestamp());
 			cash.set("update_time", DateUtil.getNowTimestamp());
 			CashJournal.dao.saveInfo(cash);

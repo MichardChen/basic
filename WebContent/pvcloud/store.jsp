@@ -270,6 +270,7 @@ td{
 										<input type="button" value="修改门店" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
 										<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
 										<input type="button" value="查看会员" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeInfo/queryMemberList?flg=1&storeId=${s.id}';"/>
+										<input type="button" value="查看评价" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeEvaluateInfo/queryByConditionByPage?mobile=${s.mobile}';"/>
 								</td>
 		    				</tr>
 		    			</c:forEach>

@@ -217,6 +217,7 @@ td{
     				<th>品牌</th>
     				<th>产地</th>
     				<th>规格</th>
+    				<th>生产商</th>
     				<!-- 四个值 -->
     				<th>发行件数</th>
     				<th>剩余件数</th>
@@ -250,6 +251,7 @@ td{
 		    					<td>${s.brand}</td>
 		    					<td>${s.productPlace}</td>
 		    					<td>${s.size}</td>
+		    					<td>${s.productBusiness}</td>
 		    						<!-- 四个 -->
 		    					<td>${s.saleItems}件</td>
 		    					<td>${s.stock}</td>

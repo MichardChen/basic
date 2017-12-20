@@ -533,6 +533,15 @@ public class LoginService {
 			map.put("phone", null);
 		}
 		
+		//公司网址
+		CodeMst url = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.NET_URL);
+		if(url != null){
+			map.put("netUrl", url.getStr("netUrl"));
+		}else{
+			map.put("netUrl", null);
+		}
+		
+		
 		//版本号
 		if(StringUtil.equals(dto.getPlatForm(), Constants.PLATFORM.ANDROID)){
 			SystemVersionControl svc = SystemVersionControl.dao.querySystemVersionControl(Constants.VERSION_TYPE.ANDROID);
@@ -4832,9 +4841,18 @@ public class LoginService {
 		List<OrderItem> list = new ArrayList<>();
 		List<MemberOrderListModel> models = new ArrayList<>();
 		MemberOrderListModel model = null;
+		//商家ID
+		int userId = dto.getUserId();
+		int storeId = 0;
+		if(userId != 0){
+			Store store = Store.dao.queryMemberStore(userId);
+			if(store != null){
+				storeId = store.getInt("id");
+			}
+		}
 		if(dto.getFlg()==0){
-			//查询所有会员订单
-			list = OrderItem.dao.queryAllOrderItemList(dto.getPageSize(), dto.getPageNum(), day);
+			//查询门店所有会员订单
+			list = OrderItem.dao.queryAllOrderItemList(dto.getPageSize(), dto.getPageNum(), day,storeId);
 		}
 		if(dto.getFlg()==1){
 			//查询某个会员订单

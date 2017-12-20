@@ -30,11 +30,15 @@ public class TeaModel implements Serializable{
 	private String saleItems;
 	private String syPiece;
 	private String originStock;
+	private String productBusiness;
 	
 	
-	
-	
-	
+	public String getProductBusiness() {
+		return productBusiness;
+	}
+	public void setProductBusiness(String productBusiness) {
+		this.productBusiness = productBusiness;
+	}
 	public String getSaleItems() {
 		return saleItems;
 	}

@@ -30,6 +30,7 @@ import my.core.model.CodeMst;
 import my.core.model.District;
 import my.core.model.GetTeaRecord;
 import my.core.model.Invoice;
+import my.core.model.InvoiceGetteaRecord;
 import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.Province;
@@ -245,6 +246,21 @@ public class InvoiceController extends Controller {
 			String status = StringUtil.checkCode(getPara("status"));
 			int ret = Invoice.dao.updateInvoice(recordId, status, expressName, expressNo,(Integer)getSessionAttr("agentId"));
 			if(ret!=0){
+				//更新取茶记录状态
+				InvoiceGetteaRecord invoiceGetteaRecord = InvoiceGetteaRecord.dao.queryByInvoiceId(recordId);
+				if(invoiceGetteaRecord != null){
+					int id = invoiceGetteaRecord.getInt("id");
+					if(StringUtil.equals(status, Constants.INVOICE_STATUS.INVOICED)){
+						//已开票
+						GetTeaRecord.dao.updateInvoice(id, Constants.INVOICE_STATUS.INVOICED);
+					}else if(StringUtil.equals(status, Constants.INVOICE_STATUS.NOT_INVOICE)){
+						//未开票
+						GetTeaRecord.dao.updateInvoice(id, Constants.INVOICE_STATUS.STAY_HANDLE);
+					}else if(StringUtil.equals(status, Constants.INVOICE_STATUS.STAY_HANDLE)){
+						//待处理
+						GetTeaRecord.dao.updateInvoice(id, Constants.INVOICE_STATUS.STAY_HANDLE);
+					}
+				}
 				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新开票信息id:"+recordId);
 				setAttr("message", "操作成功");
 			}else{

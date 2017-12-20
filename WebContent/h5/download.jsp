@@ -17,7 +17,8 @@
 </head>
 <body style="margin: 0px 0px;">
 	<div style="color:red;text-align: center;word-wrap:break-word;">
-			如果微信中无法下载，请点击右上角按钮用浏览器打开该页面再下载
+			<!-- 如果微信中无法下载，请点击右上角按钮用浏览器打开该页面再下载 -->
+			<img src="../assets/img/guide.png" class="img-responsive"  alt="Responsive image" width="100%">
 	</div>
 	<div>
 	<img src="http://119.29.100.17:8080//craft4j/admin/images/aboutus.png" class="img-responsive"  alt="Responsive image" width="100%">

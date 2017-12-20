@@ -311,6 +311,7 @@ public interface Constants {
 		public static final String EVALUATE_NUM = "210005";
 		public static final String INVOICE_DATE = "210006";
 		public static final String INVOICE_CONTENT = "210007";
+		public static final String NET_URL = "210008";
 	}
 	
 	public static interface PAY_STATUS{
@@ -318,6 +319,7 @@ public interface Constants {
 		public static final String TRADE_SUCCESS = "220002";
 		public static final String TRADE_CLOSED	 = "220003";
 		public static final String TRADE_FINISHED = "220004";
+		public static final String TRADE_FAIL = "220005";
 	}
 	
 	public static interface PAY_TYPE_CD{
