@@ -109,7 +109,7 @@ public class WXPayAction extends Controller{
 	}
 	
 	//生成微信预支付信息
-	@Before(RequestInterceptor.class)
+	//@Before(RequestInterceptor.class)
 	public void generateWXPayInfo() throws Exception{
 		
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
@@ -222,15 +222,14 @@ public class WXPayAction extends Controller{
 	        Map<String, String> retMap = processResponseXml(resp);
 	        WXPrepayModel model = new WXPrepayModel();
 	        if(!retMap.isEmpty()){
-	        	model.setResultCode(retMap.get("result_code"));
-	        	model.setSign(retMap.get("sign"));
-	        	model.setMchId(retMap.get("mch_id"));
-	        	model.setPrepayId(retMap.get("prepay_id"));
-	        	model.setReturnMsg(retMap.get("return_msg"));
 	        	model.setAppId(retMap.get("appid"));
+	        	model.setPartnerId(retMap.get("mch_id"));
+	        	model.setPrepayId(retMap.get("prepay_id"));
+	        	model.setPackageValue("Sign=WXPay");
 	        	model.setNonceStr(retMap.get("nonce_str"));
-	        	model.setReturnCode(retMap.get("return_code"));
-	        	model.setTradeType(retMap.get("trade_type"));
+	        	model.setTimeStamp(StringUtil.getTimeStamp());
+	        	model.setSign(retMap.get("sign"));
+	        	
 	        	ReturnData data = new ReturnData();
 			    Map<String, Object> dataMap = new HashMap<>();
 			    dataMap.put("payInfo", model);

@@ -26,6 +26,10 @@ public class StringUtil extends StringUtils {
 		return Double.toString(douNum);
 	}
 	
+	public static String getTimeStamp() {
+		return String.valueOf(System.currentTimeMillis() / 1000);
+	}
+	
 	public static Integer toInteger(String num){
 		if(StringUtil.equals("undefined", num)){
 			return 0;

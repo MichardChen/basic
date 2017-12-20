@@ -4,69 +4,56 @@ import java.io.Serializable;
 
 public class WXPrepayModel implements Serializable{
 
-	private String resultCode;
-	private String sign;
-	private String mchId;
-	private String prepayId;
-	private String returnMsg;
 	private String appId;
+	private String partnerId;
+	private String prepayId;
+	private String packageValue;
 	private String nonceStr;
-	private String returnCode;
-	private String tradeType;
-	public String getResultCode() {
-		return resultCode;
+	private String timeStamp;
+	private String sign;
+	public String getAppId() {
+		return appId;
 	}
-	public String getSign() {
-		return sign;
-	}
-	public String getMchId() {
-		return mchId;
+	public String getPartnerId() {
+		return partnerId;
 	}
 	public String getPrepayId() {
 		return prepayId;
 	}
-	public String getReturnMsg() {
-		return returnMsg;
-	}
-	public String getAppId() {
-		return appId;
+	public String getPackageValue() {
+		return packageValue;
 	}
 	public String getNonceStr() {
 		return nonceStr;
 	}
-	public String getReturnCode() {
-		return returnCode;
+	public String getTimeStamp() {
+		return timeStamp;
 	}
-	public String getTradeType() {
-		return tradeType;
-	}
-	public void setResultCode(String resultCode) {
-		this.resultCode = resultCode;
-	}
-	public void setSign(String sign) {
-		this.sign = sign;
-	}
-	public void setMchId(String mchId) {
-		this.mchId = mchId;
-	}
-	public void setPrepayId(String prepayId) {
-		this.prepayId = prepayId;
-	}
-	public void setReturnMsg(String returnMsg) {
-		this.returnMsg = returnMsg;
+	public String getSign() {
+		return sign;
 	}
 	public void setAppId(String appId) {
 		this.appId = appId;
 	}
+	public void setPartnerId(String partnerId) {
+		this.partnerId = partnerId;
+	}
+	public void setPrepayId(String prepayId) {
+		this.prepayId = prepayId;
+	}
+	public void setPackageValue(String packageValue) {
+		this.packageValue = packageValue;
+	}
 	public void setNonceStr(String nonceStr) {
 		this.nonceStr = nonceStr;
 	}
-	public void setReturnCode(String returnCode) {
-		this.returnCode = returnCode;
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
 	}
-	public void setTradeType(String tradeType) {
-		this.tradeType = tradeType;
+	public void setSign(String sign) {
+		this.sign = sign;
 	}
+	
 	
 	
 }
