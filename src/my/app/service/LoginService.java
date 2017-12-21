@@ -4821,6 +4821,7 @@ public class LoginService {
 			
 			model.setMobile(member.getStr("mobile"));
 			model.setSex(member.getInt("sex"));
+			model.setNickName(member.getStr("nick_name"));
 			CodeMst role = CodeMst.dao.queryCodestByCode(member.getStr("role_cd"));
 			if(role != null){
 				model.setRole(role.getStr("name"));

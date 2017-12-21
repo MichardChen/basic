@@ -249,7 +249,7 @@ public class InvoiceController extends Controller {
 				//更新取茶记录状态
 				InvoiceGetteaRecord invoiceGetteaRecord = InvoiceGetteaRecord.dao.queryByInvoiceId(recordId);
 				if(invoiceGetteaRecord != null){
-					int id = invoiceGetteaRecord.getInt("id");
+					int id = invoiceGetteaRecord.getInt("gettea_record_id");
 					if(StringUtil.equals(status, Constants.INVOICE_STATUS.INVOICED)){
 						//已开票
 						GetTeaRecord.dao.updateInvoice(id, Constants.INVOICE_STATUS.INVOICED);
