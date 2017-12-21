@@ -10,7 +10,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -58,8 +60,13 @@ public class WXPayAction extends Controller{
 	    while ((s = br.readLine()) != null) {
 	        sb.append(s);
 	    }
-	    String xml = sb.toString();
-	    System.out.println("xml:"+xml);
+	    Iterator<Entry<String, String>> iterator = params.entrySet().iterator();
+	    System.out.println("=======回调的参数========");
+	    while(iterator.hasNext()){
+	    	Map.Entry<String, String> entry = iterator.next();
+	    	System.out.println("key:"+entry.getKey()+"==value:"+entry.getValue());
+	    }
+	    System.out.println("========================");
 	        
 		//返回状态码、返回信息
 		String returnCode = params.get("return_code");
@@ -70,18 +77,20 @@ public class WXPayAction extends Controller{
 		if(checkSign&&(StringUtil.equals(returnCode, "SUCCESS"))&&(StringUtil.isBlank(returnMsg))){
 			System.out.println("签名有效");
 			//签名有效
-			String orderNo = request.getParameter("out_trade_no");
-			String trade_no=request.getParameter("transaction_id");
+			String orderNo = params.get("out_trade_no");
+			String trade_no=params.get("transaction_id");
 			 //交易金额
-			String total_fee = request.getParameter("total_amount");
+			BigDecimal total_fee = new BigDecimal("0");
+			//params.get("total_fee");
 			
 			PayRecord payRecord = PayRecord.dao.queryByOutTradeNo(orderNo);
 			int userId = 0;
 			if(payRecord != null){
 				userId = payRecord.getInt("member_id");
+				total_fee = payRecord.getBigDecimal("moneys");
 			}
 			//更新状态
-			int updateFlg = Member.dao.updateCharge(userId, StringUtil.toBigDecimal(total_fee));
+			int updateFlg = Member.dao.updateCharge(userId, total_fee);
 			if(updateFlg != 0){
 				CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_SUCCESS,trade_no);
 				PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_SUCCESS, trade_no);
@@ -93,8 +102,8 @@ public class WXPayAction extends Controller{
 		}else if(checkSign&&(StringUtil.equals(returnCode, "FAIL"))){
 			System.out.println("微信支付回调，支付失败");
 			//签名有效，失败
-			String orderNo = request.getParameter("out_trade_no");
-			String trade_no=request.getParameter("transaction_id");
+			String orderNo = params.get("out_trade_no");
+			String trade_no=params.get("transaction_id");
 			CashJournal.dao.updateStatus(orderNo, Constants.FEE_TYPE_STATUS.APPLY_FAIL,trade_no);
 			int updateFlg = PayRecord.dao.updatePay(orderNo, Constants.PAY_STATUS.TRADE_FAIL, trade_no);
 			if(updateFlg != 0){
@@ -222,13 +231,25 @@ public class WXPayAction extends Controller{
 	        Map<String, String> retMap = processResponseXml(resp);
 	        WXPrepayModel model = new WXPrepayModel();
 	        if(!retMap.isEmpty()){
+	        	//重新生成签名，二次生成签名
+		        String wx_appid2 = propertiesUtil.getProperties("wx_appid");
+		        String wx_mch_id2 = propertiesUtil.getProperties("wx_mch_id");
+		        String nonStr2 = WXPayUtil.generateNonceStr();
+		        String stringA2="appid="+wx_appid2
+		        			  +"&noncestr="+nonStr2
+		        			  +"&package=Sign=WXPay"
+		        			  +"&partnerid="+wx_mch_id2
+		        			  +"&prepayid="+retMap.get("prepay_id")
+		        			  +"&timestamp="+StringUtil.getTimeStamp();
+		        String md5StringA2 = WXPayUtil.MD5(stringA2+"&key="+wx_key);
+		        
 	        	model.setAppId(retMap.get("appid"));
 	        	model.setPartnerId(retMap.get("mch_id"));
 	        	model.setPrepayId(retMap.get("prepay_id"));
 	        	model.setPackageValue("Sign=WXPay");
-	        	model.setNonceStr(retMap.get("nonce_str"));
+	        	model.setNonceStr(nonStr2);
 	        	model.setTimeStamp(StringUtil.getTimeStamp());
-	        	model.setSign(retMap.get("sign"));
+	        	model.setSign(md5StringA2);
 	        	
 	        	ReturnData data = new ReturnData();
 			    Map<String, Object> dataMap = new HashMap<>();

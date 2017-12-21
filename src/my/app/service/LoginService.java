@@ -536,7 +536,7 @@ public class LoginService {
 		//公司网址
 		CodeMst url = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.NET_URL);
 		if(url != null){
-			map.put("netUrl", url.getStr("netUrl"));
+			map.put("netUrl", url.getStr("data2"));
 		}else{
 			map.put("netUrl", null);
 		}
