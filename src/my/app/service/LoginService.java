@@ -4745,7 +4745,7 @@ public class LoginService {
 			//开票内容
 			CodeMst invoiceMst = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.INVOICE_CONTENT);
 			if(invoiceMst != null){
-				model.setInvoiceContent(invoiceMst.getStr("name"));
+				model.setInvoiceContent(invoiceMst.getStr("data2"));
 			}
 			
 			Tea tea = Tea.dao.queryById(record.getInt("tea_id"));
