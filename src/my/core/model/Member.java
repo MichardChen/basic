@@ -133,7 +133,7 @@ public class Member extends Model<Member> {
 	}
 	
 	public void updatePwd(String mobile,String userPwd){
-		Db.update("update t_member set userpwd='"+userPwd+"',update_time='"+DateUtil.getNowTimestamp()+"' where mobile="+mobile);
+		Db.update("update t_member set userpwd='"+userPwd+"',update_time='"+DateUtil.getNowTimestamp()+"' where mobile='"+mobile+"'");
 	}
 	
 	public int updateIdCardInfo(int userId,String idCardNo,String idCardImg,String ownerName){
