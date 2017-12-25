@@ -279,7 +279,7 @@ public class WarehouseTeaMemberController extends Controller {
 	}
 
 	public void exportData() {
-		String path = "F:\\upload\\在库茶叶.xls";
+		String path = "D:\\upload\\在库茶叶.xls";
 		try {
 			String date = getPara("date");
 			String tea = getPara("tea");

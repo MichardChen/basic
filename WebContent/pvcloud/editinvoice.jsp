@@ -35,22 +35,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<table class="table table-responsive">
 		<tr>
 			<td>申请人电话</td>
-			<td class="td_class">${model.mobile}</td>
+			<td class="td_class">
+				${model.mobile}
+			</td>
 		</tr>
 		<tr>
 			<td>发票类型</td>
 			<td class="td_class">
-					<select name="typeCd" style="height: 30px;width: 150px;" disabled="disabled">
+					<select name="typeCd" style="height: 30px;width: 150px;">
 	    					<option></option>
 	    					<option value="320001" <c:if test="${model.invoice_type_cd=='320001'}">selected="selected"</c:if>>电子发票</option>
-	    					<option value="320001" <c:if test="${model.invoice_type_cd=='320002'}">selected="selected"</c:if>>纸质发票</option>
+	    					<option value="320002" <c:if test="${model.invoice_type_cd=='320002'}">selected="selected"</c:if>>纸质发票</option>
 	    				</select>	
 			</td>
 		</tr>
 		<tr>
 			<td>抬头类型</td>
 			<td class="td_class">
-						<select name="titleTypeCd" style="height: 30px;width: 150px;" disabled="disabled">
+						<select name="titleTypeCd" style="height: 30px;width: 150px;">
 	    					<option></option>
 	    					<option value="330001" <c:if test="${model.title_type_cd=='330001'}">selected="selected"</c:if>>企业</option>
 	    					<option value="330002" <c:if test="${model.title_type_cd=='330002'}">selected="selected"</c:if>>个人/非企业单位</option>
@@ -60,7 +62,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<tr>
 			<td>发票抬头</td>
 			<td class="td_class">
-						${model.title}
+					<input type="text" name="title" value="${model.title}"/>
 			</td>
 		</tr>
 		<tr>
@@ -75,27 +77,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</td>
 		</tr>
 		<tr>
+			<td>发票号</td>
+			<td class="td_class">
+					<input type="text" name="invoiceNo" value="${model.invoice_no}"/>
+			</td>
+		</tr>
+		<tr>
 			<td>税务单号</td>
 			<td class="td_class">
-						${model.tax_no}
+					<input type="text" name="taxNo" value="${model.tax_no}"/>
 			</td>
 		</tr>
 		<tr>
 			<td>发票内容</td>
 			<td class="td_class">
-						${model.content}
+					<input type="text" name="content" value="${model.content}"/>
 			</td>
 		</tr>
 		<tr>
 			<td>发票金额</td>
 			<td class="td_class">
-						${model.moneys}
+						<input type="number" step="0.01" name="moneys" value="${model.moneys}"/>
 			</td>
 		</tr>
 		<tr>
 			<td>备注</td>
 			<td class="td_class">
-						${model.mark}
+						<input type="text" name="mark" value="${model.mark}"/>
 			</td>
 		</tr>
 		<%-- <tr>
@@ -110,24 +118,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<tr>
 			<td>开户行</td>
 			<td class="td_class">
-						${model.bank}
+					<input type="text" name="bank" value="${model.bank}"/>
 			</td>
 		</tr>
 		<tr>
 			<td>账户</td>
 			<td class="td_class">
-					${model.account}
+					<input type="text" name="account" value="${model.account}"/>
 			</td>
 		</tr>
 		<tr>
 			<td>邮箱</td>
 			<td class="td_class">
-					${model.mail}
+					<input type="text" name="mail" value="${model.mail}"/>
 			</td>
 		</tr>
 		<tr style="border-bottom: 1px solid grey;">
 			<td>邮寄信息</td>
-			<td class="td_class">${address}</td>
+			<td class="td_class">
+					${address}
+			</td>
 		</tr>
 		<tr>
 			<td>快递名称</td>

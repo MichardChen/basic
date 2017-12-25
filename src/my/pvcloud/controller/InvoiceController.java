@@ -3,6 +3,7 @@ package my.pvcloud.controller;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,11 +81,15 @@ public class InvoiceController extends Controller {
 			}
 			model.setMark(data.getStr("mark"));
 			model.setTaxNo(data.getStr("tax_no"));
-			CodeMst typeMst = CodeMst.dao.queryCodestByCode(data.getStr("title_type_cd"));
+			CodeMst typeMst = CodeMst.dao.queryCodestByCode(data.getStr("invoice_type_cd"));
 			if(typeMst != null){
 				model.setType(typeMst.getStr("name"));
 			}
 			model.setTitle(data.getStr("title"));
+			CodeMst titleTypeMst = CodeMst.dao.queryCodestByCode(data.getStr("title_type_cd"));
+			if(titleTypeMst != null){
+				model.setTitleType(titleTypeMst.getStr("name"));
+			}
 			model.setMoneys(StringUtil.toString(data.getBigDecimal("moneys")));
 			CodeMst status = CodeMst.dao.queryCodestByCode(data.getStr("status"));
 			if(status != null){
@@ -133,10 +138,17 @@ public class InvoiceController extends Controller {
 			}
 			model.setMark(data.getStr("mark"));
 			model.setTaxNo(data.getStr("tax_no"));
-			CodeMst typeMst = CodeMst.dao.queryCodestByCode(data.getStr("title_type_cd"));
+			CodeMst typeMst = CodeMst.dao.queryCodestByCode(data.getStr("invoice_type_cd"));
 			if(typeMst != null){
 				model.setType(typeMst.getStr("name"));
 			}
+			
+			CodeMst titleTypeMst = CodeMst.dao.queryCodestByCode(data.getStr("title_type_cd"));
+			if(titleTypeMst != null){
+				model.setTitleType(titleTypeMst.getStr("name"));
+			}
+			
+			
 			model.setTitle(data.getStr("title"));
 			model.setMoneys(StringUtil.toString(data.getBigDecimal("moneys")));
 			CodeMst st = CodeMst.dao.queryCodestByCode(data.getStr("status"));
@@ -193,10 +205,17 @@ public class InvoiceController extends Controller {
 			}
 			model.setMark(data.getStr("mark"));
 			model.setTaxNo(data.getStr("tax_no"));
-			CodeMst typeMst = CodeMst.dao.queryCodestByCode(data.getStr("title_type_cd"));
+			CodeMst typeMst = CodeMst.dao.queryCodestByCode(data.getStr("invoice_type_cd"));
 			if(typeMst != null){
 				model.setType(typeMst.getStr("name"));
 			}
+			
+			CodeMst titleTypeMst = CodeMst.dao.queryCodestByCode(data.getStr("title_type_cd"));
+			if(titleTypeMst != null){
+				model.setTitleType(titleTypeMst.getStr("name"));
+			}
+			
+			
 			model.setTitle(data.getStr("title"));
 			model.setMoneys(StringUtil.toString(data.getBigDecimal("moneys")));
 			CodeMst st = CodeMst.dao.queryCodestByCode(data.getStr("status"));
@@ -244,7 +263,35 @@ public class InvoiceController extends Controller {
 			String expressName = StringUtil.checkCode(getPara("expressName"));
 			String expressNo = StringUtil.checkCode(getPara("expressNo"));
 			String status = StringUtil.checkCode(getPara("status"));
-			int ret = Invoice.dao.updateInvoice(recordId, status, expressName, expressNo,(Integer)getSessionAttr("agentId"));
+			//新增
+			String typeCd = StringUtil.checkCode(getPara("typeCd"));
+			String titleTypeCd = StringUtil.checkCode(getPara("titleTypeCd"));
+			String title = StringUtil.checkCode(getPara("title"));
+			String invoiceNo = StringUtil.checkCode(getPara("invoiceNo"));
+			String taxNo = StringUtil.checkCode(getPara("taxNo"));
+			String content = StringUtil.checkCode(getPara("content"));
+			BigDecimal moneys = StringUtil.toBigDecimal(StringUtil.checkCode(getPara("moneys")));
+			String mark = StringUtil.checkCode(getPara("mark"));
+			String bank = StringUtil.checkCode(getPara("bank"));
+			String account = StringUtil.checkCode(getPara("account"));
+			String mail = StringUtil.checkCode(getPara("mail"));
+			
+			int ret = Invoice.dao.updateInvoice(recordId
+											   ,status
+											   ,expressName
+											   ,expressNo
+											   ,(Integer)getSessionAttr("agentId")
+											   ,typeCd
+											   ,titleTypeCd
+											   ,title
+											   ,invoiceNo
+											   ,taxNo
+											   ,content
+											   ,moneys
+											   ,mark
+											   ,bank
+											   ,account
+											   ,mail);
 			if(ret!=0){
 				//更新取茶记录状态
 				InvoiceGetteaRecord invoiceGetteaRecord = InvoiceGetteaRecord.dao.queryByInvoiceId(recordId);
@@ -273,7 +320,7 @@ public class InvoiceController extends Controller {
 	}
 	
 	public void exportData(){
-		 String path = "F:\\upload\\开票数据.xls";
+		 String path = "D:\\upload\\开票数据.xls";
 		 try {  
 			
 		 FileOutputStream os = new FileOutputStream(new File(path));  
@@ -287,7 +334,7 @@ public class InvoiceController extends Controller {
 	        
 	        XSSFRow headRow = sheet.createRow(0);  
 	        XSSFCell cell = null;  
-	        String[] titles = new String[]{"用户名","注册手机号码","开票金额","发票抬头","发票类型","税务单号","备注","处理者","申请状态","申请时间"};
+	        String[] titles = new String[]{"用户名","注册手机号码","开票金额","发票抬头","抬头类型","发票类型","税务单号","备注","处理者","申请状态","申请时间"};
 	        for (int i = 0; i < titles.length; i++){  
 	            cell = headRow.createCell(i);  
 	            cell.setCellStyle(headStyle);  
@@ -334,38 +381,50 @@ public class InvoiceController extends Controller {
 			            cell.setCellStyle(bodyStyle);  
 			            cell.setCellValue("");
 					}
-					cell = bodyRow.createCell(5);  
+					
+					CodeMst invoicetypeMst = CodeMst.dao.queryCodestByCode(model.getStr("invoice_type_cd"));
+					if(invoicetypeMst != null){
+						cell = bodyRow.createCell(5);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue(invoicetypeMst.getStr("name"));
+					}else{
+						cell = bodyRow.createCell(5);  
+			            cell.setCellStyle(bodyStyle);  
+			            cell.setCellValue("");
+					}
+					
+					cell = bodyRow.createCell(6);  
 		            cell.setCellStyle(bodyStyle);  
 		            cell.setCellValue(model.getStr("tax_no"));
 		            
-		            cell = bodyRow.createCell(6);  
+		            cell = bodyRow.createCell(7);  
 		            cell.setCellStyle(bodyStyle);  
 		            cell.setCellValue(model.getStr("mark"));
 		            
 		            int updateById = model.getInt("update_by") == null ? 0 : model.getInt("update_by");
 					User user = User.dao.queryById(updateById);
 					if(user != null){
-						cell = bodyRow.createCell(7);  
+						cell = bodyRow.createCell(8);  
 			            cell.setCellStyle(bodyStyle);  
 			            cell.setCellValue(user.getStr("username"));
 					}else{
-						cell = bodyRow.createCell(7);  
+						cell = bodyRow.createCell(8);  
 			            cell.setCellStyle(bodyStyle);  
 			            cell.setCellValue("");
 					}
 					
 					CodeMst st = CodeMst.dao.queryCodestByCode(model.getStr("status"));
 					if(st != null){
-						cell = bodyRow.createCell(8);  
+						cell = bodyRow.createCell(9);  
 			            cell.setCellStyle(bodyStyle);  
 			            cell.setCellValue(st.getStr("name"));
 					}else{
-						cell = bodyRow.createCell(8);  
+						cell = bodyRow.createCell(9);  
 			            cell.setCellStyle(bodyStyle);  
 			            cell.setCellValue("");
 					}
 					
-	                cell = bodyRow.createCell(9);  
+	                cell = bodyRow.createCell(10);  
 	                cell.setCellStyle(bodyStyle);  
 	                cell.setCellValue(StringUtil.toString(model.getTimestamp("create_time")));
 	            }

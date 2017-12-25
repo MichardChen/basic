@@ -1,5 +1,6 @@
 package my.core.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.huadalink.plugin.tablebind.TableBind;
@@ -89,7 +90,22 @@ public class Invoice extends Model<Invoice> {
 		return sum.intValue();
 	}*/
 	
-	public int updateInvoice(int id,String invoiceStatus,String expressName,String expressNo,int updateBy){
-		return Db.update("update t_invoice set status='"+invoiceStatus+"',update_time='"+DateUtil.getNowTimestamp()+"',express_company='"+expressName+"',express_no='"+expressNo+"',update_by="+updateBy+" where id="+id);
+	public int updateInvoice(int id
+							,String invoiceStatus
+							,String expressName
+							,String expressNo
+							,int updateBy
+							,String typeCd
+							,String titleTypeCd
+							,String title
+							,String invoiceNo
+							,String taxNo
+							,String content
+							,BigDecimal moneys
+							,String mark
+							,String bank
+							,String account
+							,String mail){
+		return Db.update("update t_invoice set status='"+invoiceStatus+"',update_time='"+DateUtil.getNowTimestamp()+"',express_company='"+expressName+"',express_no='"+expressNo+"',update_by="+updateBy+",invoice_type_cd='"+typeCd+"',title_type_cd='"+titleTypeCd+"',title='"+title+"',invoice_no='"+invoiceNo+"',tax_no='"+taxNo+"',content='"+content+"',moneys='"+moneys+"',mark='"+mark+"',bank='"+bank+"',account='"+account+"',mail='"+mail+"' where id="+id);
 	}
 }

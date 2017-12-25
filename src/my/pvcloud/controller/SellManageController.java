@@ -478,7 +478,7 @@ public class SellManageController extends Controller {
 		String buyMobile = getPara("buyMobile");
 		
 
-		String path = "F:\\upload\\经销商管理.xls";
+		String path = "D:\\upload\\经销商管理.xls";
 		try {
 			FileOutputStream os = new FileOutputStream(new File(path));
 			// 创建一个workbook 对应一个excel应用文件

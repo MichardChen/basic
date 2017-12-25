@@ -485,7 +485,7 @@ public class OrderController extends Controller {
 		String saleUserTypeCd = getPara("saleUserTypeCd");
 		String buyMobile = getPara("buyMobile");
 
-		String path = "F:\\upload\\订单信息.xls";
+		String path = "D:\\upload\\订单信息.xls";
 		try {
 			FileOutputStream os = new FileOutputStream(new File(path));
 			// 创建一个workbook 对应一个excel应用文件

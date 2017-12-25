@@ -15,8 +15,14 @@ public class AdminInvoiceListModel implements Serializable{
 	private String type;
 	private String mark;
 	private String taxNo;
+	private String titleType;
 	
-	
+	public String getTitleType() {
+		return titleType;
+	}
+	public void setTitleType(String titleType) {
+		this.titleType = titleType;
+	}
 	public String getUpdateBy() {
 		return updateBy;
 	}

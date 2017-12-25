@@ -358,7 +358,7 @@ public class GetTeaRecordController extends Controller {
 	}
 	
 	public void exportData(){
-		 String path = "F:\\upload\\取茶记录.xls";
+		 String path = "D:\\upload\\取茶记录.xls";
 		 try {  
 			String time1 = getPara("time1");
 			String time2 = getPara("time2");

@@ -23,11 +23,19 @@ import my.core.constants.Constants;
 import my.core.interceptor.ContainFileInterceptor;
 import my.core.interceptor.RequestInterceptor;
 import my.core.model.CashJournal;
+import my.core.model.City;
+import my.core.model.CodeMst;
+import my.core.model.District;
 import my.core.model.Document;
+import my.core.model.GetTeaRecord;
+import my.core.model.Invoice;
+import my.core.model.Province;
+import my.core.model.ReceiveAddress;
 import my.core.model.RecordListModel;
 import my.core.model.ReturnData;
 import my.core.model.Store;
 import my.core.model.StoreImage;
+import my.core.vo.InvoiceListModel;
 import my.core.vo.StoreDetailVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
@@ -1437,5 +1445,37 @@ public class RestfulController extends Controller{
 		}
 		setAttr("model", model);
 		render("/mobile/checkorder.jsp");
+	}
+	
+	//开票详情
+	public void queryInvoiceDetail() throws Exception{
+		LoginDTO dto = LoginDTO.getInstance(getRequest());
+		int id = dto.getId();
+		if(id!=0){
+			Invoice record = Invoice.dao.queryInvoiceById(id);
+			setAttr("model", record);
+			ReceiveAddress address = ReceiveAddress.dao.queryByKeyId(record.getInt("address_id"));
+			if(address != null){
+				String addressDetail = "";
+				Province province = Province.dao.queryProvince(address.getInt("province_id"));
+				City city = City.dao.queryCity(address.getInt("city_id"));
+				District district = District.dao.queryDistrict(address.getInt("district_id"));
+				if(province != null){
+					addressDetail = addressDetail + province.getStr("name");
+				}
+				if(city != null){
+					addressDetail = addressDetail + city.getStr("name");
+				}
+				if(district != null){
+					addressDetail = addressDetail + district.getStr("name");
+				}
+				addressDetail = addressDetail+address.getStr("address");
+				addressDetail = address.getStr("receiveman_name")+" "+address.getStr("mobile")+" "+addressDetail;
+				setAttr("address", addressDetail);
+			}
+			List<CodeMst> express = CodeMst.dao.queryCodestByPcode(Constants.EXPRESS.EXPRESS);
+			setAttr("express", express);
+		}
+		render("/mobile/invoice.jsp");
 	}
 }

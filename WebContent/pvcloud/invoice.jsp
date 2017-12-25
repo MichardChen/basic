@@ -164,6 +164,7 @@ td{
     				<th>注册手机号码</th>
     				<th>开票金额</th>
     				<th>发票抬头</th>
+    				<th>抬头类型</th>
     				<th>发票类型</th>
     				<th>税务单号</th>
     				<th>备注</th>
@@ -187,6 +188,7 @@ td{
 		    					<td>${s.userMobile}</td>
 		    					<td>${s.moneys}</td>
 		    					<td>${s.title}</td>
+		    					<td>${s.titleType}</td>
 		    					<td>${s.type}</td>
 		    					<td>${s.taxNo}</td>
 		    					<td>${s.mark}</td>
