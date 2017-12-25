@@ -106,24 +106,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>申请时间</td>
 			<td class="td_class">${model.create_time}</td>
 		</tr>
-		<tr>
-			<td>邮寄信息</td>
-			<td class="td_class">${address}</td>
-		</tr>
-		<tr>
-			<td>快递名称</td>
-			<td class="td_class">
-					<select style="height:30px;width:120px;" name="expressName" id="expressName" >
-						<c:forEach var="s" items="${express}">
-							<option <c:if test="${s.name==model.express_company}">selected="selected"</c:if>>${s.name}</option>
-						</c:forEach>
-					</select>
-			</td>
-		</tr>
-		<tr>
-			<td>快递单号</td>
-			<td class="td_class"><input type="text" name="expressNo" maxlength="30" id="expressNo" style="width: 300px;" value="${model.express_no}"/></td>
-		</tr>
+		
 		<tr>
 			<td>开户行</td>
 			<td class="td_class">
@@ -141,6 +124,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td class="td_class">
 					${model.mail}
 			</td>
+		</tr>
+		<tr style="border-bottom: 1px solid grey;">
+			<td>邮寄信息</td>
+			<td class="td_class">${address}</td>
+		</tr>
+		<tr>
+			<td>快递名称</td>
+			<td class="td_class">
+					<select style="height:30px;width:120px;" name="expressName" id="expressName" >
+						<c:forEach var="s" items="${express}">
+							<option <c:if test="${s.name==model.express_company}">selected="selected"</c:if>>${s.name}</option>
+						</c:forEach>
+					</select>
+			</td>
+		</tr>
+		<tr>
+			<td>快递单号</td>
+			<td class="td_class"><input type="text" name="expressNo" maxlength="30" id="expressNo" style="width: 300px;" value="${model.express_no}"/></td>
 		</tr>
 	</table>
 		<input type="hidden" name="id" value="${model.id}"/>

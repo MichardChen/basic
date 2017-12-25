@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>经销商管理</title>
+<title>新茶订单记录</title>
 <%@include file="../common/header.jsp"%>
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link href="${CONTEXT_PATH}/assets/css/animate.css" rel="stylesheet">
@@ -143,7 +143,7 @@ td{
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
     	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">经销商管理</div>
+	   		<div style="font-size: 30px;color: white;font-weight: bold;">新茶订单记录</div>
 	   </div>
     	<hr/>	
 	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">

@@ -18,7 +18,7 @@ public class StoreEvaluate extends Model<StoreEvaluate> {
 	public static final StoreEvaluate dao = new StoreEvaluate();
 
 	public Page<StoreEvaluate> queryByPage(int page,int size){
-		String sql=" from t_store_evaluate where 1=1 order by create_time desc,flg desc";
+		String sql=" from t_store_evaluate where 1=1 order by create_time desc";
 		String select="select * ";
 		return StoreEvaluate.dao.paginate(page, size, select, sql);
 	}
@@ -52,6 +52,8 @@ public class StoreEvaluate extends Model<StoreEvaluate> {
 		if(StringUtil.isNoneBlank(mobile)){
 			sql = sql + " and store_id="+storeId;
 		}
+		
+		sql = sql +" order by create_time desc";
 			
 		return StoreEvaluate.dao.paginate(page, size, select, sql);
 	}
