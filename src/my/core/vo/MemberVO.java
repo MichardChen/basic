@@ -21,10 +21,16 @@ public class MemberVO implements Serializable{
 	private int openStore;
 	private int storeId;
 	private String role;
+	private String roleCd;
 	
 	
 	
-	
+	public String getRoleCd() {
+		return roleCd;
+	}
+	public void setRoleCd(String roleCd) {
+		this.roleCd = roleCd;
+	}
 	public String getRole() {
 		return role;
 	}

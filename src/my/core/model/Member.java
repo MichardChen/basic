@@ -19,91 +19,177 @@ public class Member extends Model<Member> {
 	
 	public static final Member dao = new Member();
 	
-	public Page<Member> queryMemberListByPage(int page,int size,String mobile,String name,String storeName,String type){
+	public Page<Member> queryMemberListByPage(int page,int size,String mobile,String name,String storeName,String type,String status){
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
-		if(StringUtil.isBlank(storeName)){
-			String sql="";
-			String select="select *";
-			if(StringUtil.isNoneBlank(mobile)){
-				strBuf.append("and mobile=?");
-				param.add(mobile);
+		if(StringUtil.isBlank(status)){
+			if(StringUtil.isBlank(storeName)){
+				String sql="";
+				String select="select *";
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append("and mobile=?");
+					param.add(mobile);
+				}
+				if(StringUtil.isNoneBlank(name)){
+					strBuf.append("and name=?");
+					param.add(name);
+				}
+				
+				if(StringUtil.isNoneBlank(type)){
+					strBuf.append("and role_cd=?");
+					param.add(type);
+				}
+				
+				sql=" from t_member where 1=1 "+strBuf.toString()+" order by create_time desc";
+				return Member.dao.paginate(page, size, select, sql,param.toArray());
+			}else{
+				String sql="";
+				String select="select a.*";
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append("and a.mobile=?");
+					param.add(mobile);
+				}
+				if(StringUtil.isNoneBlank(name)){
+					strBuf.append("and a.name=?");
+					param.add(name);
+				}
+				if(StringUtil.isNoneBlank(type)){
+					strBuf.append("and a.role_cd=?");
+					param.add(type);
+				}
+				
+				strBuf.append("and b.store_name like '%"+storeName+"%'");
+				sql=" from t_member a inner join t_store b on a.store_id=b.id where 1=1 "+strBuf.toString()+" order by a.create_time desc";
+				return Member.dao.paginate(page, size, select, sql,param.toArray());
 			}
-			if(StringUtil.isNoneBlank(name)){
-				strBuf.append("and name=?");
-				param.add(name);
-			}
-			
-			if(StringUtil.isNoneBlank(type)){
-				strBuf.append("and role_cd=?");
-				param.add(type);
-			}
-			
-			sql=" from t_member where 1=1 "+strBuf.toString()+" order by create_time desc";
-			return Member.dao.paginate(page, size, select, sql,param.toArray());
 		}else{
-			String sql="";
-			String select="select a.*";
-			if(StringUtil.isNoneBlank(mobile)){
-				strBuf.append("and a.mobile=?");
-				param.add(mobile);
+			if(StringUtil.isBlank(storeName)){
+				String sql="";
+				String select="select a.*";
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append("and a.mobile=?");
+					param.add(mobile);
+				}
+				if(StringUtil.isNoneBlank(name)){
+					strBuf.append("and a.name=?");
+					param.add(name);
+				}
+				
+				if(StringUtil.isNoneBlank(type)){
+					strBuf.append("and a.role_cd=?");
+					param.add(type);
+				}
+				
+				sql=" from t_member a inner join t_member_bankcard b on a.id=b.member_id where 1=1 "+strBuf.toString()+" and b.status='"+status+"' order by a.create_time desc";
+				return Member.dao.paginate(page, size, select, sql,param.toArray());
+			}else{
+				String sql="";
+				String select="select a.*";
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append("and a.mobile=?");
+					param.add(mobile);
+				}
+				if(StringUtil.isNoneBlank(name)){
+					strBuf.append("and a.name=?");
+					param.add(name);
+				}
+				if(StringUtil.isNoneBlank(type)){
+					strBuf.append("and a.role_cd=?");
+					param.add(type);
+				}
+				
+				strBuf.append("and b.store_name like '%"+storeName+"%'");
+				sql=" from t_member a inner join t_store b on a.store_id=b.id inner join t_member_bankcard c on a.id=c.member_id where 1=1 "+strBuf.toString()+" and b.status='"+status+"' order by a.create_time desc";
+				return Member.dao.paginate(page, size, select, sql,param.toArray());
 			}
-			if(StringUtil.isNoneBlank(name)){
-				strBuf.append("and a.name=?");
-				param.add(name);
-			}
-			if(StringUtil.isNoneBlank(type)){
-				strBuf.append("and a.role_cd=?");
-				param.add(type);
-			}
-			
-			strBuf.append("and b.store_name like '%"+storeName+"%'");
-			sql=" from t_member a inner join t_store b on a.store_id=b.id where 1=1 "+strBuf.toString()+" order by a.create_time desc";
-			return Member.dao.paginate(page, size, select, sql,param.toArray());
 		}
 	}
 	
-	public List<Member> exportData(String mobile,String name,String storeName,String type){
+	public List<Member> exportData(String mobile,String name,String storeName,String type,String status){
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();
-		if(StringUtil.isBlank(storeName)){
-			String sql="";
-			String select="select *";
-			if(StringUtil.isNoneBlank(mobile)){
-				strBuf.append(" and mobile='"+mobile+"'");
+		if(StringUtil.isBlank(status)){
+			if(StringUtil.isBlank(storeName)){
+				String sql="";
+				String select="select *";
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append("and mobile=?");
+					param.add(mobile);
+				}
+				if(StringUtil.isNoneBlank(name)){
+					strBuf.append("and name=?");
+					param.add(name);
+				}
+				
+				if(StringUtil.isNoneBlank(type)){
+					strBuf.append("and role_cd=?");
+					param.add(type);
+				}
+				
+				sql=" from t_member where 1=1 "+strBuf.toString()+" order by create_time desc";
+				return Member.dao.find(select+sql);
+			}else{
+				String sql="";
+				String select="select a.*";
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append("and a.mobile=?");
+					param.add(mobile);
+				}
+				if(StringUtil.isNoneBlank(name)){
+					strBuf.append("and a.name=?");
+					param.add(name);
+				}
+				if(StringUtil.isNoneBlank(type)){
+					strBuf.append("and a.role_cd=?");
+					param.add(type);
+				}
+				
+				strBuf.append("and b.store_name like '%"+storeName+"%'");
+				sql=" from t_member a inner join t_store b on a.store_id=b.id where 1=1 "+strBuf.toString()+" order by a.create_time desc";
+				return Member.dao.find(select+sql);
 			}
-			if(StringUtil.isNoneBlank(name)){
-				strBuf.append(" and name='"+name+"'");
-			}
-			
-			if(StringUtil.isNoneBlank(type)){
-				strBuf.append(" and role_cd='"+type+"'");
-				param.add(type);
-			}
-			
-			sql=" from t_member where 1=1 "+strBuf.toString()+" order by create_time desc";
-			return Member.dao.find(select+sql);
 		}else{
-			String sql="";
-			String select="select a.*";
-			if(StringUtil.isNoneBlank(mobile)){
-				strBuf.append(" and a.mobile='"+mobile+"'");
-				param.add(mobile);
+			if(StringUtil.isBlank(storeName)){
+				String sql="";
+				String select="select a.*";
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append("and a.mobile=?");
+					param.add(mobile);
+				}
+				if(StringUtil.isNoneBlank(name)){
+					strBuf.append("and a.name=?");
+					param.add(name);
+				}
+				
+				if(StringUtil.isNoneBlank(type)){
+					strBuf.append("and a.role_cd=?");
+					param.add(type);
+				}
+				
+				sql=" from t_member a inner join t_member_bankcard b on a.id=b.member_id where 1=1 "+strBuf.toString()+" and b.status='"+status+"' order by a.create_time desc";
+				return Member.dao.find(select+sql);
+			}else{
+				String sql="";
+				String select="select a.*";
+				if(StringUtil.isNoneBlank(mobile)){
+					strBuf.append("and a.mobile=?");
+					param.add(mobile);
+				}
+				if(StringUtil.isNoneBlank(name)){
+					strBuf.append("and a.name=?");
+					param.add(name);
+				}
+				if(StringUtil.isNoneBlank(type)){
+					strBuf.append("and a.role_cd=?");
+					param.add(type);
+				}
+				
+				strBuf.append("and b.store_name like '%"+storeName+"%'");
+				sql=" from t_member a inner join t_store b on a.store_id=b.id inner join t_member_bankcard c on a.id=c.member_id where 1=1 "+strBuf.toString()+" and b.status='"+status+"' order by a.create_time desc";
+				return Member.dao.find(select+sql);
 			}
-			if(StringUtil.isNoneBlank(name)){
-				strBuf.append(" and a.name='"+name+"'");
-				param.add(name);
-			}
-			if(StringUtil.isNoneBlank(type)){
-				strBuf.append(" and a.role_cd='"+type+"'");
-				param.add(type);
-			}
-			
-			strBuf.append("and b.store_name like '%"+storeName+"%'");
-			sql=" from t_member a inner join t_store b on a.store_id=b.id where 1=1 "+strBuf.toString()+" order by a.create_time desc";
-			return Member.dao.find(select+sql);
 		}
-	}
+}
 	
 	public Member queryMember(String mobile){
 		return Member.dao.findFirst("select * from t_member where mobile=?",mobile);

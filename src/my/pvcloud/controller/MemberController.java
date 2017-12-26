@@ -56,6 +56,7 @@ public class MemberController extends Controller {
 		removeSessionAttr("cname");
 		removeSessionAttr("storeName");
 		removeSessionAttr("type");
+		removeSessionAttr("status");
 		Page<Member> list = service.queryByPage(page, size);
 		ArrayList<MemberVO> models = new ArrayList<>();
 		MemberVO model = null;
@@ -69,6 +70,7 @@ public class MemberController extends Controller {
 			CodeMst roleMst = CodeMst.dao.queryCodestByCode(member.getStr("role_cd"));
 			if(roleMst != null){
 				model.setRole(roleMst.getStr("name"));
+				model.setRoleCd(roleMst.getStr("code"));
 			}
 			model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 			//查询用户已提现金额和提现中的金额
@@ -124,10 +126,15 @@ public class MemberController extends Controller {
 		String cname = getSessionAttr("cname");
 		String storeName = getSessionAttr("storeName");
 		String ctype = getSessionAttr("type");
+		String cstatus = getSessionAttr("cstatus");
 		
 		String mobile = getPara("mobile");
 		cmobile = mobile;
 		this.setSessionAttr("cmobile",cmobile);
+		
+		String status = getPara("status");
+		cstatus = status;
+		this.setSessionAttr("status",cstatus);
 		
 		String name = getPara("cname");
 		cname = name;
@@ -145,7 +152,7 @@ public class MemberController extends Controller {
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
-	        Page<Member> list = service.queryMemberListByPage(page, size,mobile,name,storeName,ctype);
+	        Page<Member> list = service.queryMemberListByPage(page, size,mobile,name,storeName,ctype,cstatus);
 			ArrayList<MemberVO> models = new ArrayList<>();
 			MemberVO model = null;
 			for(Member member : list.getList()){
@@ -161,6 +168,7 @@ public class MemberController extends Controller {
 				CodeMst roleMst = CodeMst.dao.queryCodestByCode(member.getStr("role_cd"));
 				if(roleMst != null){
 					model.setRole(roleMst.getStr("name"));
+					model.setRoleCd(roleMst.getStr("code"));
 				}
 				//查询用户已提现金额和提现中的金额
 				BigDecimal applying = BankCardRecord.dao.sumApplying(model.getId(), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
@@ -221,12 +229,15 @@ public class MemberController extends Controller {
 			String ctype=getSessionAttr("type");
 			this.setSessionAttr("type",ctype);
 			
+			String cstatus=getSessionAttr("status");
+			this.setSessionAttr("status",cstatus);
+			
 			Integer page = getParaToInt(1);
 	        if (page==null || page==0) {
 	            page = 1;
 	        }
 	        
-	        Page<Member> list = service.queryMemberListByPage(page, size,cmobile,cname,storeName,ctype);
+	        Page<Member> list = service.queryMemberListByPage(page, size,cmobile,cname,storeName,ctype,cstatus);
 			ArrayList<MemberVO> models = new ArrayList<>();
 			MemberVO model = null;
 			for(Member member : list.getList()){
@@ -239,6 +250,7 @@ public class MemberController extends Controller {
 				CodeMst roleMst = CodeMst.dao.queryCodestByCode(member.getStr("role_cd"));
 				if(roleMst != null){
 					model.setRole(roleMst.getStr("name"));
+					model.setRoleCd(roleMst.getStr("code"));
 				}
 				model.setCreateTime(StringUtil.toString(member.getTimestamp("create_time")));
 				model.setMoneys(StringUtil.toString(member.getBigDecimal("moneys")));
@@ -477,9 +489,9 @@ public class MemberController extends Controller {
 			String name = getPara("cname");
 			String storeName = getPara("storeName");
 			String type = getPara("type");
+			String status = getPara("status");
 			
-			
-		    List<Member> list = Member.dao.exportData(mobile, name, storeName, type);
+		    List<Member> list = Member.dao.exportData(mobile, name, storeName, type,status);
 		    ArrayList<MemberVO> models = new ArrayList<>();
 		    if (list != null && list.size() > 0){  
 		    	for (int j = 0; j < list.size(); j++){  
@@ -582,5 +594,21 @@ public class MemberController extends Controller {
 	      }else{  
 	        renderNull();  
 	      }  
+	}
+	
+	public void updateBusiness(){
+		int id = getParaToInt("id");
+		if(id != 0){
+			int ret = Member.dao.updateRole(id, "350002");
+			if(ret != 0){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "更新为经销商，用户Id:"+id);
+				setAttr("message", "操作成功");
+			}else{
+				setAttr("message", "操作失败");
+			}
+		}else{
+			setAttr("message", "操作失败");
+		}
+		index();
 	}
 }

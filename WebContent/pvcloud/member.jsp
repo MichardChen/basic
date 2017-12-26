@@ -151,7 +151,8 @@ function exportData(){
 		var mobile = $("#mobile").val();
 		var type = $("#type").val();
 		var storeName = $("#storeName").val();
-		var params = "?cname="+cname+"&cmobile="+mobile+"&type="+type+"&storeName="+storeName;
+		var status = $("#status").val();
+		var params = "?cname="+cname+"&cmobile="+mobile+"&type="+type+"&storeName="+storeName+"&status="+status;
 		window.location.href="${CONTEXT_PATH}/memberInfo/exportData"+params;
 	}else{
 		return false;
@@ -259,6 +260,15 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="storeName" id="storeName" value="${storeName}"/>
     				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">银行卡审核状态</label>
+	    			<div class="col-sm-1 col-xs-1 col-md-1">
+	    				<select name="status" id="status" style="height: 30px;width: 80px;">
+	    					<option></option>
+	    					<option value="240001" <c:if test="${status=='240001'}">selected="selected"</c:if>>审核中</option>
+	    					<option value="240002" <c:if test="${status=='240002'}">selected="selected"</c:if>>审核成功</option>
+	    					<option value="240003" <c:if test="${status=='240003'}">selected="selected"</c:if>>审核失败</option>
+	    				</select>	
+    				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1">
     				<input type="submit" class="ys2" value=""/>
     			</div>
@@ -334,11 +344,14 @@ td{
 		    					<td>
 		    						<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
 		    						<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
-		    						<c:if test="${s.openStore == 0 }">
+		    						<c:if test="${s.roleCd=='350002' and s.openStore == 1}">
 		    							<input type="button" value="增加门店" class="ys3" data-toggle="modal" data-target="#myModal3" onclick="openStore1(${s.id})"/>
 		    						</c:if>
-		    						<c:if test="${s.openStore == 1 }">
+		    						<c:if test="${s.openStore == 0 and s.roleCd=='350002'}">
 		    							<input type="button" value="查看门店" class="ys3" data-toggle="modal" data-target="#myModal4" onclick="openStore2(${s.storeId})"/>
+		    						</c:if>
+		    						<c:if test="${s.roleCd=='350001'}">
+		    								<input type="button" value="设置为经销商" class="ys3"  style="width: 100px;" onclick="if(confirm('确认要设置经销商?')){window.location='${CONTEXT_PATH}/memberInfo/updateBusiness?id=${s.id}';}"/>
 		    						</c:if>
 		    					</td>
 		    				</tr>

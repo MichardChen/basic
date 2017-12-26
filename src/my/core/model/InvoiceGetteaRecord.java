@@ -18,4 +18,8 @@ public class InvoiceGetteaRecord extends Model<InvoiceGetteaRecord> {
 	public InvoiceGetteaRecord queryByInvoiceId(int id) {
 		return InvoiceGetteaRecord.dao.findFirst("select * from t_invoice_gettearecord where invoice_id = ?", id);
 	}
+	
+	public InvoiceGetteaRecord queryByGetTeaId(int id) {
+		return InvoiceGetteaRecord.dao.findFirst("select * from t_invoice_gettearecord where gettea_record_id = ?", id);
+	}
 }

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -150,7 +152,7 @@
 			        邮寄信息
 			</div>
 			<div class="col-xs-9 col-sm-3 word row-height content">
-			        ${model.address}
+			        ${address}
 			</div>
 		</div>
 		<div class="row row-height">
@@ -158,9 +160,7 @@
 			        快递名称
 			</div>
 			<div class="col-xs-9 col-sm-3 word row-height content">
-						<c:forEach var="s" items="${express}">
-							<c:if test="${s.name==model.express_company}">${s.name}</c:if>
-						</c:forEach>
+					${model.express_company}
 			</div>
 		</div>
 		<div class="row row-height">

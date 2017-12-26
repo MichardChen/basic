@@ -29,6 +29,7 @@ import my.core.model.District;
 import my.core.model.Document;
 import my.core.model.GetTeaRecord;
 import my.core.model.Invoice;
+import my.core.model.InvoiceGetteaRecord;
 import my.core.model.Province;
 import my.core.model.ReceiveAddress;
 import my.core.model.RecordListModel;
@@ -1452,29 +1453,38 @@ public class RestfulController extends Controller{
 		LoginDTO dto = LoginDTO.getInstance(getRequest());
 		int id = dto.getId();
 		if(id!=0){
-			Invoice record = Invoice.dao.queryInvoiceById(id);
-			setAttr("model", record);
-			ReceiveAddress address = ReceiveAddress.dao.queryByKeyId(record.getInt("address_id"));
-			if(address != null){
-				String addressDetail = "";
-				Province province = Province.dao.queryProvince(address.getInt("province_id"));
-				City city = City.dao.queryCity(address.getInt("city_id"));
-				District district = District.dao.queryDistrict(address.getInt("district_id"));
-				if(province != null){
-					addressDetail = addressDetail + province.getStr("name");
+			GetTeaRecord getTeaRecord = GetTeaRecord.dao.queryById(id);
+			if(getTeaRecord != null){
+				InvoiceGetteaRecord invoiceGetteaRecord = InvoiceGetteaRecord.dao.queryByGetTeaId(getTeaRecord.getInt("id"));
+				if(invoiceGetteaRecord != null){
+					Invoice record = Invoice.dao.queryInvoiceById(invoiceGetteaRecord.getInt("invoice_id"));
+					setAttr("model", record);
+					if(record != null){
+						ReceiveAddress address = ReceiveAddress.dao.queryByKeyId(record.getInt("address_id"));
+						if(address != null){
+							String addressDetail = "";
+							Province province = Province.dao.queryProvince(address.getInt("province_id"));
+							City city = City.dao.queryCity(address.getInt("city_id"));
+							District district = District.dao.queryDistrict(address.getInt("district_id"));
+							if(province != null){
+								addressDetail = addressDetail + province.getStr("name");
+							}
+							if(city != null){
+								addressDetail = addressDetail + city.getStr("name");
+							}
+							if(district != null){
+								addressDetail = addressDetail + district.getStr("name");
+							}
+							addressDetail = addressDetail+address.getStr("address");
+							addressDetail = address.getStr("receiveman_name")+" "+address.getStr("mobile")+" "+addressDetail;
+							setAttr("address", addressDetail);
+						}
+					}
+					List<CodeMst> express = CodeMst.dao.queryCodestByPcode(Constants.EXPRESS.EXPRESS);
+					setAttr("express", express);
 				}
-				if(city != null){
-					addressDetail = addressDetail + city.getStr("name");
-				}
-				if(district != null){
-					addressDetail = addressDetail + district.getStr("name");
-				}
-				addressDetail = addressDetail+address.getStr("address");
-				addressDetail = address.getStr("receiveman_name")+" "+address.getStr("mobile")+" "+addressDetail;
-				setAttr("address", addressDetail);
 			}
-			List<CodeMst> express = CodeMst.dao.queryCodestByPcode(Constants.EXPRESS.EXPRESS);
-			setAttr("express", express);
+			
 		}
 		render("/mobile/invoice.jsp");
 	}
