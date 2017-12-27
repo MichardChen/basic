@@ -228,7 +228,7 @@ public class CashJournalController extends Controller {
 	}
 	
 	public void exportData() {
-		String path = "D:\\upload\\资金记录.xls";
+		String path = "//home//data//images//excel//资金记录.xls";
 		try {
 			String pstatus = getPara("status");
 			String ptype = getPara("type");

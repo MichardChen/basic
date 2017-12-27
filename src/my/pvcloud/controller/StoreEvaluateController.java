@@ -34,6 +34,8 @@ public class StoreEvaluateController extends Controller {
 		removeSessionAttr("title1");
 		removeSessionAttr("mobile");
 		removeSessionAttr("flg");
+		removeSessionAttr("storeName");
+		removeSessionAttr("content");
 		Page<StoreEvaluate> list = service.queryByPage(page, size);
 		ArrayList<AdminEvaluateListModel> models = new ArrayList<>();
 		AdminEvaluateListModel model = null;
@@ -83,11 +85,17 @@ public class StoreEvaluateController extends Controller {
 		String flg=getSessionAttr("flg");
 		this.setSessionAttr("flg",flg);
 		
+		String storeName=getSessionAttr("storeName");
+		this.setSessionAttr("storeName",storeName);
+		
+		String content=getSessionAttr("content");
+		this.setSessionAttr("content",content);
+		
 		Integer page = getParaToInt(1);
         if (page==null || page==0) {
             page = 1;
         }
-        Page<StoreEvaluate> list = service.queryByPageParams(page, size,title,mobile,flg,title1);
+        Page<StoreEvaluate> list = service.queryByPageParams(page, size,title,mobile,flg,title1,storeName,content);
 		ArrayList<AdminEvaluateListModel> models = new ArrayList<>();
 		AdminEvaluateListModel model = null;
 		for(StoreEvaluate data : list.getList()){
@@ -141,16 +149,26 @@ public class StoreEvaluateController extends Controller {
 		String pflg = getPara("flg");
 		flg = pflg;
 		
+		String storeName = getSessionAttr("storeName");
+		String pstoreName = getPara("storeName");
+		storeName = pstoreName;
+		
+		String content = getSessionAttr("content");
+		String pcontent = getPara("content");
+		content = pcontent;
+		
 		this.setSessionAttr("title",title);
 		this.setSessionAttr("title1",title1);
 		this.setSessionAttr("mobile",mobile);
 		this.setSessionAttr("flg",flg);
+		this.setSessionAttr("storeName", storeName);
+		this.setSessionAttr("content", content);
 		Integer page = getParaToInt(1);
 		if (page==null || page==0) {
 			page = 1;
 		}
 		    
-		Page<StoreEvaluate> list = service.queryByPageParams(page, size,title,mobile,flg,title1);
+		Page<StoreEvaluate> list = service.queryByPageParams(page, size,title,mobile,flg,title1,storeName,content);
 		ArrayList<AdminEvaluateListModel> models = new ArrayList<>();
 		AdminEvaluateListModel model = null;
 		for(StoreEvaluate data : list.getList()){

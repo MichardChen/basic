@@ -464,7 +464,7 @@ public class MemberController extends Controller {
 	}
 	
 	public void exportData(){
-		 String path = "D:\\upload\\用户数据.xls";
+		 String path = "//home//data//images//excel//用户数据.xls";
 		 try {  
 			
 		 FileOutputStream os = new FileOutputStream(new File(path));  

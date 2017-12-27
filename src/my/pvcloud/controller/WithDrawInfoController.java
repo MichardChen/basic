@@ -270,7 +270,7 @@ public class WithDrawInfoController extends Controller {
 	}
 
 	public void exportData() {
-		String path = "D:\\upload\\提现申请.xls";
+		String path = "//home//data//images//excel//提现申请.xls";
 		try {
 			String time = getPara("time");
 			String mobile = getPara("mobile");

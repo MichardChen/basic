@@ -23,39 +23,90 @@ public class StoreEvaluate extends Model<StoreEvaluate> {
 		return StoreEvaluate.dao.paginate(page, size, select, sql);
 	}
 	
-	public Page<StoreEvaluate> queryByPageParams(int page,int size,String date,String mobile,String flg,String title1){
+	public Page<StoreEvaluate> queryByPageParams(int page
+											    ,int size
+											    ,String date
+											    ,String mobile
+											    ,String flg
+											    ,String title1
+											    ,String storeName
+											    ,String content){
 		
-		Member member = Member.dao.queryMember(mobile);
-		int storeId = 0;
-		if(member != null){
-			Store store = Store.dao.queryMemberStore(member.getInt("id"));
-			if(store != null){
-				storeId = store.getInt("id");
+		if(StringUtil.isBlank(storeName)){
+			Member member = Member.dao.queryMember(mobile);
+			int storeId = 0;
+			if(member != null){
+				Store store = Store.dao.queryMemberStore(member.getInt("id"));
+				if(store != null){
+					storeId = store.getInt("id");
+				}
 			}
-		}
-		
-		String sql = " from t_store_evaluate where 1=1 ";
-		String select = "select * ";
-		if(StringUtil.isNoneBlank(flg)){
-			int flgs = StringUtil.toInteger(flg);
-			sql = sql + " and flg="+flgs;
-		}
-		
-		if(StringUtil.isNoneBlank(date)){
-			date = date+" 00:00:00";
-			sql = sql + " and create_time >='"+date+"' ";
-		}
-		if(StringUtil.isNoneBlank(title1)){
-			title1 = title1+" 23:59:59";
-			sql = sql + " and create_time <='"+title1+"' ";
-		}
-		if(StringUtil.isNoneBlank(mobile)){
-			sql = sql + " and store_id="+storeId;
-		}
-		
-		sql = sql +" order by create_time desc";
 			
-		return StoreEvaluate.dao.paginate(page, size, select, sql);
+			String sql = " from t_store_evaluate where 1=1 ";
+			String select = "select * ";
+			if(StringUtil.isNoneBlank(flg)){
+				int flgs = StringUtil.toInteger(flg);
+				sql = sql + " and flg="+flgs;
+			}
+			
+			if(StringUtil.isNoneBlank(date)){
+				date = date+" 00:00:00";
+				sql = sql + " and create_time >='"+date+"' ";
+			}
+			if(StringUtil.isNoneBlank(title1)){
+				title1 = title1+" 23:59:59";
+				sql = sql + " and create_time <='"+title1+"' ";
+			}
+			if(StringUtil.isNoneBlank(mobile)){
+				sql = sql + " and store_id="+storeId;
+			}
+			
+			if(StringUtil.isNoneBlank(content)){
+				sql = sql + " and mark like '%"+content+"%'";
+			}
+			
+			sql = sql +" order by create_time desc";
+				
+			return StoreEvaluate.dao.paginate(page, size, select, sql);
+		}else{
+			Member member = Member.dao.queryMember(mobile);
+			int storeId = 0;
+			if(member != null){
+				Store store = Store.dao.queryMemberStore(member.getInt("id"));
+				if(store != null){
+					storeId = store.getInt("id");
+				}
+			}
+			
+			String sql = " from t_store_evaluate a inner join t_store b on a.store_id=b.id where 1=1 ";
+			String select = "select a.* ";
+			if(StringUtil.isNoneBlank(flg)){
+				int flgs = StringUtil.toInteger(flg);
+				sql = sql + " and a.flg="+flgs;
+			}
+			
+			if(StringUtil.isNoneBlank(date)){
+				date = date+" 00:00:00";
+				sql = sql + " and a.create_time >='"+date+"' ";
+			}
+			if(StringUtil.isNoneBlank(title1)){
+				title1 = title1+" 23:59:59";
+				sql = sql + " and a.create_time <='"+title1+"' ";
+			}
+			if(StringUtil.isNoneBlank(mobile)){
+				sql = sql + " and a.store_id="+storeId;
+			}
+			
+			if(StringUtil.isNoneBlank(content)){
+				sql = sql + " and b.mark like '%"+content+"%'";
+			}
+			
+			sql = sql + " and b.store_name like '%"+storeName+"%'";
+			
+			sql = sql +" order by a.create_time desc";
+				
+			return StoreEvaluate.dao.paginate(page, size, select, sql);
+		}
 	}
 	
 	public boolean updateInfo(StoreEvaluate tea){

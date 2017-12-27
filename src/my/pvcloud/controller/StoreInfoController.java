@@ -435,23 +435,23 @@ public class StoreInfoController extends Controller {
 		int storeId = StringUtil.toInteger(getPara("id"));
 		Store store = Store.dao.queryById(storeId);
 		int memberId = store == null ? 0 : store.getInt("member_id");
-		//QRCodeUtil.QRCodeCreate(StringUtil.toString(memberId), "//home//ewcode//qrcode.jpg", 8, "//home//ewcode//icon.png");
-		QRCodeUtil.QRCodeCreate("http://www.yibuwangluo.cn/zznj/h5/share.jsp?businessId="+memberId, "D://upload//ewcode//qrcode.jpg", 8, "D://upload//ewcode//icon.png");
+		QRCodeUtil.QRCodeCreate("http://app.tongjichaye.com/zznj/h5/share.jsp?businessId="+memberId, "//home//ewcode//qrcode.jpg", 14, "//home//ewcode//icon.png");
+		//QRCodeUtil.QRCodeCreate("http://app.tongjichaye.com/zznj/h5/share.jsp?businessId="+memberId, "F://upload//ewcode//qrcode.jpg", 14, "F://upload//ewcode//icon.png");
         HttpServletResponse response = getResponse();
 		response.setContentType("application/binary");
 	    //设置Content-Disposition
 		Member member = Member.dao.queryById(memberId);
 		String idCode = "";
-		if((member != null)&&(StringUtil.isNoneBlank(member.getStr("id_code")))){
-			idCode = member.getStr("id_code")+"_";
+		if((store != null)&&(StringUtil.isNoneBlank(store.getStr("key_code")))){
+			idCode = store.getStr("key_code")+"_";
 		}
 		String storeName = store.getStr("store_name")==null ? idCode+"未命名" : idCode+store.getStr("store_name");
 		String name = new String(storeName.getBytes(), "ISO-8859-1");
 	    response.setHeader("Content-Disposition", "attachment;filename="+name+".jpeg");  
 	    //读取目标文件，通过response将目标文件写到客户端  
 	    //获取目标文件的绝对路径  
-	    //String fullFileName = "//home//ewcode//qrcode.jpg"; 
-	    String fullFileName = "D://upload//ewcode//qrcode.jpg"; 
+	    String fullFileName = "//home//ewcode//qrcode.jpg"; 
+	    //String fullFileName = "F://upload//ewcode//qrcode.jpg"; 
 	    //读取文件  
 	    InputStream in = new FileInputStream(fullFileName);  
 	    OutputStream out = response.getOutputStream();  

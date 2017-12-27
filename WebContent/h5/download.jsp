@@ -21,10 +21,10 @@
 			<img src="../assets/img/guide.png" class="img-responsive"  alt="Responsive image" width="100%">
 	</div>
 	<div>
-	<img src="http://139.196.171.205:88/common/download.jpg" class="img-responsive"  alt="Responsive image" width="100%">
+	<img src="http://app.tongjichaye.com:88/common/download.jpg" class="img-responsive"  alt="Responsive image" width="100%">
 	</div>
 	<div style="margin: 0px 0px;text-align: center;margin-top: 10px;">
-			<a href="https://www.pgyer.com/193E"><button type="button" class="btn btn-default" style="border-radius:30px;">Android客户端</button></a>
+			<a href="http://app.tongjichaye.com:88/app/tj_android.apk"><button type="button" class="btn btn-default" style="border-radius:30px;">Android客户端</button></a>
 			&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://itunes.apple.com/us/app/%E6%8E%8C%E4%B8%8A%E8%8C%B6%E5%AE%9D/id1311337970?l=zh&ls=1&mt=8"><button type="button" class="btn btn-default" style="border-radius:30px;">IOS客户端</button></a>
 	</div>
 	<div style="margin: 0px 0px;text-align: center;margin-top: 10px;height: 100px;">

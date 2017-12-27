@@ -562,7 +562,7 @@ public class LoginService {
 				map.put("url", null);
 			}
 		}
-		map.put("shareAppUrl", "http://www.yibuwangluo.cn/zznj/h5/share.jsp?businessId="+dto.getUserId());
+		map.put("shareAppUrl", "http://app.tongjichaye.com/zznj/h5/share.jsp?businessId="+dto.getUserId());
 		
 		//获取前四条资讯
 		Page<News> news = News.dao.queryByPage(1, 4);

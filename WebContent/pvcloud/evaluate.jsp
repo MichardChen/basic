@@ -111,6 +111,16 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="mobile" value="${mobile}"/>
     				</div>
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">门店名称</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="storeName" value="${storeName}"/>
+    				</div>
+    			</div>
+    			<div style="" class="form-group">
+    				<label class="col-sm-1 col-xs-1 col-md-1 control-label">评价内容</label>
+	    			<div class="col-sm-2 col-xs-2 col-md-2">	
+	    				<input type="text" class="form-control" name="content" value="${content}"/>
+    				</div>
     				<label class="col-sm-1 col-xs-1 col-md-1 control-label">状态</label>
 	    			<div class="col-sm-2 col-xs-2 col-md-2">
 	    				<select name="flg" style="height: 30px;width: 80px;">

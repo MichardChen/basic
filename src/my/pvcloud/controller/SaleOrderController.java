@@ -396,7 +396,7 @@ public class SaleOrderController extends Controller {
 	}
 
 	public void exportData() {
-		String path = "D:\\upload\\在售茶叶.xls";
+		String path = "//home//data//images//excel//在售茶叶.xls";
 		try {
 			String ptitle = getPara("title");
 			String saleMobile = getPara("saleMobile");
