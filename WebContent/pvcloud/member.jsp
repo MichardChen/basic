@@ -75,7 +75,7 @@ function openStore2(data){
 function check(){
 	
 	//门店名称
-	var storeName = $("#storeName").val();
+	var storeName = $("#storeName1").val();
 	if(storeName == ""){
 		 alert("请输入门店名称");
 		 return false;
@@ -344,10 +344,10 @@ td{
 		    					<td>
 		    						<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
 		    						<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
-		    						<c:if test="${s.roleCd=='350002' and s.openStore == 1}">
+		    						<c:if test="${s.roleCd=='350002' and s.openStore == 0}">
 		    							<input type="button" value="增加门店" class="ys3" data-toggle="modal" data-target="#myModal3" onclick="openStore1(${s.id})"/>
 		    						</c:if>
-		    						<c:if test="${s.openStore == 0 and s.roleCd=='350002'}">
+		    						<c:if test="${s.openStore == 1 and s.roleCd=='350002'}">
 		    							<input type="button" value="查看门店" class="ys3" data-toggle="modal" data-target="#myModal4" onclick="openStore2(${s.storeId})"/>
 		    						</c:if>
 		    						<c:if test="${s.roleCd=='350001'}">

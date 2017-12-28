@@ -69,7 +69,7 @@ function selectDistrict1(){
 	<table class="table table-responsive">
 		<tr>
 			<td>门店名称</td>
-			<td><input type="text" name="storeName" id="storeName" maxlength="30" style="width: 300px;"/></td>
+			<td><input type="text" name="storeName" id="storeName1" maxlength="30" style="width: 300px;"/></td>
 		</tr>
 		<tr>
 			<td>所属地区</td>
