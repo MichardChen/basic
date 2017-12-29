@@ -84,6 +84,7 @@ public class TeaInfoController extends Controller {
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 			model.setName(tea.getStr("tea_title"));
 			model.setProductBusiness(tea.getStr("product_business"));
+			model.setMakeBusiness(tea.getStr("make_business"));
 			if(wtm != null){
 				BigDecimal st = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("stock")));
 				BigDecimal se = new BigDecimal(StringUtil.toStringDefaultZero(tea.getInt("size")));
@@ -166,6 +167,7 @@ public class TeaInfoController extends Controller {
 			model.setId(tea.getInt("id"));
 			model.setName(tea.getStr("tea_title"));
 			model.setProductBusiness(tea.getStr("product_business"));
+			model.setMakeBusiness(tea.getStr("make_business"));
 			WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 			if(wtm != null){
 				BigDecimal st = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("stock")));
@@ -254,6 +256,7 @@ public class TeaInfoController extends Controller {
 				model.setKeyCode(tea.getStr("key_code"));
 				model.setName(tea.getStr("tea_title"));
 				model.setProductBusiness(tea.getStr("product_business"));
+				model.setMakeBusiness(tea.getStr("make_business"));
 				WarehouseTeaMember wtm = WarehouseTeaMember.dao.queryWarehouseTeaMember(tea.getInt("id"),Constants.USER_TYPE.PLATFORM_USER);
 				if(wtm != null){
 					BigDecimal st = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("stock")));
@@ -367,6 +370,8 @@ public class TeaInfoController extends Controller {
 		setAttr("place", place);
 		List<CodeMst> productBusiness = CodeMst.dao.queryCodestByPcode("360000");
 		setAttr("productBusiness", productBusiness);
+		List<CodeMst> makeBusiness = CodeMst.dao.queryCodestByPcode("370000");
+		setAttr("makeBusiness", makeBusiness);
 		render("addTea.jsp");
 	}
 	
@@ -493,6 +498,7 @@ public class TeaInfoController extends Controller {
         tea.set("cover_img", logo);
         tea.set("flg", 1);
         tea.set("product_business", StringUtil.checkCode(getPara("productBusiness")));
+        tea.set("make_business", StringUtil.checkCode(getPara("makeBusiness")));
         tea.set("status",getPara("status"));
         tea.set("key_code", StringUtil.getTeaKeyCode());
         int houseId = getParaToInt("houses");
@@ -918,6 +924,7 @@ public class TeaInfoController extends Controller {
 	
 	public void exportData(){
 		 String path = "//home//data//images//excel//茶叶数据.xls";
+		//String path = "F://upload//茶叶数据.xls";
 		 try {  
 			
 		 FileOutputStream os = new FileOutputStream(new File(path));  
@@ -931,7 +938,7 @@ public class TeaInfoController extends Controller {
 	        
 	        XSSFRow headRow = sheet.createRow(0);  
 	        XSSFCell cell = null;  
-	        String[] titles = new String[]{"茶名称","茶编码","茶类型","茶价格","参考价","茶叶发行状态","品牌","产地","规格","生产商","发行件数","剩余件数","发行总量","剩余库存","是否删除","注册时间"};
+	        String[] titles = new String[]{"茶名称","茶编码","茶类型","茶价格","参考价","茶叶发行状态","品牌","产地","规格","生产商","出品商","发行件数","剩余件数","发行总量","剩余库存","是否删除","注册时间"};
 	        for (int i = 0; i < titles.length; i++){  
 	            cell = headRow.createCell(i);  
 	            cell.setCellStyle(headStyle);  
@@ -971,29 +978,29 @@ public class TeaInfoController extends Controller {
     					BigDecimal st = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("stock")));
     					BigDecimal se = new BigDecimal(StringUtil.toStringDefaultZero(tea.getInt("size")));
     					
-    					cell = bodyRow.createCell(13);  
+    					cell = bodyRow.createCell(14);  
 	    		        cell.setCellStyle(bodyStyle);  
 	    		        cell.setCellValue(StringUtil.toString(wtm.getInt("stock"))+"片");
     					
     		            
     					try {
     						//剩余件数
-    						cell = bodyRow.createCell(11);  
+    						cell = bodyRow.createCell(12);  
     	    		        cell.setCellStyle(bodyStyle);  
     	    		        cell.setCellValue(StringUtil.toString(st.divide(se))+"件");
     					} catch (Exception e) {
-    						cell = bodyRow.createCell(11);  
+    						cell = bodyRow.createCell(12);  
     	    		        cell.setCellStyle(bodyStyle);  
     	    		        cell.setCellValue("0件");
     					}
     					BigDecimal originStock = new BigDecimal(StringUtil.toStringDefaultZero(wtm.getInt("origin_stock")));
     					try {
     						//发行件数
-    						cell = bodyRow.createCell(10);  
+    						cell = bodyRow.createCell(11);  
     	    		        cell.setCellStyle(bodyStyle);  
      	    		        cell.setCellValue(StringUtil.toString(originStock.divide(se))+"件");
     					} catch (Exception e) {
-    						cell = bodyRow.createCell(10);  
+    						cell = bodyRow.createCell(11);  
     	    		        cell.setCellStyle(bodyStyle);  
      	    		        cell.setCellValue("0件");
     					}
@@ -1051,24 +1058,29 @@ public class TeaInfoController extends Controller {
 		            cell.setCellStyle(bodyStyle);  
 		            cell.setCellValue(tea.getStr("product_business"));
 		            
+		            //出品商
+		            cell = bodyRow.createCell(10);  
+		            cell.setCellStyle(bodyStyle);  
+		            cell.setCellValue(tea.getStr("make_business"));
+		            
 		            //规格	
 		            cell = bodyRow.createCell(8);  
 		            cell.setCellStyle(bodyStyle);  
 		            cell.setCellValue(StringUtil.toString(tea.getInt("weight"))+"克/片，"+StringUtil.toString(tea.getInt("size"))+"片/件");
 		            
 					//发行总量
-		            cell = bodyRow.createCell(12);  
+		            cell = bodyRow.createCell(13);  
 		            cell.setCellStyle(bodyStyle);  
 		            cell.setCellValue(StringUtil.toString(tea.getInt("total_output"))+"片");
 						
 					
 					//是否删除
-		            cell = bodyRow.createCell(14);  
+		            cell = bodyRow.createCell(15);  
 		            cell.setCellStyle(bodyStyle);  
 		            cell.setCellValue(tea.getInt("flg")==1?"否":"是");
 					
 		            //注册时间
-		            cell = bodyRow.createCell(15);  
+		            cell = bodyRow.createCell(16);  
 		            cell.setCellStyle(bodyStyle);  
 		            cell.setCellValue(StringUtil.toString(tea.getTimestamp("create_time")));
 	            }

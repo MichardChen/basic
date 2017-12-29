@@ -161,6 +161,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>${teaInfo.product_business}</td>
 		</tr>
 		<tr>
+			<td>出品商</td>
+			<td>${teaInfo.make_business}</td>
+		</tr>
+		<tr>
 			<td>生产日期</td>
 			<td>${teaInfo.product_date}<%-- <input type="text" name="birthday" id="birthday" value="${teaInfo.product_date}" style="width: 120px;" class="Wdate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/> --%></td>
 		</tr>
