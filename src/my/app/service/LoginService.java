@@ -34,6 +34,7 @@ import my.core.model.Invoice;
 import my.core.model.InvoiceGetteaRecord;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
+import my.core.model.MemberStoreTemp;
 import my.core.model.Message;
 import my.core.model.News;
 import my.core.model.Order;
@@ -195,9 +196,15 @@ public class LoginService {
 		//保存用户
 		String invateCode = dto.getInvateCode();
 		int storeId = 0;
-		Store businessStore = Store.dao.queryStoreByInviteCode(invateCode);
-		if(businessStore != null){
-			storeId = businessStore.getInt("id");
+		//查询用户门店临时表
+		MemberStoreTemp temp = MemberStoreTemp.dao.queryByMobile(mobile);
+		if(temp != null){
+			storeId = temp.getInt("store_id");
+		}else{
+			Store businessStore = Store.dao.queryStoreByInviteCode(invateCode);
+			if(businessStore != null){
+				storeId = businessStore.getInt("id");
+			}
 		}
 		
 		int id = Member.dao.saveMember(mobile, userPwd,sex,dto.getUserTypeCd(),Constants.MEMBER_STATUS.NOT_CERTIFICATED,storeId);
@@ -4510,7 +4517,7 @@ public class LoginService {
 		evaluate.set("service_point", dto.getServicePoint());
 		evaluate.set("tea_point", dto.getTeaPoint());
 		evaluate.set("senitation_point", dto.getSenitationPoint());
-		evaluate.set("mark", StringUtil.isBlank(dto.getMark()) ? "好评" : dto.getMark());
+		evaluate.set("mark", dto.getMark());
 		evaluate.set("create_time", DateUtil.getNowTimestamp());
 		evaluate.set("update_time", DateUtil.getNowTimestamp());
 		evaluate.set("flg", 1);
@@ -4552,71 +4559,86 @@ public class LoginService {
 		//商家id
 		int businessId = dto.getBusinessId();
 		Member member = Member.dao.queryMember(dto.getMobile());
-		if(member == null){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败，您的手机还未注册");
-			return data;
-		}
-		//用户ID
-		int userId = member.getInt("id");
-		if(businessId == userId){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败，不能绑定自己的门店会员");
-			return data;
-		}
 		if(businessId == 0){
 			data.setCode(Constants.STATUS_CODE.FAIL);
 			data.setMessage("绑定失败，您绑定门店不存在");
 			return data;
 		}
 		Store store = Store.dao.queryMemberStore(businessId);
-		if(store == null){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败，您绑定门店不存在");
-			return data;
-		}
-		
-		int storeId = store.getInt("id");
-		if(userId == 0){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败，用户数据有误");
-			return data;
-		}
-		
 		if(member == null){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败，用户数据有误");
-			return data;
-		}
-		
-		if((member.getInt("store_id")!=null)&&(member.getInt("store_id")!=0) && (member.getInt("store_id")!=storeId)){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败，您已绑定过其他门店，不能重复绑定");
-			return data;
-		}
-		
-		if((member.getInt("store_id")!=null)&&(member.getInt("store_id")!=0) && (member.getInt("store_id")==storeId)){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("您已经绑定过此门店了，无需重复绑定");
-			return data;
-		}
-		
-		String status = store.getStr("status");
-		if(!StringUtil.equals(status, Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS)){
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败，您绑定门店暂未通过审核");
-			return data;
-		}
-		
-		int ret = Member.dao.bindStore(member.getInt("id"), storeId);
-		if(ret != 0){
-			data.setCode(Constants.STATUS_CODE.SUCCESS);
-			data.setMessage("绑定成功");
-			return data;
+			if(store != null){
+				int storeId = store.getInt("id");
+				MemberStoreTemp temp = new MemberStoreTemp();
+				temp.set("mobile", dto.getMobile());
+				temp.set("store_id", storeId);
+				temp.set("create_time", DateUtil.getNowTimestamp());
+				temp.set("update_time", DateUtil.getNowTimestamp());
+				boolean flg = MemberStoreTemp.dao.saveInfo(temp);
+				if(flg){
+					data.setCode(Constants.STATUS_CODE.SUCCESS);
+					data.setMessage("绑定成功");
+					return data;
+				}else{
+					data.setCode(Constants.STATUS_CODE.FAIL);
+					data.setMessage("绑定失败");
+					return data;
+				}
+			}else{
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("绑定失败，您绑定门店不存在");
+				return data;
+			}
 		}else{
-			data.setCode(Constants.STATUS_CODE.FAIL);
-			data.setMessage("绑定失败");
-			return data;
+			//用户ID
+			int userId = member.getInt("id");
+			if(businessId == userId){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("绑定失败，不能绑定自己的门店会员");
+				return data;
+			}
+			
+			if(store == null){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("绑定失败，您绑定门店不存在");
+				return data;
+			}
+			
+			int storeId = store.getInt("id");
+			if(userId == 0){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("绑定失败，用户数据有误");
+				return data;
+			}
+			
+			if((member.getInt("store_id")!=null)&&(member.getInt("store_id")!=0) && (member.getInt("store_id")!=storeId)){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("绑定失败，您已绑定过其他门店，不能重复绑定");
+				return data;
+			}
+			
+			if((member.getInt("store_id")!=null)&&(member.getInt("store_id")!=0) && (member.getInt("store_id")==storeId)){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("您已经绑定过此门店了，无需重复绑定");
+				return data;
+			}
+			
+			String status = store.getStr("status");
+			if(!StringUtil.equals(status, Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS)){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("绑定失败，您绑定门店暂未通过审核");
+				return data;
+			}
+			
+			int ret = Member.dao.bindStore(member.getInt("id"), storeId);
+			if(ret != 0){
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("绑定成功");
+				return data;
+			}else{
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("绑定失败");
+				return data;
+			}
 		}
 	}
 	
