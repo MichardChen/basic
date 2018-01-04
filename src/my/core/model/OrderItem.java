@@ -167,10 +167,10 @@ public class OrderItem extends Model<OrderItem> {
 	public List<OrderItem> queryAllOrderItemList(int pageSize, int pageNum, String date,int storeId){
 		int fromRow = (pageNum - 1) * pageSize;
 		if(StringUtil.isNoneBlank(date)){
-			return OrderItem.dao.find("select * from t_order_item a inner join t_member b on a.member_id=b.id where a.create_time like '%" + date
+			return OrderItem.dao.find("select a.* from t_order_item a inner join t_member b on a.member_id=b.id where a.create_time like '%" + date
 					+ "%' and a.sale_user_type='010002' and b.store_id="+storeId+" order by a.update_time desc limit " + fromRow + "," + pageSize);
 		}else{
-			return OrderItem.dao.find("select * from t_order_item a inner join t_member b on a.member_id=b.id where a.sale_user_type='010002' and b.store_id="+storeId+" order by a.update_time desc limit " + fromRow + "," + pageSize);
+			return OrderItem.dao.find("select a.* from t_order_item a inner join t_member b on a.member_id=b.id where a.sale_user_type='010002' and b.store_id="+storeId+" order by a.update_time desc limit " + fromRow + "," + pageSize);
 		
 		}
 	}
