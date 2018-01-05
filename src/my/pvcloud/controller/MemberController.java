@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -464,7 +466,8 @@ public class MemberController extends Controller {
 	}
 	
 	public void exportData(){
-		 String path = "//home//data//images//excel//用户数据.xls";
+		 //String path = "//home//data//images//excel//用户数据.xls";
+		String path = "F://upload//用户数据.xls";
 		 try {  
 			
 		 FileOutputStream os = new FileOutputStream(new File(path));  
@@ -478,7 +481,7 @@ public class MemberController extends Controller {
 	        
 	        XSSFRow headRow = sheet.createRow(0);  
 	        XSSFCell cell = null;  
-	        String[] titles = new String[]{"用户名","用户编码	","昵称","注册号码","用户角色","经销商门店","余额","已提现金额","申请提现中金额","支付宝充值金额","银行卡审核状态","注册时间"};
+	        String[] titles = new String[]{"用户名","用户编码","昵称","注册号码","用户角色","经销商门店","余额","已提现金额","申请提现中金额","支付宝充值金额","银行卡审核状态","注册时间"};
 	        for (int i = 0; i < titles.length; i++){  
 	            cell = headRow.createCell(i);  
 	            cell.setCellStyle(headStyle);  
@@ -493,6 +496,19 @@ public class MemberController extends Controller {
 			
 		    List<Member> list = Member.dao.exportData(mobile, name, storeName, type,status);
 		    ArrayList<MemberVO> models = new ArrayList<>();
+		    
+		    List<CodeMst> roleList = CodeMst.dao.queryAllCodest();
+		    Map<String, String> roleMap = new HashMap<String,String>();
+		    for(CodeMst mst : roleList){
+		    	roleMap.put(mst.getStr("code"), mst.getStr("name"));
+		    }
+		    
+		    List<Store> storeList = Store.dao.queryAllStore();
+		    Map<Integer, String> storeMap = new HashMap<Integer,String>();
+		    for(Store store : storeList){
+		    	storeMap.put(store.getInt("id"), store.getStr("store_name"));
+		    }
+		    
 		    if (list != null && list.size() > 0){  
 		    	for (int j = 0; j < list.size(); j++){  
 		    		XSSFRow bodyRow = sheet.createRow(j + 1);
@@ -521,22 +537,17 @@ public class MemberController extends Controller {
 		            //用户角色
 		            cell = bodyRow.createCell(4);  
 		            cell.setCellStyle(bodyStyle);  
-		            CodeMst roleMst = CodeMst.dao.queryCodestByCode(member.getStr("role_cd"));
-					if(roleMst != null){
-						cell.setCellValue(roleMst.getStr("name"));
-					}else{
-						cell.setCellValue("");
-					}
+						
+		            cell.setCellValue(roleMap.get(member.getStr("role_cd")));
+					
 		            
 		            //绑定门店
 		            cell = bodyRow.createCell(5);  
 		            cell.setCellStyle(bodyStyle);  
-		            Store store = Store.dao.queryById(member.getInt("store_id"));
-					if(store != null){
-						cell.setCellValue(store.getStr("store_name"));
-					}else{
-						cell.setCellValue("");
-					}
+		            
+		            
+					cell.setCellValue(storeMap.get(member.getInt("store_id")));
+					
 		            
 		            //余额
 		            cell = bodyRow.createCell(6);  
@@ -570,12 +581,7 @@ public class MemberController extends Controller {
 						cell.setCellValue("暂未绑定银行卡");
 					}else{
 						String bankStatus = memberBankcard.getStr("status");
-						CodeMst sCodeMst = CodeMst.dao.queryCodestByCode(bankStatus);
-						if(sCodeMst != null){
-							cell.setCellValue(sCodeMst.getStr("name"));
-						}else{
-							cell.setCellValue("");
-						}
+						cell.setCellValue(roleMap.get(bankStatus));
 					}
 		             
 		            //注册时间

@@ -145,7 +145,7 @@ public class Member extends Model<Member> {
 				}
 				
 				strBuf.append("and b.store_name like '%"+storeName+"%'");
-				sql=" from t_member a inner join t_store b on a.store_id=b.id where 1=1 "+strBuf.toString()+" order by a.create_time desc";
+				sql=" from t_member a left join t_store b on a.store_id=b.id where 1=1 "+strBuf.toString()+" order by a.create_time desc";
 				return Member.dao.find(select+sql);
 			}
 		}else{
@@ -166,7 +166,7 @@ public class Member extends Model<Member> {
 					param.add(type);
 				}
 				
-				sql=" from t_member a inner join t_member_bankcard b on a.id=b.member_id where 1=1 "+strBuf.toString()+" and b.status='"+status+"' order by a.create_time desc";
+				sql=" from t_member a left join t_member_bankcard b on a.id=b.member_id where 1=1 "+strBuf.toString()+" and b.status='"+status+"' order by a.create_time desc";
 				return Member.dao.find(select+sql);
 			}else{
 				String sql="";
@@ -185,7 +185,7 @@ public class Member extends Model<Member> {
 				}
 				
 				strBuf.append("and b.store_name like '%"+storeName+"%'");
-				sql=" from t_member a inner join t_store b on a.store_id=b.id inner join t_member_bankcard c on a.id=c.member_id where 1=1 "+strBuf.toString()+" and b.status='"+status+"' order by a.create_time desc";
+				sql=" from t_member a left join t_store b on a.store_id=b.id inner join t_member_bankcard c on a.id=c.member_id where 1=1 "+strBuf.toString()+" and b.status='"+status+"' order by a.create_time desc";
 				return Member.dao.find(select+sql);
 			}
 		}
@@ -329,6 +329,10 @@ public class Member extends Model<Member> {
 	public List<Member> queryMemberList(int pageSize,int pageNum){
 		int fromRow = pageSize*(pageNum-1);
 		return Member.dao.find("select * from t_member order by update_time desc limit "+fromRow+","+pageSize);
+	}
+	
+	public List<Member> queryAllMemberList(){
+		return Member.dao.find("select * from t_member");
 	}
 	
 	public Member queryById(int id){

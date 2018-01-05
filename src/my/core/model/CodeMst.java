@@ -27,6 +27,10 @@ public class CodeMst extends Model<CodeMst> {
 		return CodeMst.dao.find("select * from t_codemst where pcode=?",code);
 	}
 	
+	public List<CodeMst> queryAllCodest(){
+		return CodeMst.dao.find("select * from t_codemst");
+	}
+	
 	public Page<CodeMst> queryLogByPage(int page,int size,String name,String pcode){
 		List<Object> param=new ArrayList<Object>();
 		StringBuffer strBuf=new StringBuffer();

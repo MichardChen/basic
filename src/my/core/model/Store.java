@@ -87,6 +87,10 @@ public class Store extends Model<Store> {
 		}
 	}
 	
+	public List<Store> queryAllStore(){
+		return Store.dao.find("select * from t_store");
+	}
+	
 	public boolean updateInfo(Store tea){
 		return new Store().setAttrs(tea).update();
 	}
