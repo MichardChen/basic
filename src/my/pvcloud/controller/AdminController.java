@@ -14,9 +14,6 @@ import com.jfinal.plugin.activerecord.Page;
 
 import my.core.constants.Constants;
 import my.core.model.Log;
-import my.core.model.Member;
-import my.core.model.MemberBankcard;
-import my.core.model.Menu;
 import my.core.model.Role;
 import my.core.model.RoleMenu;
 import my.core.model.User;
@@ -30,7 +27,6 @@ import my.pvcloud.service.Service;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.MD5Util;
 import my.pvcloud.util.StringUtil;
-import my.pvcloud.vo.MenuDetailVO;
 
 @ControllerBind(key = "/adminInfo", path = "/pvcloud")
 public class AdminController extends Controller {
