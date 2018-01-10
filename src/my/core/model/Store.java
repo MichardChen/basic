@@ -87,6 +87,10 @@ public class Store extends Model<Store> {
 		}
 	}
 	
+	public List<Store> queryAllStoreListForWX(String status){
+		return Store.dao.find("select * from t_store where status='"+status+"' order by create_time desc");
+	}
+	
 	public List<Store> queryAllStore(){
 		return Store.dao.find("select * from t_store");
 	}
