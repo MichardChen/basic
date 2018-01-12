@@ -109,7 +109,7 @@ function selectDistrict1(){
 		</tr>
 		<tr>
 			<td>联系电话</td>
-			<td><input type="text" name="mobile" id="mobile" maxlength="30" style="width: 150px;"/></td>
+			<td><input type="text" name="mobile" id="mobile1" maxlength="30" style="width: 150px;"/></td>
 		</tr>
 		<tr>
 			<td>营业时间:</td>

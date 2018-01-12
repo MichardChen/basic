@@ -2857,10 +2857,10 @@ public class LoginService {
 		}
 		Collections.sort(sortList);
 		int fromRow = dto.getPageSize()*(dto.getPageNum()-1);
-		int toRow = fromRow+dto.getPageSize();
-		if(sortList.size() < fromRow){
-			toRow = fromRow = sortList.size();
-		}
+		int toRow = fromRow+dto.getPageSize()-1;
+		/*if(sortList.size() < fromRow){
+			toRow = fromRow = (sortList.size()-1);
+		}*/
 		if(sortList.size() < toRow){
 			toRow = sortList.size()-1;
 		}

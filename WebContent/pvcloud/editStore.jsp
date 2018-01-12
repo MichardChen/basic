@@ -44,7 +44,7 @@ if(str!=''){
 		</tr>
 		<tr>
 			<td>联系电话</td>
-			<td><input type="text" name="mobile" id="mobile" maxlength="30" value="${model.link_phone }" style="width: 150px;"/></td>
+			<td><input type="text" name="mobile" id="mobile" maxlength="30" value="${model.link_phone}" style="width: 150px;"/></td>
 		</tr>
 		<tr>
 			<td>营业时间:</td>

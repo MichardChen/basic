@@ -1,10 +1,18 @@
 package my.pvcloud.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.UUID;
 
+import my.app.service.FileService;
+import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.vo.CodeMstVO;
 import my.pvcloud.service.CodemstService;
+import my.pvcloud.util.ImageCompressZipUtil;
+import my.pvcloud.util.ImageTools;
 import my.pvcloud.util.StringUtil;
 
 import org.huadalink.route.ControllerBind;
@@ -12,6 +20,7 @@ import org.huadalink.route.ControllerBind;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.upload.UploadFile;
 
 @ControllerBind(key = "/codemstInfo", path = "/pvcloud")
 public class CodemstController extends Controller {
@@ -20,6 +29,38 @@ public class CodemstController extends Controller {
 	
 	int page=1;
 	int size=10;
+	
+	
+	public void settingIndex(){
+		render("setting.jsp");
+	}
+	
+	public void uploadFile(){
+		
+		UploadFile uploadFile1 = getFile("downloadFile");
+		FileService fs=new FileService();
+		
+		String logo = "";
+		//上传文件
+		if(uploadFile1 != null){
+			String uuid = UUID.randomUUID().toString();
+			String fileName = uploadFile1.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile1.getFile();
+		    File t=new File(Constants.FILE_HOST.COMMON+"download.jpg");
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageCompressZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		}
+		System.out.println(logo);
+		settingIndex();
+	}
 	
 	/**
 	 * 门店列表

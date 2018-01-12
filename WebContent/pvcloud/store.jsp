@@ -21,7 +21,7 @@ if(str!=''){
 function check(){
 	
 	//门店名称
-	var storeName = $("#storeName").val();
+	var storeName = $("#storeName1").val();
 	if(storeName == ""){
 		 alert("请输入门店名称");
 		 return false;
@@ -58,6 +58,12 @@ function check(){
 		 alert("请输入主营茶叶");
 		 return false;
 	}
+	//联系电话
+	var mobile = $("#mobile").val();
+	if(mobile == ""){
+		 alert("请输入联系电话");
+		 return false;
+	}
 	//营业时间
 	var bussineeFromTime = $("#fromTime").val();
 	var bussineeToTime = $("#toTime").val();
@@ -65,12 +71,7 @@ function check(){
 		 alert("请输入营业时间");
 		 return false;
 	}
-	//联系电话
-	var mobile = $("#mobile").val();
-	if(mobile == ""){
-		 alert("请输入联系电话");
-		 return false;
-	}
+	
 	//门店详情
 	/* var storeDetail = $("#storeDetail").val();
 	if(storeDetail == ""){
@@ -259,7 +260,7 @@ td{
 		    					<td>${s.keyCode}</td>
 		    					<td>${s.point}</td>
 		    					<td>${s.userName}</td>
-		    					<td>${s.mobile }</td>
+		    					<td>${s.mobile}</td>
 		    					<td>${s.address}</td>
 		    					<td>${s.title }</td>
 		    					<td>${s.status}</td>

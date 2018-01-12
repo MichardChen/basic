@@ -112,6 +112,7 @@ public interface Constants {
 		public static final String ICON = "http://192.168.1.7:82/icon/";
 		public static final String IMG = "http://192.168.1.7:82/img/";
 		public static final String STORE = "http://192.168.1.7:82/store/";
+		public static final String COMMON = "http://192.168.1.7:82/common/";
 	}
 	
 	public static interface FILE_HOST{
@@ -122,6 +123,7 @@ public interface Constants {
 		public static final String ICON = "F:\\upload\\icon\\";
 		public static final String IMG = "F:\\upload\\img\\";
 		public static final String STORE = "F:\\upload\\store\\";
+		public static final String COMMON = "F:\\upload\\common\\";
 	}*/
 
 	
@@ -134,6 +136,7 @@ public interface Constants {
 		public static final String ICON = "http://www.yibuwangluo.cn:88/icon/";
 		public static final String IMG = "http://www.yibuwangluo.cn:88/img/";
 		public static final String STORE = "http://www.yibuwangluo.cn:88/store/";
+		public static final String COMMON = "http://www.yibuwangluo.cn:88/common/";
 	}
 	
 	public static interface FILE_HOST{
@@ -144,6 +147,7 @@ public interface Constants {
 		public static final String ICON = "D:\\upload\\icon\\";
 		public static final String IMG = "D:\\upload\\img\\";
 		public static final String STORE = "D:\\upload\\store\\";
+		public static final String COMMON = "D:\\upload\\common\\";
 	}*/
 	
 	/**centos服务器*/
@@ -155,6 +159,7 @@ public interface Constants {
 		public static final String ICON = "http://app.tongjichaye.com:88/icon/";
 		public static final String IMG = "http://app.tongjichaye.com:88/img/";
 		public static final String STORE = "http://app.tongjichaye.com:88/store/";
+		public static final String COMMON = "http://app.tongjichaye.com:88/common/";
 	}
 	
 	public static interface FILE_HOST{
@@ -165,6 +170,7 @@ public interface Constants {
 		public static final String ICON = "/home/data/images/icon/";
 		public static final String IMG = "/home/data/images/img/";
 		public static final String STORE = "/home/data/images/store/";
+		public static final String COMMON = "/home/data/images/common/";
 	}
 	
 	public static interface MEMBER_STATUS{

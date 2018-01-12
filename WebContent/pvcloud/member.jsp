@@ -120,7 +120,7 @@ function check(){
 		 return false;
 	}
 	//联系电话
-	var mobile = $("#mobile").val();
+	var mobile = $("#mobile1").val();
 	if(mobile == ""){
 		 alert("请输入联系电话");
 		 return false;
