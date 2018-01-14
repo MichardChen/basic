@@ -13,6 +13,7 @@ import com.jfinal.core.Controller;
 import my.app.service.LoginService;
 import my.app.service.WXRestService;
 import my.core.constants.Constants;
+import my.core.model.CodeMst;
 import my.core.model.ReturnData;
 import my.pvcloud.dto.LoginDTO;
 
@@ -26,12 +27,16 @@ public class WXRestfulController extends Controller{
     	ReturnData data = new ReturnData();
     	data.setCode(Constants.STATUS_CODE.SUCCESS);
     	data.setMessage("查询成功");
+    	CodeMst androidMst = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.XCX_ANDROID);
+    	CodeMst iosMst = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.XCX_IOS);
     	Map<String, Object> map = new HashMap<>();
-    	List<String> d = new ArrayList<String>();
-    	d.add("1");
-    	d.add("2");
-    	d.add("3");
-    	map.put("list", d);
+    	if(androidMst != null){
+    		map.put("android", androidMst.getStr("data1"));
+    	}
+    	if(iosMst != null){
+    		map.put("ios", iosMst.get("data1"));
+    	}
+    	map.put("advertisement", "http://app.tongjichaye.com:88/common/download.jpg");
     	data.setData(map);
 		renderJson(data);
 	}

@@ -318,6 +318,8 @@ public interface Constants {
 		public static final String INVOICE_DATE = "210006";
 		public static final String INVOICE_CONTENT = "210007";
 		public static final String NET_URL = "210008";
+		public static final String XCX_ANDROID = "210009";
+		public static final String XCX_IOS = "210010";
 	}
 	
 	public static interface PAY_STATUS{

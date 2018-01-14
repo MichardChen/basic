@@ -356,7 +356,7 @@ public class Member extends Model<Member> {
 	}
 	
 	public int updatePay(String mobile,String userPwd){
-		return Db.update("update t_member set paypwd='"+userPwd+"',update_time='"+DateUtil.getNowTimestamp()+"' where mobile="+mobile);
+		return Db.update("update t_member set paypwd='"+userPwd+"',update_time='"+DateUtil.getNowTimestamp()+"' where mobile='"+mobile+"'");
 	}
 	
 	public int bindStore(int userId,int storeId){
