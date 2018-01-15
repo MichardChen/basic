@@ -1,8 +1,6 @@
 package my.app.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.huadalink.route.ControllerBind;
@@ -31,10 +29,10 @@ public class WXRestfulController extends Controller{
     	CodeMst iosMst = CodeMst.dao.queryCodestByCode(Constants.COMMON_SETTING.XCX_IOS);
     	Map<String, Object> map = new HashMap<>();
     	if(androidMst != null){
-    		map.put("android", androidMst.getStr("data1"));
+    		map.put("android", androidMst.getStr("data2"));
     	}
     	if(iosMst != null){
-    		map.put("ios", iosMst.get("data1"));
+    		map.put("ios", iosMst.get("data2"));
     	}
     	map.put("advertisement", "http://app.tongjichaye.com:88/common/download.jpg");
     	data.setData(map);
