@@ -120,6 +120,18 @@ function loadProject1(data){
 	});
 }
 
+//添加小程序
+function loadProject2(data){
+	$.ajax({
+		url : "${CONTEXT_PATH}/storeInfo/addXCX",
+		data : {'id':data},
+		dataType : "html",
+		success : function(result){
+			$('#model2').html(result);
+		}
+	});
+}
+
 
 function downloadImg(id){
 	window.location.href="${CONTEXT_PATH}/storeInfo/generateQRCode?id="+id;
@@ -272,6 +284,7 @@ td{
 										<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
 										<input type="button" value="查看会员" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeInfo/queryMemberList?flg=1&storeId=${s.id}';"/>
 										<input type="button" value="查看评价" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeEvaluateInfo/queryByConditionByPage?mobile=${s.mobile}';"/>
+										<input type="button" value="绑定小程序" class="ys3" data-toggle="modal" data-target="#myModal2" onclick="loadProject2(${s.id})"/>
 								</td>
 		    				</tr>
 		    			</c:forEach>
@@ -319,6 +332,18 @@ td{
 				<h4 class="modal-title">查看</h4>
 			</div>
 				<div class="modal-body" id="model1">
+				</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myModal2" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="width: 120%;margin-left:-10%;">
+			<div class="modal-header">
+				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">添加小程序</h4>
+			</div>
+				<div class="modal-body" id="model2">
 				</div>
 		</div>
 	</div>

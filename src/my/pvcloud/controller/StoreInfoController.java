@@ -349,6 +349,13 @@ public class StoreInfoController extends Controller {
 		render("storeInfoAlter.jsp");
 	}
 	
+	/**
+	 * 增加小程序
+	 */
+	public void addXCX(){
+		render("addxcx.jsp");
+	}
+	
 	public void edit(){
 		int id = StringUtil.toInteger(getPara("id"));
 		Store store = service.queryById(id);
