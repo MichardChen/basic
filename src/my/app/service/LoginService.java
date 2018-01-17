@@ -4517,7 +4517,7 @@ public class LoginService {
 		evaluate.set("service_point", dto.getServicePoint());
 		evaluate.set("tea_point", dto.getTeaPoint());
 		evaluate.set("senitation_point", dto.getSenitationPoint());
-		evaluate.set("mark", dto.getMark());
+		evaluate.set("mark", StringUtil.isBlank(dto.getMark())?"好评":dto.getMark());
 		evaluate.set("create_time", DateUtil.getNowTimestamp());
 		evaluate.set("update_time", DateUtil.getNowTimestamp());
 		evaluate.set("flg", 1);

@@ -27,7 +27,8 @@ public class SMSUtil {
 		String sign="【同记茶业】";
 		
 		// 创建StringBuffer对象用来操作字符串
-		StringBuffer sb = new StringBuffer("http://210.5.152.195:1860/asmx/smsservice.aspx?");
+		//StringBuffer sb = new StringBuffer("http://210.5.152.195:1860/asmx/smsservice.aspx?");
+		StringBuffer sb = new StringBuffer("http://web.duanxinwang.cc/asmx/smsservice.aspx?");
 
 		// 向StringBuffer追加用户名
 		sb.append("name=dxwtongjichaye");

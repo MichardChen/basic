@@ -127,7 +127,7 @@ public interface Constants {
 	}*/
 
 	
-	/**139服务器*/
+	/**139服务器
 	public static interface HOST{
 		public static final String LOCALHOST = "http://www.yibuwangluo.cn:88/newsimages/";
 		public static final String TEA = "http://www.yibuwangluo.cn:88/tea/";
@@ -148,9 +148,9 @@ public interface Constants {
 		public static final String IMG = "D:\\upload\\img\\";
 		public static final String STORE = "D:\\upload\\store\\";
 		public static final String COMMON = "D:\\upload\\common\\";
-	}
+	}*/
 	
-	/**centos服务器
+	/**centos服务器*/
 	public static interface HOST{
 		public static final String LOCALHOST = "http://app.tongjichaye.com:88/tea/";
 		public static final String TEA = "http://app.tongjichaye.com:88/tea/";
@@ -171,7 +171,7 @@ public interface Constants {
 		public static final String IMG = "/home/data/images/img/";
 		public static final String STORE = "/home/data/images/store/";
 		public static final String COMMON = "/home/data/images/common/";
-	}*/
+	}
 	
 	public static interface MEMBER_STATUS{
 		public static final String CERTIFICATED = "040001";
