@@ -30,6 +30,7 @@ import my.core.model.PayRecord;
 import my.core.model.Store;
 import my.core.model.StoreEvaluate;
 import my.core.model.StoreImage;
+import my.core.model.StoreXcx;
 import my.core.vo.MemberVO;
 import my.pvcloud.model.CityModel;
 import my.pvcloud.model.StoreModel;
@@ -353,6 +354,8 @@ public class StoreInfoController extends Controller {
 	 * 增加小程序
 	 */
 	public void addXCX(){
+		int id = StringUtil.toInteger(getPara("id"));
+		setAttr("storeId", id);
 		render("addxcx.jsp");
 	}
 	
@@ -960,5 +963,32 @@ public class StoreInfoController extends Controller {
 			Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "新开门店，门店id："+id);
 			index();
 		}
+	}
+	
+	public void submitXCX(){
+		int id = StringUtil.toInteger(getPara("storeId"));
+		String appId = StringUtil.checkCode(getPara("appId"));
+		String appName = StringUtil.checkCode(getPara("appName"));
+		
+		Store store = Store.dao.queryById(id);
+		if(store == null){
+			setAttr("message", "对不起，该门店不存在");
+		}else{
+			StoreXcx storeXcx = new StoreXcx();
+			storeXcx.set("store_id", store.getInt("id"));
+			storeXcx.set("member_id", store.getInt("member_id"));
+			storeXcx.set("appid", appId);
+			storeXcx.set("appname", appName);
+			storeXcx.set("create_time", DateUtil.getNowTimestamp());
+			storeXcx.set("update_time", DateUtil.getNowTimestamp());
+			boolean saveFlg = StoreXcx.dao.saveInfo(storeXcx);
+			if(saveFlg){
+				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "增加小程序："+appName);
+				setAttr("message", "保存成功");
+			}else{
+				setAttr("message", "保存失败");
+			}
+		}
+		index();
 	}
 }

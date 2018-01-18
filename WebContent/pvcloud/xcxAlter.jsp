@@ -7,7 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <meta charset="utf-8">
-<title>新增小程序</title>
+<title>查看小程序</title>
 <link type="image/x-icon" rel="shortcut icon" href="${CONTEXT_PATH}/assets/img/tjico.ico" />
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/summernote/css/bootstrap.css">
 <link href="<%=request.getContextPath()%>/summernote/dist/summernote.css" rel="stylesheet"/>
@@ -27,20 +27,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     if(str!=''){
       alert(str);
     }
+    
+    function updateAuth(id){
+    	$.ajax({
+    		url : "${CONTEXT_PATH}/storeXcxInfo/updateAuth",
+    		data : {'id':id},
+    		success : function(result){
+    			alert(result);
+    		}
+    	});
+    }
     </script>
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
-			<td>APPID</td>
-			<td>
-					<input type="text" name="appId" id="appId" maxlength="30" style="width:300px;"/>
-					<input type="hidden" name="storeId" value="${storeId}"/>
+			<td colspan="2"><label style="color: #3399ff;">小程序尚未授权，授权后将可避免复杂的配置，并能更安全、更便捷地使用我们的系统。</label>
+					<button type="button" class="btn btn-primary" onclick="updateAuth(${xcx.id})">立即授权</button>
 			</td>
 		</tr>
 		<tr>
 			<td>小程序名称</td>
-			<td><input type="text" name="appName" id="appName" maxlength="30" style="width:300px;"/></td>
+			<td><input type="text" name="appName" id="appName" value="${xcx.appname}" maxlength="30" style="width: 300px;"/></td>
+		</tr>
+		<tr>
+			<td>小程序APPID</td>
+			<td><input type="text" name="appId" id="appId" value="${xcx.appid}" maxlength="30" style="width: 300px;"/></td>
 		</tr>
 	</table>
+	<input type="hidden" name="id" value="${xcx.id}"/>
 </div>
 

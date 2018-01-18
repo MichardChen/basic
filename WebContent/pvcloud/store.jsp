@@ -91,6 +91,19 @@ function check(){
 	}
 	return true;
 }
+function checkXCX(){
+	var appId = $("#appId").val();
+	var appName = $("#appName").val();
+	if(appId==""){
+		alert("请输入小程序APPID");
+		return false;
+	}
+	if(appName==""){
+		alert("请输入小程序名称");
+		return false;
+	}
+	return true;
+}
 
 function loadProject(data){
 	if(data==0){
@@ -343,8 +356,14 @@ td{
 				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title">添加小程序</h4>
 			</div>
+			<form action="${CONTEXT_PATH}/storeInfo/submitXCX" method="post" onsubmit="return checkXCX();">
 				<div class="modal-body" id="model2">
 				</div>
+				<div class="modal-footer" style="margin-top:20px;">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<input type="submit" class="btn btn-success" value="保存"/>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
