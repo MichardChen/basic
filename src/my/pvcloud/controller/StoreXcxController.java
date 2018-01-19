@@ -3,6 +3,8 @@ package my.pvcloud.controller;
 import java.util.ArrayList;
 
 import org.huadalink.route.ControllerBind;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
@@ -124,6 +126,29 @@ public class StoreXcxController extends Controller{
 	
 	public void updateAuth(){
 		int id = StringUtil.toInteger(getPara("id"));
-		HttpRequest request = HttpRequest.sendPost(url, param)
+		
+		//请求令牌access_token
+		String accessTokenUrl="https://api.weixin.qq.com/cgi-bin/component/api_component_token";
+		String accessTokenParam="component_appid=wxad9f8af413348c26&component_appsecret=3676c1bc78aa8ab887dfa2cf16d5d824";
+		String accessTokenReturnMsg = HttpRequest.sendPost(accessTokenUrl, accessTokenParam);
+		//获取预授权码pre_auth_code
+		String preAuthCodeUrl="https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode";
+		String preAuthCodeParam="component_appid=wxad9f8af413348c26&component_access_token=tongji1688";
+		String returnMsg = HttpRequest.sendPost(preAuthCodeUrl, preAuthCodeParam);
+		System.out.println(returnMsg);
+		
+		try {
+			//解析预授权码
+			JSONObject retJson = new JSONObject(returnMsg);
+			String preAuthCode = retJson.getString("pre_auth_code");
+			System.out.println(preAuthCode);
+			//授权
+			String authUrl = "https://mp.weixin.qq.com/cgi-bin/componentloginpage";
+			String params = "component_appid=wxad9f8af413348c26&pre_auth_code="+preAuthCode+"&redirect_uri=www.yibuwangluo.cn/zznj/wxrest/callBack";
+			String retMsg =  HttpRequest.sendPost(authUrl, params);
+			System.out.println(retMsg);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 }
