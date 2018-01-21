@@ -1,6 +1,7 @@
 package my.app.controller;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -8,10 +9,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.huadalink.route.ControllerBind;
 
+import com.alibaba.dubbo.common.utils.IOUtils;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
+import com.jfinal.kit.HttpKit;
 
 import my.app.service.LoginService;
 import my.app.service.WXRestService;
@@ -57,10 +62,31 @@ public class WXRestfulController extends Controller{
 	}
     
     public void callBack(){
-    	String auth_code = getPara("auth_code");
-    	String expires_in = getPara("expires_in");
 		try {
-			Map<String, String> params = RequestXml.parseXml(getRequest());
+			BufferedReader reader = new BufferedReader(new InputStreamReader(getRequest().getInputStream()));
+			String body = IOUtils.read(reader);
+			String signature = getPara("signature");
+			System.out.println("signature:"+signature);
+			String timestamp = getPara("timestamp");
+			System.out.println("timestamp:"+timestamp);
+			String nonce = getPara("nonce");
+			System.out.println("nonce:"+nonce);
+			String msg_signature = getPara("msg_signature");
+			System.out.println("msg_signature:"+msg_signature);
+			String encrypt_type = getPara("encrypt_type");
+			System.out.println("body:"+body);
+	    	WXBizMsgCrypt pc = new WXBizMsgCrypt("tongji1688", "tongji1688TONGJI1688tongji1688TONGJI1688abc", "wxad9f8af413348c26");
+			String result2 = pc.decryptMsg(msg_signature, timestamp, nonce, body);
+			System.out.println("result:"+result2);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	/*String auth_code = getPara("auth_code");
+    	String expires_in = getPara("expires_in");
+    	HttpServletRequest request = getRequest();
+		try {
+			Map<String, String> params = RequestXml.parseXml(request);
 	    	Iterator<Entry<String, String>> iterator = params.entrySet().iterator();
 		    System.out.println("=======回调的参数========");
 			while(iterator.hasNext()){
@@ -82,20 +108,13 @@ public class WXRestfulController extends Controller{
 	    	System.out.println("Encrypt:"+Encrypt);
 	    	WXBizMsgCrypt pc = new WXBizMsgCrypt("tongji1688", "tongji1688TONGJI1688tongji1688TONGJI1688abc", "wxad9f8af413348c26");
 	    	//xml
-	    	StringBuffer sb = new StringBuffer();
-		    InputStream is = getRequest().getInputStream();
-		    InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-		    BufferedReader br = new BufferedReader(isr);
-		    String s = "";
-		    while ((s = br.readLine()) != null) {
-		        sb.append(s);
-		    }
-		    System.out.println("xml:"+sb.toString());
-	    	String result2 = pc.decryptMsg(msg_signature, timestamp, nonce, sb.toString());
+		    //String postData = HttpKit.readIncommingRequestData(request);
+		    //System.out.println("postData:"+postData);
+	    	String result2 = pc.decryptMsg(msg_signature, timestamp, nonce, Encrypt);
 	    	System.out.println("解密后的明文:"+result2);
 		} catch (Exception e) {
 				e.printStackTrace();
-		}
+		}*/
 		
     }
 }

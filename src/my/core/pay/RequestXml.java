@@ -1,6 +1,7 @@
 package my.core.pay;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -13,6 +14,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+
+import com.jfinal.kit.HttpKit;
 
 public class RequestXml {
 
@@ -45,11 +48,17 @@ public class RequestXml {
 	            // 对于CDATA区域内的内容，XML解析程序不会处理，而是直接原封不动的输出。
 	            map.put(e.getName(), e.getText());
 	        }
+	        is.close();
+	        is = null;
+	        isr.close();
+	        isr=null;
+	        br.close();
+	        br = null;
 	        return map;
 	    }
 	 
-	 public static String getXml(HttpServletRequest request) throws Exception {
-	        Map<String, String> map = new HashMap<String, String>();
+	 public static Map getXml(HttpServletRequest request) throws Exception {
+		 	Map<String, String> map = new HashMap<String, String>();
 	        // 从request中取得输入流
 	        StringBuffer sb = new StringBuffer();
 	        InputStream is = request.getInputStream();
@@ -60,7 +69,37 @@ public class RequestXml {
 	            sb.append(s);
 	        }
 	        String xml = sb.toString();
-	        return xml;
+	        System.out.println("xml:"+xml);
+	        //String postData = HttpKit.readIncommingRequestData(request);
+	        //body部分
+	        String inputLine;
+	        String str = "";
+	        try {
+	          while ((inputLine = br.readLine()) != null) {
+	            str += inputLine;
+	          }
+	          br.close();
+	        } catch (IOException e) {
+	          System.out.println("IOException: " + e);
+	        }
+	        System.out.println("postData:"+str);
+	        // 读取输入流
+	        Document document = null;
+	        try {
+	            document = DocumentHelper.parseText(xml);
+	        } catch (DocumentException e1) {
+	            e1.printStackTrace();
+	        }
+	        // 得到xml根元素
+	        Element root = document.getRootElement();
+	        // 得到根元素的所有子节点
+	        List<Element> elementList = root.elements();
+	        // 遍历所有子节点
+	        for (Element e : elementList) {
+	            // 对于CDATA区域内的内容，XML解析程序不会处理，而是直接原封不动的输出。
+	            map.put(e.getName(), e.getText());
+	        }
+	        return map;
 	    }
 	
 }
