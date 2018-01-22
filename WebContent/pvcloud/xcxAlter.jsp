@@ -29,13 +29,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     
     function updateAuth(id){
-    	$.ajax({
+    	/* $.ajax({
     		url : "${CONTEXT_PATH}/storeXcxInfo/updateAuth",
     		data : {'id':id},
     		success : function(result){
+    			alert(1);
     			alert(result);
+    			//window.open();
     		}
-    	});
+    	}); */
+    	$.ajax({
+    	    type: "post",
+    	    async: false,
+    	    url : "${CONTEXT_PATH}/storeXcxInfo/updateAuth",
+    	    data : {'id':id},
+    	    dataType: "json",
+    	    success: function(data) {
+    	        if (data.msg == null || data.msg == "") {
+    	        	window.open(data.data);
+    	        }
+    	    }
+    });
     }
     </script>
 <div class="m">

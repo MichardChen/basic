@@ -57,32 +57,8 @@ public class RequestXml {
 	        return map;
 	    }
 	 
-	 public static Map getXml(HttpServletRequest request) throws Exception {
-		 	Map<String, String> map = new HashMap<String, String>();
-	        // 从request中取得输入流
-	        StringBuffer sb = new StringBuffer();
-	        InputStream is = request.getInputStream();
-	        InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-	        BufferedReader br = new BufferedReader(isr);
-	        String s = "";
-	        while ((s = br.readLine()) != null) {
-	            sb.append(s);
-	        }
-	        String xml = sb.toString();
-	        System.out.println("xml:"+xml);
-	        //String postData = HttpKit.readIncommingRequestData(request);
-	        //body部分
-	        String inputLine;
-	        String str = "";
-	        try {
-	          while ((inputLine = br.readLine()) != null) {
-	            str += inputLine;
-	          }
-	          br.close();
-	        } catch (IOException e) {
-	          System.out.println("IOException: " + e);
-	        }
-	        System.out.println("postData:"+str);
+	 public static Map getXml(String xml) throws Exception {
+		  	Map<String, String> map = new HashMap<String, String>();
 	        // 读取输入流
 	        Document document = null;
 	        try {
