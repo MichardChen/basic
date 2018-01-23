@@ -2,10 +2,12 @@ package my.app.controller;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.huadalink.route.ControllerBind;
+import org.json.JSONObject;
 
 import com.alibaba.dubbo.common.utils.IOUtils;
 import com.jfinal.aop.Enhancer;
@@ -17,8 +19,12 @@ import my.app.xcxdemo.WXBizMsgCrypt;
 import my.core.constants.Constants;
 import my.core.model.CodeMst;
 import my.core.model.ReturnData;
+import my.core.model.StoreXcx;
 import my.core.pay.RequestXml;
 import my.pvcloud.dto.LoginDTO;
+import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.HttpRequest;
+import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/wxrest", path = "/wxrest")
 public class WXRestfulController extends Controller{
@@ -72,19 +78,14 @@ public class WXRestfulController extends Controller{
 			String result2 = pc.decryptMsg(msg_signature, timestamp, nonce, body);
 			System.out.println("result:"+result2);
 			Map<String, String> params = RequestXml.getXml(result2);
-			int ret = CodeMst.dao.updateCodeMst("210011", params.get("ComponentVerifyTicket"));
+			int ret = 0;
+			if(StringUtil.isNoneBlank(params.get("ComponentVerifyTicket"))){
+				ret = CodeMst.dao.updateCodeMst("210011", params.get("ComponentVerifyTicket"));
+			}
 			System.out.println("ComponentVerifyTicket:"+params.get("ComponentVerifyTicket"));
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-    }
-   
-    public void redirectCall(){
-		try {
-			String auth_code = getPara("auth_code");
-			System.out.println("auth_code:"+auth_code);
-			String expires_in = getPara("expires_in");
-			System.out.println("expires_in:"+expires_in);
+			if(ret != 0){
+				renderText("success");
+			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

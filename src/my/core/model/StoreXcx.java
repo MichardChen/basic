@@ -1,10 +1,12 @@
 package my.core.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.huadalink.plugin.tablebind.TableBind;
 
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 
@@ -18,6 +20,10 @@ public class StoreXcx extends Model<StoreXcx>{
 
 	public StoreXcx queryById(int id){
 		return StoreXcx.dao.findFirst("select * from t_store_xcx where id = ?",id);
+	}
+	
+	public StoreXcx queryByAppId(String appid){
+		return StoreXcx.dao.findFirst("select * from t_store_xcx where appid='"+appid+"'");
 	}
 	
 	public boolean updateInfo(StoreXcx data){
@@ -46,5 +52,9 @@ public class StoreXcx extends Model<StoreXcx>{
 		String sql=" from t_store_xcx where 1=1 order by create_time desc";
 		String select="select * ";
 		return StoreXcx.dao.paginate(page, size, select, sql);
+	}
+	
+	public int updateStoreXcx(String appid,String authCode,Timestamp expireTime,String accessToken,String refreshToken){
+		return Db.update("update t_store_xcx set auth_code='"+authCode+"',update_time='"+DateUtil.getNowTimestamp()+"',expire_time='"+expireTime+"',authorizer_access_token='"+accessToken+"',authorizer_refresh_token='"+refreshToken+"' where appid='"+appid+"'");
 	}
 }

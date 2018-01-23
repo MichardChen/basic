@@ -1,6 +1,8 @@
 package my.pvcloud.controller;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.huadalink.route.ControllerBind;
 import org.json.JSONException;
@@ -13,8 +15,11 @@ import com.jfinal.plugin.activerecord.Page;
 import my.core.model.CodeMst;
 import my.core.model.Store;
 import my.core.model.StoreXcx;
+import my.core.model.WxSubmitModel;
 import my.pvcloud.model.StoreXcxListModel;
 import my.pvcloud.service.StoreXcxService;
+import my.pvcloud.util.DateUtil;
+import my.pvcloud.util.FileReadUtil;
 import my.pvcloud.util.HttpRequest;
 import my.pvcloud.util.StringUtil;
 
@@ -41,7 +46,7 @@ public class StoreXcxController extends Controller{
 			model.setAppName(xcx.getStr("appname"));
 			model.setCreateTime(StringUtil.toString(xcx.getTimestamp("create_time")));
 			model.setId(xcx.getInt("id"));
-			Store store = Store.dao.queryById(xcx.getInt("store_id"));
+			Store store = Store.dao.queryById(xcx.getInt("store_id")==null?0:xcx.getInt("store_id"));
 			if(store != null){
 				model.setStore(store.getStr("store_name"));
 			}
@@ -152,8 +157,10 @@ public class StoreXcxController extends Controller{
 		String accessTokenReturnMsg = HttpRequest.sendPostJson(accessTokenUrl, postJson.toString());
 		System.out.println("请求令牌access_token:"+accessTokenReturnMsg);
 		
-		
 		JSONObject retJson1 = new JSONObject(accessTokenReturnMsg);
+		/*if(retJson1.getString("errcode")==""){
+			
+		}*/
 		String component_access_token = retJson1.getString("component_access_token");
 		System.out.println("component_access_token:"+component_access_token);
 		
@@ -170,7 +177,7 @@ public class StoreXcxController extends Controller{
 		String preAuthCode = retJson.getString("pre_auth_code");
 		System.out.println("preAuthCode:"+preAuthCode);
 			
-		String url = "https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid="+appId+"&pre_auth_code="+preAuthCode+"&redirect_uri=www.yibuwangluo.cn/zznj/wxrest/redirectCall";
+		String url = "https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid="+appId+"&pre_auth_code="+preAuthCode+"&redirect_uri=https://www.yibuwangluo.cn/zznj/storeXcxInfo/redirectCall";
 		System.out.println("url："+url);	
 		setAttr("data", url);
 		renderJson();
@@ -185,4 +192,167 @@ public class StoreXcxController extends Controller{
 			e.printStackTrace();
 		}
 	}
+	
+	public void upload(){
+		//上传小程序
+		int id = StringUtil.toInteger(getPara("id"));
+		StoreXcx storeXcx = StoreXcx.dao.queryById(id);
+		if(storeXcx == null){
+			setAttr("msg", "数据出错");
+			renderJson();
+		}
+		
+		String extJson = FileReadUtil.readFile("D:\\app.json");
+		System.out.println("extJson:"+extJson);
+		try {
+			String accessToken = storeXcx.getStr("authorizer_access_token");
+			String accessTokenUrl="https://api.weixin.qq.com/wxa/commit?access_token="+accessToken;
+			JSONObject postJson = new JSONObject();
+			postJson.put("template_id", 0);
+			postJson.put("ext_json", extJson);
+			postJson.put("user_version", "V1.0");
+			postJson.put("user_desc", "同记平台代发布");
+			System.out.println("json:"+postJson.toString());
+			String accessTokenReturnMsg = HttpRequest.sendPostJson(accessTokenUrl, postJson.toString());
+			System.out.println(accessTokenReturnMsg);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//提交审核
+	public void submitCode(){
+		int id = StringUtil.toInteger(getPara("id"));
+		StoreXcx storeXcx = StoreXcx.dao.queryById(id);
+		if(storeXcx == null){
+			setAttr("msg", "数据出错");
+			renderJson();
+		}
+		
+		String extJson = FileReadUtil.readFile("D:\\itemlist.json");
+		System.out.println("extJson:"+extJson);
+		try {
+			String accessToken = storeXcx.getStr("authorizer_access_token");
+			String url="https://api.weixin.qq.com/wxa/submit_audit?access_token="+accessToken;
+			JSONObject postJson = new JSONObject();
+			WxSubmitModel model = new WxSubmitModel();
+			model.setAddress("pages/index/index");
+			model.setTag("生活");
+			model.setFirst_class("文娱");
+			model.setSecond_class("资讯");
+			model.setFirst_id(1);
+			model.setSecond_id(2);
+			model.setTitle("首页");
+			List<WxSubmitModel> models = new ArrayList<>();
+			models.add(model);
+			postJson.put("item_list", "{\"address\":\"pages/index/index\",\"tag\":\"生活\",\"first_class\": \"文娱\",\"second_class\": \"资讯\",\"first_id\":1,\"second_id\":2,\"title\": \"首页\"}");
+			System.out.println("json:"+postJson.toString());
+			String returnMsg = HttpRequest.sendPostJson(url, postJson.toString());
+			System.out.println(returnMsg);
+			setAttr("msg", "发布成功");
+			renderJson();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void test(){
+		int id = StringUtil.toInteger(getPara("id"));
+		StoreXcx storeXcx = StoreXcx.dao.queryById(id);
+		if(storeXcx == null){
+			setAttr("msg", "数据出错");
+			renderJson();
+		}
+		
+		try {
+			String accessToken = storeXcx.getStr("authorizer_access_token");
+			String url="https://api.weixin.qq.com/wxa/get_qrcode?access_token="+accessToken;
+			String returnMsg = HttpRequest.sendPostJson(url, "");
+			System.out.println(returnMsg);
+			setAttr("msg", "发布成功");
+			renderJson();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void redirectCall(){
+		try {
+			String auth_code = getPara("auth_code");
+			String expires_in = getPara("expires_in");
+			System.out.println("auth_code:"+auth_code+",expires_in:"+expires_in);
+			CodeMst storeXcx = CodeMst.dao.queryCodestByCode("210011");
+			if(storeXcx == null){
+				setAttr("message", "数据出错");
+				render("xcxauth.jsp");
+			}
+			String appId = storeXcx.getStr("data2");
+			String appSecret = storeXcx.getStr("data3");
+			String ticket = storeXcx.getStr("data4");
+			
+			String accessTokenUrl="https://api.weixin.qq.com/cgi-bin/component/api_component_token";
+			JSONObject postJson1 = new JSONObject();
+			postJson1.put("component_appid", appId);
+			postJson1.put("component_appsecret", appSecret);
+			postJson1.put("component_verify_ticket", ticket);
+			//String accessTokenReturnMsg = HttpRequest.sendPostJson(accessTokenUrl, accessTokenParam);
+			System.out.println("json:"+postJson1.toString());
+			String accessTokenReturnMsg = HttpRequest.sendPostJson(accessTokenUrl, postJson1.toString());
+			System.out.println("请求令牌access_token:"+accessTokenReturnMsg);
+			
+			JSONObject retJson1 = new JSONObject(accessTokenReturnMsg);
+			/*if(retJson1.getString("errcode")==""){
+				
+			}*/
+			String component_access_token = retJson1.getString("component_access_token");
+			
+			String url="https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token="+component_access_token;
+			JSONObject postJson = new JSONObject();
+			postJson.put("component_appid", appId);
+			postJson.put("authorization_code", auth_code);
+			System.out.println("json:"+postJson.toString());
+			String returnMsg = HttpRequest.sendPostJson(url, postJson.toString());
+			System.out.println("returnMsg:"+returnMsg);
+			JSONObject retJson = new JSONObject(returnMsg);
+			String authorizationInfo = retJson.getString("authorization_info");
+			JSONObject authorizationInfoObj = new JSONObject(authorizationInfo);
+			String authorizerAppid = authorizationInfoObj.getString("authorizer_appid");
+			String authorizerAccesToken = authorizationInfoObj.getString("authorizer_access_token");
+			String expiresIn = authorizationInfoObj.getString("expires_in");
+			String authorizerRefreshToken = authorizationInfoObj.getString("authorizer_refresh_token");
+			StoreXcx storeXcx2 = StoreXcx.dao.queryByAppId(appId);
+			Timestamp expireTime = new Timestamp(DateUtil.getNowTimestamp().getTime()+StringUtil.toInteger(expiresIn)*1000);
+			if(storeXcx2 != null){
+				//更新
+				int ret = StoreXcx.dao.updateStoreXcx(appId,auth_code, expireTime, authorizerAccesToken, authorizerRefreshToken);
+				if(ret != 0){
+					setAttr("message", "绑定成功");
+					render("xcxauth.jsp");
+				}else{
+					setAttr("message", "数据失败");
+					render("xcxauth.jsp");
+				}
+			}else{
+				StoreXcx storeXcx3 = new StoreXcx();
+				storeXcx3.set("appid", appId);
+				storeXcx3.set("appname", "");
+				storeXcx3.set("create_time", DateUtil.getNowTimestamp());
+				storeXcx3.set("update_time", DateUtil.getNowTimestamp());
+				storeXcx3.set("auth_code", auth_code);
+				storeXcx3.set("expire_time", expireTime);
+				storeXcx3.set("authorizer_access_token", authorizerAccesToken);
+				storeXcx3.set("authorizer_refresh_token", authorizerRefreshToken);
+				boolean ret = StoreXcx.dao.saveInfo(storeXcx3);
+				if(ret){
+					setAttr("message", "绑定成功");
+					render("xcxauth.jsp");
+				}else{
+					setAttr("message", "绑定失败");
+					render("xcxauth.jsp");
+				}
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+    }
 }

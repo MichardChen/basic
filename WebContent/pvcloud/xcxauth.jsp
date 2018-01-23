@@ -29,6 +29,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     
     function updateAuth(id){
+    	/* $.ajax({
+    		url : "${CONTEXT_PATH}/storeXcxInfo/updateAuth",
+    		data : {'id':id},
+    		success : function(result){
+    			alert(1);
+    			alert(result);
+    			//window.open();
+    		}
+    	}); */
     	$.ajax({
     	    type: "post",
     	    async: false,
@@ -42,43 +51,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	    }
     });
     }
-    function upload(id){
-    	$.ajax({
-    	    type: "post",
-    	    async: false,
-    	    url : "${CONTEXT_PATH}/storeXcxInfo/upload",
-    	    data : {'id':id},
-    	    dataType: "json",
-    	    success: function(data) {
-    	        if (data.msg == null || data.msg == "") {
-    	        	alert(data.msg);
-    	        }
-    	    }
-    });
-    }
-    
-    function submitCode(id){
-    	$.ajax({
-    	    type: "post",
-    	    async: false,
-    	    url : "${CONTEXT_PATH}/storeXcxInfo/submitCode",
-    	    data : {'id':id},
-    	    dataType: "json",
-    	    success: function(data) {
-    	        if (data.msg == null || data.msg == "") {
-    	        	alert(data.msg);
-    	        }
-    	    }
-    });
-    }
     </script>
 <div class="m">
 	<table class="table table-responsive">
 		<tr>
 			<td colspan="2"><label style="color: #3399ff;">小程序尚未授权，授权后将可避免复杂的配置，并能更安全、更便捷地使用我们的系统。</label>
 					<button type="button" class="btn btn-primary" onclick="updateAuth(${xcx.id})">立即授权</button>
-					<button type="button" class="btn btn-primary" onclick="upload(${xcx.id})">上传</button>
-					<button type="button" class="btn btn-primary" onclick="submitCode(${xcx.id})">提交审核</button>
 			</td>
 		</tr>
 		<tr>

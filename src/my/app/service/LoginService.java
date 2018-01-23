@@ -570,7 +570,6 @@ public class LoginService {
 			}
 		}
 		map.put("shareAppUrl", "http://app.tongjichaye.com/zznj/h5/share.jsp?businessId="+dto.getUserId());
-		
 		//获取前四条资讯
 		Page<News> news = News.dao.queryByPage(1, 4);
 		List<NewsVO> newsVOs = new ArrayList<NewsVO>();
