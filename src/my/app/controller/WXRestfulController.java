@@ -64,27 +64,32 @@ public class WXRestfulController extends Controller{
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(getRequest().getInputStream()));
 			String body = IOUtils.read(reader);
+			//参数
 			String signature = getPara("signature");
-			System.out.println("signature:"+signature);
 			String timestamp = getPara("timestamp");
-			System.out.println("timestamp:"+timestamp);
 			String nonce = getPara("nonce");
-			System.out.println("nonce:"+nonce);
 			String msg_signature = getPara("msg_signature");
-			System.out.println("msg_signature:"+msg_signature);
 			String encrypt_type = getPara("encrypt_type");
-			System.out.println("body:"+body);
-	    	WXBizMsgCrypt pc = new WXBizMsgCrypt("tongji1688", "tongji1688TONGJI1688tongji1688TONGJI1688abc", "wxad9f8af413348c26");
-			String result2 = pc.decryptMsg(msg_signature, timestamp, nonce, body);
-			System.out.println("result:"+result2);
-			Map<String, String> params = RequestXml.getXml(result2);
-			int ret = 0;
-			if(StringUtil.isNoneBlank(params.get("ComponentVerifyTicket"))){
-				ret = CodeMst.dao.updateCodeMst("210011", params.get("ComponentVerifyTicket"));
-			}
-			System.out.println("ComponentVerifyTicket:"+params.get("ComponentVerifyTicket"));
-			if(ret != 0){
-				renderText("success");
+			
+			System.out.println("signature:"+signature+",timestamp："+timestamp+",nonce:"+nonce+",msg_signature:"+msg_signature+",encrypt_type:"+encrypt_type);
+	    	
+			CodeMst msgSettingMst = CodeMst.dao.queryCodestByCode("210012");
+			if(msgSettingMst != null){
+				WXBizMsgCrypt pc = new WXBizMsgCrypt(msgSettingMst.getStr("data2")
+												    ,msgSettingMst.getStr("data3")
+												    ,msgSettingMst.getStr("data4"));
+				
+				String result2 = pc.decryptMsg(msg_signature, timestamp, nonce, body);
+				System.out.println("result:"+result2);
+				Map<String, String> params = RequestXml.getXml(result2);
+				int ret = 0;
+				if(StringUtil.isNoneBlank(params.get("ComponentVerifyTicket"))){
+					ret = CodeMst.dao.updateCodeMst("210011", params.get("ComponentVerifyTicket"));
+				}
+				System.out.println("接收到ComponentVerifyTicket:"+params.get("ComponentVerifyTicket"));
+				if(ret != 0){
+					renderText("success");
+				}
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();

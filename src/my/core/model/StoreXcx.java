@@ -57,4 +57,8 @@ public class StoreXcx extends Model<StoreXcx>{
 	public int updateStoreXcx(String appid,String authCode,Timestamp expireTime,String accessToken,String refreshToken){
 		return Db.update("update t_store_xcx set auth_code='"+authCode+"',update_time='"+DateUtil.getNowTimestamp()+"',expire_time='"+expireTime+"',authorizer_access_token='"+accessToken+"',authorizer_refresh_token='"+refreshToken+"' where appid='"+appid+"'");
 	}
+	
+	public int updateStoreXcxRefresh(String appid,Timestamp expireTime,String accessToken,String refreshToken){
+		return Db.update("update t_store_xcx set update_time='"+DateUtil.getNowTimestamp()+"',expire_time='"+expireTime+"',authorizer_access_token='"+accessToken+"',authorizer_refresh_token='"+refreshToken+"' where appid='"+appid+"'");
+	}
 }
