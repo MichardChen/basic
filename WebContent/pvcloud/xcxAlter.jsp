@@ -101,6 +101,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	    }
    		 });
     }
+    
+    function getAuthInfo(id){
+    	$.ajax({
+    	    type: "post",
+    	    async: false,
+    	    url : "${CONTEXT_PATH}/storeXcxInfo/getAuthInfo",
+    	    data : {'id':id},
+    	    dataType: "json",
+    	    success: function(data) {
+    	        if (data.msg != null || data.msg != "") {
+    	        	alert(data.msg);
+    	        }
+    	    }
+   		 });
+    }
     </script>
 <div class="m">
 	<table class="table table-responsive">
@@ -123,6 +138,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<button type="button" class="btn btn-primary" onclick="submitCode(${xcx.id})">提交审核</button>
 					<button type="button" class="btn btn-primary" onclick="getCategory(${xcx.id})">查看类目</button>
 					<button type="button" class="btn btn-primary" onclick="getLatestAuditstatus(${xcx.id})">查看审核状态</button>
+					<button type="button" class="btn btn-primary" onclick="getAuthInfo(${xcx.id})">查看审核状态</button>
 			</td>
 		</tr>
 	</table>

@@ -60,6 +60,7 @@ public class WXRestfulController extends Controller{
 		renderJson(restService.queryTeaStoreList(dto));
 	}
     
+    //微信每个10分钟会推送ComponentVerifyTicket
     public void callBack(){
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(getRequest().getInputStream()));

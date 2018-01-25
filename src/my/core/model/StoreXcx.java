@@ -54,8 +54,8 @@ public class StoreXcx extends Model<StoreXcx>{
 		return StoreXcx.dao.paginate(page, size, select, sql);
 	}
 	
-	public int updateStoreXcx(String appid,String authCode,Timestamp expireTime,String accessToken,String refreshToken){
-		return Db.update("update t_store_xcx set auth_code='"+authCode+"',update_time='"+DateUtil.getNowTimestamp()+"',expire_time='"+expireTime+"',authorizer_access_token='"+accessToken+"',authorizer_refresh_token='"+refreshToken+"' where appid='"+appid+"'");
+	public int updateStoreXcx(String appid,String authCode,Timestamp expireTime,String accessToken,String refreshToken,String nickName){
+		return Db.update("update t_store_xcx set appname='"+nickName+"',auth_code='"+authCode+"',update_time='"+DateUtil.getNowTimestamp()+"',expire_time='"+expireTime+"',authorizer_access_token='"+accessToken+"',authorizer_refresh_token='"+refreshToken+"' where appid='"+appid+"'");
 	}
 	
 	public int updateStoreXcxRefresh(String appid,Timestamp expireTime,String accessToken,String refreshToken){

@@ -135,16 +135,8 @@ function loadProject1(data){
 
 //添加小程序
 function loadProject2(data){
-	$.ajax({
-		url : "${CONTEXT_PATH}/storeInfo/addXCX",
-		data : {'id':data},
-		dataType : "html",
-		success : function(result){
-			$('#model2').html(result);
-		}
-	});
+	window.open("${CONTEXT_PATH}/storeXcxInfo/bindXcx?id="+data);
 }
-
 
 function downloadImg(id){
 	window.location.href="${CONTEXT_PATH}/storeInfo/generateQRCode?id="+id;
@@ -297,7 +289,7 @@ td{
 										<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
 										<input type="button" value="查看会员" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeInfo/queryMemberList?flg=1&storeId=${s.id}';"/>
 										<input type="button" value="查看评价" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeEvaluateInfo/queryByConditionByPage?mobile=${s.mobile}';"/>
-										<input type="button" value="绑定小程序" class="ys3" data-toggle="modal" data-target="#myModal2" onclick="loadProject2(${s.id})"/>
+										<input type="button" value="绑定小程序" class="ys3" onclick="loadProject2(${s.id})"/>
 								</td>
 		    				</tr>
 		    			</c:forEach>

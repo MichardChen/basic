@@ -132,6 +132,12 @@ public class StoreXcxController extends Controller{
 		render("xcxAlter.jsp");
 	}
 	
+	public void bindXcx(){
+		int id = StringUtil.toInteger(getPara("id"));
+		setAttr("storeId", id);
+		render("bindXcx.jsp");
+	}
+	
 	public void updateAuth(){
 		//错误代码40001的时候，要重新获取access_token
 		int storeId = StringUtil.toInteger(getPara("id"));
@@ -173,7 +179,7 @@ public class StoreXcxController extends Controller{
 			JSONObject retJson = new JSONObject(returnMsg);
 			String preAuthCode = retJson.getString("pre_auth_code");
 			//返回信息给前端，打开授权页面
-			String url = "https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid="+appId+"&pre_auth_code="+preAuthCode+"&redirect_uri=https://www.yibuwangluo.cn/zznj/storeXcxInfo/redirectCall";
+			String url = "https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid="+appId+"&pre_auth_code="+preAuthCode+"&redirect_uri=https://www.yibuwangluo.cn/zznj/storeXcxInfo/redirectCall?storeId="+storeId;
 			System.out.println("url："+url);	
 			setAttr("data", url);
 			renderJson();
@@ -297,6 +303,47 @@ public class StoreXcxController extends Controller{
 		}
 	}
 	
+	//获取小程序相关信息
+	public JSONObject getAuthInfo(String appid){
+		StoreXcx storeXcx = StoreXcx.dao.queryByAppId(appid);
+		if(storeXcx == null){
+			return null;
+		}
+		CodeMst storeXcxMst = CodeMst.dao.queryCodestByCode("210011");
+		if(storeXcxMst == null){
+			return null;
+		}
+		String authAppId = storeXcx.getStr("appid");
+		String appId = storeXcxMst.getStr("data2");
+		String appSecret = storeXcxMst.getStr("data3");
+		String ticket = storeXcxMst.getStr("data4");
+		try {
+			String accessTokenUrl="https://api.weixin.qq.com/cgi-bin/component/api_component_token";
+			JSONObject postJson1 = new JSONObject();
+			postJson1.put("component_appid", appId);
+			postJson1.put("component_appsecret", appSecret);
+			postJson1.put("component_verify_ticket", ticket);
+			
+			System.out.println("json:"+postJson1.toString());
+			String accessTokenReturnMsg = HttpRequest.sendPostJson(accessTokenUrl, postJson1.toString());
+			System.out.println("请求令牌access_token:"+accessTokenReturnMsg);
+			
+			JSONObject retJson1 = new JSONObject(accessTokenReturnMsg);
+			String component_access_token = retJson1.getString("component_access_token");
+			
+			String authTokenUrl = "https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?component_access_token="+component_access_token;
+			JSONObject postJson2 = new JSONObject();
+			postJson2.put("component_appid", appId);
+			postJson2.put("authorizer_appid", authAppId);
+			String returnMsg = HttpRequest.sendPostJson(authTokenUrl, postJson2.toString());
+			System.out.println("小程序相关信息:"+returnMsg);
+			return new JSONObject(returnMsg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	//提交审核
 	public void submitCode(){
 		int id = StringUtil.toInteger(getPara("id"));
@@ -383,6 +430,7 @@ public class StoreXcxController extends Controller{
 			}
 			if(xcx.getTimestamp("expire_time") != null){
 				if(DateUtil.getNowTimestamp().compareTo(xcx.getTimestamp("expire_time"))<=0){
+					System.out.println("now:"+DateUtil.getNowTimestamp()+",expire_time:"+xcx.getTimestamp("expire_time"));
 					//没过期
 					return;
 				}
@@ -426,13 +474,14 @@ public class StoreXcxController extends Controller{
 	//扫码回调
 	public void redirectCall(){
 		try {
+			int storeId = StringUtil.toInteger(getPara("storeId"));
 			String auth_code = getPara("auth_code");
 			String expires_in = getPara("expires_in");
-			System.out.println("auth_code:"+auth_code+",expires_in:"+expires_in);
+			System.out.println("auth_code:"+auth_code+",expires_in:"+expires_in+",storeId:"+storeId);
 			CodeMst storeXcx = CodeMst.dao.queryCodestByCode("210011");
 			if(storeXcx == null){
 				setAttr("message", "数据出错");
-				render("xcxauth.jsp");
+				render("bindXcx.jsp");
 			}
 			String appId = storeXcx.getStr("data2");
 			String appSecret = storeXcx.getStr("data3");
@@ -467,40 +516,60 @@ public class StoreXcxController extends Controller{
 			String expiresIn = authorizationInfoObj.getString("expires_in");
 			String authorizerRefreshToken = authorizationInfoObj.getString("authorizer_refresh_token");
 			
+			JSONObject xcxInfo = getAuthInfo(authorizerAppid);
+			String nickName = "";
+			if(xcxInfo != null){
+				JSONObject authorizer_info = new JSONObject(xcxInfo.getString("authorizer_info"));
+				nickName = authorizer_info.getString("nick_name");
+			}
+			
 			StoreXcx storeXcx2 = StoreXcx.dao.queryByAppId(authorizerAppid);
 			Timestamp expireTime = new Timestamp(DateUtil.getNowTimestamp().getTime()+StringUtil.toInteger(expiresIn)*1000);
 			if(storeXcx2 != null){
-				//更新
-				int ret = StoreXcx.dao.updateStoreXcx(authorizerAppid,auth_code, expireTime, authorizerAccesToken, authorizerRefreshToken);
+				//更新小程序调用凭证
+				int ret = StoreXcx.dao.updateStoreXcx(authorizerAppid
+													 ,auth_code
+													 ,expireTime
+													 ,authorizerAccesToken
+													 ,authorizerRefreshToken
+													 ,nickName);
 				if(ret != 0){
+					StoreXcx xcx = StoreXcx.dao.queryByAppId(authorizerAppid);
+					setAttr("xcx", xcx);
 					setAttr("message", "绑定成功");
-					render("xcxauth.jsp");
+					render("bindXcx.jsp");
 				}else{
 					setAttr("message", "数据失败");
-					render("xcxauth.jsp");
+					render("bindXcx.jsp");
 				}
 			}else{
+				//保存小程序调用凭证
 				StoreXcx storeXcx3 = new StoreXcx();
 				storeXcx3.set("appid", authorizerAppid);
-				storeXcx3.set("appname", "");
+				storeXcx3.set("appname", nickName);
 				storeXcx3.set("create_time", DateUtil.getNowTimestamp());
 				storeXcx3.set("update_time", DateUtil.getNowTimestamp());
 				storeXcx3.set("auth_code", auth_code);
 				storeXcx3.set("expire_time", expireTime);
+				storeXcx3.set("store_id", storeId);
 				storeXcx3.set("authorizer_access_token", authorizerAccesToken);
 				storeXcx3.set("authorizer_refresh_token", authorizerRefreshToken);
 				boolean ret = StoreXcx.dao.saveInfo(storeXcx3);
 				if(ret){
 					//为小程序登记服务器域名
 					modifyDomain(appId);
+					StoreXcx xcx = StoreXcx.dao.queryByAppId(authorizerAppid);
+					setAttr("xcx", xcx);
 					setAttr("message", "绑定成功");
-					render("xcxauth.jsp");
+					render("bindXcx.jsp");
 				}else{
 					setAttr("message", "绑定失败");
-					render("xcxauth.jsp");
+					render("bindXcx.jsp");
 				}
 			}
 		} catch (Exception e1) {
+			setAttr("message", "绑定失败");
+			render("bindXcx.jsp");
 			e1.printStackTrace();
 		}
     }
