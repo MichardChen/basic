@@ -305,15 +305,12 @@ public class StoreXcxController extends Controller{
 	
 	//获取小程序相关信息
 	public JSONObject getAuthInfo(String appid){
-		StoreXcx storeXcx = StoreXcx.dao.queryByAppId(appid);
-		if(storeXcx == null){
-			return null;
-		}
+		
 		CodeMst storeXcxMst = CodeMst.dao.queryCodestByCode("210011");
 		if(storeXcxMst == null){
 			return null;
 		}
-		String authAppId = storeXcx.getStr("appid");
+		String authAppId = appid;
 		String appId = storeXcxMst.getStr("data2");
 		String appSecret = storeXcxMst.getStr("data3");
 		String ticket = storeXcxMst.getStr("data4");
@@ -522,7 +519,7 @@ public class StoreXcxController extends Controller{
 				JSONObject authorizer_info = new JSONObject(xcxInfo.getString("authorizer_info"));
 				nickName = authorizer_info.getString("nick_name");
 			}
-			
+			System.out.println("nick_name:"+nickName);
 			StoreXcx storeXcx2 = StoreXcx.dao.queryByAppId(authorizerAppid);
 			Timestamp expireTime = new Timestamp(DateUtil.getNowTimestamp().getTime()+StringUtil.toInteger(expiresIn)*1000);
 			if(storeXcx2 != null){
@@ -547,6 +544,12 @@ public class StoreXcxController extends Controller{
 				StoreXcx storeXcx3 = new StoreXcx();
 				storeXcx3.set("appid", authorizerAppid);
 				storeXcx3.set("appname", nickName);
+				int memberId = 0;
+				Store store = Store.dao.queryById(storeId);
+				if(store != null){
+					memberId = store.getInt("member_id");
+				}
+				storeXcx3.set("member_id", memberId);
 				storeXcx3.set("create_time", DateUtil.getNowTimestamp());
 				storeXcx3.set("update_time", DateUtil.getNowTimestamp());
 				storeXcx3.set("auth_code", auth_code);

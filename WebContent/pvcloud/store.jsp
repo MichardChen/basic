@@ -141,6 +141,21 @@ function loadProject2(data){
 function downloadImg(id){
 	window.location.href="${CONTEXT_PATH}/storeInfo/generateQRCode?id="+id;
 }
+
+function updateAuth(id){
+	$.ajax({
+	    type: "post",
+	    async: false,
+	    url : "${CONTEXT_PATH}/storeXcxInfo/updateAuth",
+	    data : {'id':id},
+	    dataType: "json",
+	    success: function(data) {
+	        if (data.msg != null || data.msg != "") {
+	        	window.open(data.data);
+	        }
+	    }
+});
+}
 </script>
 <style>
 .ys1{
@@ -289,7 +304,7 @@ td{
 										<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
 										<input type="button" value="查看会员" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeInfo/queryMemberList?flg=1&storeId=${s.id}';"/>
 										<input type="button" value="查看评价" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeEvaluateInfo/queryByConditionByPage?mobile=${s.mobile}';"/>
-										<input type="button" value="绑定小程序" class="ys3" onclick="loadProject2(${s.id})"/>
+										<button type="button" class="btn btn-primary" onclick="updateAuth(${s.id})">授权小程序</button>
 								</td>
 		    				</tr>
 		    			</c:forEach>
