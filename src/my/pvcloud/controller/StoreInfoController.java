@@ -970,25 +970,31 @@ public class StoreInfoController extends Controller {
 		String appId = StringUtil.checkCode(getPara("appId"));
 		String appName = StringUtil.checkCode(getPara("appName"));
 		
-		Store store = Store.dao.queryById(id);
-		if(store == null){
-			setAttr("message", "对不起，该门店不存在");
+		StoreXcx storeXcx1 = StoreXcx.dao.queryByAppId(appId);
+		if(storeXcx1 != null){
+			setAttr("message", "对不起，该门店已绑定小程序");
+			index();
 		}else{
-			StoreXcx storeXcx = new StoreXcx();
-			storeXcx.set("store_id", store.getInt("id"));
-			storeXcx.set("member_id", store.getInt("member_id"));
-			storeXcx.set("appid", appId);
-			storeXcx.set("appname", appName);
-			storeXcx.set("create_time", DateUtil.getNowTimestamp());
-			storeXcx.set("update_time", DateUtil.getNowTimestamp());
-			boolean saveFlg = StoreXcx.dao.saveInfo(storeXcx);
-			if(saveFlg){
-				Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "增加小程序："+appName);
-				setAttr("message", "保存成功");
+			Store store = Store.dao.queryById(id);
+			if(store == null){
+				setAttr("message", "对不起，该门店不存在");
 			}else{
-				setAttr("message", "保存失败");
+				StoreXcx storeXcx = new StoreXcx();
+				storeXcx.set("store_id", store.getInt("id"));
+				storeXcx.set("member_id", store.getInt("member_id"));
+				storeXcx.set("appid", appId);
+				storeXcx.set("appname", appName);
+				storeXcx.set("create_time", DateUtil.getNowTimestamp());
+				storeXcx.set("update_time", DateUtil.getNowTimestamp());
+				boolean saveFlg = StoreXcx.dao.saveInfo(storeXcx);
+				if(saveFlg){
+					Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "增加小程序："+appName);
+					setAttr("message", "保存成功");
+				}else{
+					setAttr("message", "保存失败");
+				}
 			}
+			index();
 		}
-		index();
 	}
 }

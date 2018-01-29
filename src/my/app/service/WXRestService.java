@@ -13,10 +13,13 @@ import my.core.model.Province;
 import my.core.model.ReturnData;
 import my.core.model.Store;
 import my.core.model.StoreImage;
+import my.core.model.StoreXcx;
 import my.core.tx.TxProxy;
 import my.core.vo.DistanceModel;
 import my.core.vo.StoreDetailListVO;
 import my.core.vo.TeaStoreListVO;
+import my.core.vo.XcxDistanceModel;
+import my.core.vo.XcxTeaStoreListVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.GeoUtil;
 import my.pvcloud.util.StringUtil;
@@ -60,17 +63,19 @@ public class WXRestService {
 	public ReturnData queryTeaStoreList(LoginDTO dto){
 		
 		ReturnData data = new ReturnData();
-		
+		//经度
 		double localLongtitude = Double.valueOf(StringUtil.isBlank(dto.getLocalLongtitude()) ? "116.40":dto.getLocalLongtitude());
+		//纬度
 		double localLatitude = Double.valueOf(StringUtil.isBlank(dto.getLocalLatitude()) ? "39.90" : dto.getLocalLatitude());
+		
 		//查询出所有门店
-		List<TeaStoreListVO> resultList = new ArrayList<>();
-		List<DistanceModel> sortList = new ArrayList<>();
-		TeaStoreListVO v = null;
-		List<Store> allStores = Store.dao.queryAllStoreListForWX(Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS);
+		List<XcxTeaStoreListVO> resultList = new ArrayList<>();
+		List<XcxDistanceModel> sortList = new ArrayList<>();
+		XcxTeaStoreListVO v = null;
+		List<Store> allStores = Store.dao.queryAllStoreForXcxList(Constants.VERTIFY_STATUS.CERTIFICATE_SUCCESS);
 		for(Store store : allStores){
 			//循环
-			v = new TeaStoreListVO();
+			v = new XcxTeaStoreListVO();
 			v.setStoreId(store.getInt("id"));
 			v.setName(store.getStr("store_name"));
 			v.setAddress(store.getStr("city_district"));
@@ -79,7 +84,10 @@ public class WXRestService {
 			}else{
 				v.setBusinessId(0);
 			}
-			
+			StoreXcx xcx = StoreXcx.dao.queryByStoreId(store.getInt("id"));
+			if(xcx != null){
+				v.setAppId(xcx.getStr("appid"));
+			}
 			v.setBusinessTea(store.getStr("business_tea"));
 			double lg = Double.valueOf(String.valueOf(store.getFloat("longitude")));
 			double lat = Double.valueOf(String.valueOf(store.getFloat("latitude")));
@@ -90,7 +98,7 @@ public class WXRestService {
 			}
 			BigDecimal decimals = new BigDecimal(dist);
 			if(decimals != null){
-				DistanceModel model = new DistanceModel();
+				XcxDistanceModel model = new XcxDistanceModel();
 				BigDecimal km = decimals.divide(new BigDecimal("1000"));
 				if(km.compareTo(new BigDecimal("1")) != 1){
 					v.setDistance("1Km以内");
@@ -108,15 +116,14 @@ public class WXRestService {
 		Collections.sort(sortList);
 		int fromRow = dto.getPageSize()*(dto.getPageNum()-1);
 		int toRow = fromRow+dto.getPageSize()-1;
-		/*if(sortList.size() < fromRow){
-			toRow = fromRow = (sortList.size()-1);
-		}*/
+		
 		if(sortList.size() < toRow){
 			toRow = sortList.size()-1;
 		}
+		
 		//获取fromRow到toRow之间的key值
 		for(int i=fromRow;((i<sortList.size())&&(i<=toRow));i++){
-			DistanceModel k = sortList.get(i);
+			XcxDistanceModel k = sortList.get(i);
 			resultList.add(k.getVo());
 		}
 				

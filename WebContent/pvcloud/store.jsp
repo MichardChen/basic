@@ -133,6 +133,18 @@ function loadProject1(data){
 	});
 }
 
+function loadProject3(data){
+	$(".modal-title").html("添加小程序");
+	$.ajax({
+		url : "${CONTEXT_PATH}/storeInfo/addXCX",
+		data : {'id':data},
+		dataType : "html",
+		success : function(result){
+			$('#model3').html(result);
+		}
+	});
+}
+
 //添加小程序
 function loadProject2(data){
 	window.open("${CONTEXT_PATH}/storeXcxInfo/bindXcx?id="+data);
@@ -304,6 +316,7 @@ td{
 										<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
 										<input type="button" value="查看会员" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeInfo/queryMemberList?flg=1&storeId=${s.id}';"/>
 										<input type="button" value="查看评价" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeEvaluateInfo/queryByConditionByPage?mobile=${s.mobile}';"/>
+										<input type="button" value="绑定小程序" class="ys3" style="width: 100px;" data-toggle="modal" data-target="#myModal3" onclick="loadProject3(${s.id})"/>
 										<button type="button" class="btn btn-primary" onclick="updateAuth(${s.id})">授权小程序</button>
 								</td>
 		    				</tr>
@@ -356,7 +369,7 @@ td{
 		</div>
 	</div>
 </div>
-<div class="modal fade bs-example-modal-lg" id="myModal2" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+<div class="modal fade bs-example-modal-lg" id="myModal3" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content" style="width: 120%;margin-left:-10%;">
 			<div class="modal-header">
@@ -364,7 +377,7 @@ td{
 				<h4 class="modal-title">添加小程序</h4>
 			</div>
 			<form action="${CONTEXT_PATH}/storeInfo/submitXCX" method="post" onsubmit="return checkXCX();">
-				<div class="modal-body" id="model2">
+				<div class="modal-body" id="model3">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>

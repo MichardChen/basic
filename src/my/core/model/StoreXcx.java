@@ -22,6 +22,10 @@ public class StoreXcx extends Model<StoreXcx>{
 		return StoreXcx.dao.findFirst("select * from t_store_xcx where id = ?",id);
 	}
 	
+	public StoreXcx queryByStoreId(int storeId){
+		return StoreXcx.dao.findFirst("select * from t_store_xcx where store_id = ?",storeId);
+	}
+	
 	public StoreXcx queryByAppId(String appid){
 		return StoreXcx.dao.findFirst("select * from t_store_xcx where appid='"+appid+"'");
 	}

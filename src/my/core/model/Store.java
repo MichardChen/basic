@@ -87,6 +87,10 @@ public class Store extends Model<Store> {
 		}
 	}
 	
+	public List<Store> queryAllStoreForXcxList(String status){
+		return Store.dao.find("select a.* from t_store a inner join t_store_xcx b on a.id=b.store_id where a.status='"+status+"' and b.appid is not null and b.appid!='' order by a.create_time desc");
+	}
+	
 	public List<Store> queryAllStoreListForWX(String status){
 		return Store.dao.find("select * from t_store where status='"+status+"' order by create_time desc");
 	}
