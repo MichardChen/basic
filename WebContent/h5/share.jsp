@@ -51,7 +51,7 @@
    					return false;
    				}
    				
-   				if(window.confirm('你确定绑定门店吗？')){
+   				if(window.confirm('你确定关联门店吗？')){
    					$.ajax({
    				        type: "post",
    				        async: false,
@@ -87,7 +87,7 @@
 					});
    			}
    	</script>
-    <title>绑定门店</title>
+    <title>关联门店</title>
 </head>
 <body style="margin: 0px 0px;">
 	<div style="color:red;text-align: center;word-wrap:break-word;">
@@ -97,7 +97,7 @@
 	<img src="http://app.tongjichaye.com:88/common/download.jpg" class="img-responsive"  alt="Responsive image" width="100%">
 	</div>
 	<div style="margin: 0px 0px;text-align: center;margin-top: 10px;" id="bindDiv">
-	<input type="text" class="form-control" style="width: 50%;display: inline;" name="mobile" id="mobile" placeholder="请输入绑定手机号码"/>&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-primary" type="button" onclick="bind()">绑定</button>
+	<input type="text" class="form-control" style="width: 50%;display: inline;" name="mobile" id="mobile" placeholder="请输入手机号码"/>&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-primary" type="button" onclick="bind()">免费喝茶</button>
 	</div>
 	<div style="margin: 0px 0px;text-align: center;margin-top: 10px;">
 			<a href="http://app.tongjichaye.com:88/app/tj_android.apk"><button type="button" class="btn btn-default" style="border-radius:30px;">Android客户端</button></a>
