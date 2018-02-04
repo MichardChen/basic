@@ -317,7 +317,7 @@ td{
 										<input type="button" value="查看会员" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeInfo/queryMemberList?flg=1&storeId=${s.id}';"/>
 										<input type="button" value="查看评价" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeEvaluateInfo/queryByConditionByPage?mobile=${s.mobile}';"/>
 										<input type="button" value="绑定小程序" class="ys3" style="width: 100px;" data-toggle="modal" data-target="#myModal3" onclick="loadProject3(${s.id})"/>
-										<button type="button" class="btn btn-primary" onclick="updateAuth(${s.id})">授权小程序</button>
+										<%-- <button type="button" class="btn btn-primary" onclick="updateAuth(${s.id})">授权小程序</button> --%>
 								</td>
 		    				</tr>
 		    			</c:forEach>

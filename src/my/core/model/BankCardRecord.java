@@ -101,6 +101,10 @@ public class BankCardRecord extends Model<BankCardRecord> {
 		return Db.update("update t_bankcard_record set status='"+status+"',update_time='"+DateUtil.getNowTimestamp()+"' where id="+id);
 	}
 	
+	public int updateStoreMark(int id,String markImg,String mark){
+		return Db.update("update t_bankcard_record set mark_img='"+markImg+"',update_time='"+DateUtil.getNowTimestamp()+"',mark='"+mark+"' where id="+id);
+	}
+	
 	public BigDecimal sumApplying(int memberId,String type,String status){
 		return Db.queryBigDecimal("select sum(moneys) from t_bankcard_record where member_id="+memberId+" and status='"+status+"' and type_cd='"+type+"'");
 	}

@@ -119,20 +119,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </script>
 <div class="m">
 	<table class="table table-responsive">
-		<tr>
+		<%-- <tr>
 			<td colspan="2"><label style="color: #3399ff;">小程序尚未授权，授权后将可避免复杂的配置，并能更安全、更便捷地使用我们的系统。</label>
 					<button type="button" class="btn btn-primary" onclick="updateAuth(${xcx.id})">立即授权</button>
 			</td>
-		</tr>
+		</tr> --%>
 		<tr>
 			<td>小程序名称</td>
-			<td><input type="text" name="appName" id="appName" value="${xcx.appname}" maxlength="30" style="width: 300px;"/></td>
+			<td>${xcx.appname}<%-- <input type="text" name="appName" id="appName" value="${xcx.appname}" maxlength="30" style="width: 300px;"/> --%></td>
 		</tr>
 		<tr>
 			<td>小程序APPID</td>
-			<td><input type="text" name="appId" id="appId" value="${xcx.appid}" maxlength="30" style="width: 300px;"/></td>
+			<td>${xcx.appid}<%-- <input type="text" name="appId" id="appId" value="${xcx.appid}" maxlength="30" style="width: 300px;"/> --%></td>
 		</tr>
-		<tr>
+		<%-- <tr>
 			<td colspan="2">
 					<button type="button" class="btn btn-primary" onclick="upload(${xcx.id})">上传</button>
 					<button type="button" class="btn btn-primary" onclick="submitCode(${xcx.id})">提交审核</button>
@@ -140,7 +140,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<button type="button" class="btn btn-primary" onclick="getLatestAuditstatus(${xcx.id})">查看审核状态</button>
 					<button type="button" class="btn btn-primary" onclick="getAuthInfo(${xcx.id})">查看审核状态</button>
 			</td>
-		</tr>
+		</tr> --%>
 	</table>
 	<input type="hidden" name="id" value="${xcx.id}"/>
 </div>

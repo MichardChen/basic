@@ -2,10 +2,12 @@ package my.pvcloud.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -17,7 +19,9 @@ import org.huadalink.route.ControllerBind;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.upload.UploadFile;
 
+import my.app.service.FileService;
 import my.core.constants.Constants;
 import my.core.model.BankCardRecord;
 import my.core.model.CashJournal;
@@ -25,11 +29,15 @@ import my.core.model.CodeMst;
 import my.core.model.Log;
 import my.core.model.Member;
 import my.core.model.MemberBankcard;
+import my.core.model.Store;
+import my.core.model.StoreImage;
 import my.core.model.User;
 import my.pvcloud.model.BankRecordModel;
 import my.pvcloud.service.WithDrawService;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.ExportUtil;
+import my.pvcloud.util.ImageTools;
+import my.pvcloud.util.ImageZipUtil;
 import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/withdrawInfo", path = "/pvcloud")
@@ -65,6 +73,8 @@ public class WithDrawInfoController extends Controller {
 				model.setMoneys(StringUtil.toString(record.getBigDecimal("moneys")));
 				model.setMobile(member.getStr("mobile"));
 			}
+			model.setMark(record.getStr("mark"));
+			model.setMarkImg(record.getStr("mark_img"));
 			model.setBalance(StringUtil.toString(record.getBigDecimal("balance")));
 			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 			model.setStatus(status == null ? "" : status.getStr("name"));
@@ -108,6 +118,8 @@ public class WithDrawInfoController extends Controller {
 					model.setName(memberBankcard.getStr("owner_name"));
 				}
 			}
+			model.setMark(record.getStr("mark"));
+			model.setMarkImg(record.getStr("mark_img"));
 			model.setBalance(StringUtil.toString(record.getBigDecimal("balance")));
 			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 			model.setStatus(status == null ? "" : status.getStr("name"));
@@ -159,6 +171,8 @@ public class WithDrawInfoController extends Controller {
 					model.setName(memberBankcard.getStr("owner_name"));
 				}
 			}
+			model.setMark(record.getStr("mark"));
+			model.setMarkImg(record.getStr("mark_img"));
 			model.setBalance(StringUtil.toString(record.getBigDecimal("balance")));
 			CodeMst status = CodeMst.dao.queryCodestByCode(record.getStr("status"));
 			model.setStatus(status == null ? "" : status.getStr("name"));
@@ -169,7 +183,53 @@ public class WithDrawInfoController extends Controller {
 		setAttr("sList", models);
 		render("withdraw.jsp");
 	}
+	
+	public void updateMarkInit(){
+		setAttr("withDrawId", getPara("id"));
+		render("withdrawMark.jsp");
+	}
 
+	public void updateMark(){
+		UploadFile uploadFile1 = getFile("markImg");
+		FileService fs=new FileService();
+		String logo1 = "";
+		int id = StringUtil.toInteger(getPara("id"));
+
+		//上传文件
+		if(uploadFile1 != null){
+			String uuid = UUID.randomUUID().toString();
+			String fileName = uploadFile1.getOriginalFileName();
+			String[] names = fileName.split("\\.");
+		    File file=uploadFile1.getFile();
+		    File t=new File(Constants.FILE_HOST.TEA+uuid+"."+names[1]);
+		    logo1 = Constants.HOST.TEA+uuid+"."+names[1];
+		    try{
+		        t.createNewFile();
+		    }catch(IOException e){
+		        e.printStackTrace();
+		    }
+		    
+		    fs.fileChannelCopy(file, t);
+		    ImageZipUtil.zipWidthHeightImageFile(file, t, ImageTools.getImgWidth(file), ImageTools.getImgHeight(file), 0.5f);
+		    file.delete();
+		    int saveFlg = BankCardRecord.dao.updateStoreMark(id, logo1, StringUtil.checkCode(getPara("mark")));
+		    if(saveFlg != 0){
+				setAttr("message", "更新成功");
+			}else{
+				setAttr("message", "更新失败");
+			}
+		}else{
+			 int saveFlg = BankCardRecord.dao.updateStoreMark(id, "", StringUtil.checkCode(getPara("mark")));
+			 if(saveFlg != 0){
+				 setAttr("message", "更新成功");
+			 }else{
+				 setAttr("message", "更新失败");
+			}
+		}
+		Log.dao.saveLogInfo((Integer)getSessionAttr("agentId"), Constants.USER_TYPE.PLATFORM_USER, "处理提现申请，申请id："+id);
+		index();
+	}
+	
 	/**
 	 * 更新
 	 */

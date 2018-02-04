@@ -1,0 +1,45 @@
+{
+  "pages": [
+    "pages/Controller/HomeVC/homevc",
+    "pages/Controller/StoreVC/storevc",
+    "pages/Controller/StoreVC/changeStore",
+    "pages/Controller/NavigationVC/navigationvc",
+    "pages/Controller/MineVC/minevc",
+    "pages/Controller/MineVC/aboutus",
+    "pages/Controller/WebVC/webvc",
+    "pages/API/pages/open-location/open-location",
+    "pages/logs/logs",
+    "pages/index/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#e9a740",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/Controller/HomeVC/homevc",
+        "iconPath": "image/mianfeihecha_0.png",
+        "selectedIconPath": "image/mianfeihecha_1.png",
+        "text": "免费喝茶"
+      },
+      {
+        "pagePath": "pages/Controller/StoreVC/storevc",
+        "iconPath": "image/mendianzhanshi_0.png",
+        "selectedIconPath": "image/mendianzhanshi_1.png",
+        "text": "店铺展示"
+      }
+    ],
+    "networkTimeout": {
+      "request": 10000,
+      "downloadFile": 10000
+    },
+    "debug": true
+  }
+}

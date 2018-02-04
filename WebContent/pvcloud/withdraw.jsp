@@ -29,6 +29,17 @@ function loadProject1(data){
 		}
 	});
 }
+function loadProject2(data){
+	$(".modal-title").html("编辑备注");
+	$.ajax({
+		url : "${CONTEXT_PATH}/withdrawInfo/updateMarkInit",
+		data : {id:data},
+		dataType : "html",
+		success : function(result){
+			$('#m1').html(result);
+		}
+	});
+}
 function loadProject(data){
 	if(data==0){
 		$(".modal-title").html("新增");
@@ -176,6 +187,8 @@ td{
     				<th>账号余额</th>
     				<th>申请时间</th>
     				<th>状态</th>
+    				<th>备注</th>
+    				<th>结果截图</th>
     				<th>操作</th>
     			</tr>
     		</thead>
@@ -195,12 +208,17 @@ td{
 		    					<td>${s.balance}</td>
 		    					<td>${s.createTime}</td>
 		    					<td>${s.status}</td>
+		    					<td>${s.mark}</td>
+		    					<td>
+		    						<a href="${s.markImg}" target="_blank" style="color: blue;">查看</a>
+		    					</td>
 		    					<td>
 		    							<c:if test="${s.statusCd=='190001'}">
 		    									<input type="button" value="审核成功" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190002&id=${s.id}';}"/>
 		    									<input type="button" value="审核失败" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/withdrawInfo/update?status=190003&id=${s.id}';}"/>
 		    							</c:if>
 		    							<input type="button" value="查看用户" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.memberId})"/>
+		    							<input type="button" value="编辑备注" class="ys3" data-toggle="modal" data-target="#myModal2" onclick="loadProject2(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -250,6 +268,24 @@ td{
 			</div>
 			<form action="${CONTEXT_PATH}/memberInfo/updateMember" method="post">
 				<div class="modal-body">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myModal2" role="dialog" aria-label="myModalDialog" aria-hidden="true" style="">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content" style="width: 120%;margin-left:-10%;">
+			<div class="modal-header">
+				<button type="button" data-dismiss="modal" class="close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">编辑备注</h4>
+			</div>
+			<form action="${CONTEXT_PATH}/withdrawInfo/updateMark" method="post" enctype="multipart/form-data">
+				<div class="modal-body" id="m1">
+				</div>
+				<div class="modal-footer" style="margin-top:20px;">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<input type="submit" class="btn btn-success" value="保存"/>
 				</div>
 			</form>
 		</div>

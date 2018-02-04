@@ -11,7 +11,21 @@ public class BankRecordModel {
 	private String statusCd;
 	private String balance;
 	private int memberId;
+	private String mark;
+	private String markImg;
 	
+	public String getMark() {
+		return mark;
+	}
+	public void setMark(String mark) {
+		this.mark = mark;
+	}
+	public String getMarkImg() {
+		return markImg;
+	}
+	public void setMarkImg(String markImg) {
+		this.markImg = markImg;
+	}
 	public int getMemberId() {
 		return memberId;
 	}
