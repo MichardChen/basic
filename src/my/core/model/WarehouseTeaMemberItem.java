@@ -37,17 +37,18 @@ public class WarehouseTeaMemberItem extends Model<WarehouseTeaMemberItem> {
 														,int memberId){
 		
 		int fromRow = pageSize*(pageNum-1);
-		String orderby = " order by a.create_time asc";
+		//String orderby = " order by a.create_time asc";
+		String orderby = " order by ";
 		String sql = " and a.size_type_cd ='"+size+"'";
 		if(StringUtil.equals(priceFlg, "0")){
 			//从低到高
 			//sql = sql +" and a.size_type_cd ='150001'";
-			orderby = orderby +",a.price asc";
+			orderby = orderby +" a.price asc";
 			sql = sql+" and a.status='"+Constants.TEA_STATUS.ON_SALE+"'";
 		}else{
 			//从高到低
 			//sql = sql +" and a.size_type_cd ='150002'";
-			orderby = orderby +",a.price desc";
+			orderby = orderby +" a.price desc";
 			sql = sql+" and a.status='"+Constants.TEA_STATUS.ON_SALE+"'";
 		}
 		

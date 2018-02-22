@@ -2050,14 +2050,16 @@ public class LoginService {
 			Record record0 = records3.get(0);
 			
 			BigDecimal allQuality = (BigDecimal)map.get("allQuality");
+			BigDecimal rq = record0.getBigDecimal("quality") == null?new BigDecimal("0"):record0.getBigDecimal("quality");
 			if(allQuality != null){
-				map.put("allQuality", allQuality.add(record0.getBigDecimal("quality").multiply(new BigDecimal(tea.getInt("size")))));
+				map.put("allQuality", allQuality.add(rq.multiply(new BigDecimal(tea.getInt("size")))));
 			}else{
-				map.put("allQuality", record0.getBigDecimal("quality").multiply(new BigDecimal(tea.getInt("size"))));
+				map.put("allQuality", rq.multiply(new BigDecimal(tea.getInt("size"))));
 			}
 			BigDecimal allAmount = (BigDecimal)map.get("allAmount");
 			if(allAmount != null){
-				map.put("allAmount",allAmount.add(record0.getBigDecimal("amount")));
+				BigDecimal amountBigDecimal = record0.getBigDecimal("amount") == null?new BigDecimal("0"):record0.getBigDecimal("amount");
+				map.put("allAmount",allAmount.add(amountBigDecimal));
 			}else{
 				map.put("allAmount", record0.getBigDecimal("amount"));
 			}
