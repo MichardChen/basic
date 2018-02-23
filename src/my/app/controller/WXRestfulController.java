@@ -3,10 +3,12 @@ package my.app.controller;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.huadalink.route.ControllerBind;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.alibaba.dubbo.common.utils.IOUtils;
@@ -24,6 +26,7 @@ import my.core.pay.RequestXml;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.HttpRequest;
+import my.pvcloud.util.SHA1;
 import my.pvcloud.util.StringUtil;
 
 @ControllerBind(key = "/wxrest", path = "/wxrest")
@@ -94,6 +97,81 @@ public class WXRestfulController extends Controller{
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
+		}
+    }
+    
+    //小程序消息回调
+    public void checkSignature(){
+    	
+    	 String signature = getPara("signature");
+    	 String timestamp = getPara("timestamp");
+    	 String nonce = getPara("nonce");
+    	 String echostr = getPara("echostr");
+
+    	 String token = "jflajkljljoa752822ABCAKLK";
+    	 //组成字符串
+    	 String[] tmpArr={token,timestamp,nonce};
+    	 //数组内对象排序，字符串从小到大
+    	 Arrays.sort(tmpArr);
+    	 //数组内的对象拼接组合
+    	 String tmpStr = tmpArr[0]+tmpArr[1]+tmpArr[2];
+    	 //sha1加密
+    	 String tmpStrEncode = SHA1.encode(tmpStr);
+
+    	 if(StringUtil.equals(tmpStrEncode,signature)){
+    		 renderText(echostr);
+    	 }else{
+    		 renderText("false");
+    	}
+    }
+    
+    //发送微信接口，请求消息
+    public void sendClientMessage(){
+    	
+    	ReturnData data = new ReturnData();
+    	//获取用户的openID
+    	String code = getPara("code");
+    	String appId = getPara("appId");
+    	String secret = "143463f0737a62f4cd3c5adc0efc7a0f";
+    	String userUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wxa8893a771e4a18ca&secret="+secret+"&js_code="+code+"&grant_type=authorization_code";
+    	String retMsg1 = HttpRequest.sendGet(userUrl, "");
+    	try {
+	    	JSONObject retJson1 = new JSONObject(retMsg1);
+	    	if(retJson1.has("errcode")){
+				//请求失败
+	    		data.setCode(Constants.STATUS_CODE.FAIL);
+	    		data.setMessage("code无效");
+	    		renderJson(data);
+			}
+	    	//获取accessToken
+	    	String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxa8893a771e4a18ca&secret="+secret;
+	    	String retMsg2 = HttpRequest.sendGet(accessTokenUrl, "");
+	    	JSONObject retJson2 = new JSONObject(retMsg2);
+	    	if(retJson2.has("access_token")&&retJson1.has("openid")){
+		    	String openId = retJson1.getString("openid");
+		    	String accessToken = retJson2.getString("access_token");
+		    	String postUrl="https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+accessToken;
+		    	JSONObject postJson = new JSONObject();
+		    	postJson.put("touser", openId);
+		    	postJson.put("msgtype", "link");
+		    	JSONObject postJson1 = new JSONObject();
+		    	postJson1.put("title", "APP下载");
+		    	postJson1.put("description", "让全天下有免费的茶喝");
+		    	postJson1.put("url", "http://a.app.qq.com/o/simple.jsp?pkgname=com.tea.tongji");
+				postJson1.put("picurl", "https://app.tongjichaye.com/app.png");
+				postJson.put("link", postJson1);
+				String retMsg3 = HttpRequest.sendPostJson(postUrl, postJson.toString());
+	    		renderJson(retMsg3);
+	    	}else{
+	    		data.setCode(Constants.STATUS_CODE.FAIL);
+	    		data.setMessage("access_token请求失败");
+	    		renderJson(data);
+	    	}
+    	} catch (JSONException e) {
+    		data.setCode(Constants.STATUS_CODE.FAIL);
+    		data.setMessage("请求失败");
+    		renderJson(data);
+			e.printStackTrace();
 		}
     }
 }
