@@ -125,8 +125,8 @@ public class WXRestfulController extends Controller{
     	}
     }
     
-    //发送微信接口，请求消息
-    public void sendClientMessage(){
+    //发送微信接口，请求消息，code有效
+    public void sendClientMsg(){
     	
     	ReturnData data = new ReturnData();
     	//获取用户的openID
@@ -137,18 +137,62 @@ public class WXRestfulController extends Controller{
     	String retMsg1 = HttpRequest.sendGet(userUrl, "");
     	try {
 	    	JSONObject retJson1 = new JSONObject(retMsg1);
-	    	if(retJson1.has("errcode")){
+	    	if(retJson1.has("errcode")&&StringUtil.equals(retJson1.getString("errcode"), "40029")){
 				//请求失败
-	    		data.setCode(Constants.STATUS_CODE.FAIL);
+	    		data.setCode("40029");
 	    		data.setMessage("code无效");
 	    		renderJson(data);
+	    		return;
+			}else{
+		    	//获取accessToken
+		    	String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxa8893a771e4a18ca&secret="+secret;
+		    	String retMsg2 = HttpRequest.sendGet(accessTokenUrl, "");
+		    	JSONObject retJson2 = new JSONObject(retMsg2);
+		    	if(retJson2.has("access_token")&&retJson1.has("openid")){
+			    	String openId = retJson1.getString("openid");
+			    	String accessToken = retJson2.getString("access_token");
+			    	String postUrl="https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+accessToken;
+			    	JSONObject postJson = new JSONObject();
+			    	postJson.put("touser", openId);
+			    	postJson.put("msgtype", "link");
+			    	JSONObject postJson1 = new JSONObject();
+			    	postJson1.put("title", "APP下载");
+			    	postJson1.put("description", "让全天下有免费的茶喝");
+			    	postJson1.put("url", "http://a.app.qq.com/o/simple.jsp?pkgname=com.tea.tongji");
+					postJson1.put("picurl", "https://app.tongjichaye.com/app.png");
+					postJson.put("link", postJson1);
+					String retMsg3 = HttpRequest.sendPostJson(postUrl, postJson.toString());
+		    		renderJson(retMsg3);
+		    		return;
+		    	}else{
+		    		data.setCode(Constants.STATUS_CODE.FAIL);
+		    		data.setMessage("access_token请求失败");
+		    		renderJson(data);
+		    		return;
+		    	}
 			}
+    	} catch (JSONException e) {
+    		data.setCode(Constants.STATUS_CODE.FAIL);
+    		data.setMessage("请求失败");
+    		renderJson(data);
+			e.printStackTrace();
+		}
+    }
+    
+    //code失效
+    public void sendClientMsgCodeInvalid(){
+    	
+    	ReturnData data = new ReturnData();
+    	//获取用户的openID
+    	String openId = getPara("openId");
+    	String appId = getPara("appId");
+    	String secret = "143463f0737a62f4cd3c5adc0efc7a0f";
+    	try {
 	    	//获取accessToken
-	    	String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxa8893a771e4a18ca&secret="+secret;
+	    	String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appId+"&secret="+secret;
 	    	String retMsg2 = HttpRequest.sendGet(accessTokenUrl, "");
 	    	JSONObject retJson2 = new JSONObject(retMsg2);
-	    	if(retJson2.has("access_token")&&retJson1.has("openid")){
-		    	String openId = retJson1.getString("openid");
+	    	if(retJson2.has("access_token")){
 		    	String accessToken = retJson2.getString("access_token");
 		    	String postUrl="https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+accessToken;
 		    	JSONObject postJson = new JSONObject();
@@ -162,10 +206,12 @@ public class WXRestfulController extends Controller{
 				postJson.put("link", postJson1);
 				String retMsg3 = HttpRequest.sendPostJson(postUrl, postJson.toString());
 	    		renderJson(retMsg3);
+	    		return;
 	    	}else{
 	    		data.setCode(Constants.STATUS_CODE.FAIL);
 	    		data.setMessage("access_token请求失败");
 	    		renderJson(data);
+	    		return;
 	    	}
     	} catch (JSONException e) {
     		data.setCode(Constants.STATUS_CODE.FAIL);
