@@ -145,8 +145,8 @@ public class WXRestfulController extends Controller{
 	    		return;
 			}else{
 		    	//获取accessToken
-		    	String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxa8893a771e4a18ca&secret="+secret;
-		    	String retMsg2 = HttpRequest.sendGet(accessTokenUrl, "");
+		    	String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
+		    	String retMsg2 = HttpRequest.sendGet(accessTokenUrl, "grant_type=client_credential&appid=wxa8893a771e4a18ca&secret="+secret);
 		    	JSONObject retJson2 = new JSONObject(retMsg2);
 		    	if(retJson2.has("access_token")&&retJson1.has("openid")){
 			    	String openId = retJson1.getString("openid");
@@ -162,8 +162,18 @@ public class WXRestfulController extends Controller{
 					postJson1.put("picurl", "https://app.tongjichaye.com/app.png");
 					postJson.put("link", postJson1);
 					String retMsg3 = HttpRequest.sendPostJson(postUrl, postJson.toString());
-		    		renderJson(retMsg3);
-		    		return;
+					JSONObject retJson3 = new JSONObject(retMsg3);
+					if(StringUtil.equals(retJson3.getString("errcode"), "0")){
+						data.setCode(Constants.STATUS_CODE.SUCCESS);
+			    		data.setMessage("请求成功");
+			    		renderJson(data);
+			    		return;
+					}else{
+						data.setCode(Constants.STATUS_CODE.FAIL);
+			    		data.setMessage("请求失败");
+			    		renderJson(data);
+			    		return;
+					}
 		    	}else{
 		    		data.setCode(Constants.STATUS_CODE.FAIL);
 		    		data.setMessage("access_token请求失败");
@@ -189,8 +199,8 @@ public class WXRestfulController extends Controller{
     	String secret = "143463f0737a62f4cd3c5adc0efc7a0f";
     	try {
 	    	//获取accessToken
-	    	String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appId+"&secret="+secret;
-	    	String retMsg2 = HttpRequest.sendGet(accessTokenUrl, "");
+	    	String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
+	    	String retMsg2 = HttpRequest.sendGet(accessTokenUrl, "grant_type=client_credential&appid="+appId+"&secret="+secret);
 	    	JSONObject retJson2 = new JSONObject(retMsg2);
 	    	if(retJson2.has("access_token")){
 		    	String accessToken = retJson2.getString("access_token");
@@ -205,8 +215,18 @@ public class WXRestfulController extends Controller{
 				postJson1.put("picurl", "https://app.tongjichaye.com/app.png");
 				postJson.put("link", postJson1);
 				String retMsg3 = HttpRequest.sendPostJson(postUrl, postJson.toString());
-	    		renderJson(retMsg3);
-	    		return;
+				JSONObject retJson3 = new JSONObject(retMsg3);
+				if(StringUtil.equals(retJson3.getString("errcode"), "0")){
+					data.setCode(Constants.STATUS_CODE.SUCCESS);
+		    		data.setMessage("请求成功");
+		    		renderJson(data);
+		    		return;
+				}else{
+					data.setCode(Constants.STATUS_CODE.FAIL);
+		    		data.setMessage("请求失败");
+		    		renderJson(data);
+		    		return;
+				}
 	    	}else{
 	    		data.setCode(Constants.STATUS_CODE.FAIL);
 	    		data.setMessage("access_token请求失败");
