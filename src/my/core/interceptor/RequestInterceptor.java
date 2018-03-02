@@ -36,7 +36,7 @@ public class RequestInterceptor implements Interceptor{
 		String tokens = request.getParameter("accessToken"); 
 		String platForm = request.getParameter("platForm");
 		
-		AcceessToken at = tokenDao.queryPlatToken(StringUtil.toInteger( request.getParameter("userId"))
+		AcceessToken at = tokenDao.queryPlatToken(StringUtil.toInteger(request.getParameter("userId"))
 											     ,request.getParameter("userTypeCd")
 											     ,platForm
 											     ,tokens);
