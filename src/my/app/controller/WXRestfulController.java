@@ -150,30 +150,13 @@ public class WXRestfulController extends Controller{
 		    	JSONObject retJson2 = new JSONObject(retMsg2);
 		    	if(retJson2.has("access_token")&&retJson1.has("openid")){
 			    	String openId = retJson1.getString("openid");
-			    	String accessToken = retJson2.getString("access_token");
-			    	String postUrl="https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+accessToken;
-			    	JSONObject postJson = new JSONObject();
-			    	postJson.put("touser", openId);
-			    	postJson.put("msgtype", "link");
-			    	JSONObject postJson1 = new JSONObject();
-			    	postJson1.put("title", "APP下载");
-			    	postJson1.put("description", "让全天下有免费的茶喝");
-			    	postJson1.put("url", "http://a.app.qq.com/o/simple.jsp?pkgname=com.tea.tongji");
-					postJson1.put("picurl", "https://app.tongjichaye.com/app.png");
-					postJson.put("link", postJson1);
-					String retMsg3 = HttpRequest.sendPostJson(postUrl, postJson.toString());
-					JSONObject retJson3 = new JSONObject(retMsg3);
-					if(StringUtil.equals(retJson3.getString("errcode"), "0")){
-						data.setCode(Constants.STATUS_CODE.SUCCESS);
-			    		data.setMessage("请求成功");
-			    		renderJson(data);
-			    		return;
-					}else{
-						data.setCode(Constants.STATUS_CODE.FAIL);
-			    		data.setMessage("请求失败");
-			    		renderJson(data);
-			    		return;
-					}
+			    	Map<String, String> map = new HashMap<>();
+			    	map.put("openId", openId);
+			    	data.setData(map);
+					data.setCode(Constants.STATUS_CODE.SUCCESS);
+			    	data.setMessage("请求成功");
+			    	renderJson(data);
+			    	return;
 		    	}else{
 		    		data.setCode(Constants.STATUS_CODE.FAIL);
 		    		data.setMessage("access_token请求失败");
@@ -212,7 +195,8 @@ public class WXRestfulController extends Controller{
 		    	postJson1.put("title", "APP下载");
 		    	postJson1.put("description", "让全天下有免费的茶喝");
 		    	postJson1.put("url", "http://a.app.qq.com/o/simple.jsp?pkgname=com.tea.tongji");
-				postJson1.put("picurl", "https://app.tongjichaye.com/app.png");
+				postJson1.put("picurl", "https://app.tongjichaye.com/ios80.png");
+				postJson1.put("thumb_url", "https://app.tongjichaye.com/ios80.png");
 				postJson.put("link", postJson1);
 				String retMsg3 = HttpRequest.sendPostJson(postUrl, postJson.toString());
 				JSONObject retJson3 = new JSONObject(retMsg3);
