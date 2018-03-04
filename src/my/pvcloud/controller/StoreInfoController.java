@@ -969,6 +969,7 @@ public class StoreInfoController extends Controller {
 		int id = StringUtil.toInteger(getPara("storeId"));
 		String appId = StringUtil.checkCode(getPara("appId"));
 		String appName = StringUtil.checkCode(getPara("appName"));
+		String appSecret = StringUtil.checkCode(getPara("appSecret"));
 		
 		StoreXcx storeXcx1 = StoreXcx.dao.queryByAppId(appId);
 		if(storeXcx1 != null){
@@ -984,6 +985,7 @@ public class StoreInfoController extends Controller {
 				storeXcx.set("member_id", store.getInt("member_id"));
 				storeXcx.set("appid", appId);
 				storeXcx.set("appname", appName);
+				storeXcx.set("appsecret", appSecret);
 				storeXcx.set("create_time", DateUtil.getNowTimestamp());
 				storeXcx.set("update_time", DateUtil.getNowTimestamp());
 				boolean saveFlg = StoreXcx.dao.saveInfo(storeXcx);

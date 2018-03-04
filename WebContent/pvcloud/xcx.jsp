@@ -132,6 +132,7 @@ td{
     				<th>序列号</th>
     				<th>小程序名称</th>
     				<th>APPID</th>
+    				<th>APPSECRET</th>
     				<th>店铺名称</th>
     				<th>创建时间</th>
     				<th>操作</th>
@@ -149,6 +150,7 @@ td{
 		    					<td>${list.pageSize*(list.pageNumber-1)+status.index+1}</td>
 		    					<td>${s.appName}</td>
 		    					<td>${s.appId}</td>
+		    					<td>${s.appSecret}</td>
 		    					<td>${s.store}</td>
 		    					<td>${s.createTime}</td>
 		    					<td>

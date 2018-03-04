@@ -132,6 +132,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td>小程序APPID</td>
 			<td>${xcx.appid}<%-- <input type="text" name="appId" id="appId" value="${xcx.appid}" maxlength="30" style="width: 300px;"/> --%></td>
 		</tr>
+		<tr>
+			<td>小程序APPSECRET</td>
+			<td>${xcx.appsecret}<%-- <input type="text" name="appId" id="appId" value="${xcx.appid}" maxlength="30" style="width: 300px;"/> --%></td>
+		</tr>
 		<%-- <tr>
 			<td colspan="2">
 					<button type="button" class="btn btn-primary" onclick="upload(${xcx.id})">上传</button>

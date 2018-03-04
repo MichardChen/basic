@@ -48,6 +48,7 @@ public class StoreXcxController extends Controller{
 			model.setAppName(xcx.getStr("appname"));
 			model.setCreateTime(StringUtil.toString(xcx.getTimestamp("create_time")));
 			model.setId(xcx.getInt("id"));
+			model.setAppSecret(xcx.getStr("appsecret"));
 			Store store = Store.dao.queryById(xcx.getInt("store_id")==null?0:xcx.getInt("store_id"));
 			if(store != null){
 				model.setStore(store.getStr("store_name"));
@@ -78,6 +79,7 @@ public class StoreXcxController extends Controller{
 			model.setAppName(xcx.getStr("appname"));
 			model.setCreateTime(StringUtil.toString(xcx.getTimestamp("create_time")));
 			model.setId(xcx.getInt("id"));
+			model.setAppSecret(xcx.getStr("appsecret"));
 			Store store = Store.dao.queryById(xcx.getInt("store_id"));
 			if(store != null){
 				model.setStore(store.getStr("store_name"));
@@ -114,6 +116,7 @@ public class StoreXcxController extends Controller{
 			model.setAppName(xcx.getStr("appname"));
 			model.setCreateTime(StringUtil.toString(xcx.getTimestamp("create_time")));
 			model.setId(xcx.getInt("id"));
+			model.setAppSecret(xcx.getStr("appsecret"));
 			Store store = Store.dao.queryById(xcx.getInt("store_id"));
 			if(store != null){
 				model.setStore(store.getStr("store_name"));

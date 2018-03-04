@@ -132,8 +132,22 @@ public class WXRestfulController extends Controller{
     	//获取用户的openID
     	String code = getPara("code");
     	String appId = getPara("appId");
-    	String secret = "143463f0737a62f4cd3c5adc0efc7a0f";
-    	String userUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=wxa8893a771e4a18ca&secret="+secret+"&js_code="+code+"&grant_type=authorization_code";
+    	String secret = "";
+    	if(StringUtil.isBlank(appId)){
+    		data.setCode(Constants.STATUS_CODE.FAIL);
+    		data.setMessage("请求失败");
+    		renderJson(data);
+    		return;
+    	}
+    	StoreXcx xcx = StoreXcx.dao.queryByAppId(appId);
+    	if(xcx==null){
+    		data.setCode(Constants.STATUS_CODE.FAIL);
+    		data.setMessage("请求失败");
+    		renderJson(data);
+    		return;
+    	}
+    	secret=xcx.getStr("appsecret");
+    	String userUrl = "https://api.weixin.qq.com/sns/jscode2session?appid="+appId+"&secret="+secret+"&js_code="+code+"&grant_type=authorization_code";
     	String retMsg1 = HttpRequest.sendGet(userUrl, "");
     	try {
 	    	JSONObject retJson1 = new JSONObject(retMsg1);
@@ -146,7 +160,7 @@ public class WXRestfulController extends Controller{
 			}else{
 		    	//获取accessToken
 		    	String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
-		    	String retMsg2 = HttpRequest.sendGet(accessTokenUrl, "grant_type=client_credential&appid=wxa8893a771e4a18ca&secret="+secret);
+		    	String retMsg2 = HttpRequest.sendGet(accessTokenUrl, "grant_type=client_credential&appid="+appId+"&secret="+secret);
 		    	JSONObject retJson2 = new JSONObject(retMsg2);
 		    	if(retJson2.has("access_token")&&retJson1.has("openid")){
 			    	String openId = retJson1.getString("openid");
@@ -179,7 +193,21 @@ public class WXRestfulController extends Controller{
     	//获取用户的openID
     	String openId = getPara("openId");
     	String appId = getPara("appId");
-    	String secret = "143463f0737a62f4cd3c5adc0efc7a0f";
+    	String secret = "";
+    	if(StringUtil.isBlank(appId)){
+    		data.setCode(Constants.STATUS_CODE.FAIL);
+    		data.setMessage("请求失败");
+    		renderJson(data);
+    		return;
+    	}
+    	StoreXcx xcx = StoreXcx.dao.queryByAppId(appId);
+    	if(xcx==null){
+    		data.setCode(Constants.STATUS_CODE.FAIL);
+    		data.setMessage("请求失败");
+    		renderJson(data);
+    		return;
+    	}
+    	secret=xcx.getStr("appsecret");
     	try {
 	    	//获取accessToken
 	    	String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token";

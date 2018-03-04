@@ -8,8 +8,15 @@ public class StoreXcxListModel implements Serializable{
 	private String appId;
 	private String appName;
 	private String store;
+	private String appSecret;
 	private String createTime;
 	
+	public String getAppSecret() {
+		return appSecret;
+	}
+	public void setAppSecret(String appSecret) {
+		this.appSecret = appSecret;
+	}
 	public int getId() {
 		return id;
 	}

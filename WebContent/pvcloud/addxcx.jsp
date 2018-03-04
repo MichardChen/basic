@@ -38,6 +38,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</td>
 		</tr>
 		<tr>
+			<td>APPSECRET</td>
+			<td>
+					<input type="text" name="appSecret" id="appSecret" maxlength="100" style="width:300px;"/>
+			</td>
+		</tr>
+		<tr>
 			<td>小程序名称</td>
 			<td><input type="text" name="appName" id="appName" maxlength="30" style="width:300px;"/></td>
 		</tr>
