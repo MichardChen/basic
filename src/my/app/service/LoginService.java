@@ -92,6 +92,7 @@ import my.core.vo.WithDrawInitVO;
 import my.pvcloud.dto.LoginDTO;
 import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.GeoUtil;
+import my.pvcloud.util.MobileUtil;
 import my.pvcloud.util.SMSUtil;
 import my.pvcloud.util.StringUtil;
 import my.pvcloud.util.TextUtil;
@@ -114,7 +115,7 @@ public class LoginService {
 			Timestamp nowTime = DateUtil.getNowTimestamp();
 			if(expireTime.after(nowTime)){
 				data.setCode(Constants.STATUS_CODE.FAIL);
-				data.setMessage("验证码已发送，10分钟内有效，请稍等接收");
+				data.setMessage("验证码已发送，请稍后重试");
 				return data;
 			}
 		}
@@ -135,6 +136,92 @@ public class LoginService {
 			String ret = null;
 			try {
 				ret = SMSUtil.sendMessage(shortMsg, dto.getMobile());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if(StringUtil.equals(ret, "1")){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("验证码发送失败，请重新获取");
+			}else{
+				data.setCode(Constants.STATUS_CODE.SUCCESS);
+				data.setMessage("获取验证码成功，十分钟内有效");
+			}
+			return data;
+		}
+	}
+	
+	public ReturnData getCheckCodePlus(LoginDTO dto){
+		
+		ReturnData data = new ReturnData();
+		CodeMst maxMst = CodeMst.dao.queryCodestByCode("210012");
+		int sended = VertifyCode.dao.queryTodayCount(DateUtil.format(new Date())).intValue();
+		if(maxMst == null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("获取验证码失败");
+			return data;
+		}
+		int max = maxMst.getInt("data1");
+		if(max < sended){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("获取验证码失败");
+			return data;
+		}
+		//判断字符长度是否18
+		if(StringUtil.length(dto.getMobile()) != 18){
+			//没有加密
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("获取验证码失败");
+			return data;
+		}
+		if(!StringUtil.isNumeric(StringUtil.substring(dto.getMobile(), 17, 18))){
+			//最后一位不是数字
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("获取验证码失败");
+			return data;
+		}
+		if(!StringUtil.isAlphanumeric(dto.getMobile())){
+			//字符串是否是字符和数字
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("获取验证码失败");
+			return data;
+		}
+		if(!StringUtil.isAlpha(StringUtil.substring(dto.getMobile(),0, 17))){
+			//字符串0-16是否是字符
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("获取验证码失败");
+			return data;
+		}
+		String mobile = MobileUtil.decryptPhone(dto.getMobile());
+		//判断有没有
+		Member member = Member.dao.queryMember(mobile);
+		String code = VertifyUtil.getVertifyCode();
+		VertifyCode vc = VertifyCode.dao.queryVertifyCode(mobile,Constants.SHORT_MESSAGE_TYPE.REGISTER);
+		if(vc != null){
+			Timestamp expireTime = vc.getTimestamp("expire_time");
+			Timestamp nowTime = DateUtil.getNowTimestamp();
+			if(expireTime.after(nowTime)){
+				data.setCode(Constants.STATUS_CODE.FAIL);
+				data.setMessage("验证码已发送，请稍后重试");
+				return data;
+			}
+		}
+		if(member != null){
+			data.setCode(Constants.STATUS_CODE.FAIL);
+			data.setMessage("对不起，您的手机号码已经注册");
+			return data;
+		}else{
+			VertifyCode vCode = VertifyCode.dao.queryVertifyCode(mobile,Constants.SHORT_MESSAGE_TYPE.REGISTER);
+			if(vCode == null){
+				VertifyCode.dao.saveVertifyCode(mobile, dto.getUserTypeCd(), code,new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()),Constants.SHORT_MESSAGE_TYPE.REGISTER);
+			}else{
+				VertifyCode.dao.updateVertifyCode(mobile, code,Constants.SHORT_MESSAGE_TYPE.REGISTER);
+			}
+			//发送短信
+			String shortMsg = "您的验证码是：" + code + "，10分钟内有效，请不要把验证码泄露给其他人。";
+			//发送短信
+			String ret = null;
+			try {
+				ret = SMSUtil.sendMessage(shortMsg, mobile);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
