@@ -108,7 +108,10 @@ public class LoginService {
 	public ReturnData getCheckCode(LoginDTO dto){
 		Member member = Member.dao.queryMember(dto.getMobile());
 		ReturnData data = new ReturnData();
-		String code = VertifyUtil.getVertifyCode();
+		data.setCode(Constants.STATUS_CODE.FAIL);
+		data.setMessage("验证码发送失败");
+		return data;
+		/*String code = VertifyUtil.getVertifyCode();
 		VertifyCode vc = VertifyCode.dao.queryVertifyCode(dto.getMobile(),Constants.SHORT_MESSAGE_TYPE.REGISTER);
 		if(vc != null){
 			Timestamp expireTime = vc.getTimestamp("expire_time");
@@ -147,7 +150,7 @@ public class LoginService {
 				data.setMessage("获取验证码成功，十分钟内有效");
 			}
 			return data;
-		}
+		}*/
 	}
 	
 	public ReturnData getCheckCodePlus(LoginDTO dto){

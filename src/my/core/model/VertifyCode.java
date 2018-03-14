@@ -28,7 +28,7 @@ public class VertifyCode extends Model<VertifyCode> {
 	}
 	
 	public void updateVertifyCodeExpire(String mobile,Timestamp expireTime,String codeTypeCd){
-		Db.update("update t_vertify_code set expire_time='"+expireTime+"' where mobile="+mobile+" and code_type_cd='"+codeTypeCd+"'");
+		Db.update("update t_vertify_code set expire_time='"+expireTime+"' where mobile='"+mobile+"' and code_type_cd='"+codeTypeCd+"'");
 	}
 	
 	public Long queryTodayCount(String date){
