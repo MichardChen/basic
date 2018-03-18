@@ -24,7 +24,7 @@ public class VertifyCode extends Model<VertifyCode> {
 	}
 	
 	public void updateVertifyCode(String mobile,String code,String codeTypeCd){
-		Db.update("update t_vertify_code set code='"+code+"',expire_time='"+DateUtil.getVertifyCodeExpireTime()+"',update_time='"+DateUtil.getNowTimestamp()+"' where mobile="+mobile+" and code_type_cd='"+codeTypeCd+"'");
+		Db.update("update t_vertify_code set code='"+code+"',expire_time='"+DateUtil.getVertifyCodeExpireTime()+"',update_time='"+DateUtil.getNowTimestamp()+"' where mobile='"+mobile+"' and code_type_cd='"+codeTypeCd+"'");
 	}
 	
 	public void updateVertifyCodeExpire(String mobile,Timestamp expireTime,String codeTypeCd){
