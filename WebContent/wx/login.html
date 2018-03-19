@@ -5,28 +5,34 @@
 <title>登陆</title>
 <script src="../summernote/js/jquery.min.js"></script>
 <script type="text/javascript">
-	function login(){
-		  $.ajax({
-			             url : "localhost:8087/zznj/login",
-			             type : "POST",
-			            contentType: "application/json;charset=utf-8",
-			            data : JSON.stringify({'mobile':'18250752939','password':'123456'}),
-			            dataType : "text",
-			            success : function(result) {
-			              if (result == "5600") {
-			                	alert("success");
-			              } else {
-			            	  alert("fail");
-			              }
-			            },
-			            error:function(msg){
-			            	 alert("fail");
-			            }
-			          })
+	function login() {
+		$.ajax({
+			url : "http://localhost:8187/zznj/wxmrest/loginWeb",
+			type : "POST",
+			contentType : "application/json;charset=utf-8",
+			data : JSON.stringify({
+				'mobile' : '18250752939',
+				'password' : '25d55ad283aa400af464c76d713c07ad'
+			}),
+			dataType : "text",
+			success : function(result) {
+				alert(result);
+				var retData =  eval('('+result+')');
+				alert(retData.message);
+				if (retData.code == "5600") {
+					alert("success");
+				} else {
+					alert("fail");
+				}
+			},
+			error : function(msg) {
+				alert("fail");
+			}
+		})
 	}
 </script>
 </head>
 <body>
-<button onclick="login()">登陆</button>
+	<button onclick="login()">登陆</button>
 </body>
 </html>
