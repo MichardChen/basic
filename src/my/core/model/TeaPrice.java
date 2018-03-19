@@ -45,7 +45,7 @@ public class TeaPrice extends Model<TeaPrice> {
 	}
 	
 	public List<Record> queryForDisplay(String fromTime,String toTime,int teaId){
-		String sql="select DATE_FORMAT(create_time, '%Y-%m-%d') as createTime,reference_price as price from t_tea_price where create_time>='"+fromTime+"' and create_time<='"+toTime+"' order by create_time asc";
+		String sql="select DATE_FORMAT(create_time, '%Y-%m-%d') as createTime,reference_price as price from t_tea_price where create_time>='"+fromTime+"' and create_time<='"+toTime+"' and tea_id="+teaId+" order by create_time asc";
 		List<Record> models = Db.find(sql);
 		return models;
 	}
