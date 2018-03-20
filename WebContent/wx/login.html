@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>登陆</title>
-<script src="../summernote/js/jquery.min.js"></script>
+<script src="http://192.168.1.7:8087/zznj/wx/js/jquery.min.js"></script>
 <script type="text/javascript">
 	function login() {
 		$.ajax({
-			url : "http://localhost:8187/zznj/wxmrest/loginWeb",
+			url : "http://192.168.1.7:8087/zznj/wxmrest/login",
 			type : "POST",
 			contentType : "application/json;charset=utf-8",
 			data : JSON.stringify({
