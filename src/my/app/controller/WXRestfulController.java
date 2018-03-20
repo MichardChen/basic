@@ -2,7 +2,6 @@ package my.app.controller;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +23,6 @@ import my.core.model.ReturnData;
 import my.core.model.StoreXcx;
 import my.core.pay.RequestXml;
 import my.pvcloud.dto.LoginDTO;
-import my.pvcloud.util.DateUtil;
 import my.pvcloud.util.HttpRequest;
 import my.pvcloud.util.SHA1;
 import my.pvcloud.util.StringUtil;
