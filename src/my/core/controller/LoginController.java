@@ -1,10 +1,5 @@
 package my.core.controller;
 
-import my.core.constants.Constants;
-import my.core.model.Log;
-import my.core.model.User;
-import my.core.service.UserService;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -21,6 +16,11 @@ import org.huadalink.route.ControllerBind;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.kit.HashKit;
+
+import my.core.constants.Constants;
+import my.core.model.Log;
+import my.core.model.User;
+import my.core.service.UserService;
 
 @ControllerBind(key = "/login", path = "/platform")
 public class LoginController extends Controller {
