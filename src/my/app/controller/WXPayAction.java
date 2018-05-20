@@ -115,6 +115,10 @@ public class WXPayAction extends Controller{
 		}else{
 			System.out.println("微信回调，签名错误");
 		}
+		
+		br.close();
+		isr.close();
+		is.close();
 	}
 	
 	//生成微信预支付信息
