@@ -66,10 +66,6 @@ public class RestfulController extends Controller{
 	
 	//获取验证码
 	public void getCheckCode() throws Exception{
-		LoginDTO dto =  LoginDTO.getInstance(getRequest());
-		String code = VertifyUtil.getVertifyCode();
-		dto.setCode(code);
-		renderJson(service.getCheckCode(dto));
 	}
 	
 	//优化获取验证码
