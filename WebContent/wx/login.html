@@ -3,30 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <title>登陆</title>
-<script src="../summernote/js/jquery.min.js"></script>
+<script src="http://192.168.1.7:8087/zznj/wx/js/jquery.min.js"></script>
 <script type="text/javascript">
 	function login() {
 		$.ajax({
-			url : "http://localhost:8187/zznj/wxmrest/loginWeb",
+			url : "http://192.168.1.7:8087/zznj/wxmrest/login",
 			type : "POST",
 			contentType : "application/json;charset=utf-8",
-			data : JSON.stringify({
-				'mobile' : '18250752939',
-				'password' : '25d55ad283aa400af464c76d713c07ad'
-			}),
+			data : "userName=18250752939&password=25d55ad283aa400af464c76d713c07ad",
 			dataType : "text",
 			success : function(result) {
 				alert(result);
 				var retData =  eval('('+result+')');
-				alert(retData.message);
+				alert(retData.msg);
 				if (retData.code == "5600") {
 					alert("success");
 				} else {
-					alert("fail");
+					alert("1");
 				}
 			},
 			error : function(msg) {
-				alert("fail");
+				alert("2");
 			}
 		})
 	}
