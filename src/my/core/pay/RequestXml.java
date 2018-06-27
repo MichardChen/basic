@@ -48,12 +48,12 @@ public class RequestXml {
 	            // 对于CDATA区域内的内容，XML解析程序不会处理，而是直接原封不动的输出。
 	            map.put(e.getName(), e.getText());
 	        }
-	        is.close();
+	        /*is.close();
 	        is = null;
 	        isr.close();
 	        isr=null;
 	        br.close();
-	        br = null;
+	        br = null;*/
 	        return map;
 	    }
 	 
