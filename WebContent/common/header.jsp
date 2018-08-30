@@ -15,7 +15,17 @@
 	rel="stylesheet">
 <link href="${CONTEXT_PATH}/assets/fonts/iconfont/iconfont.css"
 	rel="stylesheet">
-
+<link href="${CONTEXT_PATH}/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<style>
+th{
+	white-space:nowrap;
+	border: 1px solid #F2F2F2;
+	text-align: left;
+}
+tr{
+	border: 1px solid #F2F2F2;
+}
+</style>
 
 <!-- Mainly scripts -->
 <script src="${CONTEXT_PATH}/assets/lib/jquery-2.1.1.min.js"></script>

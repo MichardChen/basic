@@ -167,9 +167,9 @@ td{
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
-    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
+    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #F3F3F3;text-align: center;border: 1px solid #FFFFFF;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">茶信息</div>
+	   		<div style="font-size: 15px;color: #686868;font-family:Georgia, serif;text-align: left;padding-left: 20px;font-weight: bold;"><span class="glyphicon glyphicon-home"></span>&nbsp;茶信息</div>
 	   </div>
     	<hr/>	
 	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
@@ -190,12 +190,12 @@ td{
 		    			</select>	
 	    			</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1">
-    				<input type="submit" class="ys2" value=""/>
+    				<input type="submit" class="btn btn-info" value="查询"/>
     			</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1">
     				<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>
     			</div>
-       			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新茶发行" class="ys3" onclick="loadProject(0)"/></div>
+       			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新茶发行" class="btn btn-primary" onclick="loadProject(0)"/></div>
 			   </div>
     		</form>
    		</div>
@@ -272,21 +272,21 @@ td{
 		    					<td>${s.createTime}</td>
 		    					<td>
 		    							<c:if test="${s.flg==1}">
-		    									<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/del?id=${s.id}';}"/>
+		    									<input type="button" value="删除" class="btn btn-primary" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/teaInfo/del?id=${s.id}';}"/>
 		    							</c:if>
 		    							<!-- 停售 -->
 		    							<c:if test="${s.statusCd == '090001' }">
-		    									<input type="button" value="发行" class="ys3" onclick="if(confirm('确认要发行?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090002';}"/>
-		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要结束?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
+		    									<input type="button" value="发行" class="btn btn-primary" onclick="if(confirm('确认要发行?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090002';}"/>
+		    									<input type="button" value="结束" class="btn btn-primary" onclick="if(confirm('确认要结束?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
 		    							</c:if>
 		    							<!-- 发行 -->
 		    							<c:if test="${s.statusCd == '090002' }">
-		    									<input type="button" value="停售" class="ys3" onclick="if(confirm('确认要停售?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090001';}"/>
-		    									<input type="button" value="结束" class="ys3" onclick="if(confirm('确认要结束?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
+		    									<input type="button" value="停售" class="btn btn-primary" onclick="if(confirm('确认要停售?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090001';}"/>
+		    									<input type="button" value="结束" class="btn btn-primary" onclick="if(confirm('确认要结束?')){window.location='${CONTEXT_PATH}/teaInfo/updateStatus?id=${s.id}&status=090003';}"/>
 		    							</c:if>
 		    		      		 <%-- <a href="${s.url}" target="_blank"><input type="button" value="查看编辑内容" style="width: 100px;" class="ys3"/></a>  --%>
-		    		      		 <input type="button" value="查看" class="ys3"  onclick="edit(${s.id})"/>
-		    		      		 <input type="button" value="设置参考价" style="width: 100px;" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="addTeaPrice(${s.id})"/>
+		    		      		 <input type="button" value="查看" class="btn btn-primary"  onclick="edit(${s.id})"/>
+		    		      		 <input type="button" value="设置参考价" style="width: 100px;" class="btn btn-primary" data-toggle="modal" data-target="#myModal1" onclick="addTeaPrice(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -321,7 +321,7 @@ td{
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 				</div>
 			</form>
 		</div>
@@ -340,7 +340,7 @@ td{
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 				</div>
 			</form>
 		</div>
@@ -359,7 +359,7 @@ td{
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 				</div>
 			</form>
 		</div>

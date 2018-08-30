@@ -205,8 +205,10 @@ th{
 }
 td{
 	white-space:nowrap;
-	border:0!important;
 	text-align: left;
+}
+tr{
+	border: 1px solid #F2F2F2;
 }
 .table thead tr{
 	background-color:#F5F6FA;
@@ -233,15 +235,17 @@ td{
 .fl{
 	float:left;
 }
+
+
 </style>
 </head>
 <body class="fixed-nav fixed-sidebar">
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
-    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
+    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #F3F3F3;text-align: center;border: 1px solid #FFFFFF;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">门店信息</div>
+	   		<div style="font-size: 15px;color: #686868;font-family:Georgia, serif;text-align: left;padding-left: 20px;font-weight: bold;"><span class="glyphicon glyphicon-home"></span>&nbsp;门店信息</div>
 	   </div>
     	<hr/>	
     
@@ -267,7 +271,7 @@ td{
 		    					<option value="110004" <c:if test="${status=='110004'}">selected="selected"</c:if>>认证失败</option>
 		    			</select>	
 	    			</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="btn btn-info" value="查询"/></div>
 			   </div>
     		</form>
    		</div>
@@ -309,15 +313,15 @@ td{
 		    					<td>${s.title }</td>
 		    					<td>${s.status}</td>
 		    					<td>
-		    							<input type="button" value="审核未通过" class="ys3" style="width: 100px;" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=110004&id=${s.id}';}"/>
-		    							<input type="button" value="审核通过" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=110003&id=${s.id}';}"/>
-		    							<input type="button" value="下载二维码" class="ys3" style="width: 100px;" onclick="downloadImg(${s.id})"/>
-										<input type="button" value="修改门店" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
-										<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
-										<input type="button" value="查看会员" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeInfo/queryMemberList?flg=1&storeId=${s.id}';"/>
-										<input type="button" value="查看评价" class="ys3" onclick="javascript:window.location='${CONTEXT_PATH}/storeEvaluateInfo/queryByConditionByPage?mobile=${s.mobile}';"/>
-										<input type="button" value="绑定小程序" class="ys3" style="width: 100px;" data-toggle="modal" data-target="#myModal3" onclick="loadProject3(${s.id})"/>
-										<%-- <button type="button" class="btn btn-primary" onclick="updateAuth(${s.id})">授权小程序</button> --%>
+		    							<input type="button" value="审核未通过" class="btn btn-primary" style="width: 100px;" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=110004&id=${s.id}';}"/>
+		    							<input type="button" value="审核通过" class="btn btn-primary" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/storeInfo/update?flg=110003&id=${s.id}';}"/>
+		    							<input type="button" value="下载二维码" class="btn btn-primary" style="width: 100px;" onclick="downloadImg(${s.id})"/>
+										<input type="button" value="修改门店" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+										<input type="button" value="查看" class="btn btn-primary" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
+										<input type="button" value="查看会员" class="btn btn-primary" onclick="javascript:window.location='${CONTEXT_PATH}/storeInfo/queryMemberList?flg=1&storeId=${s.id}';"/>
+										<input type="button" value="查看评价" class="btn btn-primary" onclick="javascript:window.location='${CONTEXT_PATH}/storeEvaluateInfo/queryByConditionByPage?mobile=${s.mobile}';"/>
+										<input type="button" value="绑定小程序" class="btn btn-primary" style="width: 100px;" data-toggle="modal" data-target="#myModal3" onclick="loadProject3(${s.id})"/>
+										<button type="button" class="btn btn-primary" onclick="updateAuth(${s.id})">授权小程序</button>
 								</td>
 		    				</tr>
 		    			</c:forEach>
@@ -351,7 +355,7 @@ td{
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 				</div>
 			</form>
 		</div>
@@ -381,7 +385,7 @@ td{
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 				</div>
 			</form>
 		</div>

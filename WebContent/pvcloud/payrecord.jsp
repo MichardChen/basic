@@ -191,7 +191,7 @@ td{
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 				</div>
 			</form> --%>
 		</div>

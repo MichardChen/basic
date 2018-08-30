@@ -100,9 +100,9 @@ td{
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
-    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
+    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #F3F3F3;text-align: center;border: 1px solid #FFFFFF;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">反馈信息</div>
+	   		<div style="font-size: 15px;color: #686868;font-family:Georgia, serif;text-align: left;padding-left: 20px;font-weight: bold;"><span class="glyphicon glyphicon-home"></span>&nbsp;反馈信息</div>
 	   </div>
     	<hr/>	
     	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
@@ -113,7 +113,7 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="title" value="${title}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="btn btn-info" value="查询"/></div>
 			   </div>
     		</form>
    		</div>
@@ -157,9 +157,9 @@ td{
 		    					</td>
 		    					<td>
 		    							<c:if test="${s.flg==0}">
-		    									<input type="button" value="已处理" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/feedbackInfo/update?flg=1&id=${s.id}';}"/>
+		    									<input type="button" value="已处理" class="btn btn-primary" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/feedbackInfo/update?flg=1&id=${s.id}';}"/>
 		    							</c:if>
-		    							<input type="button" value="查看" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+		    							<input type="button" value="查看" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>

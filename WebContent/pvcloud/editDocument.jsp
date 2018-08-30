@@ -139,6 +139,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <input type="hidden" name="id" id="id" value="${document.id}"/>
 </div>
 <div class="modal-footer" style="margin-top:20px;text-align: center;">
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 				</div>
 </form>

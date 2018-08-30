@@ -119,9 +119,9 @@ td{
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
-    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
+    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #F3F3F3;text-align: center;border: 1px solid #FFFFFF;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">取茶信息</div>
+	   		<div style="font-size: 15px;color: #686868;font-family:Georgia, serif;text-align: left;padding-left: 20px;font-weight: bold;"><span class="glyphicon glyphicon-home"></span>&nbsp;取茶信息</div>
 	   </div>
     	<hr/>	
     
@@ -154,7 +154,7 @@ td{
 	    				</select>	
     				</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1">
-    				<input type="submit" class="ys2" value=""/>
+    				<input type="submit" class="btn btn-info" value="查询"/>
     			</div>
     			<div style="" class="col-sm-1 col-xs-1 col-md-1">
     				<button type="button" class="btn btn-primary" onclick="exportData()">导出</button>	
@@ -241,7 +241,7 @@ td{
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 				</div>
 			</form>
 		</div>

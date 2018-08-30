@@ -98,9 +98,9 @@ td{
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
-    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
+    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #F3F3F3;text-align: center;border: 1px solid #FFFFFF;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">资讯信息</div>
+	   		<div style="font-size: 15px;color: #686868;font-family:Georgia, serif;text-align: left;padding-left: 20px;font-weight: bold;"><span class="glyphicon glyphicon-home"></span>&nbsp;资讯信息</div>
 	   </div>
     	<hr/>	
     
@@ -140,8 +140,8 @@ td{
     				<div class="col-sm-2 col-xs-2 col-md-2">	
     					   <input type="text" class="form-control" name="createTime2" placeholder="请选择结束时间" value="${createTime2}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"/>
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
-   			   <div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" onclick="loadProject(0)"/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="btn btn-info" value="查询"/></div>
+   			   <div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="btn btn-primary" onclick="loadProject(0)"/></div>
 			   </div>
     		</form>
    		</div>
@@ -193,15 +193,15 @@ td{
 		    					<td>
 		    						<%-- <input type="button" value="推送" class="ys3" data-toggle="modal" data-target="#myModal" onclick="if(confirm('确认要发布这条资讯?')){window.location='${CONTEXT_PATH}/newsInfo/push?newsId=${s.id}';}"/> --%>
 		    						<c:if test="${s.flg ==1}">
-			    							<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/newsInfo/del?newsId=${s.id}';}"/>
+			    							<input type="button" value="删除" class="btn btn-primary" onclick="if(confirm('确认要删除数据?')){window.location='${CONTEXT_PATH}/newsInfo/del?newsId=${s.id}';}"/>
 			    						<c:if test="${s.topFlg ==0}">
-			    							<input type="button" value="置顶" class="ys3" onclick="if(confirm('确认要置顶?')){window.location='${CONTEXT_PATH}/newsInfo/saveTop?top=1&newsId=${s.id}';}"/>
+			    							<input type="button" value="置顶" class="btn btn-primary" onclick="if(confirm('确认要置顶?')){window.location='${CONTEXT_PATH}/newsInfo/saveTop?top=1&newsId=${s.id}';}"/>
 			    						</c:if>
 			    						<c:if test="${s.topFlg !=0}">
-			    							<input type="button" value="取消置顶" class="ys3" onclick="if(confirm('确认要取消置顶?')){window.location='${CONTEXT_PATH}/newsInfo/saveTop?top=0&newsId=${s.id}';}"/>
+			    							<input type="button" value="取消置顶" class="btn btn-primary" onclick="if(confirm('确认要取消置顶?')){window.location='${CONTEXT_PATH}/newsInfo/saveTop?top=0&newsId=${s.id}';}"/>
 			    						</c:if>
 		    						</c:if>
-		    						<a href="${s.url}" target="_blank"><input type="button" value="查看" class="ys3"/></a>
+		    						<a href="${s.url}" target="_blank"><input type="button" value="查看" class="btn btn-primary"/></a>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -236,7 +236,7 @@ td{
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 				</div>
 			</form>
 		</div>

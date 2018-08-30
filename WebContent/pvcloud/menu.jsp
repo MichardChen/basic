@@ -139,9 +139,9 @@ td{
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
-    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
+    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #F3F3F3;text-align: center;border: 1px solid #FFFFFF;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">菜单管理</div>
+	   		<div style="font-size: 15px;color: #686868;font-family:Georgia, serif;text-align: left;padding-left: 20px;font-weight: bold;"><span class="glyphicon glyphicon-home"></span>&nbsp;菜单管理</div>
 	   </div>
     	<hr/>	
     	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
@@ -152,8 +152,8 @@ td{
 	    			<div class="col-sm-2 col-xs-2 col-md-2">	
 	    				<input type="text" class="form-control" name="title" value="${title}"/>
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
-    		   <div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal" onclick="addMenu()"/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="btn btn-info" value="查询"/></div>
+    		   <div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="addMenu()"/></div>
 			   </div>
     		</form>
    		</div>
@@ -187,7 +187,7 @@ td{
 		    					<td>${s.createTime}</td>
 		    					<td>${s.updateTime}</td>
 		    					<td>
-		    							<input type="button" value="编辑" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="loadProject(${s.id})"/>
+		    							<input type="button" value="编辑" class="btn btn-primary" data-toggle="modal" data-target="#myModal1" onclick="loadProject(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -221,7 +221,7 @@ td{
 				<div class="modal-body" id="model1">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 				</div>
 			</form>
@@ -239,7 +239,7 @@ td{
 				<div class="modal-body" id="model2">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 				</div>
 			</form>

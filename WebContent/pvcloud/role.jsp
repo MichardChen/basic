@@ -120,12 +120,12 @@ td{
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
-    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
+    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #F3F3F3;text-align: center;border: 1px solid #FFFFFF;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">角色信息</div>
+	   		<div style="font-size: 15px;color: #686868;font-family:Georgia, serif;text-align: left;padding-left: 20px;font-weight: bold;"><span class="glyphicon glyphicon-home"></span>&nbsp;角色信息</div>
 	   </div>
     	<hr/>	
-    	<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal1" onclick="addRole()"/></div>
+    	<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="btn btn-primary" data-toggle="modal" data-target="#myModal1" onclick="addRole()"/></div>
   	</div>
     <div class="container equip" style="width:100%;font-size:12px;border:1px solid #dadada;margin-top:15px;height:700px;position:relative;color:black;margin-left:0px;">
     	<div class="row">
@@ -154,7 +154,7 @@ td{
 		    					<td>${s.createTime }</td>
 		    					<td>${s.updateTime }</td>
 		    					<td>
-		    							<input type="button" value="查看访问权限" style="width: 100px;" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
+		    							<input type="button" value="查看访问权限" style="width: 100px;background-color: #1c84c6;color:#ffffff;border-color: #1c84c6;" class="btn" data-toggle="modal" data-target="#myModal" onclick="loadProject(${s.id})"/>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>
@@ -187,7 +187,7 @@ td{
 				<div class="modal-body">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 				</div>
 			</form>
@@ -205,7 +205,7 @@ td{
 				<div class="modal-body" id="model1">
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 				</div>
 			</form>

@@ -135,7 +135,7 @@ td{
    					<input type="text" class="ys1" autocomplete="off" placeholder="" name="cValue" value="${custValue }"/>
    				</div>
     			<div style="display: inline-block;"><input type="submit" class="ys2" value=""/></div>
-    			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="ys3" data-toggle="modal" data-target="#myModal" onclick="loadProject(0)"/></div>
+    			<div style="display:inline-block;float:right;margin-right:5%;"><input type="button" value="新增" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="loadProject(0)"/></div>
     		</form>
     		
    		</div>
@@ -207,7 +207,7 @@ td{
 				</div>
 				<div class="modal-footer" style="margin-top:20px;">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<input type="submit" class="btn btn-success" value="保存"/>
+					<input type="submit" class="btn btn-primary" value="保存"/>
 				</div>
 			</form>
 		</div>

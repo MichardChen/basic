@@ -51,7 +51,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<option value="${s.menu_id}">${s.menu_name}</option>
 						</c:forEach>
 					</select>&nbsp;&nbsp;
-					<input type="button" class="ys3" onclick="addAuth()" style="width:100px;" value="添加选中权限"/>
+					<input type="button" class="btn btn-info" onclick="addAuth()" style="width:100px;" value="添加选中权限"/>
 			</td>
 		</tr>
 		<tr>
@@ -61,7 +61,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</table>
 					<c:forEach var="s" items="${menu}">
 						<div style="margin-bottom: 10px;">
-						${s.path} &nbsp;&nbsp;&nbsp;<input type="button" value="删除" class="ys3" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/roleInfo/deleteRole?id=${s.id}';}"/>
+						${s.path} &nbsp;&nbsp;&nbsp;<input type="button" value="删除" class="btn btn-info" onclick="if(confirm('确认要提交数据?')){window.location='${CONTEXT_PATH}/roleInfo/deleteRole?id=${s.id}';}"/>
 						</div>
 			</c:forEach>
 	

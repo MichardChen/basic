@@ -89,9 +89,9 @@ td{
 <div id="wrapper">
 	<div id="page-wrapper" class="gray-bg dashbard-1" style="background-color:#fff;margin-top:50px;">
 		<div class="wrapper wrapper-content animated" style="text-align: center;">
-    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #87CEFA;text-align: center;">
+    	<div class="" style="width:100%;color:black;font-size:15px;height:40px;line-height:40px;background: #F3F3F3;text-align: center;border: 1px solid #FFFFFF;">
 	  <%--   	<div class="fl"><img src="${CONTEXT_PATH }/image/picturesfolder.ico" style="width:50px; height:50px;"/></div> --%>
-	   		<div style="font-size: 30px;color: white;font-weight: bold;">评论列表</div>
+	   		<div style="font-size: 15px;color: #686868;font-family:Georgia, serif;text-align: left;padding-left: 20px;font-weight: bold;"><span class="glyphicon glyphicon-home"></span>&nbsp;评论列表</div>
 	   </div>
     	<hr/>	
     	<div class="span" style="width:100%;color:black;font-size:12px;border:2px solid #dadada;">
@@ -129,7 +129,7 @@ td{
 	    					<option value="0" <c:if test="${flg=='0'}">selected="selected"</c:if>>无效</option>
 	    				</select>	
     				</div>
-    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="ys2" value=""/></div>
+    			<div style="" class="col-sm-1 col-xs-1 col-md-1"><input type="submit" class="btn btn-info" value="查询"/></div>
 			   </div>
     		</form>
    		</div>
@@ -174,7 +174,7 @@ td{
 		    					</td>
 		    					<td>${s.createTime}</td>
 		    					<td><c:if test="${s.flg==1}">
-		    							<input type="button" value="删除" class="ys3" style="width: 100px;" onclick="if(confirm('确认要删除?')){window.location='${CONTEXT_PATH}/storeEvaluateInfo/update?flg=0&id=${s.id}';}"/>
+		    							<input type="button" value="删除" class="btn btn-primary" style="width: 100px;" onclick="if(confirm('确认要删除?')){window.location='${CONTEXT_PATH}/storeEvaluateInfo/update?flg=0&id=${s.id}';}"/>
 		    						</c:if>
 		    					</td>
 		    				</tr>
