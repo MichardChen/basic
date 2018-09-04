@@ -240,6 +240,8 @@ public class AdminController extends Controller {
 			user.set("moneys", moneys);
 			boolean ret = User.dao.updateInfo(user);
 			if(ret){
+				setAttr("message", "保存成功");
+				/*
 				//更新角色
 				int oldRoleId = ur.getInt("role_id");
 				if(oldRoleId != roleId){
@@ -274,7 +276,7 @@ public class AdminController extends Controller {
 					}else{
 						setAttr("message", "保存失败");
 					}
-				}
+				}*/
 			}else{
 				setAttr("message", "保存失败");
 			}
