@@ -83,7 +83,7 @@
 						alt="点击图片刷新验证码" />
 				</div>
 				<button type="submit" id="login_button"
-					class="btn btn-primary block full-width m-b">登 录</button>
+					class="btn btn-info block full-width m-b">登 录</button>
 			</form>
 			</div>
 		</div>

@@ -75,7 +75,7 @@ public class WXRestfulController extends Controller{
 			
 			System.out.println("signature:"+signature+",timestamp："+timestamp+",nonce:"+nonce+",msg_signature:"+msg_signature+",encrypt_type:"+encrypt_type);
 	    	
-			CodeMst msgSettingMst = CodeMst.dao.queryCodestByCode("210012");
+			CodeMst msgSettingMst = CodeMst.dao.queryCodestByCode("210013");
 			if(msgSettingMst != null){
 				WXBizMsgCrypt pc = new WXBizMsgCrypt(msgSettingMst.getStr("data2")
 												    ,msgSettingMst.getStr("data3")

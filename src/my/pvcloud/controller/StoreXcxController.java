@@ -165,7 +165,7 @@ public class StoreXcxController extends Controller{
 			postJson.put("component_verify_ticket", ticket);
 			System.out.println("请求令牌发送参数json："+postJson.toString());
 			String accessTokenReturnMsg = HttpRequest.sendPostJson(accessTokenUrl, postJson.toString());
-			
+			System.out.println("获取第三方平台component_access_token:"+accessTokenReturnMsg);
 			JSONObject retJson1 = new JSONObject(accessTokenReturnMsg);
 			
 			String component_access_token = retJson1.getString("component_access_token");
