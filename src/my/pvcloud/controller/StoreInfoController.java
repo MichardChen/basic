@@ -81,6 +81,13 @@ public class StoreInfoController extends Controller {
 				model.setMobile(member2.getStr("mobile"));
 				model.setUserName(member2.getStr("name"));
 			}
+			
+			StoreXcx storeXcx = StoreXcx.dao.queryByStoreId(model.getId());
+			if(storeXcx == null){
+				model.setBindFlg(0);
+			}else{
+				model.setBindFlg(1);
+			}
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -275,6 +282,12 @@ public class StoreInfoController extends Controller {
 				model.setMobile(member2.getStr("mobile"));
 				model.setUserName(member2.getStr("name"));
 			}
+			StoreXcx storeXcx = StoreXcx.dao.queryByStoreId(model.getId());
+			if(storeXcx == null){
+				model.setBindFlg(0);
+			}else{
+				model.setBindFlg(1);
+			}
 			models.add(model);
 		}
 		setAttr("list", list);
@@ -325,7 +338,12 @@ public class StoreInfoController extends Controller {
 					model.setMobile(member2.getStr("mobile"));
 					model.setUserName(member2.getStr("name"));
 				}
-				
+				StoreXcx storeXcx = StoreXcx.dao.queryByStoreId(model.getId());
+				if(storeXcx == null){
+					model.setBindFlg(0);
+				}else{
+					model.setBindFlg(1);
+				}
 				models.add(model);
 			}
 			setAttr("list", list);

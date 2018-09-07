@@ -320,8 +320,12 @@ tr{
 										<input type="button" value="查看" class="btn btn-primary" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
 										<input type="button" value="查看会员" class="btn btn-primary" onclick="javascript:window.location='${CONTEXT_PATH}/storeInfo/queryMemberList?flg=1&storeId=${s.id}';"/>
 										<input type="button" value="查看评价" class="btn btn-primary" onclick="javascript:window.location='${CONTEXT_PATH}/storeEvaluateInfo/queryByConditionByPage?mobile=${s.mobile}';"/>
-										<input type="button" value="绑定小程序" class="btn btn-primary" style="width: 100px;" data-toggle="modal" data-target="#myModal3" onclick="loadProject3(${s.id})"/>
-										<button type="button" class="btn btn-primary" onclick="updateAuth(${s.id})">授权小程序</button>
+										<c:if test="${s.bindFlg==0 }">
+											<input type="button" value="绑定小程序" class="btn btn-primary" style="width: 100px;" data-toggle="modal" data-target="#myModal3" onclick="loadProject3(${s.id})"/>
+										</c:if>
+										<c:if test="${s.bindFlg==1 }">
+											<button type="button" class="btn btn-primary" onclick="updateAuth(${s.id})">授权小程序</button>
+										</c:if>
 								</td>
 		    				</tr>
 		    			</c:forEach>

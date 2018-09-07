@@ -14,7 +14,17 @@ public class StoreModel implements Serializable{
 	private String mobile;
 	private String keyCode;
 	private int point;
+	private int bindFlg;
 	
+	
+	
+	
+	public int getBindFlg() {
+		return bindFlg;
+	}
+	public void setBindFlg(int bindFlg) {
+		this.bindFlg = bindFlg;
+	}
 	public int getPoint() {
 		return point;
 	}
