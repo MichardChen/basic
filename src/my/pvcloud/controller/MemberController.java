@@ -481,7 +481,8 @@ public class MemberController extends Controller {
 	        
 	        XSSFRow headRow = sheet.createRow(0);  
 	        XSSFCell cell = null;  
-	        String[] titles = new String[]{"用户名","用户编码","昵称","注册号码","用户角色","经销商门店","余额","已提现金额","申请提现中金额","支付宝充值金额","银行卡审核状态","注册时间"};
+	        String[] titles = new String[]{"用户名","用户编码","昵称","注册号码","用户角色","经销商门店","余额","注册时间"};
+	        //String[] titles = new String[]{"用户名","用户编码","昵称","注册号码","用户角色","经销商门店","余额","已提现金额","申请提现中金额","支付宝充值金额","银行卡审核状态","注册时间"};
 	        for (int i = 0; i < titles.length; i++){  
 	            cell = headRow.createCell(i);  
 	            cell.setCellStyle(headStyle);  
@@ -555,7 +556,7 @@ public class MemberController extends Controller {
 		            cell.setCellValue(StringUtil.toString(member.getBigDecimal("moneys")));
 		            
 		            //已提现金额	
-		            BigDecimal applying = BankCardRecord.dao.sumApplying(member.getInt("id"), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
+		           /* BigDecimal applying = BankCardRecord.dao.sumApplying(member.getInt("id"), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.APPLYING);
 					BigDecimal applySuccess = BankCardRecord.dao.sumApplying(member.getInt("id"), Constants.BANK_MANU_TYPE_CD.WITHDRAW, Constants.WITHDRAW_STATUS.SUCCESS);
 					BigDecimal paySuccess = PayRecord.dao.sumPay(member.getInt("id"), Constants.PAY_TYPE_CD.ALI_PAY, Constants.PAY_STATUS.TRADE_SUCCESS);
 					
@@ -583,9 +584,9 @@ public class MemberController extends Controller {
 						String bankStatus = memberBankcard.getStr("status");
 						cell.setCellValue(roleMap.get(bankStatus));
 					}
-		             
+		             */
 		            //注册时间
-		            cell = bodyRow.createCell(11);  
+		            cell = bodyRow.createCell(7);  
 		            cell.setCellStyle(bodyStyle);  
 		            cell.setCellValue(StringUtil.toString(member.getTimestamp("create_time")));
 	            }

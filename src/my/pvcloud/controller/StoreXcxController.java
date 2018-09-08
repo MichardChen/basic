@@ -188,7 +188,7 @@ public class StoreXcxController extends Controller{
 				StoreXcx storeXcx2 = StoreXcx.dao.queryByStoreId(storeId);
 				if(storeXcx2 != null){
 					//String url = "https://mp.weixin.qq.com/safe/bindcomponent?action=bindcomponent&no_scan=1&component_appid="+appId+"&pre_auth_code="+preAuthCode+"&redirect_uri=https://www.yibuwangluo.cn/zznj/storeXcxInfo/redirectCall"+storeId+"&auth_type=2&biz_appid="+storeXcx2.getStr("appid")+"#wechat_redirect";
-					String url = "https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid="+appId+"&pre_auth_code="+preAuthCode+"&redirect_uri=https://www.yibuwangluo.cn/zznj/storeXcxInfo/redirectCall?storeId="+storeId+"&auth_type=2&biz_appid="+storeXcx2.getStr("appid");
+					String url = "https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid="+appId+"&pre_auth_code="+preAuthCode+"&redirect_uri=https://app.tongjichaye.com/zznj/storeXcxInfo/redirectCall?storeId="+storeId+"&auth_type=2&biz_appid="+storeXcx2.getStr("appid");
 					System.out.println("url："+url);	
 					setAttr("data", url);
 					renderJson();
@@ -208,7 +208,7 @@ public class StoreXcxController extends Controller{
 			renderJson();
 		}
 		queryApiAuthorizerToken(storeXcx.getStr("appid"));
-		String extJson = FileReadUtil.readFile("D:\\app.json");
+		String extJson = FileReadUtil.readFile("/home/data/file/app.json");
 		System.out.println("extJson:"+extJson);
 		try {
 			String accessToken = storeXcx.getStr("authorizer_access_token");
@@ -450,7 +450,7 @@ public class StoreXcxController extends Controller{
 		
 		queryApiAuthorizerToken(storeXcx.getStr("appid"));
 		
-		String extJson = FileReadUtil.readFile("D:\\itemlist.json");
+		String extJson = FileReadUtil.readFile("/home/data/file/itemlist.json");
 		System.out.println("extJson:"+extJson);
 		try {
 			String accessToken = storeXcx.getStr("authorizer_access_token");
@@ -479,6 +479,34 @@ public class StoreXcxController extends Controller{
 			postJson.put("item_list", array);
 			//postJson.put("item_list", "[{\"address\":\"pages/index/index\",\"tag\":\"生活\",\"first_class\": \"文娱\",\"second_class\": \"资讯\",\"first_id\":1,\"second_id\":2,\"title\": \"首页\"}]");
 			System.out.println("json:"+postJson.toString());
+			String returnMsg = HttpRequest.sendPostJson(url, postJson.toString());
+			System.out.println(returnMsg);
+			JSONObject retJson1 = new JSONObject(returnMsg);
+			if(retJson1.getInt("errcode")==0){
+				setAttr("msg", "设置成功");
+				renderJson();
+			}else{
+				setAttr("msg", returnMsg);
+				renderJson();
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void release(){
+		int id = StringUtil.toInteger(getPara("id"));
+		StoreXcx storeXcx = StoreXcx.dao.queryById(id);
+		if(storeXcx == null){
+			setAttr("msg", "数据出错");
+			renderJson();
+		}
+		
+		queryApiAuthorizerToken(storeXcx.getStr("appid"));
+		try {
+			String accessToken = storeXcx.getStr("authorizer_access_token");
+			String url="https://api.weixin.qq.com/wxa/release?access_token="+accessToken;
+			JSONObject postJson = new JSONObject();
 			String returnMsg = HttpRequest.sendPostJson(url, postJson.toString());
 			System.out.println(returnMsg);
 			JSONObject retJson1 = new JSONObject(returnMsg);
