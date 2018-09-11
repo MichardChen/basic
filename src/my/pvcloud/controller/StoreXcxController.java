@@ -558,7 +558,7 @@ public class StoreXcxController extends Controller{
 				return;
 			}
 			if(xcx.getTimestamp("expire_time") != null){
-				if(DateUtil.getNowTimestamp().compareTo(xcx.getTimestamp("expire_time"))<=0){
+				if(DateUtil.getNowTimestamp().compareTo(xcx.getTimestamp("expire_time"))<0){
 					System.out.println("now:"+DateUtil.getNowTimestamp()+",expire_time:"+xcx.getTimestamp("expire_time"));
 					//没过期
 					return;

@@ -1,6 +1,8 @@
 package my.app.controller;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -66,6 +68,8 @@ public class WXRestfulController extends Controller{
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(getRequest().getInputStream()));
 			String body = IOUtils.read(reader);
+			
+			
 			//参数
 			String signature = getPara("signature");
 			String timestamp = getPara("timestamp");
@@ -73,7 +77,12 @@ public class WXRestfulController extends Controller{
 			String msg_signature = getPara("msg_signature");
 			String encrypt_type = getPara("encrypt_type");
 			
-			System.out.println("signature:"+signature+",timestamp："+timestamp+",nonce:"+nonce+",msg_signature:"+msg_signature+",encrypt_type:"+encrypt_type);
+			String s = "signature:"+signature+",timestamp："+timestamp+",nonce:"+nonce+",msg_signature:"+msg_signature+",encrypt_type:"+encrypt_type;
+			File file = new File("/home/data/t.txt");
+			file.createNewFile();
+			FileWriter fw = new FileWriter(file);
+			fw.write(body+" "+s);
+			fw.close();
 	    	
 			CodeMst msgSettingMst = CodeMst.dao.queryCodestByCode("210013");
 			if(msgSettingMst != null){
@@ -93,9 +102,12 @@ public class WXRestfulController extends Controller{
 					renderText("success");
 				}
 			}
+			
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+		
+		//renderText("success");
     }
     
     //小程序消息回调
