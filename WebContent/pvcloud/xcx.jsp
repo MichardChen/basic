@@ -258,13 +258,15 @@ td{
 		    					<td>${s.createTime}</td>
 		    					<td>
 		    							<input type="button" value="查看" class="btn btn-primary" data-toggle="modal" data-target="#myModal1" onclick="loadProject1(${s.id})"/>
+		    							<c:if test="${s.id != 20}">
 		    							<button type="button" class="btn btn-primary" onclick="modifyDomain1(${s.id})">设置域名</button>
-		    							<button type="button" class="btn btn-primary" onclick="getAuthInfo(${s.id})">查看小程序信息</button>
+		    							<%-- <button type="button" class="btn btn-primary" onclick="getAuthInfo(${s.id})">查看小程序信息</button> --%>
 		    							<button type="button" class="btn btn-primary" onclick="getCategory(${s.id})">获取可选类目</button>
 		    							<button type="button" class="btn btn-primary" onclick="uploadCode(${s.id})">上传代码</button>
 		    							<button type="button" class="btn btn-primary" onclick="submitCode(${s.id})">提交代码</button>
 		    							<button type="button" class="btn btn-primary" onclick="getLatestAuditstatus(${s.id})">查看审核结果</button>
 		    							<button type="button" class="btn btn-primary" onclick="release(${s.id})">发布小程序</button>
+		    							</c:if>
 		    					</td>
 		    				</tr>
 		    			</c:forEach>

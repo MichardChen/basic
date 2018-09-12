@@ -269,7 +269,7 @@ public class StoreXcxController extends Controller{
 			String url="https://api.weixin.qq.com/wxa/modify_domain?access_token="+accessToken;
 			String[] domain={domainUrl,domainUrl};
 			JSONObject data = new JSONObject();
-			data.put("action", "add");
+			data.put("action", "set");
 			data.put("requestdomain", domain);
 			data.put("wsrequestdomain", domain);
 			data.put("uploaddomain", domain);
@@ -307,7 +307,7 @@ public class StoreXcxController extends Controller{
 			String url="https://api.weixin.qq.com/wxa/modify_domain?access_token="+accessToken;
 			String[] domain={domainUrl,domainUrl};
 			JSONObject data = new JSONObject();
-			data.put("action", "add");
+			data.put("action", "set");
 			data.put("requestdomain", domain);
 			data.put("wsrequestdomain", domain);
 			data.put("uploaddomain", domain);
