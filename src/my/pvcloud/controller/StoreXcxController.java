@@ -13,6 +13,7 @@ import com.alibaba.druid.sql.visitor.functions.Function;
 import com.jfinal.aop.Enhancer;
 import com.jfinal.core.Controller;
 import com.jfinal.plugin.activerecord.Page;
+import com.sun.org.apache.bcel.internal.classfile.Code;
 
 import my.core.model.CodeMst;
 import my.core.model.Store;
@@ -202,7 +203,7 @@ public class StoreXcxController extends Controller{
 	public void upload(){
 		//上传小程序
 		int id = StringUtil.toInteger(getPara("id"));
-		StoreXcx storeXcx = StoreXcx.dao.queryByStoreId(id);
+		StoreXcx storeXcx = StoreXcx.dao.queryById(id);
 		if(storeXcx == null){
 			setAttr("msg", "数据出错");
 			renderJson();
@@ -214,13 +215,20 @@ public class StoreXcxController extends Controller{
 			String accessToken = storeXcx.getStr("authorizer_access_token");
 			String accessTokenUrl="https://api.weixin.qq.com/wxa/commit?access_token="+accessToken;
 			JSONObject postJson = new JSONObject();
-			postJson.put("template_id", 0);
-			postJson.put("ext_json", extJson);
-			postJson.put("user_version", "V1.0");
-			postJson.put("user_desc", "同记平台代发布");
-			System.out.println("json:"+postJson.toString());
-			String accessTokenReturnMsg = HttpRequest.sendPostJson(accessTokenUrl, postJson.toString());
-			System.out.println(accessTokenReturnMsg);
+			CodeMst mst = CodeMst.dao.queryCodestByCode("210014");
+			if(mst != null){
+				postJson.put("template_id", mst.getInt("data1"));
+				postJson.put("ext_json", extJson);
+				postJson.put("user_version", mst.getStr("data2"));
+				postJson.put("user_desc", mst.getStr("data3"));
+				String accessTokenReturnMsg = HttpRequest.sendPostJson(accessTokenUrl, postJson.toString());
+				//返回消息
+				setAttr("msg", accessTokenReturnMsg);
+				renderJson();
+			}else{
+				setAttr("msg", "上传失败，缺少上传版本信息");
+				renderJson();
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
